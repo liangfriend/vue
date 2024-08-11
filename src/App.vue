@@ -1,15 +1,8 @@
-<script setup lang="ts">
-import Layout from './views/common/Layout.vue';
-</script>
+<script setup lang="ts"></script>
 
 <template>
-
-    <Layout></Layout>
-
- 
+  sd
+  <RouterView></RouterView>
 </template>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>
