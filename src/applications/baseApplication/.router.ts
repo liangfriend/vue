@@ -13,7 +13,7 @@ const routes = [
       {
         path: '/base/two',
         component: () => import('./views/baseTwo.vue'),
-        meta: { title: '基础2' }
+        meta: { title: '文件上传' }
       }
     ]
   }
