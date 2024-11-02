@@ -7,13 +7,18 @@ const routes = [
     children: [
       {
         path: '/base/one',
-        component: () => import('./views/baseOne.vue'),
-        meta: { title: '基础1' }
+        component: () => import('./views/Edit.vue'),
+        meta: { title: '课件编辑' }
       },
       {
         path: '/base/two',
-        component: () => import('./views/baseTwo.vue'),
-        meta: { title: '基础2' }
+        component: () => import('./views/Show.vue'),
+        meta: { title: '课件展示' }
+      },
+      {
+        path: '/base/test',
+        component: () => import('./views/Test.vue'),
+        meta: { title: '测试草纸' }
       }
     ]
   }
