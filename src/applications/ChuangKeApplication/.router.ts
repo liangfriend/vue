@@ -1,9 +1,19 @@
 const routes = {
-  path: '/chuangke',
+  path: '/chuangKeIndex',
   component: () => import('./views/index.vue'),
-  // redirect: '/test',
   meta: { title: '创客vue3版本' },
-  children: []
+  children: [
+    {
+      name:'导航首页',
+      path: '/chuangKeIndex/navigator',
+      component: () => import('./views/navigator.vue'),
+      meta: {title: '创客vue3版本'},
+    },
+    {
+      name:'编辑器',
+      path:'/chuangKeIndex/editor',
+      component: () => import('./views/editor.vue'),
+    }]
 };
 
 export default routes;

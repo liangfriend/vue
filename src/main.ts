@@ -9,6 +9,8 @@ import { createWebHashHistory, createRouter, RouteRecordRaw } from 'vue-router';
 import appVue from './App.vue';
 import {createStore} from 'vuex';
 
+import drag from '@/directives/drag.ts';
+
 import chuangKeStore from '@/applications/ChuangKeApplication/chuangKeStore.ts';
 
 //动态路由加载
@@ -19,7 +21,7 @@ async function routeSet() {
     {
       path: '/',
       component: appVue,
-      redirect: '/chuangke',
+      redirect: '/chuangKeIndex/navigator',
       children: []
     }
   ];
@@ -49,7 +51,7 @@ async function init() {
   const store = storeSet();
   const app = createApp(App);
 
-  app.use(router).use(ElementPlus).mount('#app');
+  app.use(router).directive('drag',drag).use(ElementPlus).mount('#app');
 }
 //初始化
 init();
