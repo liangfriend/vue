@@ -19,21 +19,18 @@
 </template>
 <script setup lang="ts">
   import { ref } from 'vue';
-  import routes from '../.router.ts';
+  import route from '../.router.ts';
   import { MenuItemRegistered } from 'element-plus';
   import { useRouter } from 'vue-router';
 
   const router = useRouter();
-  const obj = routes.map((item) => {
-    const children = item.children.map((subitem) => {
-      return { title: subitem.meta.title, path: subitem.path };
-    });
-    return { title: item.meta.title, path: item.path, children };
+  const obj = route.children.map((subitem) => {
+    return { title: subitem.meta.title, path: subitem.path, children: subitem.children };
   });
+  console.log(obj);
   const menu = ref(obj);
 
   const select = (e: MenuItemRegistered) => {
-    console.log(e);
     const path = e.index;
     router.push(path);
   };
