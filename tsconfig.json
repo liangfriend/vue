@@ -4,8 +4,7 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "skipLibCheck": true,
-
+    "esModuleInterop": true,
     /* Bundler mode */
     "moduleResolution": "bundler",
     // "moduleResolution": "node",
@@ -22,10 +21,10 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/**/**/*.vue"],
+  "include": ["src/*.vue", "src/*.ts", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/**/**/*.vue"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -9,10 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "ebml": "^3.0.0",
     "echarts": "^5.5.1",
     "element-plus": "^2.3.12",
-    "fix-webm-duration": "^1.0.6",
+    "npmtest01010asdx": "^1.0.0",
+    "sass": "^1.83.0",
+    "sass-loader": "^16.0.4",
     "three": "^0.167.1",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4",
@@ -22,7 +23,8 @@
     "@eslint/js": "^9.9.0",
     "@types/node": "^22.2.0",
     "@types/three": "^0.167.1",
-    "@vitejs/plugin-vue": "^4.2.3",
+    "@vitejs/plugin-vue": "^4.6.2",
+    "@vue/tsconfig": "^0.5.1",
     "eslint": "^9.9.0",
     "eslint-plugin-vue": "^9.27.0",
     "globals": "^15.9.0",
