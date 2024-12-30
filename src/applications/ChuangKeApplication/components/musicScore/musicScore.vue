@@ -1,36 +1,58 @@
 <template>
-  <div class="musicScore" :style="musicScoreStyle">
-    <div v-for="(multipleStaff,multipleStaffIndex) in data.multipleStavesArray"
-         :style="multipleStaffStyle(multipleStaff)"
-         class="multipleStaff">
-      <div v-for="(singleStaff,singleStaffIndex) in multipleStaff.singleStaffArray"
-           :style="singleStaffStyle(singleStaff,multipleStaff)"
-           class="singleStaff">
-        <measure v-for="(measure,measureIndex) in singleStaff.measureArray"
-                 :strokeWidth="strokeWidth"
-                 :x="measureIndex * measureWidth(measure, singleStaff,multipleStaff)"
-                 :height="measureHeight"
-                 :width="measureWidth(measure, singleStaff,multipleStaff)"></measure>
+  <div class="musicScore stack" :style="musicScoreStyle">
+    <div class="stackItem" :style="{width:width,height:height}" comment="谱线层">
+      <div v-for="(multipleStaff,multipleStaffIndex) in data.multipleStavesArray"
+           :key="'multipleStaff'+multipleStaffIndex"
+           :style="multipleStaffStyle(multipleStaff)"
+           class="multipleStaff">
+        <div v-for="(singleStaff,singleStaffIndex) in multipleStaff.singleStaffArray"
+             :key="'singleStaff'+singleStaffIndex"
+             :style="singleStaffStyle(singleStaff,multipleStaff)"
+             class="singleStaff">
+          <measure v-for="(measure,measureIndex) in singleStaff.measureArray"
+                   :key="'measure'+measureIndex"
+                   :strokeWidth="strokeWidth"
+                   :x="measureIndex * measureWidth(measure, singleStaff,multipleStaff)"
+                   :height="measureHeight"
+                   :width="measureWidth(measure, singleStaff,multipleStaff)"></measure>
+
+        </div>
+      </div>
+    </div>
+    <div class="stackItem" :style="{width:width,height:height}" comment="符号层">
+      <div v-for="(multipleStaff,multipleStaffIndex) in data.multipleStavesArray"
+           :key="'multipleStaff-symbol'+multipleStaffIndex"
+           :style="multipleStaffStyle(multipleStaff)"
+           class="multipleStaff">
+        <div v-for="(singleStaff,singleStaffIndex) in multipleStaff.singleStaffArray"
+             :key="'singleStaff-symbol'+singleStaffIndex"
+             :style="singleStaffStyle(singleStaff,multipleStaff)"
+             class="singleStaff">
+
+          <div>
+            <img draggable="false" :src="note" :style="{width: measureHeight / 5 + 'px',height:measureHeight + 'px','object-fit':'fill'}">
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
 </template>
 <script setup lang="ts">
 import Measure from './measure.vue';
 import mockData from './mock.ts';
 import {computed, ref} from 'vue';
+import note from './musicSymbols/note.svg';
 
 const props = defineProps({
   width:{
     type:Number,
-    default: 600,
+    default: 1000,
   },
   height:{
     type:Number,
     default: 800,
   },
-  //小节高度
+  //小节高度， 此属性会控制音符，休止符，谱号，拍号等符号大小
   measureHeight:{
     type:Number,
     default:60
@@ -45,11 +67,11 @@ const props = defineProps({
     type:Number,
     default:60
   },
-  //线条宽度
+  //小节的线条宽度
   strokeWidth:{
     type:Number,
     default:1
-  }
+  },
 });
 const musicScoreStyle = computed(()=>{
   return {
@@ -81,7 +103,17 @@ const measureWidth =computed(()=>(measure,singleStaff,multipleStaff)=> {
 const data = ref(mockData);
 
 </script>
+<style scoped lang="scss" comment="布局">
+.stack {
+  position: relative;
 
+  > .stackItem{
+    position: absolute;
+    display: grid;
+
+  }
+}
+</style>
 <style scoped lang="scss">
 .multipleStaff{
   display: grid;

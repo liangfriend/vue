@@ -1,7 +1,7 @@
 <template>
   <div class="stack whiteBoard" comment="白板，内含浮动展示板，左右工具栏等（也许不含工具栏）">
     <div v-drag class="floatBoard stackItem" ref="floatBoard" :style="floatBoardStyle" comment="浮动展示板，此元素可被拖动位移，背景为白色">
-      <music-score></music-score>
+      <music-score :width="800" :measure-height="40"></music-score>
     </div>
   </div>
 </template>
@@ -26,22 +26,12 @@ const props = defineProps({
     default:'center'
   }
 });
-// const preventDefault = (e)=>{
-//   if (e.ctrlKey === true || e.metaKey) {
-//     e.preventDefault();
-//   };
-// };
-onMounted(()=>{
-  // window.devicePixelRatio = 1;
-  // window.addEventListener('mousewheel', preventDefault,{ passive: false});
 
-  //firefox
-  // window.addEventListener('DOMMouseScroll', preventDefault);
+onMounted(()=>{
 
 });
 onUnmounted(()=>{
-  // window.removeEventListener('mousewheel',preventDefault);
-  // window.removeEventListener('DOMMouseScroll',preventDefault);
+
 });
 
 const floatBoardStyle=computed(()=>{
@@ -51,16 +41,15 @@ const floatBoardStyle=computed(()=>{
     width:widthValue+widthUnit,
     height:heightValue+heightUnit,
   };
+  console.log(props.floatBoardPosition);
   switch(props.floatBoardPosition) {
   case 'leftTop':
     //
     break;
   case 'center':{
     // 解析宽度和高度
-    if (style.left && style.top){
-      style.left = `calc(50% - ${widthValue / 2}${widthUnit})`;
-      style.top = `calc(50% - ${heightValue / 2}${heightUnit})`;
-    }
+    style.left = `calc(50% - ${widthValue / 2}${widthUnit})`;
+    style.top = `calc(50% - ${heightValue / 2}${heightUnit})`;
 
     break;
   }

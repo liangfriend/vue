@@ -1,0 +1,46 @@
+const commonTools = [{
+  title:'图片',
+  content:[{
+    image:'',
+    name:'测试',
+  },{
+    image:'',
+    name:'测试',
+  },{
+    image:'',
+    name:'测试',
+  },{
+    image:'',
+    name:'测试',
+  },{
+    image:'',
+    name:'测试',
+  },{
+    image:'',
+    name:'测试',
+  },{
+    image:'',
+    name:'测试',
+  }]
+},
+{
+  title:'文本',
+  content:[{
+    image:'',
+    name:'测试',
+  },{
+    image:'',
+    name:'测试',
+  },{
+    image:'',
+    name:'测试',
+  }]
+},{
+  title:'曲谱',
+  content:[{
+    image:'',
+    name:'标准曲谱'
+  }]
+}];
+
+export default commonTools;
