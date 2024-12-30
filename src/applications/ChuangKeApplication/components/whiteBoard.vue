@@ -1,37 +1,106 @@
 <template>
   <div class="stack whiteBoard" comment="白板，内含浮动展示板，左右工具栏等（也许不含工具栏）">
-    <div v-drag class="floatBoard stackItem" ref="floatBoard" comment="浮动展示板，此元素可被拖动位移，背景为白色">
-<!--      <div class="sketchpad stackItem" comment="画板，包含画笔内容"></div>-->
+    <div v-drag class="floatBoard stackItem" ref="floatBoard" :style="floatBoardStyle" comment="浮动展示板，此元素可被拖动位移，背景为白色">
+      <music-score></music-score>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import {ref} from 'vue';
+import {computed, onMounted, onUnmounted, ref} from 'vue';
+import {parseAndFormatDimension} from '../utils/util.ts';
+import MusicScore from '@/applications/ChuangKeApplication/components/musicScore/musicScore.vue';
 //展示板实例
 const floatBoard = ref(null);
-//元素暂存区
+const props = defineProps({
+  floatBoardWidth:{
+    type:String,
+    default:'100%'
+  },
+  floatBoardHeight:{
+    type:String,
+    default:'100%'
+  },
+  floatBoardPosition: {
+    type: String, //leftTop center
+    default:'center'
+  }
+});
+// const preventDefault = (e)=>{
+//   if (e.ctrlKey === true || e.metaKey) {
+//     e.preventDefault();
+//   };
+// };
+onMounted(()=>{
+  // window.devicePixelRatio = 1;
+  // window.addEventListener('mousewheel', preventDefault,{ passive: false});
+
+  //firefox
+  // window.addEventListener('DOMMouseScroll', preventDefault);
+
+});
+onUnmounted(()=>{
+  // window.removeEventListener('mousewheel',preventDefault);
+  // window.removeEventListener('DOMMouseScroll',preventDefault);
+});
+
+const floatBoardStyle=computed(()=>{
+  const style = {
+    width:props.floatBoardWidth,
+    height:props.floatBoardHeight,
+
+  };
+  switch(props.floatBoardPosition) {
+  case 'leftTop':
+    //
+    break;
+  case 'center':{
+    // 解析宽度和高度
+    const { value: widthValue, unit: widthUnit } = parseAndFormatDimension(props.floatBoardWidth);
+    const { value: heightValue, unit: heightUnit } = parseAndFormatDimension(props.floatBoardHeight);
+    style.left = `calc(50% - ${widthValue / 2}${widthUnit})`;
+    style.top = `calc(50% - ${heightValue / 2}${heightUnit})`;
+    break;
+  }
+  default:
+    break;
+  }
+  return style;
+});
+//-------------------------------------添加元素逻辑-------------------------------------------
+//白板组件暂存区
 const cacheMap = new Map();
-
 //添加元素到暂存区
-const cacheElement = (left:string, top:string, element) => {
-
+const cacheElement = (element) => {
+  cacheMap.set('element', element);
 };
-const add = (e) => {
-  const left = 0;
-  const top = 0;
-
-  endAdd();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+const addElement = (e, options) => {
+  const left = e.offsetX;
+  const top = e.offsetY;
+  const element = cacheMap.get('element').cloneNode(true);
+  element.style.position = 'absolute';
+  element.style.top = top + 'px';
+  element.style.left = left + 'px';
+  floatBoard.value.appendChild(element);
+  endAddElement();
 };
-const startAdd = (element) => {
+  //开始监听元素添加
+const startAddElement = (key,element) => {
   //添加元素到暂存区
-
+  if(element && key){
+    cacheElement(key,element);
+  }
   //添加元素到展示板
-  floatBoard.value.addEventListener('moouseup', add);
+  floatBoard.value.addEventListener('mouseup', addElement);
 };
-//取消监听
-const endAdd = () => {
-  floatBoard.value.removeEventListener('moouseup', add);
+  //取消监听元素添加
+const endAddElement = () => {
+  floatBoard.value.removeEventListener('mouseup', addElement);
 };
+//-------------------------------------变量-------------------------------------------
+//暴露方法
+defineExpose({ startAddElement, endAddElement });
+
 </script>
 <style>
 .floatBoard{

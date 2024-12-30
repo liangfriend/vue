@@ -1,12 +1,13 @@
 <template>
   <div class="stack">
-    <whiteBoard class="stackItem"></whiteBoard>
+    <whiteBoard ref="wb" class="stackItem" floatBoardWidth="1000px" floatBoardHeight="800px"></whiteBoard>
   </div>
 </template>
 
 <script setup lang="ts">
+import whiteBoard from '../components/whiteBoard.vue';
+import {ref} from 'vue';
 
-import WhiteBoard from '../components/whiteBoard.vue';
 </script>
 
 <style scoped lang="scss" comment="布局">
@@ -22,3 +23,6 @@ import WhiteBoard from '../components/whiteBoard.vue';
   }
 }
 </style>
+<document>
+要想缩放不出问题，需要whiteBoard添加的内容和whiteBoard使用同一种单位。px或百分比。百分比，缩放时一起不动，px，缩放时一起放大缩小
+</document>
