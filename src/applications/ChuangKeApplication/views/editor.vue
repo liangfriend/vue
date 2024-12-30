@@ -1,6 +1,6 @@
 <template>
   <div class="stack">
-    <whiteBoard ref="wb" class="stackItem" floatBoardWidth="1000px" floatBoardHeight="800px"></whiteBoard>
+    <whiteBoard ref="wb" class="stackItem" :floatBoardWidth="1000" :floatBoardHeight="800"></whiteBoard>
   </div>
 </template>
 
@@ -23,6 +23,3 @@ import {ref} from 'vue';
   }
 }
 </style>
-<document>
-要想缩放不出问题，需要whiteBoard添加的内容和whiteBoard使用同一种单位。px或百分比。百分比，缩放时一起不动，px，缩放时一起放大缩小
-</document>

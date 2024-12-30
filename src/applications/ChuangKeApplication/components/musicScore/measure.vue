@@ -1,27 +1,50 @@
-
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" :width="width" :height="height" :viewBox="`0 0 ${width} ${height}`">
-    <!-- 绘制五条水平线 -->
-    <line v-for="index in [0,1,2,3,4]" :x1="0" :y1="index*height / 4" :x2="width"
-          :y2="index*height / 4" stroke="black" :stroke-width="strokeWidth"/>
-    <!-- 添加小节线 -->
-    <line :x1="width" :y1="0" :x2="width" :y2="height" stroke="black" stroke-width="1"/>
-  </svg>
+  <div class="measure" :style="measureStyle">
+    <div>
+      <img draggable="false" :src="barLine" :style="{width: (width - strokeWidth)+'px',height:height+'px','object-fit':'fill'}">
+    </div>
+    <div>
+      <img draggable="false" :src="bar" :style="{width: strokeWidth+'px',height:height+'px','object-fit':'fill'}">
+    </div>
+  </div>
+
 </template>
 <script setup lang="ts">
-import {ref} from 'vue';
+import {computed, ref} from 'vue';
+
+import bar from './musicSymbols/bar.svg';
+import barLine from './musicSymbols/barLine.svg';
 
 const props = defineProps({
+  x:{
+    type:Number,
+    default: 0,
+  },
+  y:{
+    type:Number,
+    default: 0,
+  },
   width:{
     type:Number,
-    default: 500,
+    default: 400,
   },
   height:{
     type:Number,
-    default: 200,
+    default: 80,
+  },
+  strokeWidth:{
+    type:Number,
+    default:1
   }
 });
-const strokeWidth = ref(1);
+
+const measureStyle=computed(()=> {
+  return {
+    'display':'grid',
+    'grid-template-rows':'1fr',
+    'grid-template-columns': `1fr ${props.strokeWidth}px`,
+  };
+});
 </script>
 <style scoped lang="scss">
 

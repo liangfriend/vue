@@ -1,5 +1,8 @@
 //分离数字和单位
-function parseAndFormatDimension(dimension):{unit:string, value: number} {
+function parseAndFormatDimension(dimension:string|number):{unit:string, value: number} {
+  if (typeof dimension === 'number'){
+    return  { value: parseFloat(dimension), unit:'px' };
+  }
   // 使用正则分离数值和单位
   const match = dimension.match(/^([0-9.]+)([a-zA-Z%]*)$/);
 

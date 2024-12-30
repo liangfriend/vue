@@ -11,14 +11,15 @@ import {parseAndFormatDimension} from '../utils/util.ts';
 import MusicScore from '@/applications/ChuangKeApplication/components/musicScore/musicScore.vue';
 //展示板实例
 const floatBoard = ref(null);
+//宽高只允许传入px,为了保证缩放功能的正常进行
 const props = defineProps({
   floatBoardWidth:{
-    type:String,
-    default:'100%'
+    type:Number,
+    default:100
   },
   floatBoardHeight:{
-    type:String,
-    default:'100%'
+    type:Number,
+    default:100
   },
   floatBoardPosition: {
     type: String, //leftTop center
@@ -44,10 +45,11 @@ onUnmounted(()=>{
 });
 
 const floatBoardStyle=computed(()=>{
+  const { value: widthValue, unit: widthUnit } = parseAndFormatDimension(props.floatBoardWidth);
+  const { value: heightValue, unit: heightUnit } = parseAndFormatDimension(props.floatBoardHeight);
   const style = {
-    width:props.floatBoardWidth,
-    height:props.floatBoardHeight,
-
+    width:widthValue+widthUnit,
+    height:heightValue+heightUnit,
   };
   switch(props.floatBoardPosition) {
   case 'leftTop':
@@ -55,10 +57,11 @@ const floatBoardStyle=computed(()=>{
     break;
   case 'center':{
     // 解析宽度和高度
-    const { value: widthValue, unit: widthUnit } = parseAndFormatDimension(props.floatBoardWidth);
-    const { value: heightValue, unit: heightUnit } = parseAndFormatDimension(props.floatBoardHeight);
-    style.left = `calc(50% - ${widthValue / 2}${widthUnit})`;
-    style.top = `calc(50% - ${heightValue / 2}${heightUnit})`;
+    if (style.left && style.top){
+      style.left = `calc(50% - ${widthValue / 2}${widthUnit})`;
+      style.top = `calc(50% - ${heightValue / 2}${heightUnit})`;
+    }
+
     break;
   }
   default:
@@ -78,6 +81,7 @@ const addElement = (e, options) => {
   const left = e.offsetX;
   const top = e.offsetY;
   const element = cacheMap.get('element').cloneNode(true);
+  //这里还要套一层壳，把元素全部放到这层壳里，防止svg元素设置top,left不生效
   element.style.position = 'absolute';
   element.style.top = top + 'px';
   element.style.left = left + 'px';
