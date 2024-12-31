@@ -47,5 +47,7 @@ const measureStyle=computed(()=> {
 });
 </script>
 <style scoped lang="scss">
-
+img{
+  display: block;
+}
 </style>

@@ -72,4 +72,20 @@ const keySignatureMap = {
   'a':15,
   'b':16
 };
-export {musicalAlphabetMap,clefMap,keySignatureMap};
+//时值  用于计算，不用于赋值
+const chronaxieMap = {
+  'whole':2048,
+  'half':1024,
+  'quarter':512,
+  'eighth':256,
+  'sixth':128
+};
+//时值，用于赋值
+const Chronaxie = {
+  WHOLE:'whole',
+  HALF:'half',
+  QUARTER:'quarter',
+  EIGHTH:'eighth',
+  SIXTH:'sixth'
+};
+export {musicalAlphabetMap,clefMap,keySignatureMap,chronaxieMap,Chronaxie};

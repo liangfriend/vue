@@ -71,10 +71,12 @@ const addElement = (e, options) => {
   const top = e.offsetY;
   const element = cacheMap.get('element').cloneNode(true);
   //这里还要套一层壳，把元素全部放到这层壳里，防止svg元素设置top,left不生效
-  element.style.position = 'absolute';
-  element.style.top = top + 'px';
-  element.style.left = left + 'px';
-  floatBoard.value.appendChild(element);
+  const wbDom = document.createElement('div');
+  wbDom.appendChild(element);
+  wbDom.style.position = 'absolute';
+  wbDom.style.top = top + 'px';
+  wbDom.style.left = left + 'px';
+  floatBoard.value.appendChild(wbDom);
   endAddElement();
 };
   //开始监听元素添加

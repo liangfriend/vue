@@ -1,6 +1,6 @@
 <template>
   <div class="musicScore stack" :style="musicScoreStyle">
-    <div class="stackItem" :style="{width:width,height:height}" comment="谱线层">
+    <div class="stackItem lineLayer" :style="{width:width+'px',height:height+'px'}" comment="谱线层">
       <div v-for="(multipleStaff,multipleStaffIndex) in data.multipleStavesArray"
            :key="'multipleStaff'+multipleStaffIndex"
            :style="multipleStaffStyle(multipleStaff)"
@@ -12,14 +12,14 @@
           <measure v-for="(measure,measureIndex) in singleStaff.measureArray"
                    :key="'measure'+measureIndex"
                    :strokeWidth="strokeWidth"
-                   :x="measureIndex * measureWidth(measure, singleStaff,multipleStaff)"
+                   :x="measureIndex * measureWidth(measure, singleStaff, multipleStaff)"
                    :height="measureHeight"
-                   :width="measureWidth(measure, singleStaff,multipleStaff)"></measure>
+                   :width="measureWidth(measure, singleStaff, multipleStaff)"></measure>
 
         </div>
       </div>
     </div>
-    <div class="stackItem" :style="{width:width,height:height}" comment="符号层">
+    <div class="stackItem symbolLayer" :style="{width:width+'px',height:height+'px'}" comment="符号层">
       <div v-for="(multipleStaff,multipleStaffIndex) in data.multipleStavesArray"
            :key="'multipleStaff-symbol'+multipleStaffIndex"
            :style="multipleStaffStyle(multipleStaff)"
@@ -28,10 +28,16 @@
              :key="'singleStaff-symbol'+singleStaffIndex"
              :style="singleStaffStyle(singleStaff,multipleStaff)"
              class="singleStaff">
-
-          <div>
-            <img draggable="false" :src="note" :style="{width: measureHeight / 5 + 'px',height:measureHeight + 'px','object-fit':'fill'}">
+          <div v-for="(measure,measureIndex) in singleStaff.measureArray"
+               :style="measureStyle(measure, singleStaff, multipleStaff)"
+               class="measure"
+               :key="'measure-symbol'+singleStaffIndex">
+            <note v-for="(note,noteIndex) in measure.noteArray"
+                  :key="'note-symbol'+singleStaffIndex"
+                  :measureHeight="measureHeight"
+                  :note="note" ></note>
           </div>
+
         </div>
       </div>
     </div>
@@ -41,7 +47,7 @@
 import Measure from './measure.vue';
 import mockData from './mock.ts';
 import {computed, ref} from 'vue';
-import note from './musicSymbols/note.svg';
+import note from './note.vue';
 
 const props = defineProps({
   width:{
@@ -73,6 +79,25 @@ const props = defineProps({
     default:1
   },
 });
+//获取一个小节的宽度占比常数
+const getMeasureWidthRatioIndex = (measure)=>{
+  let fr = 0;
+  measure.noteArray.forEach(note =>{
+    fr+=1;
+  });
+  return fr;
+};
+//获取一个单谱表下宽度占比常数
+const getSingleStaffWidthRatioIndex = (singleStaffStyle)=>{
+  let fr = 0;
+  const distribution = [];
+  singleStaffStyle.measureArray.forEach(measure =>{
+    fr+=getMeasureWidthRatioIndex(measure);
+    distribution.push(measure);
+  });
+  return fr;
+};
+
 const musicScoreStyle = computed(()=>{
   return {
     width:props.width+'px',
@@ -94,10 +119,16 @@ const singleStaffStyle=computed(()=>(singleStaff,multipleStaff)=> {
     'padding-bottom':props.singleStaffPadding+'px',
   };
 });
-const measureWidth =computed(()=>(measure,singleStaff,multipleStaff)=> {
-  //小节上根据音符，休止符，谱号等等来获取宽度比值。通过这些比值来计算出宽度
-  const width = props.width / singleStaff.measureArray.length;
-  return width;
+const measureWidth = computed(()=>(measure,singleStaff,multipleStaff)=> {
+  const totalFr = getSingleStaffWidthRatioIndex(singleStaff);
+  const selfFr = getMeasureWidthRatioIndex(measure);
+  return props.width * selfFr / totalFr;
+});
+const measureStyle=computed(()=>(measure,singleStaff,multipleStaff)=> {
+  let style= {};
+  style.height = props.measureHeight+'px';
+  style.width = measureWidth.value(measure,singleStaff,multipleStaff)+'px';
+  return style;
 });
 
 const data = ref(mockData);
@@ -115,12 +146,20 @@ const data = ref(mockData);
 }
 </style>
 <style scoped lang="scss">
-.multipleStaff{
-  display: grid;
-  grid-template-columns: 1fr;
+.lineLayer{
+  align-items: start;
 }
+.symbolLayer .multipleStaff{
+  align-items: start;
+}
+
 .singleStaff{
   display: grid;
   grid-template-rows: 1fr;
+}
+.measure{
+  display: grid;
+  justify-items: stretch;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
 }
 </style>
