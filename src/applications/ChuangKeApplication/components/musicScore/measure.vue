@@ -1,10 +1,10 @@
 <template>
   <div class="measure" :style="measureStyle">
-    <div>
-      <img draggable="false" :src="barLine" :style="{width: (width - strokeWidth)+'px',height:height+'px','object-fit':'fill'}">
+    <div v-selected="mouseDownBarLineFn">
+      <div draggable="false"  :style="barLineStyle"></div>
     </div>
-    <div>
-      <img draggable="false" :src="bar" :style="{width: strokeWidth+'px',height:height+'px','object-fit':'fill'}">
+    <div v-selected="mouseDownBarFn">
+      <div draggable="false"  :style="barStyle"></div>
     </div>
   </div>
 
@@ -14,6 +14,8 @@ import {computed, ref} from 'vue';
 
 import bar from './musicSymbols/bar.svg';
 import barLine from './musicSymbols/barLine.svg';
+
+import vSelected from './directives/selected.ts';
 
 const props = defineProps({
   x:{
@@ -45,6 +47,31 @@ const measureStyle=computed(()=> {
     'grid-template-columns': `1fr ${props.strokeWidth}px`,
   };
 });
+const barLineStyle=computed(()=>{
+  return {
+    width: (props.width - props.strokeWidth)+'px',
+    height:props.height+'px',
+    'background-color': 'black',
+    mask:`url(${barLine}) no-repeat center`,
+    'mask-size': '100% 100%'
+  };
+});
+const barStyle=computed(()=>{
+  return {
+    width: props.strokeWidth+'px',
+    height:props.height+'px',
+    'background-color': 'black',
+    mask:`url(${bar}) no-repeat center`,
+    'mask-size': '100% 100%'
+  };
+});
+
+const mouseDownBarLineFn = ()=> {
+
+};
+const mouseDownBarFn = ()=> {
+
+};
 </script>
 <style scoped lang="scss">
 img{

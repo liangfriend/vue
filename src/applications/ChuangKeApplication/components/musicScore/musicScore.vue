@@ -10,6 +10,7 @@
              :style="singleStaffStyle(singleStaff,multipleStaff)"
              class="singleStaff">
           <measure v-for="(measure,measureIndex) in singleStaff.measureArray"
+
                    :key="'measure'+measureIndex"
                    :strokeWidth="strokeWidth"
                    :x="measureIndex * measureWidth(measure, singleStaff, multipleStaff)"
@@ -31,10 +32,12 @@
           <div v-for="(measure,measureIndex) in singleStaff.measureArray"
                :style="measureStyle(measure, singleStaff, multipleStaff)"
                class="measure"
-               :key="'measure-symbol'+singleStaffIndex">
-            <note v-for="(note,noteIndex) in measure.noteArray"
-                  :key="'note-symbol'+singleStaffIndex"
+               :key="'measure-symbol'+measureIndex">
+            <note
+                v-for="(note,noteIndex) in measure.noteArray"
+                  :key="'note-symbol'+noteIndex"
                   :measureHeight="measureHeight"
+                  :noteTop="noteTop(note)"
                   :note="note" ></note>
           </div>
 
@@ -46,7 +49,7 @@
 <script setup lang="ts">
 import Measure from './measure.vue';
 import mockData from './mock.ts';
-import {computed, ref} from 'vue';
+import {computed, onMounted, onUnmounted, ref} from 'vue';
 import note from './note.vue';
 
 const props = defineProps({
@@ -79,6 +82,7 @@ const props = defineProps({
     default:1
   },
 });
+//动态style
 //获取一个小节的宽度占比常数
 const getMeasureWidthRatioIndex = (measure)=>{
   let fr = 0;
@@ -127,11 +131,46 @@ const measureWidth = computed(()=>(measure,singleStaff,multipleStaff)=> {
 const measureStyle=computed(()=>(measure,singleStaff,multipleStaff)=> {
   let style= {};
   style.height = props.measureHeight+'px';
+  style['justify-content'] = 'space-evenly';
+  style['grid-auto-flow'] = 'column';
   style.width = measureWidth.value(measure,singleStaff,multipleStaff)+'px';
   return style;
 });
 
 const data = ref(mockData);
+
+// 和selected指令配合，让目标元素高亮
+const documentClickHandler = (e) => {
+  const el = window.musicScore.selected;
+  if (el && !el.contains(e.target)) {
+    el.style.outline = ''; // 移除高亮边框
+    window.musicScore.selected = null;
+  }
+};
+const keyUpHandler = (e) => {
+  const el = window.musicScore.selected;
+  if (el && e.key === 'Escape') {
+    el.style.outline = ''; // 移除高亮边框
+    window.musicScore.selected = null;
+  }
+};
+//noteTop
+const noteTop =  computed(()=>(note)=> {
+  console.log(note);
+  //通过measureHeight，谱号，调号，note信息计算出高度
+  return 20;
+});
+onMounted(()=>{
+  if(!window.musicScore){
+    window.musicScore = {};
+  }
+  document.addEventListener('click', documentClickHandler);
+  document.addEventListener('keyup', keyUpHandler);
+});
+onUnmounted(()=>{
+  document.removeEventListener('click', documentClickHandler);
+  document.removeEventListener('keyup', keyUpHandler);
+});
 
 </script>
 <style scoped lang="scss" comment="布局">
@@ -141,7 +180,6 @@ const data = ref(mockData);
   > .stackItem{
     position: absolute;
     display: grid;
-
   }
 }
 </style>
@@ -149,8 +187,9 @@ const data = ref(mockData);
 .lineLayer{
   align-items: start;
 }
-.symbolLayer .multipleStaff{
+.symbolLayer{
   align-items: start;
+  pointer-events: none;
 }
 
 .singleStaff{
@@ -159,7 +198,5 @@ const data = ref(mockData);
 }
 .measure{
   display: grid;
-  justify-items: stretch;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
 }
 </style>

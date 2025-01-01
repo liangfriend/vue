@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import whiteBoard from '../components/whiteBoard.vue';
+import whiteBoard from '../components/whiteBoard/whiteBoard.vue';
 import {ref} from 'vue';
 
 import commonToolsData from './components/rightTools/commonTools.ts';

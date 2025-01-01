@@ -7,7 +7,8 @@
 </template>
 <script setup lang="ts">
 import {computed, onMounted, onUnmounted, ref} from 'vue';
-import {parseAndFormatDimension} from '../utils/util.ts';
+import {parseAndFormatDimension} from '../../utils/util.ts';
+import vDrag from './directives/drag';
 import MusicScore from '@/applications/ChuangKeApplication/components/musicScore/musicScore.vue';
 //展示板实例
 const floatBoard = ref(null);
@@ -101,6 +102,8 @@ defineExpose({ startAddElement, endAddElement });
 .floatBoard{
   background-color: #fff;
   box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.1);
+}
+.whiteBoard{
 }
 </style>
 <style scoped lang="scss" comment="布局">

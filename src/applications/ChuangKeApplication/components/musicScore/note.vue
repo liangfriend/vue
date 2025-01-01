@@ -1,7 +1,7 @@
 <template>
-  <div class="note" :style="{width: measureHeight / 5 + 'px',height:measureHeight + 'px'}">
+  <div class="noteContainer" v-selected="{mouseDownFn:mouseDownFn}" :style="{width: measureHeight / 5 + 'px',height:measureHeight + 'px'}">
     <!--    这里要加入倚音，附点等位置-->
-    <img :src="svgHref" :style="{width: measureHeight / 5 + 'px',height:measureHeight + 'px','object-fit':'fill'}">
+    <div class="note" :style="noteStyle"></div>
   </div>
 
 </template>
@@ -14,6 +14,9 @@ import sixteenthNote from './musicSymbols/sixteenthNote.svg';
 import {computed} from 'vue';
 import {Chronaxie} from '@/applications/ChuangKeApplication/components/musicScore/dataMap.ts';
 
+import vSelected from './directives/selected.ts';
+import bar from '@/applications/ChuangKeApplication/components/musicScore/musicSymbols/bar.svg';
+
 const props = defineProps({
   note:{
     //这里不知道为什么全局类型引入不了
@@ -25,8 +28,23 @@ const props = defineProps({
     type:Number,
     default:60
   },
+  //音符高度
+  noteTop:{
+    type:Number,
+    default:0
+  }
 });
-
+const noteStyle=computed(()=>{
+  return {
+    width: props.measureHeight / 5 +'px',
+    height:props.measureHeight+'px',
+    'background-color': 'black',
+    mask:`url(${svgHref.value}) no-repeat center`,
+    'mask-size': '100% 100%',
+    'position':'relative',
+    'top':props.noteTop+'px',
+  };
+});
 const svgHref = computed(()=>{
   switch (props.note.chronaxie){
   case Chronaxie.WHOLE:
@@ -42,9 +60,16 @@ const svgHref = computed(()=>{
     return sixteenthNote;
   }
 });
+
+const mouseDownFn = ()=> {
+  
+};
 </script>
 <style scoped lang="scss">
 image{
   display: block;
+}
+.noteContainer{
+  pointer-events: all;
 }
 </style>

@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import './style.css';
+import './style.scss';
 import App from './App.vue';
 // import router from "./router.ts";
 import ElementPlus from 'element-plus';
@@ -53,5 +53,7 @@ async function init() {
 
   app.use(router).directive('drag',drag).use(ElementPlus).mount('#app');
 }
+//chuangkeApplication
+window.jsh = {};
 //初始化
 init();
