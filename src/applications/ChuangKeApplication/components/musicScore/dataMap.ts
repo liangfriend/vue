@@ -1,5 +1,6 @@
 //音名的分组方法没有统一，这里为了方便，与tone.js命名一致（C4为中央c)
 //音名 不用于赋值，只用于计算  这是钢琴键是固定的一一对应的音名，不是五线谱上的音符
+//这里的东西不一定都有用，有很多都被enum替代了
 const musicalAlphabetMap = {
   'C1': 103,
   'C#1': 104,
@@ -115,7 +116,7 @@ const chronaxieMap = {
   'eighth':256,
   'sixth':128
 };
-//时值，用于赋值
+//时值
 const Chronaxie = {
   WHOLE:'whole',
   HALF:'half',

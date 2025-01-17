@@ -11,7 +11,7 @@ function calculateNotePosition(clef:ClefEnum, keySignature:KeySignatureEnum, mus
   const position = map[`${clef}-${keySignature}-${musicalAlphabet}`];
 
   if (position) {
-    return [{position,accidental:'none'}];  // 返回找到的音符位置,是一个数组，因为不同升降还原号会导致不同的position
+    return [{position,accidental:''}];  // 返回找到的音符位置,是一个数组，因为不同升降还原号会导致不同的position
   }
   console.error('找不到对位置');
   return [{position:MuseScoreRegionEnum.space_3,accidental:'none'}];

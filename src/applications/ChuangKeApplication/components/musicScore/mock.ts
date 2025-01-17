@@ -4,38 +4,36 @@ const data:MusicScore = {
   multipleStavesArray:[{
     singleStaffArray:[{
       measureArray:[{
-        clef:'g', //谱号
-        timeSignature: '4/4',  //拍号
-        keySignature:'c', //调号
+        timeSignature: TimeSignatureEnum['4/4'],  //拍号
+        keySignature:KeySignatureEnum.c, //调号
         noteArray:[{
-          clef:'',
-          musicalAlphabet:'c1',
-          chronaxie:Chronaxie.EIGHTH,
+          clef:ClefEnum.g,
+          musicalAlphabet:MusicalAlphabetEnum.C1,
+          chronaxie:ChronaxieEnum.eighth,
           sort:1
         }]
       },{
-        clef:'g', //谱号
-        timeSignature: '4/4',  //拍号
-        keySignature:'c', //调号
+        timeSignature: TimeSignatureEnum['4/4'],  //拍号
+        keySignature:KeySignatureEnum.c, //调号
         noteArray:[{
-          clef:'',
-          musicalAlphabet:'c1',
-          chronaxie:Chronaxie.SIXTH,
+          clef:ClefEnum.g,
+          musicalAlphabet:MusicalAlphabetEnum.C1,
+          chronaxie:ChronaxieEnum.sixteenth,
           sort:2
         },{
-          clef:'',
-          musicalAlphabet:'c1',
-          chronaxie:Chronaxie.SIXTH,
+          clef:ClefEnum.none,
+          musicalAlphabet:MusicalAlphabetEnum.C1,
+          chronaxie:ChronaxieEnum.sixteenth,
           sort:2
         },{
-          clef:'',
-          musicalAlphabet:'c1',
-          chronaxie:Chronaxie.SIXTH,
+          clef:ClefEnum.none,
+          musicalAlphabet:MusicalAlphabetEnum.C1,
+          chronaxie:ChronaxieEnum.sixteenth,
           sort:2
         },{
-          clef:'',
-          musicalAlphabet:'c1',
-          chronaxie:Chronaxie.SIXTH,
+          clef:ClefEnum.none,
+          musicalAlphabet:MusicalAlphabetEnum.C1,
+          chronaxie:ChronaxieEnum.sixteenth,
           sort:2
         }]
       }]
@@ -43,45 +41,41 @@ const data:MusicScore = {
   },{
     singleStaffArray:[{
       measureArray:[{
-        clef:'g', //谱号
-        timeSignature: '4/4',  //拍号
-        keySignature:'c', //调号
+        timeSignature: TimeSignatureEnum['4/4'],  //拍号
+        keySignature:KeySignatureEnum.c, //调号
         noteArray:[{
-          clef:'',
-          musicalAlphabet:'c1',
-          chronaxie:Chronaxie.QUARTER,
+          clef:ClefEnum.g,
+          musicalAlphabet:MusicalAlphabetEnum.C1,
+          chronaxie:ChronaxieEnum.quarter,
           sort:1
         }]
       },{
-        clef:'g', //谱号
-        timeSignature: '4/4',  //拍号
-        keySignature:'c', //调号
+        timeSignature: TimeSignatureEnum['4/4'],  //拍号
+        keySignature:KeySignatureEnum.c, //调号
         noteArray:[{
-          clef:'',
-          musicalAlphabet:'c1',
-          chronaxie:Chronaxie.QUARTER,
+          clef:ClefEnum.none,
+          musicalAlphabet:MusicalAlphabetEnum.C1,
+          chronaxie:ChronaxieEnum.quarter,
           sort:2
         }]
       }]
     },{
       measureArray:[{
-        clef:'g', //谱号
-        timeSignature: '4/4',  //拍号
-        keySignature:'c', //调号
+        timeSignature: TimeSignatureEnum['4/4'],  //拍号
+        keySignature:KeySignatureEnum.c, //调号
         noteArray:[{
-          clef:'',
-          musicalAlphabet:'c1',
-          chronaxie:Chronaxie.EIGHTH,
+          clef:ClefEnum.g,
+          musicalAlphabet:MusicalAlphabetEnum.C1,
+          chronaxie:ChronaxieEnum.eighth,
           sort:1
         }]
       },{
-        clef:'g', //谱号
-        timeSignature: '4/4',  //拍号
-        keySignature:'c', //调号
+        timeSignature: TimeSignatureEnum['4/4'],  //拍号
+        keySignature:KeySignatureEnum.c, //调号
         noteArray:[{
-          clef:'',
-          musicalAlphabet:'c1',
-          chronaxie:Chronaxie.QUARTER,
+          clef:ClefEnum.g,
+          musicalAlphabet:MusicalAlphabetEnum.C1,
+          chronaxie:ChronaxieEnum.quarter,
           sort:2
         }]
       }]

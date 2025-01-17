@@ -154,9 +154,28 @@ const keyUpHandler = (e) => {
     window.musicScore.selected = null;
   }
 };
+const positionCalculation = ()=> {
+  let clef:ClefEnum = ClefEnum.g;
+  let timeSignature:TimeSignatureEnum = TimeSignatureEnum['4/4'];
+  let keySignature:KeySignatureEnum = KeySignatureEnum.c;
+  data.value.multipleStavesArray.map(multipleStaves => {
+    multipleStaves.singleStaffArray.map(singleStaff => {
+      singleStaff.measureArray.map(measure => {
+        measure.timeSignature && (timeSignature = measure.timeSignature);
+        measure.keySignature && (keySignature = measure.keySignature);
+        measure.noteArray.map(note => {
+          note.clef && (clef = note.clef);
+          // calculateNotePosition(clef, keySignature, note.musicalAlphabet );
+          // note.t_;
+        });
+      });
+    });
+  });
+};
 //noteTop
 const noteTop =  computed(()=>(note)=> {
   console.log(note);
+  calculateNotePosition();
   //通过measureHeight，谱号，调号，note信息计算出高度
   return 20;
 });
