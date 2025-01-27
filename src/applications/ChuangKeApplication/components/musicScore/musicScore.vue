@@ -51,7 +51,10 @@ import measure from './measure.vue';
 import mockData from './mock.ts';
 import {computed, onMounted, onUnmounted, ref} from 'vue';
 import note from './note.vue';
-
+import {
+  ClefEnum, KeySignatureEnum,
+  TimeSignatureEnum
+} from './musicScoreEnum.ts';
 const props = defineProps({
   width:{
     type:Number,
