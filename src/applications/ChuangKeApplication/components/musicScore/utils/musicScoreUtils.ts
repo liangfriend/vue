@@ -1,5 +1,10 @@
-
+import {
+  ChronaxieEnum,
+  ClefEnum, KeySignatureEnum, MuseScoreRegionEnum,
+  MusicalAlphabetEnum, TimeSignatureEnum
+} from '../musicScoreEnum.ts';
 //通过五线谱谱号，调号，钢琴音名信息计算出音符的位于第几线或第几间。
+
 function calculateNotePosition(clef:ClefEnum, keySignature:KeySignatureEnum, musicalAlphabet:MusicalAlphabetEnum):{
   position: MuseScoreRegionEnum;
   accidental: string

@@ -1,3 +1,4 @@
+import editor from './views/editor.vue';
 const routes = {
   path: '/chuangKeIndex',
   component: () => import('./views/index.vue'),
@@ -7,7 +8,6 @@ const routes = {
       name:'导航首页',
       path: '/chuangKeIndex/navigator',
       component: () => import('./views/navigator.vue'),
-      meta: {title: '创客vue3版本'},
     },
     {
       name:'编辑器',

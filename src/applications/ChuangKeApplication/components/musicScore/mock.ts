@@ -1,5 +1,8 @@
-import {Chronaxie, musicalAlphabetMap} from '@/applications/ChuangKeApplication/components/musicScore/dataMap.ts';
-
+import {
+  ChronaxieEnum,
+  ClefEnum, KeySignatureEnum,
+  MusicalAlphabetEnum, TimeSignatureEnum
+} from './musicScoreEnum.ts';
 const data:MusicScore = {
   multipleStavesArray:[{
     singleStaffArray:[{

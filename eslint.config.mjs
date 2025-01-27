@@ -55,6 +55,7 @@ export default [
     files: ['**/*.{ts,tsx}'],
     rules: {
       // TypeScript 规则
+
       '@typescript-eslint/explicit-function-return-type': 'off', // 关闭显式函数返回类型的要求
       '@typescript-eslint/no-explicit-any': 'warn', // 警告使用 any 类型
       '@typescript-eslint/no-unused-vars': 'warn', // 禁止未使用的变量
@@ -66,7 +67,14 @@ export default [
       // 全局规则
       'no-multiple-empty-lines': ['error', { max: 1 }], // 不允许多行空行
       'comma-dangle': ['error', 'only-multiline'], // 要求在多行对象或数组中使用拖尾逗号
+      'no-unused-vars': 'off',  //非空允许
+      'no-undef': 'off', // 禁用 no-undef 规则，避免类型未定义报错
+      '@typescript-eslint/no-undef': 'off', // 禁用 @typescript-eslint/no-undef
+      '@typescript-eslint/no-unused-vars': ['off'],   //非空允许
+      '@typescript-eslint/no-unused-expressions': 'off',   //允许简洁写法，而不是非要使用if
+      '@typescript-eslint/no-explicit-any':'off',  //允许any
       indent: ['error', 2], // 使用两个空格进行缩进
+
     },
   },
 ];
