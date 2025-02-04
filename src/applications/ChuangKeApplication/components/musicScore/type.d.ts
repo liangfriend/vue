@@ -1,7 +1,7 @@
 import {
   ChronaxieEnum,
   ClefEnum, KeySignatureEnum,
-  MusicalAlphabetEnum, TimeSignatureEnum
+  MusicalAlphabetEnum, NoteTypeEnum, TimeSignatureEnum
 } from './musicScoreEnum.ts';
 
 declare global {
@@ -10,6 +10,10 @@ declare global {
         chronaxie: ChronaxieEnum; // 时值
         musicalAlphabet: MusicalAlphabetEnum; // 音名
         sort: number; // 音符顺序
+        position: string    //处于五线谱的位置
+        type: NoteTypeEnum
+        accidental: string  //变音符号
+        augmentationDot: number //附点数量
     }
     interface Measure {
         timeSignature: TimeSignatureEnum;  //拍号

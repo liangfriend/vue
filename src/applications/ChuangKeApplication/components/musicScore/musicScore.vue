@@ -55,6 +55,8 @@ import {
   ClefEnum, KeySignatureEnum,
   TimeSignatureEnum
 } from './musicScoreEnum.ts';
+import {calculateNotePosition} from './utils/musicScoreUtils.ts';
+import * as Tone from 'tone';
 const props = defineProps({
   width:{
     type:Number,
@@ -168,24 +170,105 @@ const positionCalculation = ()=> {
         measure.keySignature && (keySignature = measure.keySignature);
         measure.noteArray.map(note => {
           note.clef && (clef = note.clef);
-          // calculateNotePosition(clef, keySignature, note.musicalAlphabet );
-          // note.t_;
+          const res = calculateNotePosition(clef, keySignature, note.musicalAlphabet );
+          note.position = res[0].position;
         });
       });
     });
   });
 };
 //noteTop
-const noteTop =  computed(()=>(note:Note)=> {
-  console.log(note);
+const noteTop =  computed(()=>(_note:Note)=> {
   // calculateNotePosition();
   //通过measureHeight，谱号，调号，note信息计算出高度
   return 20;
 });
+
+const flatNotes = ()=> {
+  const res:Note[] = [];
+  data.value.multipleStavesArray.forEach((multipleStaves)=>{
+    multipleStaves.singleStaffArray.forEach((singleStaff)=>{
+      singleStaff.measureArray.forEach((measure)=>{
+        measure.noteArray.forEach((note)=>{
+          res.push(note);
+        });
+      });
+    });
+  });
+  return res;
+};
+let notes = [
+  { time: '0', note: 'C4', duration: '1n' },
+  { time: '1n', note: 'D4', duration: '1n' },
+  // ...其他音符
+];
+let isPlaying = false;
+let startPosition = 0; // 记录开始位置
+let scheduledPart = null; // 用于管理动态调度的事件
+const synth = new Tone.Synth().toDestination();
+//创建序列
+function createScheduledPart(startTime = 0) {
+
+  // 清除现有的事件
+  if (scheduledPart) {scheduledPart.dispose();}
+
+  // 创建新的Part实例
+  scheduledPart = new Tone.Part((time, value) => {
+    synth.triggerAttackRelease(value.note, value.duration, time);
+  }, notes);
+
+  // 设置循环（如果需要）
+  scheduledPart.loop = false;
+  scheduledPart.start(0);
+}
+//播放功能
+const play = () => {
+
+  if (!isPlaying) {
+    // 第一次播放
+    if (startPosition === 0) {
+      createScheduledPart();
+    }
+
+    Tone.getTransport().start(0.1, 0);
+    isPlaying = true;
+  }
+
+};
+const pause = () => {
+  if (isPlaying) {
+    // 立即停止所有音符
+    synth.triggerRelease();
+    // 记录当前播放位置
+    startPosition = Tone.getTransport().seconds;
+    // 停止Transport
+    Tone.getTransport().pause();
+    isPlaying = false;
+
+    // 清除后续事件
+    scheduledPart.cancel(Tone.getTransport().seconds);
+  }
+};
+const resume = () => {
+
+};
+const stop = () => {
+  synth.triggerRelease();
+  Tone.Transport.stop();
+  Tone.Transport.cancel();
+  startPosition = 0;
+  isPlaying = false;
+
+  // 重置事件
+  createScheduledPart();
+};
 onMounted(()=>{
   if(!window.musicScore){
     window.musicScore = {};
   }
+  Tone.getTransport().bpm.value = 120;
+  positionCalculation();  //计算音符所在五线谱的位置区
+  // 通过位置计算高度
   document.addEventListener('click', documentClickHandler);
   document.addEventListener('keyup', keyUpHandler);
 });
@@ -193,7 +276,10 @@ onUnmounted(()=>{
   document.removeEventListener('click', documentClickHandler);
   document.removeEventListener('keyup', keyUpHandler);
 });
+defineExpose({
+  play,pause,stop
 
+});
 </script>
 <style scoped lang="scss" comment="布局">
 .stack {

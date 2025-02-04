@@ -138,12 +138,11 @@ const museScoreRegion = {
   'space_4': 9,
   'line_5': 10,
   'upper_space_1': 11,
-  'upper_line_2': 12,
+  'upper_line_1': 12,
   'upper_space_2': 13,
-  'upper_line_3': 14,
+  'upper_line_2': 14,
   'upper_space_3': 15,
-  'upper_line_4': 16,
+  'upper_line_3': 16,
   'upper_space_4': 17,
-  'upper_line_5': 18,
 };
 export {musicalAlphabetMap,clefMap,keySignatureMap,chronaxieMap,Chronaxie,museScoreRegion};

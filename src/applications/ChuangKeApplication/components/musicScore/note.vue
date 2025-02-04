@@ -28,10 +28,50 @@ const props = defineProps({
     type:Number,
     default:60
   },
-  //音符高度
-  noteTop:{
-    type:Number,
-    default:0
+});
+const top = computed(() => {
+  const noteHeight = props.measureHeight;  //音符高度，这个功能二期
+  switch (props.note.position){
+  case 'line_1':
+    return props.measureHeight * 9/9 - noteHeight;
+  case 'space_1':
+    return props.measureHeight * 8/9 - noteHeight;
+  case 'line_2':
+    return props.measureHeight * 7/9 - noteHeight;
+  case 'space_2':
+    return props.measureHeight * 6/9 - noteHeight;
+  case 'line_3':
+    return props.measureHeight * 5/9 - noteHeight;
+  case 'space_3':
+    return props.measureHeight * 4/9 - noteHeight;
+  case 'line_4':
+    return props.measureHeight * 3/9 - noteHeight;
+  case 'space_4':
+    return props.measureHeight * 2/9 - noteHeight;
+  case 'line_5':
+    return props.measureHeight * 1/9 - noteHeight;
+  case 'upper_space_1':
+    return props.measureHeight * 2/9 - noteHeight;
+  case 'upper_line_1':
+    return props.measureHeight * 1/9 - noteHeight;
+  case 'upper_space_2':
+    return props.measureHeight * 2/9 - noteHeight;
+  case 'upper_line_2':
+    return props.measureHeight * 1/9 - noteHeight;
+  case 'upper_space_3':
+    return props.measureHeight * 2/9 - noteHeight;
+  case 'upper_line_3':
+    return props.measureHeight * 1/9 - noteHeight;
+  case 'upper_space_4':
+    return props.measureHeight * 2/9 - noteHeight;
+  case 'upper_line_4':
+    return props.measureHeight * 1/9 - noteHeight;
+  case 'upper_space_5':
+    return props.measureHeight * 2/9 - noteHeight;
+  case 'upper_line_5':
+    return props.measureHeight * 1/9 - noteHeight;
+  default:
+    return 0;
   }
 });
 const noteStyle=computed(()=>{
@@ -42,7 +82,7 @@ const noteStyle=computed(()=>{
     mask:`url(${svgHref.value}) no-repeat center`,
     'mask-size': '100% 100%',
     'position':'relative',
-    'top':props.noteTop+'px',
+    'top':top.value+'px',
   };
 });
 const svgHref = computed(()=>{
@@ -54,10 +94,11 @@ const svgHref = computed(()=>{
   case Chronaxie.QUARTER:
     return quarterNote;
   case Chronaxie.EIGHTH:
-
     return eighthNote;
   case Chronaxie.SIXTH:
     return sixteenthNote;
+  default:
+    return quarterNote;
   }
 });
 

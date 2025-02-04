@@ -1,7 +1,7 @@
 <template>
   <div class="stack whiteBoard" comment="白板，内含浮动展示板，左右工具栏等（也许不含工具栏）">
     <div v-drag class="floatBoard stackItem" ref="floatBoard" :style="floatBoardStyle" comment="浮动展示板，此元素可被拖动位移，背景为白色">
-      <music-score :width="800" :measure-height="40"></music-score>
+      <music-score ref="ms" :width="800" :measure-height="40"></music-score>
     </div>
   </div>
 </template>
@@ -27,6 +27,16 @@ const props = defineProps({
     default:'center'
   }
 });
+const ms = ref();
+let play= () => {
+  ms.value.play();
+};
+let pause= ()=> {
+  ms.value.pause();
+};
+let stop= ()=> {
+  ms.value.stop();
+};
 
 onMounted(()=>{
 
@@ -42,7 +52,6 @@ const floatBoardStyle=computed(()=>{
     width:widthValue+widthUnit,
     height:heightValue+heightUnit,
   };
-  console.log(props.floatBoardPosition);
   switch(props.floatBoardPosition) {
   case 'leftTop':
     //
@@ -66,7 +75,7 @@ const cacheMap = new Map();
 const cacheElement = (element) => {
   cacheMap.set('element', element);
 };
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
 const addElement = (e, options) => {
   const left = e.offsetX;
   const top = e.offsetY;
@@ -95,7 +104,7 @@ const endAddElement = () => {
 };
 //-------------------------------------变量-------------------------------------------
 //暴露方法
-defineExpose({ startAddElement, endAddElement });
+defineExpose({ startAddElement, endAddElement,play, pause, stop });
 
 </script>
 <style>
