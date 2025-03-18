@@ -15,6 +15,12 @@ const routes = {
       component: () => import('./views/threeTwo.vue'),
       meta: { title: '导入模型' },
       children: []
+    },
+    {
+      path: '/three/look',
+      component: () => import('./views/look.vue'),
+      meta: { title: '展示' },
+      children: []
     }
   ]
 };

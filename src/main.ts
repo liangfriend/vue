@@ -21,7 +21,7 @@ async function routeSet() {
     {
       path: '/',
       component: appVue,
-      redirect: '/chuangKeIndex/navigator',
+      redirect: '/fabric',
       children: []
     }
   ];
