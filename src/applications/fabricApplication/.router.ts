@@ -6,7 +6,12 @@ const routes = {
   children: [{
     path: '/fabric/one',
     component: () => import('./views/fabricOne.vue'),
-    meta: { title: '测试使用' },
+    meta: { title: 'fabric测试' },
+    children: []
+  }, {
+    path: '/fabric/two',
+    component: () => import('./views/fabricTwo.vue'),
+    meta: {title: 'clipperjs测试'},
     children: []
   }]
 };

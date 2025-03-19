@@ -12,6 +12,7 @@
     "echarts": "^5.5.1",
     "element-plus": "^2.3.12",
     "fabric": "^6.6.1",
+    "js-clipper": "^1.0.1",
     "npmtest01010asdx": "^1.0.0",
     "sass": "^1.83.0",
     "sass-loader": "^16.0.4",
