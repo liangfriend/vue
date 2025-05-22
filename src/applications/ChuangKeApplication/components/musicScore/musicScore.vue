@@ -35,10 +35,10 @@
                :key="'measure-symbol'+measureIndex">
             <note
                 v-for="(note,noteIndex) in measure.noteArray"
-                  :key="'note-symbol'+noteIndex"
-                  :measureHeight="measureHeight"
-                  :noteTop="noteTop(note)"
-                  :note="note" ></note>
+                :key="'note-symbol'+noteIndex"
+                :measureHeight="measureHeight"
+                :noteTop="noteTop(note)"
+                :note="note"></note>
           </div>
 
         </div>
@@ -57,120 +57,121 @@ import {
 } from './musicScoreEnum.ts';
 import {calculateNotePosition} from './utils/musicScoreUtils.ts';
 import * as Tone from 'tone';
+
 const props = defineProps({
-  width:{
-    type:Number,
+  width: {
+    type: Number,
     default: 1000,
   },
-  height:{
-    type:Number,
+  height: {
+    type: Number,
     default: 800,
   },
   //小节高度， 此属性会控制音符，休止符，谱号，拍号等符号大小
-  measureHeight:{
-    type:Number,
-    default:60
+  measureHeight: {
+    type: Number,
+    default: 60
   },
   //单谱表的上下内边距
-  singleStaffPadding:{
-    type:Number,
-    default:60
+  singleStaffPadding: {
+    type: Number,
+    default: 60
   },
   //复谱表的上下内边距
-  MultipleStavesPadding:{
-    type:Number,
-    default:60
+  MultipleStavesPadding: {
+    type: Number,
+    default: 60
   },
   //小节的线条宽度
-  strokeWidth:{
-    type:Number,
-    default:1
+  strokeWidth: {
+    type: Number,
+    default: 1
   },
 });
 //动态style
 //获取一个小节的宽度占比常数
-const getMeasureWidthRatioIndex = (measure: Measure)=>{
+const getMeasureWidthRatioIndex = (measure: Measure) => {
   let fr = 0;
-  measure.noteArray.forEach((_note: Note) =>{
-    fr+=1;
+  measure.noteArray.forEach((_note: Note) => {
+    fr += 1;
   });
   return fr;
 };
 //获取一个单谱表下宽度占比常数
-const getSingleStaffWidthRatioIndex = (singleStaffStyle: SingleStaff)=>{
+const getSingleStaffWidthRatioIndex = (singleStaffStyle: SingleStaff) => {
   let fr = 0;
   const distribution = [];
-  singleStaffStyle.measureArray.forEach((measure: Measure) =>{
-    fr+=getMeasureWidthRatioIndex(measure);
+  singleStaffStyle.measureArray.forEach((measure: Measure) => {
+    fr += getMeasureWidthRatioIndex(measure);
     distribution.push(measure);
   });
   return fr;
 };
 
-const musicScoreStyle = computed(()=>{
+const musicScoreStyle = computed(() => {
   return {
-    width:props.width+'px',
-    height:props.height+'px',
-    overflow:'hidden',
+    width: props.width + 'px',
+    height: props.height + 'px',
+    overflow: 'hidden',
   };
 });
-const MultipleStavesStyle=computed(()=>(MultipleStaves: MultipleStaves)=> {
+const MultipleStavesStyle = computed(() => (MultipleStaves: MultipleStaves) => {
   return {
-    'grid-template-rows':`repeat(${MultipleStaves.singleStaffArray.length},1fr)`,
-    'padding-top':props.MultipleStavesPadding+'px',
-    'padding-bottom':props.MultipleStavesPadding+'px',
+    'grid-template-rows': `repeat(${MultipleStaves.singleStaffArray.length},1fr)`,
+    'padding-top': props.MultipleStavesPadding + 'px',
+    'padding-bottom': props.MultipleStavesPadding + 'px',
   };
 });
-const singleStaffStyle=computed(()=>(singleStaff:SingleStaff,_multipleStaves:MultipleStaves)=> {
+const singleStaffStyle = computed(() => (singleStaff: SingleStaff, _multipleStaves: MultipleStaves) => {
   return {
-    'grid-template-columns':`repeat(${singleStaff.measureArray.length},1fr)`,
-    'padding-top':props.singleStaffPadding+'px',
-    'padding-bottom':props.singleStaffPadding+'px',
+    'grid-template-columns': `repeat(${singleStaff.measureArray.length},1fr)`,
+    'padding-top': props.singleStaffPadding + 'px',
+    'padding-bottom': props.singleStaffPadding + 'px',
   };
 });
-const measureWidth = computed(()=>(measure:Measure,singleStaff:SingleStaff,_multipleStaves:MultipleStaves)=> {
+const measureWidth = computed(() => (measure: Measure, singleStaff: SingleStaff, _multipleStaves: MultipleStaves) => {
   const totalFr = getSingleStaffWidthRatioIndex(singleStaff);
   const selfFr = getMeasureWidthRatioIndex(measure);
   return props.width * selfFr / totalFr;
 });
-const measureStyle=computed(()=>(measure:Measure,singleStaff:SingleStaff,multipleStaves:MultipleStaves)=> {
-  let style:any= {};
-  style.height = props.measureHeight+'px';
+const measureStyle = computed(() => (measure: Measure, singleStaff: SingleStaff, multipleStaves: MultipleStaves) => {
+  let style: any = {};
+  style.height = props.measureHeight + 'px';
   style['justify-content'] = 'space-evenly';
   style['grid-auto-flow'] = 'column';
-  style.width = measureWidth.value(measure,singleStaff,multipleStaves)+'px';
+  style.width = measureWidth.value(measure, singleStaff, multipleStaves) + 'px';
   return style;
 });
 
 const data = ref(mockData);
 
 // 和selected指令配合，让目标元素高亮
-const documentClickHandler = (e:Event) => {
+const documentClickHandler = (e: Event) => {
   const el = window.musicScore.selected;
   if (el && !el.contains(e.target)) {
     el.style.outline = ''; // 移除高亮边框
     window.musicScore.selected = null;
   }
 };
-const keyUpHandler = (e:KeyboardEvent) => {
+const keyUpHandler = (e: KeyboardEvent) => {
   const el = window.musicScore.selected;
   if (el && e.key === 'Escape') {
     el.style.outline = ''; // 移除高亮边框
     window.musicScore.selected = null;
   }
 };
-const positionCalculation = ()=> {
-  let clef:ClefEnum = ClefEnum.g;
-  let timeSignature:TimeSignatureEnum = TimeSignatureEnum['4/4'];
-  let keySignature:KeySignatureEnum = KeySignatureEnum.c;
+const positionCalculation = () => {
+  let clef: ClefEnum = ClefEnum.g;
+  let timeSignature: TimeSignatureEnum = TimeSignatureEnum['4/4'];
+  let keySignature: KeySignatureEnum = KeySignatureEnum.c;
   data.value.multipleStavesArray.map((multipleStaves: MultipleStaves) => {
     multipleStaves.singleStaffArray.map((singleStaff: SingleStaff) => {
-      singleStaff.measureArray.map((measure:Measure) => {
+      singleStaff.measureArray.map((measure: Measure) => {
         measure.timeSignature && (timeSignature = measure.timeSignature);
         measure.keySignature && (keySignature = measure.keySignature);
         measure.noteArray.map(note => {
           note.clef && (clef = note.clef);
-          const res = calculateNotePosition(clef, keySignature, note.musicalAlphabet );
+          const res = calculateNotePosition(clef, keySignature, note.musicalAlphabet);
           note.position = res[0].position;
         });
       });
@@ -178,18 +179,18 @@ const positionCalculation = ()=> {
   });
 };
 //noteTop
-const noteTop =  computed(()=>(_note:Note)=> {
+const noteTop = computed(() => (_note: Note) => {
   // calculateNotePosition();
   //通过measureHeight，谱号，调号，note信息计算出高度
   return 20;
 });
 
-const flatNotes = ()=> {
-  const res:Note[] = [];
-  data.value.multipleStavesArray.forEach((multipleStaves)=>{
-    multipleStaves.singleStaffArray.forEach((singleStaff)=>{
-      singleStaff.measureArray.forEach((measure)=>{
-        measure.noteArray.forEach((note)=>{
+const flatNotes = () => {
+  const res: Note[] = [];
+  data.value.multipleStavesArray.forEach((multipleStaves) => {
+    multipleStaves.singleStaffArray.forEach((singleStaff) => {
+      singleStaff.measureArray.forEach((measure) => {
+        measure.noteArray.forEach((note) => {
           res.push(note);
         });
       });
@@ -198,19 +199,22 @@ const flatNotes = ()=> {
   return res;
 };
 let notes = [
-  { time: '0', note: 'C4', duration: '1n' },
-  { time: '1n', note: 'D4', duration: '1n' },
+  {time: '0', note: 'C4', duration: '1n'},
+  {time: '1n', note: 'D4', duration: '1n'},
   // ...其他音符
 ];
 let isPlaying = false;
 let startPosition = 0; // 记录开始位置
-let scheduledPart = null; // 用于管理动态调度的事件
+let scheduledPart: Tone.Part | null = null; // 用于管理动态调度的事件
 const synth = new Tone.Synth().toDestination();
+
 //创建序列
 function createScheduledPart(startTime = 0) {
 
   // 清除现有的事件
-  if (scheduledPart) {scheduledPart.dispose();}
+  if (scheduledPart) {
+    scheduledPart.dispose();
+  }
 
   // 创建新的Part实例
   scheduledPart = new Tone.Part((time, value) => {
@@ -221,6 +225,7 @@ function createScheduledPart(startTime = 0) {
   scheduledPart.loop = false;
   scheduledPart.start(0);
 }
+
 //播放功能
 const play = () => {
 
@@ -244,7 +249,7 @@ const pause = () => {
     // 停止Transport
     Tone.getTransport().pause();
     isPlaying = false;
-
+    if (!scheduledPart) return
     // 清除后续事件
     scheduledPart.cancel(Tone.getTransport().seconds);
   }
@@ -254,17 +259,19 @@ const resume = () => {
 };
 const stop = () => {
   synth.triggerRelease();
-  Tone.Transport.stop();
-  Tone.Transport.cancel();
+  Tone.getTransport().stop();
+  Tone.getTransport().cancel();
   startPosition = 0;
   isPlaying = false;
 
   // 重置事件
   createScheduledPart();
 };
-onMounted(()=>{
-  if(!window.musicScore){
-    window.musicScore = {};
+onMounted(() => {
+  if (!window.musicScore) {
+    window.musicScore = {
+      selected: null
+    };
   }
   Tone.getTransport().bpm.value = 120;
   positionCalculation();  //计算音符所在五线谱的位置区
@@ -272,12 +279,12 @@ onMounted(()=>{
   document.addEventListener('click', documentClickHandler);
   document.addEventListener('keyup', keyUpHandler);
 });
-onUnmounted(()=>{
+onUnmounted(() => {
   document.removeEventListener('click', documentClickHandler);
   document.removeEventListener('keyup', keyUpHandler);
 });
 defineExpose({
-  play,pause,stop
+  play, pause, stop
 
 });
 </script>
@@ -285,26 +292,28 @@ defineExpose({
 .stack {
   position: relative;
 
-  > .stackItem{
+  > .stackItem {
     position: absolute;
     display: grid;
   }
 }
 </style>
 <style scoped lang="scss">
-.lineLayer{
+.lineLayer {
   align-items: start;
 }
-.symbolLayer{
+
+.symbolLayer {
   align-items: start;
   pointer-events: none;
 }
 
-.singleStaff{
+.singleStaff {
   display: grid;
   grid-template-rows: 1fr;
 }
-.measure{
+
+.measure {
   display: grid;
 }
 </style>
