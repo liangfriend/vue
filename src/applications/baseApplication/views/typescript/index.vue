@@ -1,5 +1,7 @@
 <template>
   typescript
+
+  泛型函数
 </template>
 <script setup lang="ts">
 import {onMounted} from "vue";
