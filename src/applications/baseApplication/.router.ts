@@ -2,13 +2,18 @@
 const routes = {
     path: '/base',
     component: () => import('./views/index.vue'),
-    // redirect: '/base',
+    redirect: '/base/typescript',
     meta: {title: '基础管理'},
     children: [{
         name: 'typescript',
         path: '/base/typescript',
         component: () => import('./views/typescript/index.vue'),
         meta: {title: 'typescript'},
+    }, {
+        name: 'pitchDetect',
+        path: '/base/pitchDetect',
+        component: () => import('./views/pitchDetect/index.vue'),
+        meta: {title: '音域检测'},
     }]
 };
 

@@ -21,7 +21,7 @@ async function routeSet() {
         {
             path: '/',
             component: appVue,
-            redirect: '/chuangKe/editor',
+            redirect: '/base',
             children: []
         }
     ];
