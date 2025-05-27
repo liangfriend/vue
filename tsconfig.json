@@ -39,7 +39,7 @@
     "useUnknownInCatchVariables": true
   },
   "include": [
-    "src"
+    "src", "src/types/*"
   ],
   "references": [
     {

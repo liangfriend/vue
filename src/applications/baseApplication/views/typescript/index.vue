@@ -5,16 +5,17 @@
 </template>
 <script setup lang="ts">
 import {onMounted} from "vue";
+import {Person} from "@/applications/baseApplication/views/typescript/types.ts";
 
 
-function test() {
-  const a = Color.Red
-  const b = Color.Blue
-  console.log('chicken', a === b)
-}
+
 
 onMounted(() => {
-  test()
+  const person: Person = {
+    name: 'asd',
+    age: 258
+  }
+  console.log(person)
 })
 
 

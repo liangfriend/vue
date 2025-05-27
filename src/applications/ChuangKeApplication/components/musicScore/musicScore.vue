@@ -57,6 +57,12 @@ import {
 } from './musicScoreEnum.ts';
 import {calculateNotePosition} from './utils/musicScoreUtils.ts';
 import * as Tone from 'tone';
+import {
+  SingleStaff,
+  Measure,
+  Note,
+  MultipleStaves
+} from "./msTypes.ts";
 
 const props = defineProps({
   width: {
@@ -115,6 +121,8 @@ const musicScoreStyle = computed(() => {
     overflow: 'hidden',
   };
 });
+
+
 const MultipleStavesStyle = computed(() => (MultipleStaves: MultipleStaves) => {
   return {
     'grid-template-rows': `repeat(${MultipleStaves.singleStaffArray.length},1fr)`,
@@ -169,7 +177,7 @@ const positionCalculation = () => {
       singleStaff.measureArray.map((measure: Measure) => {
         measure.timeSignature && (timeSignature = measure.timeSignature);
         measure.keySignature && (keySignature = measure.keySignature);
-        measure.noteArray.map(note => {
+        measure.noteArray.map((note: Note) => {
           note.clef && (clef = note.clef);
           const res = calculateNotePosition(clef, keySignature, note.musicalAlphabet);
           note.position = res[0].position;
@@ -187,10 +195,10 @@ const noteTop = computed(() => (_note: Note) => {
 
 const flatNotes = () => {
   const res: Note[] = [];
-  data.value.multipleStavesArray.forEach((multipleStaves) => {
-    multipleStaves.singleStaffArray.forEach((singleStaff) => {
-      singleStaff.measureArray.forEach((measure) => {
-        measure.noteArray.forEach((note) => {
+  data.value.multipleStavesArray.forEach((multipleStaves: MultipleStaves) => {
+    multipleStaves.singleStaffArray.forEach((singleStaff: SingleStaff) => {
+      singleStaff.measureArray.forEach((measure: Measure) => {
+        measure.noteArray.forEach((note: Note) => {
           res.push(note);
         });
       });

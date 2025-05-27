@@ -4,14 +4,14 @@ import {
     MusicalAlphabetEnum, NoteTypeEnum, TimeSignatureEnum
 } from "./musicScoreEnum.ts";
 
-interface Window {
+export interface Window {
     musicScore: {
         selected: EventTarget | null
     }
 }
 
 
-interface Note {
+export interface Note {
     clef: ClefEnum; // 谱号
     chronaxie: ChronaxieEnum; // 时值
     musicalAlphabet: MusicalAlphabetEnum; // 音名
@@ -22,23 +22,22 @@ interface Note {
     augmentationDot: number //附点数量
 }
 
-interface Measure {
+export declare interface Measure {
     timeSignature: TimeSignatureEnum;  //拍号
     keySignature: KeySignatureEnum //调号
     noteArray: Array<Note>
 }
 
-interface SingleStaff {
+export interface SingleStaff {
     measureArray: Array<Measure>;
 }
 
-interface MultipleStaves { //复谱表
+export interface MultipleStaves { //复谱表
     singleStaffArray: Array<SingleStaff>;
 }
 
 //调号，拍号只能小节有，谱号是音符有（但是谱号给第一个音符加谱号，会加到前一个小节上，也可以给小节加谱号，相当于给小节的第一个音符加谱号）
-interface MusicScore {
+export interface MusicScore {
     multipleStavesArray: Array<MultipleStaves>;
 }
-
 

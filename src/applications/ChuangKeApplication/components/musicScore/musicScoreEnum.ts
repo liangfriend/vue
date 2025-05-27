@@ -1,11 +1,11 @@
-export declare enum ClefEnum {
+export enum ClefEnum {
     g = 'g',
     alto = 'alto',
     bass = 'bass',
     none = ''
 }
 
-export declare enum KeySignatureEnum {
+export enum KeySignatureEnum {
     c = 'c',
     d = 'd',
     e = 'e',
@@ -16,19 +16,19 @@ export declare enum KeySignatureEnum {
     none = ''
 }
 
-export declare enum TimeSignatureEnum {
+export enum TimeSignatureEnum {
     '4/4' = '4/4',
     '3/4' = '3/4',
     none = ''
 }
 
 //音符类别
-export declare enum NoteTypeEnum {
+export enum NoteTypeEnum {
     normal = 1,
     rest = 2
 }
 
-export declare enum MusicalAlphabetEnum {
+export enum MusicalAlphabetEnum {
     C1 = 'C1',
     D1 = 'D1',
     E1 = 'E1',
@@ -74,7 +74,7 @@ export declare enum MusicalAlphabetEnum {
     none = ''
 }
 
-export declare enum MuseScoreRegionEnum {
+export enum MuseScoreRegionEnum {
     line_1 = 'line_1',
     space_1 = 'space_1',
     line_2 = 'line_2',
@@ -101,7 +101,7 @@ export declare enum MuseScoreRegionEnum {
 }
 
 //变音符
-export declare enum AccidentalEnum {
+export enum AccidentalEnum {
     flat = 'flat',  //降
     nature = 'nature',   //还原
     sharp = 'sharp',    //升
@@ -113,7 +113,7 @@ export declare enum AccidentalEnum {
 }
 
 //时值
-export declare enum ChronaxieEnum {
+export enum ChronaxieEnum {
     whole = 1,
     half = 2,
     quarter = 4,

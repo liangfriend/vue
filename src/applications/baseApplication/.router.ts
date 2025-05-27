@@ -6,7 +6,7 @@ const routes = {
   meta: {title: '基础管理'},
   children: [{
     name: 'typescript',
-    path: '/typescript',
+    path: '/base/typescript',
     component: () => import('./views/typescript/index.vue'),
     meta: {title: 'typescript'},
   }]

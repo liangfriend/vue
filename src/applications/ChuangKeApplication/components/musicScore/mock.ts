@@ -3,6 +3,7 @@ import {
   ClefEnum, KeySignatureEnum,
   MusicalAlphabetEnum, NoteTypeEnum, TimeSignatureEnum
 } from './musicScoreEnum.ts';
+import {MusicScore} from "./msTypes.ts";
 const data:MusicScore = {
   multipleStavesArray:[{
     singleStaffArray:[{
