@@ -72,7 +72,7 @@ const props = defineProps({
   height: {
     type: Number,
     default: 800,
-  },
+
   //小节高度， 此属性会控制音符，休止符，谱号，拍号等符号大小
   measureHeight: {
     type: Number,

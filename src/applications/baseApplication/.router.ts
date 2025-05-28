@@ -14,6 +14,17 @@ const routes = {
         path: '/base/pitchDetect',
         component: () => import('./views/pitchDetect/index.vue'),
         meta: {title: '音域检测'},
+    }, {
+        name: 'ai',
+        path: '/base/ai',
+        redirect: '/base/ai/deepseek',
+        meta: {title: '大模型'},
+        children: [{
+            name: 'deepseek',
+            path: '/base/ai/deepseek',
+            component: () => import('./views/ai/deepseek.vue'),
+            meta: {title: 'deepseek'}
+        }]
     }]
 };
 
