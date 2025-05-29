@@ -1,9 +1,8 @@
 <template>
-  <div class="noteContainer" v-selected="{mouseDownFn:mouseDownFn}"
+  <div class="noteContainer"
        :style="{width: measureHeight / 5 + 'px',height:measureHeight + 'px'}">
     <!--    这里要加入倚音，附点等位置-->
     <div class="note" :style="noteStyle"></div>
-    {{ top }}
   </div>
 
 </template>
@@ -16,7 +15,6 @@ import sixteenthNote from './musicSymbols/sixteenthNote.svg';
 import {computed, CSSProperties, onMounted, ref} from 'vue';
 import {Chronaxie} from '@/applications/ChuangKeApplication/components/musicScore/dataMap.ts';
 
-import vSelected from './directives/selected.ts';
 import bar from '@/applications/ChuangKeApplication/components/musicScore/musicSymbols/bar.svg';
 
 const props = defineProps({
@@ -33,7 +31,6 @@ const props = defineProps({
   },
 });
 const top = computed(() => {
-  console.log('chicken', props.measureHeight)
   const noteHeight = props.measureHeight;  //音符高度，这个功能二期, 现在直接等于小节高度
   switch (props.note.position) {
     case 'line_1':

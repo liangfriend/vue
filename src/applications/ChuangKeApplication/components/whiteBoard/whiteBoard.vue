@@ -7,7 +7,7 @@
 </template>
 <script setup lang="ts">
 import {computed, onMounted, onUnmounted, PropType, Ref, ref, StyleValue} from 'vue';
-import {parseAndFormatDimension} from '../../utils/util.ts';
+import {parseAndFormatDimension} from '../../utils/stringUtils.ts';
 import vDrag from './directives/drag';
 import MusicScore from '@/applications/ChuangKeApplication/components/musicScore/musicScore.vue';
 import {AddElementOptions} from "@/applications/ChuangKeApplication/components/whiteBoard/types";
@@ -99,7 +99,15 @@ function addElement(options: AddElementOptions, key = 'element'): void {
     console.error('目标dom没有被缓存进白板，请执行catchMap缓存dom或检查传入key')
     return
   }
-  const element = cacheMap.get(key).cloneNode(true);
+  let element: Element = null!
+
+  if (options.cloneNode) { // 完全克隆，不会携带addEventListener。 适合简单的dom,静态资源的添加
+    element = cacheMap.get(key).cloneNode(true);
+  } else { // 如果cloneNode没有传true,执行浅复制，为了避免异常，直接删除缓存的元素
+    element = cacheMap.get(key)
+    cacheMap.delete(key)
+  }
+
   //这里还要套一层壳，把元素全部放到这层壳里，防止svg元素设置top,left不生效
   const shellDom = document.createElement('div');
   shellDom.appendChild(element);
@@ -108,24 +116,29 @@ function addElement(options: AddElementOptions, key = 'element'): void {
     shellDom.style.top = options.top + 'px';
     shellDom.style.left = options.left + 'px';
   } else {
-    shellDom.style.display = 'flex'
-    element.style.flexShrink = 0
-    element.style.flexGrow = 0;
-    switch (options.center) {
-      case 'vertical':
-        shellDom.style.alignItems = 'center';
-        break;
-      case 'horizontal':
-        shellDom.style.justifyContent = 'center';
-        break
-      case 'center':
-        shellDom.style.alignItems = 'center';
-        shellDom.style.justifyContent = 'center';
-        break;
-      default:
-        console.error('addElement方法参数center值有误')
-        break;
+    if (element instanceof HTMLElement) {
+      shellDom.style.display = 'flex'
+      element.style.flexShrink = '0'
+      element.style.flexGrow = '0';
+      switch (options.center) {
+        case 'vertical':
+          shellDom.style.alignItems = 'center';
+          break;
+        case 'horizontal':
+          shellDom.style.justifyContent = 'center';
+          break
+        case 'center':
+          shellDom.style.alignItems = 'center';
+          shellDom.style.justifyContent = 'center';
+          break;
+        default:
+          console.error('addElement方法参数center值有误')
+          break;
+      }
+    } else {
+      console.error('center属性只能用于html元素，否则无效')
     }
+
   }
 
   floatBoard.value.appendChild(shellDom);

@@ -4,10 +4,12 @@ export declare type AddElementOptions = {
     left: number;
     top: number;
     center?: 'vertical' | 'horizontal' | 'center';
+    cloneNode?: true | false
 } | {
     left?: number;
     top?: number;
     center: 'vertical' | 'horizontal' | 'center';
+    cloneNode?: true | false
 }
 
 export declare interface WBElement extends HTMLElement {

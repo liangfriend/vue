@@ -4,14 +4,6 @@
                        :style="{width:width+'px',height:height+'px'}"
                        comment="谱线层">
       <template #default="{ measure, measureIndex, singleStaff, MultipleStaves, measureWidth }">
-        <!--        <measure-->
-        <!--            :key="'measure'+measureIndex"-->
-        <!--            :strokeWidth="strokeWidth"-->
-        <!--            :x="measureIndex * measureWidth(measure, singleStaff, MultipleStaves)"-->
-        <!--            :height="measureHeight"-->
-        <!--            :width="measureWidth(measure, singleStaff, MultipleStaves)">-->
-        <!--          -->
-        <!--        </measure>-->
         <measure
             :key="'measure'+measureIndex"
             :strokeWidth="strokeWidth"
@@ -39,17 +31,9 @@
 import measure from './measure.vue';
 import {computed, onMounted, onUnmounted, type PropType, ref} from 'vue';
 import note from './note.vue';
-import {
-  ClefEnum, KeySignatureEnum,
-  TimeSignatureEnum
-} from './musicScoreEnum.ts';
-import {calculateNotePosition} from './utils/musicScoreDataUtil.ts';
 import * as Tone from 'tone';
 import type {
-  SingleStaff,
-  Measure,
-  Note,
-  MultipleStaves, MusicScore
+  MusicScore
 } from "./types";
 import MeasureContainer from "@/applications/ChuangKeApplication/components/musicScore/measureContainer.vue";
 import {
@@ -99,21 +83,8 @@ const musicScoreStyle = computed(() => {
     overflow: 'hidden',
   };
 });
-// 和selected指令配合，让目标元素高亮
-const documentClickHandler = (e: Event) => {
-  const el = window.musicScore.selected;
-  if (el && !el.contains(e.target)) {
-    el.style.outline = ''; // 移除高亮边框
-    window.musicScore.selected = null;
-  }
-};
-const keyUpHandler = (e: KeyboardEvent) => {
-  const el = window.musicScore.selected;
-  if (el && e.key === 'Escape') {
-    el.style.outline = ''; // 移除高亮边框
-    window.musicScore.selected = null;
-  }
-};
+
+
 onMounted(() => {
   if (!window.musicScore) {
     window.musicScore = {
@@ -122,31 +93,14 @@ onMounted(() => {
   }
   Tone.getTransport().bpm.value = 120;
   positionCalculation(props.modelValue);  //计算音符所在五线谱的位置区
-  console.log('chicken', props.modelValue)
-  // 通过位置计算高度
-  document.addEventListener('click', documentClickHandler);
-  document.addEventListener('keyup', keyUpHandler);
+
+
 });
 onUnmounted(() => {
-  document.removeEventListener('click', documentClickHandler);
-  document.removeEventListener('keyup', keyUpHandler);
+
 });
 
-function play() {
 
-}
-
-function pause() {
-
-}
-
-function stop() {
-
-}
-
-defineExpose({
-  play, pause, stop
-});
 </script>
 <style scoped lang="scss" comment="布局">
 .stack {

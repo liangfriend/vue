@@ -1,4 +1,4 @@
-import editor from './views/editor.vue';
+import editor from './views/editor/index.vue';
 
 const routes = {
     path: '/chuangKe',
@@ -14,7 +14,7 @@ const routes = {
         {
             name: '编辑器',
             path: '/chuangKe/editor',
-            component: () => import('./views/editor.vue'),
+            component: () => import('./views/editor/index.vue'),
         }]
 };
 
