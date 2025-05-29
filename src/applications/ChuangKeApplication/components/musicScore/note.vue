@@ -7,15 +7,10 @@
 
 </template>
 <script setup lang="ts">
-import wholeNote from './musicSymbols/wholeNote.svg';
-import halfNote from './musicSymbols/halfNote.svg';
-import quarterNote from './musicSymbols/quarterNote.svg';
-import eighthNote from './musicSymbols/eighthNote.svg';
-import sixteenthNote from './musicSymbols/sixteenthNote.svg';
+
 import {computed, CSSProperties, onMounted, ref} from 'vue';
 import {Chronaxie} from '@/applications/ChuangKeApplication/components/musicScore/dataMap.ts';
 
-import bar from '@/applications/ChuangKeApplication/components/musicScore/musicSymbols/bar.svg';
 
 const props = defineProps({
   note: {
@@ -78,25 +73,19 @@ const top = computed(() => {
 const svgHref = computed(() => {
   switch (props.note.chronaxie) {
     case Chronaxie.WHOLE:
-      return wholeNote;
     case Chronaxie.HALF:
-      return halfNote;
     case Chronaxie.QUARTER:
-      return quarterNote;
     case Chronaxie.EIGHTH:
-      return eighthNote;
     case Chronaxie.SIXTH:
-      return sixteenthNote;
     default:
-      return quarterNote;
   }
 });
 const noteStyle = computed<CSSProperties>(() => {
   return {
-    width: `${props.measureHeight / 5}px`,
+    width: `${props.measureHeight}px`,
     height: `${props.measureHeight}px`,
     backgroundColor: 'black',
-    mask: `url(${svgHref.value}) no-repeat center`,
+    clipPath: 'path("M25 30 a5 5 0 1 0 0.01 0 M30 30 L30 10")',
     maskSize: '100% 100%',
     position: 'relative',
     top: `${top.value}px`,

@@ -86,15 +86,7 @@ const musicScoreStyle = computed(() => {
 
 
 onMounted(() => {
-  if (!window.musicScore) {
-    window.musicScore = {
-      selected: null
-    };
-  }
-  Tone.getTransport().bpm.value = 120;
   positionCalculation(props.modelValue);  //计算音符所在五线谱的位置区
-
-
 });
 onUnmounted(() => {
 

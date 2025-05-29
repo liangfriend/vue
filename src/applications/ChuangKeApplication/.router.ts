@@ -4,12 +4,12 @@ const routes = {
     path: '/chuangKe',
     component: () => import('./views/index.vue'),
     meta: {title: '创客vue3版本'},
-    redirect: '/chuangKe/editor',
+    redirect: '/chuangKe/index',
     children: [
         {
             name: '导航首页',
-            path: '/chuangKe/navigator',
-            component: () => import('./views/navigator.vue'),
+            path: '/chuangKe/index',
+            component: () => import('./views/home/index.vue'),
         },
         {
             name: '编辑器',

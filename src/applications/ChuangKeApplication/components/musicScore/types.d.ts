@@ -4,12 +4,16 @@ import {
     MusicalAlphabetEnum, NoteTypeEnum, TimeSignatureEnum
 } from "./musicScoreEnum.ts";
 
+
 export declare interface Window {
     musicScore: {
         selected: EventTarget | null
     }
 }
 
+export declare interface musicScoreOptions {
+    hightlight: Boolean;
+}
 
 export declare interface Note {
     clef: ClefEnum; // 谱号
@@ -20,12 +24,14 @@ export declare interface Note {
     type: NoteTypeEnum
     accidental: string  //变音符号
     augmentationDot: number //附点数量
+    options: musicScoreOptions
 }
 
 export declare interface Measure {
     timeSignature: TimeSignatureEnum;  //拍号
     keySignature: KeySignatureEnum //调号
     noteArray: Array<Note>
+    options: musicScoreOptions
 }
 
 export declare interface SingleStaff {

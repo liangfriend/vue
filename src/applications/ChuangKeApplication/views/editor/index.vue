@@ -5,7 +5,7 @@
       <div class="justify-center">
         <bottom-menu class="bottomMenu" v-model="bottomMenuData"></bottom-menu>
       </div>
-
+      <div class="back" @click="router.go(-1)">返回</div>
     </div>
   </div>
 </template>
@@ -22,8 +22,9 @@ import BottomMenu from "@/applications/ChuangKeApplication/views/editor/componen
 import {msPlayUtils} from "@/applications/ChuangKeApplication/utils/ms-playUtils.ts";
 import {MusicMapKey} from "@/applications/ChuangKeApplication/views/editor/constant.ts";
 import * as Tone from "tone";
+import {useRouter} from "vue-router";
 
-
+const router = useRouter()
 const wb: Ref<WBElement> = ref(null!);
 const ms: Ref<HTMLElement> = ref(null!)
 const play = async () => {
@@ -118,5 +119,12 @@ onUnmounted(() => {
 .bottomMenu {
   position: absolute;
   bottom: 0;
+}
+
+.back {
+  cursor: pointer;
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
 </style>
