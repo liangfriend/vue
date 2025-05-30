@@ -17,28 +17,30 @@
     <measure-container :musicScoreData="modelValue" class="stackItem symbolLayer"
                        :style="{width:width+'px',height:height+'px'}"
                        comment="符号层">
-      <template #default="{ measure, measureIndex, singleStaff, MultipleStaves, measureWidth }">
-        <note
-            v-for="(note,noteIndex) in measure.noteArray"
-            :key="'note-symbol'+noteIndex"
-            :measureHeight="measureHeight"
-            :note="note"></note>
+      <template #default="{ measure, measureIndex, singleStaff, multipleStaves, measureWidth }">
+        <ms-symbol-slot v-for="(msSymbol,symbolIndex) in measure.msSymbolArray"
+                        :msSymbol="msSymbol"
+                        :measure="measure"
+                        :singleStaff="singleStaff"
+                        :multipleStaves="multipleStaves"
+                        :measureHeight="measureHeight"
+                        :key="'note-symbol'+symbolIndex"
+        ></ms-symbol-slot>
       </template>
     </measure-container>
   </div>
 </template>
 <script setup lang="ts">
-import measure from './measure.vue';
+import measure from './components/measure.vue';
 import {computed, onMounted, onUnmounted, type PropType, ref} from 'vue';
-import note from './note.vue';
+import note from './components/note.vue';
 import * as Tone from 'tone';
 import type {
   MusicScore
 } from "./types";
-import MeasureContainer from "@/applications/ChuangKeApplication/components/musicScore/measureContainer.vue";
-import {
-  positionCalculation
-} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
+import MeasureContainer from "@/applications/ChuangKeApplication/components/musicScore/components/measureContainer.vue";
+
+import MsSymbolSlot from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbolSlot.vue";
 
 const props = defineProps({
   modelValue: {
@@ -86,7 +88,6 @@ const musicScoreStyle = computed(() => {
 
 
 onMounted(() => {
-  positionCalculation(props.modelValue);  //计算音符所在五线谱的位置区
 });
 onUnmounted(() => {
 

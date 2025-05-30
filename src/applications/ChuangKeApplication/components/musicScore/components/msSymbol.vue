@@ -1,33 +1,25 @@
 <template>
-  <div class="noteContainer"
-       :style="{width: measureHeight / 5 + 'px',height:measureHeight + 'px'}">
-    <!--    这里要加入倚音，附点等位置-->
-    <div class="note" :style="noteStyle"></div>
-  </div>
-
+  <div class="symbol" :style="symbolStyle"></div>
 </template>
 <script setup lang="ts">
-
-import {computed, CSSProperties, onMounted, ref} from 'vue';
-import {Chronaxie} from '@/applications/ChuangKeApplication/components/musicScore/dataMap.ts';
-
+import {computed, CSSProperties, PropType} from "vue";
+import {MsSymbol} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {SymbolTypeEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import noteHeadSvg from "../musicSymbols/noteHead.svg"
 
 const props = defineProps({
-  note: {
-    //这里不知道为什么全局类型引入不了
-    type: Object,
-    default: () => {
-    },
+  symbol: {
+    type: Object as PropType<MsSymbol>,
   },
   //小节高度， 此属性会控制音符，休止符，谱号，拍号等符号大小
   measureHeight: {
     type: Number,
     default: 60
   },
-});
+})
 const top = computed(() => {
   const noteHeight = props.measureHeight;  //音符高度，这个功能二期, 现在直接等于小节高度
-  switch (props.note.position) {
+  switch (props.symbol?.position) {
     case 'line_1':
       return props.measureHeight * 9 / 9 - noteHeight;
     case 'space_1':
@@ -71,41 +63,27 @@ const top = computed(() => {
   }
 });
 const svgHref = computed(() => {
-  switch (props.note.chronaxie) {
-    case Chronaxie.WHOLE:
-    case Chronaxie.HALF:
-    case Chronaxie.QUARTER:
-    case Chronaxie.EIGHTH:
-    case Chronaxie.SIXTH:
-    default:
+  switch (props.symbol?.type) {
+    case SymbolTypeEnum.NoteHead: {
+      return noteHeadSvg
+    }
+    default: {
+      return noteHeadSvg
+    }
   }
-});
-const noteStyle = computed<CSSProperties>(() => {
+})
+const symbolStyle = computed<CSSProperties>(() => {
   return {
-    width: `${props.measureHeight}px`,
+    width: `${props.measureHeight / 5}px`,
     height: `${props.measureHeight}px`,
     backgroundColor: 'black',
-    clipPath: 'path("M25 30 a5 5 0 1 0 0.01 0 M30 30 L30 10")',
+    mask: `url(${svgHref.value}) no-repeat center`,
     maskSize: '100% 100%',
     position: 'relative',
     top: `${top.value}px`,
   }
 });
-onMounted(() => {
-
-})
-
-
-const mouseDownFn = () => {
-
-};
 </script>
-<style scoped lang="scss">
-image {
-  display: block;
-}
+<style scoped>
 
-.noteContainer {
-  pointer-events: all;
-}
 </style>

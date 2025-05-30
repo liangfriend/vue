@@ -1,15 +1,15 @@
 <template>
   <div comment="精确到measure的循环体">
-    <div v-for="(MultipleStaves,MultipleStavesIndex) in musicScoreData.multipleStavesArray"
-         :key="'MultipleStaves'+MultipleStavesIndex"
-         :style="MultipleStavesStyle(MultipleStaves)"
+    <div v-for="(multipleStaves, multipleStavesIndex) in musicScoreData.multipleStavesArray"
+         :key="'MultipleStaves'+multipleStavesIndex"
+         :style="MultipleStavesStyle(multipleStaves)"
          class="MultipleStaves">
-      <div v-for="(singleStaff,singleStaffIndex) in MultipleStaves.singleStaffArray"
+      <div v-for="(singleStaff,singleStaffIndex) in multipleStaves.singleStaffArray"
            :key="'singleStaff'+singleStaffIndex"
-           :style="singleStaffStyle(singleStaff,MultipleStaves)"
+           :style="singleStaffStyle(singleStaff,multipleStaves)"
            class="singleStaff">
         <div v-for="(measure,measureIndex) in singleStaff.measureArray"
-             :style="measureStyle(measure, singleStaff, MultipleStaves)" class="measure"
+             :style="measureStyle(measure, singleStaff, multipleStaves)" class="measure"
              :key="'measure'+measureIndex">
           <!-- 使用作用域插槽，传递 measure 等数据 -->
           <slot
@@ -17,9 +17,9 @@
               :measureIndex="measureIndex"
               :singleStaff="singleStaff"
               :singleStaffIndex="singleStaffIndex"
-              :MultipleStaves="MultipleStaves"
-              :MultipleStavesIndex="MultipleStavesIndex"
-              :measureWidth="measureWidth(measure, singleStaff, MultipleStaves)"
+              :multipleStaves="multipleStaves"
+              :multipleStavesIndex="multipleStavesIndex"
+              :measureWidth="measureWidth(measure, singleStaff, multipleStaves)"
           />
         </div>
       </div>
@@ -34,7 +34,7 @@ import type {
   Measure,
   Note,
   MultipleStaves, MusicScore
-} from "./types";
+} from "../types";
 
 const props = defineProps({
   musicScoreData: {

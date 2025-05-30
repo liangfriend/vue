@@ -9,4 +9,7 @@
 
 
 + musicScore.vue 乐谱展示组件
+    + measure
+    + symbolContainer
+        + symbol
          

@@ -1,7 +1,11 @@
 import {
     ChronaxieEnum,
-    ClefEnum, KeySignatureEnum,
-    MusicalAlphabetEnum, NoteTypeEnum, TimeSignatureEnum
+    ClefEnum,
+    KeySignatureEnum,
+    MusicalAlphabetEnum,
+    NoteTypeEnum,
+    MsSymbolTypeEnum,
+    TimeSignatureEnum
 } from './musicScoreEnum.ts';
 import type {MusicScore} from "./types.d.ts";
 
@@ -9,204 +13,345 @@ const data: MusicScore = {
     multipleStavesArray: [{
         singleStaffArray: [{
             measureArray: [{
-                timeSignature: TimeSignatureEnum['4/4'],  //拍号
-                keySignature: KeySignatureEnum.c, //调号
-                noteArray: [{
+                options: {},
+                msSymbolArray: [{
                     clef: ClefEnum.g,
+                    type: MsSymbolTypeEnum.Clef,
+                    options: {},
+                    measureRelativeRect: {},
+                }, {
+                    timeSignature: TimeSignatureEnum['4/4'],
+                    type: MsSymbolTypeEnum.TimeSignature,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    keySignature: KeySignatureEnum.c,
+                    type: MsSymbolTypeEnum.KeySignature,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
                     musicalAlphabet: MusicalAlphabetEnum.C4,
                     chronaxie: ChronaxieEnum.quarter,
-                    type: NoteTypeEnum.rest,
-                    sort: 1,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
                 }, {
-                    clef: ClefEnum.g,
                     musicalAlphabet: MusicalAlphabetEnum.C4,
                     chronaxie: ChronaxieEnum.quarter,
-                    type: NoteTypeEnum.rest,
-                    sort: 2,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
                 }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                },]
+            }, {
+                options: {},
+                msSymbolArray: [{
                     clef: ClefEnum.g,
-                    musicalAlphabet: MusicalAlphabetEnum.G4,
-                    chronaxie: ChronaxieEnum.eighth,
-                    type: NoteTypeEnum.normal,
-                    sort: 3,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
+                    type: MsSymbolTypeEnum.Clef,
+                    options: {},
+                    measureRelativeRect: {}
                 }, {
+                    timeSignature: TimeSignatureEnum['4/4'],
+                    type: MsSymbolTypeEnum.TimeSignature,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    keySignature: KeySignatureEnum.c,
+                    type: MsSymbolTypeEnum.KeySignature,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                },]
+            }, {
+                options: {},
+                msSymbolArray: [{
                     clef: ClefEnum.g,
-                    musicalAlphabet: MusicalAlphabetEnum.G4,
-                    chronaxie: ChronaxieEnum.eighth,
-                    type: NoteTypeEnum.normal,
-                    sort: 4,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
-                }]
+                    type: MsSymbolTypeEnum.Clef,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    timeSignature: TimeSignatureEnum['4/4'],
+                    type: MsSymbolTypeEnum.TimeSignature,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    keySignature: KeySignatureEnum.c,
+                    type: MsSymbolTypeEnum.KeySignature,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                },]
             }, {
-                timeSignature: TimeSignatureEnum['none'],  //拍号
-                keySignature: KeySignatureEnum.none, //调号
-                noteArray: [{
-                    clef: ClefEnum.none,
-                    musicalAlphabet: MusicalAlphabetEnum.A4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: NoteTypeEnum.normal,
-                    sort: 1,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
+                options: {},
+                msSymbolArray: [{
+                    clef: ClefEnum.g,
+                    type: MsSymbolTypeEnum.Clef,
+                    options: {},
+                    measureRelativeRect: {}
                 }, {
-                    clef: ClefEnum.none,
-                    musicalAlphabet: MusicalAlphabetEnum.G4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: NoteTypeEnum.normal,
-                    sort: 2,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
+                    timeSignature: TimeSignatureEnum['4/4'],
+                    type: MsSymbolTypeEnum.TimeSignature,
+                    options: {},
+                    measureRelativeRect: {}
                 }, {
-                    clef: ClefEnum.none,
-                    musicalAlphabet: MusicalAlphabetEnum.C5,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: NoteTypeEnum.normal,
-                    sort: 3,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
-                }]
-            }, {
-                timeSignature: TimeSignatureEnum['none'],  //拍号
-                keySignature: KeySignatureEnum.none, //调号
-                noteArray: [{
-                    clef: ClefEnum.none,
-                    musicalAlphabet: MusicalAlphabetEnum.B4,
-                    chronaxie: ChronaxieEnum.half,
-                    type: NoteTypeEnum.normal,
-                    sort: 1,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
+                    keySignature: KeySignatureEnum.c,
+                    type: MsSymbolTypeEnum.KeySignature,
+                    options: {},
+                    measureRelativeRect: {}
                 }, {
-                    clef: ClefEnum.none,
-                    musicalAlphabet: MusicalAlphabetEnum.G4,
-                    chronaxie: ChronaxieEnum.eighth,
-                    type: NoteTypeEnum.normal,
-                    sort: 2,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
-                }, {
-                    clef: ClefEnum.none,
-                    musicalAlphabet: MusicalAlphabetEnum.G4,
-                    chronaxie: ChronaxieEnum.eighth,
-                    type: NoteTypeEnum.normal,
-                    sort: 3,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
-                }]
-            }, {
-                timeSignature: TimeSignatureEnum['none'],  //拍号
-                keySignature: KeySignatureEnum.none, //调号
-                noteArray: [{
-                    clef: ClefEnum.none,
-                    musicalAlphabet: MusicalAlphabetEnum.A4,
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
                     chronaxie: ChronaxieEnum.quarter,
-                    type: NoteTypeEnum.normal,
-                    sort: 1,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
                 }, {
-                    clef: ClefEnum.none,
-                    musicalAlphabet: MusicalAlphabetEnum.G4,
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
                     chronaxie: ChronaxieEnum.quarter,
-                    type: NoteTypeEnum.normal,
-                    sort: 2,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
                 }, {
-                    clef: ClefEnum.none,
-                    musicalAlphabet: MusicalAlphabetEnum.D5,
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
                     chronaxie: ChronaxieEnum.quarter,
-                    type: NoteTypeEnum.normal,
-                    sort: 3,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
-                }]
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                },]
             }]
         }]
     }, {
         singleStaffArray: [{
             measureArray: [{
-                timeSignature: TimeSignatureEnum['4/4'],  //拍号
-                keySignature: KeySignatureEnum.c, //调号
-                noteArray: [{
+                options: {},
+                msSymbolArray: [{
                     clef: ClefEnum.g,
-                    musicalAlphabet: MusicalAlphabetEnum.C5,
-                    chronaxie: ChronaxieEnum.half,
-                    type: NoteTypeEnum.normal,
-                    sort: 1,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 1,
+                    type: MsSymbolTypeEnum.Clef,
+                    options: {},
+                    measureRelativeRect: {}
                 }, {
-                    clef: ClefEnum.g,
-                    musicalAlphabet: MusicalAlphabetEnum.G4,
-                    chronaxie: ChronaxieEnum.eighth,
-                    type: NoteTypeEnum.normal,
-                    sort: 2,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
+                    timeSignature: TimeSignatureEnum['4/4'],
+                    type: MsSymbolTypeEnum.TimeSignature,
+                    options: {},
+                    measureRelativeRect: {}
                 }, {
-                    clef: ClefEnum.g,
-                    musicalAlphabet: MusicalAlphabetEnum.G4,
-                    chronaxie: ChronaxieEnum.eighth,
-                    type: NoteTypeEnum.normal,
-                    sort: 3,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
-                }]
+                    keySignature: KeySignatureEnum.c,
+                    type: MsSymbolTypeEnum.KeySignature,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                },]
             }, {
-                timeSignature: TimeSignatureEnum['none'],  //拍号
-                keySignature: KeySignatureEnum.none, //调号
-                noteArray: [{
-                    clef: ClefEnum.none,
-                    musicalAlphabet: MusicalAlphabetEnum.G5,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: NoteTypeEnum.normal,
-                    sort: 1,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
+                options: {},
+                msSymbolArray: [{
+                    clef: ClefEnum.g,
+                    type: MsSymbolTypeEnum.Clef,
+                    options: {},
+                    measureRelativeRect: {}
                 }, {
-                    clef: ClefEnum.none,
-                    musicalAlphabet: MusicalAlphabetEnum.E5,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: NoteTypeEnum.normal,
-                    sort: 1,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
+                    timeSignature: TimeSignatureEnum['4/4'],
+                    type: MsSymbolTypeEnum.TimeSignature,
+                    options: {},
+                    measureRelativeRect: {}
                 }, {
-                    clef: ClefEnum.none,
-                    musicalAlphabet: MusicalAlphabetEnum.C5,
+                    keySignature: KeySignatureEnum.c,
+                    type: MsSymbolTypeEnum.KeySignature,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
                     chronaxie: ChronaxieEnum.quarter,
-                    type: NoteTypeEnum.normal,
-                    sort: 1,
-                    position: '',
-                    accidental: '',
-                    augmentationDot: 0,
-                }]
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                },]
+            }, {
+                options: {},
+                msSymbolArray: [{
+                    clef: ClefEnum.g,
+                    type: MsSymbolTypeEnum.Clef,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    timeSignature: TimeSignatureEnum['4/4'],
+                    type: MsSymbolTypeEnum.TimeSignature,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    keySignature: KeySignatureEnum.c,
+                    type: MsSymbolTypeEnum.KeySignature,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                },]
+            }, {
+                options: {},
+                msSymbolArray: [{
+                    clef: ClefEnum.g,
+                    type: MsSymbolTypeEnum.Clef,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    timeSignature: TimeSignatureEnum['4/4'],
+                    type: MsSymbolTypeEnum.TimeSignature,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    keySignature: KeySignatureEnum.c,
+                    type: MsSymbolTypeEnum.KeySignature,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                },]
             }]
         }]
     }]

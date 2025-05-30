@@ -12,8 +12,8 @@
 <script setup lang="ts">
 import {computed, ref} from 'vue';
 
-import bar from './musicSymbols/bar.svg';
-import barLine from './musicSymbols/barLine.svg';
+import bar from '../musicSymbols/bar.svg';
+import barLine from '../musicSymbols/barLine.svg';
 
 
 const props = defineProps({

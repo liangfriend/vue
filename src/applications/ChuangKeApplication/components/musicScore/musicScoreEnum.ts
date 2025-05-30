@@ -2,7 +2,6 @@ export enum ClefEnum {
     g = 'g',
     alto = 'alto',
     bass = 'bass',
-    none = ''
 }
 
 export enum KeySignatureEnum {
@@ -13,13 +12,11 @@ export enum KeySignatureEnum {
     g = 'g',
     a = 'a',
     b = 'b',
-    none = ''
 }
 
 export enum TimeSignatureEnum {
     '4/4' = '4/4',
     '3/4' = '3/4',
-    none = ''
 }
 
 //音符类别
@@ -119,4 +116,35 @@ export enum ChronaxieEnum {
     quarter = 4,
     eighth = 8,
     sixteenth = 16,
+}
+
+// 符号类型
+export enum MsSymbolTypeEnum {
+    NoteHead, // 线谱指音符头， 简谱指音符
+    NoteBar,
+    NoteTail,
+    Rest,
+    Slur, // 圆滑线  不同音高
+    Tie,  // 延音线  延音线只能连接两个音
+    DurationDot, // 附点
+    Accidental_double_flat,
+    Accidental_flat,
+    Accidental_natural,
+    Accidental_sharp,
+    Accidental_double_sharp,
+    Tuplet, // 连音符
+    Volta, // 反复小房子记号
+    Clef,
+    KeySignature,  //
+    TimeSignature,
+}
+
+// 曲谱展示模式
+export enum MusicScoreShowModeEnum {
+    StandardStaff,        // 五线谱
+    NumberNotation,      // 简谱（数字谱）
+    DualNotation,          // 简线双谱（五线+简谱）
+    RhythmNotation,      // 节奏谱（主要显示节奏）
+    Tablature,                 // 简谱形式的吉他/尤克里里谱（可选）
+    Percussion,               // 打击乐谱（可选）
 }

@@ -1,36 +1,48 @@
 import {
     ChronaxieEnum,
-    ClefEnum, KeySignatureEnum,
-    MusicalAlphabetEnum, NoteTypeEnum, TimeSignatureEnum
+    ClefEnum,
+    KeySignatureEnum,
+    MusicalAlphabetEnum,
+    MsSymbolTypeEnum,
+    TimeSignatureEnum,
+    MusicScoreShowModeEnum
 } from "./musicScoreEnum.ts";
 
 
-export declare interface Window {
-    musicScore: {
-        selected: EventTarget | null
-    }
-}
-
 export declare interface musicScoreOptions {
-    hightlight: Boolean;
+    hightlight?: Boolean;
 }
 
-export declare interface Note {
-    clef: ClefEnum; // 谱号
+// 几何信息。位置信息都是相对小节的
+export declare interface MeasureRelativeRect {
+
+}
+
+declare type BaseSymbol = {
+    msSymbolArray?: Array<MsSymbol>
+    options: musicScoreOptions
+    measureRelativeRect: MeasureRelativeRect;
+}
+export declare type MsSymbol = ({
+    type: MsSymbolTypeEnum.NoteHead,
     chronaxie: ChronaxieEnum; // 时值
     musicalAlphabet: MusicalAlphabetEnum; // 音名
-    sort: number; // 音符顺序
-    position: string    //处于五线谱的位置
-    type: NoteTypeEnum
-    accidental: string  //变音符号
-    augmentationDot: number //附点数量
-    options: musicScoreOptions
-}
+} & BaseSymbol) | ({
+    type: MsSymbolTypeEnum.Clef,
+    clef: ClefEnum
+} & BaseSymbol) | ({
+    type: MsSymbolTypeEnum.TimeSignature,
+    timeSignature: TimeSignatureEnum
+} & BaseSymbol) | ({
+    type: MsSymbolTypeEnum.KeySignature,
+    keySignature: KeySignatureEnum
+} & BaseSymbol) | ({
+    type: Exclude<MsSymbolTypeEnum, MsSymbolTypeEnum.NoteHead | MsSymbolTypeEnum.Clef |
+        MsSymbolTypeEnum.TimeSignature | MsSymbolTypeEnum.KeySignature>,
+} & BaseSymbol)
 
 export declare interface Measure {
-    timeSignature: TimeSignatureEnum;  //拍号
-    keySignature: KeySignatureEnum //调号
-    noteArray: Array<Note>
+    msSymbolArray: Array<MsSymbol>
     options: musicScoreOptions
 }
 
@@ -45,5 +57,6 @@ export declare interface MultipleStaves { //复谱表
 //调号，拍号只能小节有，谱号是音符有（但是谱号给第一个音符加谱号，会加到前一个小节上，也可以给小节加谱号，相当于给小节的第一个音符加谱号）
 export declare interface MusicScore {
     multipleStavesArray: Array<MultipleStaves>;
+    showMode: MusicScoreShowModeEnum
 }
 
