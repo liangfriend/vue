@@ -3,7 +3,7 @@
     <measure-container :musicScoreData="modelValue" class="stackItem lineLayer"
                        :style="{width:width+'px',height:height+'px'}"
                        comment="谱线层">
-      <template #default="{ measure, measureIndex, singleStaff, MultipleStaves, measureWidth }">
+      <template #default="{ measure, measureIndex, singleStaff, multipleStaves, measureWidth }">
         <measure
             :key="'measure'+measureIndex"
             :strokeWidth="strokeWidth"

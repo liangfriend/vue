@@ -31,25 +31,25 @@ const data: MusicScore = {
                     options: {},
                     measureRelativeRect: {}
                 }, {
-                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    musicalAlphabet: MusicalAlphabetEnum.E4,
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.NoteHead,
                     options: {},
                     measureRelativeRect: {}
                 }, {
-                    musicalAlphabet: MusicalAlphabetEnum.C3,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.NoteHead,
-                    options: {},
-                    measureRelativeRect: {}
-                }, {
-                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    musicalAlphabet: MusicalAlphabetEnum.F4,
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.NoteHead,
                     options: {},
                     measureRelativeRect: {}
                 }, {
                     musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C5,
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.NoteHead,
                     options: {},

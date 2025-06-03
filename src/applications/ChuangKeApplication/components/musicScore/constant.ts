@@ -20,3 +20,4 @@ export const widthRatioConstant = {
     [MsSymbolTypeEnum.KeySignature]: 0.6,       // 调号：位置集中但需占空间
     [MsSymbolTypeEnum.TimeSignature]: 0.5,      // 拍号：中等占位量
 };
+

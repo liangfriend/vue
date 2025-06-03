@@ -9,6 +9,7 @@ import noteHeadSvg from "../musicSymbols/noteHead.svg"
 import trebleClefSvg from "../musicSymbols/trebleClef.svg"
 import altoClefSvg from "../musicSymbols/altoClef.svg"
 import bassClefSvg from "../musicSymbols/bassClef.svg"
+import defaultSymbolSvg from "../musicSymbols/defaultSymbol.svg"
 
 const props = defineProps({
   symbol: {
@@ -36,11 +37,11 @@ const svgHref = computed(() => {
         return bassClefSvg
       }
       console.error('未知的谱号类别', props.symbol.clef)
-      return trebleClefSvg
+      return defaultSymbolSvg
     }
     default: {
       console.error("未知的符号类别", props.symbol?.type)
-      return noteHeadSvg
+      return defaultSymbolSvg
     }
   }
 })

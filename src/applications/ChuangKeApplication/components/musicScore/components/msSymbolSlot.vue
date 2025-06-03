@@ -1,7 +1,7 @@
 <template>
-  <div class="msSymbolContainer"
+  <div class="msSymbolContainer p-stackItem"
        :style="msSymbolContainerStyle">
-    <msSymbolVue :measureHeight="measureHeight" :symbol="msSymbol"></msSymbolVue>
+    <msSymbolVue v-if="msSymbol" :measureHeight="measureHeight" :symbol="msSymbol"></msSymbolVue>
     <template v-if="msSymbol?.msSymbolArray">
       <msSymbolVue :measureHeight="measureHeight" v-for="item in msSymbol.msSymbolArray" :symol="item"></msSymbolVue>
     </template>
@@ -9,6 +9,7 @@
 
 
 </template>
+
 <script setup lang="ts">
 import type {
   Measure,
@@ -24,7 +25,7 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import msSymbolVue from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbol.vue";
 import {
-  calculationOfStaffRegion
+  calculationOfStaffRegion, getPreWidthConstantForMsSymbolOnMeasure, getTotalWidthConstantOnMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 
 const props = defineProps({
@@ -55,6 +56,7 @@ const bottom = computed(() => {
       const clef = getClef(props.measure, props.singleStaff, props.msSymbol)
       if (clef) {
         const noteRegion: MusicScoreRegionEnum = calculationOfStaffRegion(clef, props.msSymbol.musicalAlphabet)
+        console.log('chicken', staffRegionToBottom(noteRegion, props.measureHeight))
         return staffRegionToBottom(noteRegion, props.measureHeight)
       }
       return 0
@@ -64,23 +66,28 @@ const bottom = computed(() => {
     }
 
   }
-
-
 });
 const msSymbolContainerStyle = computed<CSSProperties>(() => {
+  if (!props.msSymbol || !props.measure || !props.singleStaff) {
+    console.log('chicken', props.msSymbol, props.measure, props.singleStaff)
+    console.error("缺少必要的参数，坐标计算出错")
+    return {bottom: `${bottom.value}px`}
+  }
+
   return {
-    width: `${props.measureHeight / 5}px`,
-    height: `${props.measureHeight}px`,
-    position: 'absolute',
+    left: getLeft(props.msSymbol, props.measure, props.singleStaff),
     bottom: `${bottom.value}px`,
 
   }
 });
 
 // 符号横坐标计算
-function xPositionCalculation(msSymbol: MsSymbol, measure: Measure, measureWidth: number): number {
+function getLeft(msSymbol: MsSymbol, measure: Measure, singleStaff: SingleStaff): string {
+  const symnbolIndex = measure.msSymbolArray.indexOf(msSymbol)
+  const preWidthConstantOnMeasure = getPreWidthConstantForMsSymbolOnMeasure(msSymbol, measure)
+  const totalWidthConstantOnMeasure = getTotalWidthConstantOnMeasure(measure)
 
-  return 0
+  return preWidthConstantOnMeasure / totalWidthConstantOnMeasure * 100 + '%'
 }
 
 function getClef(measure: Measure, singleStaff: SingleStaff, noteHead: Extract<MsSymbol, {

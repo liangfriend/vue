@@ -5,6 +5,8 @@ import {
     MusicalAlphabetEnum, MusicScoreRegionEnum,
     TimeSignatureEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import type {Measure, MsSymbol, SingleStaff} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {widthRatioConstant} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 
 
 // 计算出音符所在间线
@@ -85,7 +87,6 @@ export function calculationOfStaffRegion(
         return MusicScoreRegionEnum.line_1
     }
     ;
-    console.log('chicken', musicalAlphabet)
     const match = musicalAlphabet.match(/^([A-G])(\d)$/);
     if (!match) {
         console.error("线谱区域识别错误", clef, musicalAlphabet)
@@ -93,6 +94,7 @@ export function calculationOfStaffRegion(
     }
 
     const [_, noteLetter, octaveStr] = match;
+
     const octave = parseInt(octaveStr);
     const baseIndex = noteOrder.indexOf(base.note) + base.octave * 7;
     const targetIndex = noteOrder.indexOf(noteLetter) + octave * 7;
@@ -102,6 +104,7 @@ export function calculationOfStaffRegion(
     if (regionList[regionIndex]) {
         return regionList[regionIndex]
     } else {
+        console.log('chicken', baseIndex, targetIndex)
         console.error("线谱区域识别错误", clef, musicalAlphabet)
         return MusicScoreRegionEnum.line_1;
     }
@@ -109,6 +112,58 @@ export function calculationOfStaffRegion(
 
 }
 
+// 获取当前符号在其所在小节之前的宽度系数之和
+export function getPreWidthConstantForMsSymbolOnMeasure(msSymbol: MsSymbol, measure: Measure) {
+    let preWidthConstant = 0
+    for (let j = 0; j < measure.msSymbolArray.length; j++) {
+        const curMsSymbol = measure.msSymbolArray[j]
+        if (curMsSymbol === msSymbol) {
+            return preWidthConstant
+        }
+        if (widthRatioConstant[curMsSymbol.type]) {
+            preWidthConstant += widthRatioConstant[curMsSymbol.type]
+        }
+        if (curMsSymbol.msSymbolArray) {
+            for (let k = 0; k < curMsSymbol.msSymbolArray.length; k++) {
+                const childMsSymbol = curMsSymbol.msSymbolArray[k]
+                if (widthRatioConstant[childMsSymbol.type]) {
+                    preWidthConstant += widthRatioConstant[childMsSymbol.type]
+                }
+            }
+        }
+    }
+    return preWidthConstant
+}
+
+// 获取当前符号所在小节的宽度系数之和
+export function getTotalWidthConstantOnMeasure(measure: Measure) {
+    let totalWidthConstant = 0
+    for (let j = 0; j < measure.msSymbolArray.length; j++) {
+        const msSymbol = measure.msSymbolArray[j]
+        if (widthRatioConstant[msSymbol.type]) {
+            totalWidthConstant += widthRatioConstant[msSymbol.type]
+        }
+        if (msSymbol.msSymbolArray) {
+            for (let k = 0; k < msSymbol.msSymbolArray.length; k++) {
+                const childMsSymbol = msSymbol.msSymbolArray[k]
+                if (widthRatioConstant[childMsSymbol.type]) {
+                    totalWidthConstant += widthRatioConstant[childMsSymbol.type]
+                }
+            }
+        }
+    }
+    return totalWidthConstant
+}
+
+// 获取当前符号在其所在单谱表之前的宽度系数之和
+export function getPreWidthConstantForMsSymbolOnSingleStaff(msSymbol: MsSymbol, singleStaff: SingleStaff) {
+    let preWidthConstant = 0
+    for (let i = 0; i < singleStaff.measureArray.length; i++) {
+        const measure = singleStaff.measureArray[i]
+        preWidthConstant += getPreWidthConstantForMsSymbolOnMeasure(msSymbol, measure)
+    }
+    return preWidthConstant
+}
 
 
 
