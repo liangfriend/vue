@@ -6,7 +6,10 @@ import {
     TimeSignatureEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import type {Measure, MsSymbol, SingleStaff} from "@/applications/ChuangKeApplication/components/musicScore/types";
-import {widthRatioConstant} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
+import {
+    fixedWidthSymbolContainerMap,
+    widthRatioConstantMap
+} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 
 
 // 计算出音符所在间线
@@ -112,22 +115,24 @@ export function calculationOfStaffRegion(
 
 }
 
-// 获取当前符号在其所在小节之前的宽度系数之和
-export function getPreWidthConstantForMsSymbolOnMeasure(msSymbol: MsSymbol, measure: Measure) {
+// 获取当前符号在其所在小节之前的宽度系数之和, 第三个参数判断计算是否排除定宽容器
+export function getPreWidthConstantForMsSymbolOnMeasure(msSymbol: MsSymbol, measure: Measure, excludeFixedWidthContainer: boolean = false) {
+
     let preWidthConstant = 0
     for (let j = 0; j < measure.msSymbolArray.length; j++) {
         const curMsSymbol = measure.msSymbolArray[j]
+        if (excludeFixedWidthContainer && fixedWidthSymbolContainerMap[curMsSymbol.type]) continue
         if (curMsSymbol === msSymbol) {
             return preWidthConstant
         }
-        if (widthRatioConstant[curMsSymbol.type]) {
-            preWidthConstant += widthRatioConstant[curMsSymbol.type]
+        if (widthRatioConstantMap[curMsSymbol.type]) {
+            preWidthConstant += widthRatioConstantMap[curMsSymbol.type]
         }
         if (curMsSymbol.msSymbolArray) {
             for (let k = 0; k < curMsSymbol.msSymbolArray.length; k++) {
                 const childMsSymbol = curMsSymbol.msSymbolArray[k]
-                if (widthRatioConstant[childMsSymbol.type]) {
-                    preWidthConstant += widthRatioConstant[childMsSymbol.type]
+                if (widthRatioConstantMap[childMsSymbol.type]) {
+                    preWidthConstant += widthRatioConstantMap[childMsSymbol.type]
                 }
             }
         }
@@ -135,19 +140,19 @@ export function getPreWidthConstantForMsSymbolOnMeasure(msSymbol: MsSymbol, meas
     return preWidthConstant
 }
 
-// 获取当前符号所在小节的宽度系数之和
-export function getTotalWidthConstantOnMeasure(measure: Measure) {
+// 获取当前符号所在小节的宽度系数之和, 第三个参数判断计算是否排除定宽容器
+export function getTotalWidthConstantOnMeasure(measure: Measure, excludeFixedWidthContainer: boolean = false) {
     let totalWidthConstant = 0
     for (let j = 0; j < measure.msSymbolArray.length; j++) {
         const msSymbol = measure.msSymbolArray[j]
-        if (widthRatioConstant[msSymbol.type]) {
-            totalWidthConstant += widthRatioConstant[msSymbol.type]
+        if (widthRatioConstantMap[msSymbol.type]) {
+            totalWidthConstant += widthRatioConstantMap[msSymbol.type]
         }
         if (msSymbol.msSymbolArray) {
             for (let k = 0; k < msSymbol.msSymbolArray.length; k++) {
                 const childMsSymbol = msSymbol.msSymbolArray[k]
-                if (widthRatioConstant[childMsSymbol.type]) {
-                    totalWidthConstant += widthRatioConstant[childMsSymbol.type]
+                if (widthRatioConstantMap[childMsSymbol.type]) {
+                    totalWidthConstant += widthRatioConstantMap[childMsSymbol.type]
                 }
             }
         }
@@ -155,8 +160,8 @@ export function getTotalWidthConstantOnMeasure(measure: Measure) {
     return totalWidthConstant
 }
 
-// 获取当前符号在其所在单谱表之前的宽度系数之和
-export function getPreWidthConstantForMsSymbolOnSingleStaff(msSymbol: MsSymbol, singleStaff: SingleStaff) {
+// 获取当前符号在其所在单谱表之前的宽度系数之和, 第三个参数判断计算是否排除定宽容器
+export function getPreWidthConstantForMsSymbolOnSingleStaff(msSymbol: MsSymbol, singleStaff: SingleStaff, excludeFixedWidthContainer: boolean = false) {
     let preWidthConstant = 0
     for (let i = 0; i < singleStaff.measureArray.length; i++) {
         const measure = singleStaff.measureArray[i]
@@ -165,6 +170,6 @@ export function getPreWidthConstantForMsSymbolOnSingleStaff(msSymbol: MsSymbol, 
     return preWidthConstant
 }
 
-
-
-
+export function isFixedWidthSymbolContainerMap(msSymbolType: MsSymbolTypeEnum): boolean {
+    return fixedWidthSymbolContainerMap[msSymbolType] as boolean
+}

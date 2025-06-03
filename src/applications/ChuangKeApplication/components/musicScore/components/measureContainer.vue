@@ -34,7 +34,7 @@ import type {
   Measure,
   MultipleStaves, MusicScore, MsSymbol
 } from "../types";
-import {widthRatioConstant} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
+import {widthRatioConstantMap} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 
 const props = defineProps({
   musicScoreData: {
@@ -76,7 +76,7 @@ const props = defineProps({
 const getMeasureWidthRatioIndex = (measure: Measure) => {
   let fr = 0;
   measure.msSymbolArray.forEach((msSymbol: MsSymbol) => {
-    fr += widthRatioConstant[msSymbol.type];
+    fr += widthRatioConstantMap[msSymbol.type];
   });
   return fr;
 };

@@ -76,6 +76,8 @@ const msSymbolContainerStyle = computed<CSSProperties>(() => {
 
   return {
     left: getLeft(props.msSymbol, props.measure, props.singleStaff),
+    height: props.measureHeight + 'px',
+    width: getWidth(props.msSymbol, props.measure, props.singleStaff),
     bottom: `${bottom.value}px`,
 
   }
@@ -90,6 +92,13 @@ function getLeft(msSymbol: MsSymbol, measure: Measure, singleStaff: SingleStaff)
   return preWidthConstantOnMeasure / totalWidthConstantOnMeasure * 100 + '%'
 }
 
+function getWidth(msSymbol: MsSymbol, measure: Measure, singleStaff: SingleStaff): string {
+  const symbolIndex = measure.msSymbolArray.indexOf(msSymbol)
+  const preWidthConstantOnMeasure = getPreWidthConstantForMsSymbolOnMeasure(msSymbol, measure)
+  const totalWidthConstantOnMeasure = getTotalWidthConstantOnMeasure(measure)
+
+  return preWidthConstantOnMeasure / totalWidthConstantOnMeasure * 100 + '%'
+}
 function getClef(measure: Measure, singleStaff: SingleStaff, noteHead: Extract<MsSymbol, {
   type: MsSymbolTypeEnum.NoteHead
 }>): ClefEnum | null {
