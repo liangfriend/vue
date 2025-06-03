@@ -5,11 +5,12 @@ import {
     MusicalAlphabetEnum,
     NoteTypeEnum,
     MsSymbolTypeEnum,
-    TimeSignatureEnum
+    TimeSignatureEnum, MusicScoreShowModeEnum
 } from './musicScoreEnum.ts';
 import type {MusicScore} from "./types.d.ts";
 
 const data: MusicScore = {
+    showMode: MusicScoreShowModeEnum.StandardStaff,
     multipleStavesArray: [{
         singleStaffArray: [{
             measureArray: [{

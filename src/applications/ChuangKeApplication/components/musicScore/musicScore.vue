@@ -37,7 +37,7 @@ import note from './components/note.vue';
 import * as Tone from 'tone';
 import type {
   MusicScore
-} from "./types";
+} from "./types.d.ts";
 import MeasureContainer from "@/applications/ChuangKeApplication/components/musicScore/components/measureContainer.vue";
 
 import MsSymbolSlot from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbolSlot.vue";

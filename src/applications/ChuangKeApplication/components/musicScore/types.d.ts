@@ -18,7 +18,7 @@ export declare interface MeasureRelativeRect {
 
 }
 
-declare type BaseSymbol = {
+export declare type BaseSymbol = {
     msSymbolArray?: Array<MsSymbol>
     options: musicScoreOptions
     measureRelativeRect: MeasureRelativeRect;
@@ -54,7 +54,7 @@ export declare interface MultipleStaves { //复谱表
     singleStaffArray: Array<SingleStaff>;
 }
 
-//调号，拍号只能小节有，谱号是音符有（但是谱号给第一个音符加谱号，会加到前一个小节上，也可以给小节加谱号，相当于给小节的第一个音符加谱号）
+//调号，拍号只能小节有，谱号是音符有（但是谱号给第一个音符加谱号，会加到前一个小节上，也可以给小节加谱号，相当于给小节的第一个音符加谱号）小节也有
 export declare interface MusicScore {
     multipleStavesArray: Array<MultipleStaves>;
     showMode: MusicScoreShowModeEnum

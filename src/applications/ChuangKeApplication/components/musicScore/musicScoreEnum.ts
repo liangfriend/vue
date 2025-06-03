@@ -68,10 +68,9 @@ export enum MusicalAlphabetEnum {
     G6 = 'G6',
     A6 = 'A6',
     B6 = 'B6',
-    none = ''
 }
 
-export enum MuseScoreRegionEnum {
+export enum MusicScoreRegionEnum {
     line_1 = 'line_1',
     space_1 = 'space_1',
     line_2 = 'line_2',
@@ -93,7 +92,6 @@ export enum MuseScoreRegionEnum {
     upper_line_5 = 'upper_line_5',
     upper_space_6 = 'upper_space_6',
     upper_line_6 = 'upper_line_6',
-    none = ''
     // 其他音符位置
 }
 
@@ -106,7 +104,6 @@ export enum AccidentalEnum {
     doubleFlat = 'doubleFlat',   //重降
     natureSharp = 'natureSharp',   //还原升
     natureFlat = 'natureFlat',   //还原降
-    none = 'none' //无
 }
 
 //时值

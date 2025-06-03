@@ -125,7 +125,7 @@ const Chronaxie = {
     SIXTH: 'sixth'
 };
 //五线谱区域    用于计算，不用于赋值
-const museScoreRegion = {
+const musicScoreRegion = {
     'lower_clef_line_1': 0,
     'lower_clef_space_1': 1,
     'line_1': 2,
@@ -145,4 +145,4 @@ const museScoreRegion = {
     'upper_line_3': 16,
     'upper_space_4': 17,
 };
-export {musicalAlphabetMap, clefMap, keySignatureMap, chronaxieMap, Chronaxie, museScoreRegion};
+export {musicalAlphabetMap, clefMap, keySignatureMap, chronaxieMap, Chronaxie, musicScoreRegion};
