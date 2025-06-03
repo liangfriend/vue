@@ -37,7 +37,7 @@ const data: MusicScore = {
                     options: {},
                     measureRelativeRect: {}
                 }, {
-                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    musicalAlphabet: MusicalAlphabetEnum.C3,
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.NoteHead,
                     options: {},

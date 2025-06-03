@@ -32,9 +32,9 @@ import type {PropType} from 'vue';
 import type {
   SingleStaff,
   Measure,
-  Note,
-  MultipleStaves, MusicScore
+  MultipleStaves, MusicScore, MsSymbol
 } from "../types";
+import {widthRatioConstant} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 
 const props = defineProps({
   musicScoreData: {
@@ -75,8 +75,8 @@ const props = defineProps({
 //获取一个小节的宽度占比常数
 const getMeasureWidthRatioIndex = (measure: Measure) => {
   let fr = 0;
-  measure.noteArray.forEach((_note: Note) => {
-    fr += 1;
+  measure.msSymbolArray.forEach((msSymbol: MsSymbol) => {
+    fr += widthRatioConstant[msSymbol.type];
   });
   return fr;
 };
@@ -129,5 +129,6 @@ const measureStyle = computed(() => (measure: Measure, singleStaff: SingleStaff,
 
 .measure {
   display: grid;
+  position: relative;
 }
 </style>

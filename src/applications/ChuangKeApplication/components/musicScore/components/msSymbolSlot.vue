@@ -1,9 +1,9 @@
 <template>
   <div class="msSymbolContainer"
        :style="msSymbolContainerStyle">
-    <MsSymbol :measureHeight="measureHeight" :symbol="msSymbol"></MsSymbol>
+    <msSymbolVue :measureHeight="measureHeight" :symbol="msSymbol"></msSymbolVue>
     <template v-if="msSymbol?.msSymbolArray">
-      <MsSymbol :measureHeight="measureHeight" v-for="item in msSymbol.msSymbolArray" :symol="item"></MsSymbol>
+      <msSymbolVue :measureHeight="measureHeight" v-for="item in msSymbol.msSymbolArray" :symol="item"></msSymbolVue>
     </template>
   </div>
 
@@ -22,7 +22,7 @@ import {
   MsSymbolTypeEnum,
   MusicScoreRegionEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
-import msSymbol from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbol.vue";
+import msSymbolVue from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbol.vue";
 import {
   calculationOfStaffRegion
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
@@ -54,7 +54,7 @@ const bottom = computed(() => {
       if (!props.msSymbol || !props.measure || !props.singleStaff) return 0
       const clef = getClef(props.measure, props.singleStaff, props.msSymbol)
       if (clef) {
-        const noteRegion: MusicScoreRegionEnum = calculationOfStaffRegion(clef, msSymbol.musicalAlphabet)
+        const noteRegion: MusicScoreRegionEnum = calculationOfStaffRegion(clef, props.msSymbol.musicalAlphabet)
         return staffRegionToBottom(noteRegion, props.measureHeight)
       }
       return 0
@@ -71,10 +71,17 @@ const msSymbolContainerStyle = computed<CSSProperties>(() => {
   return {
     width: `${props.measureHeight / 5}px`,
     height: `${props.measureHeight}px`,
-    position: 'relative',
+    position: 'absolute',
     bottom: `${bottom.value}px`,
+
   }
 });
+
+// 符号横坐标计算
+function xPositionCalculation(msSymbol: MsSymbol, measure: Measure, measureWidth: number): number {
+
+  return 0
+}
 
 function getClef(measure: Measure, singleStaff: SingleStaff, noteHead: Extract<MsSymbol, {
   type: MsSymbolTypeEnum.NoteHead
@@ -85,8 +92,8 @@ function getClef(measure: Measure, singleStaff: SingleStaff, noteHead: Extract<M
   // 如果音符上没有clef，就从最近的小节上找
   const measuerIndex = singleStaff.measureArray.indexOf(measure)
   let msSymbolIndex = measure.msSymbolArray.indexOf(noteHead)
-  for (let i = measuerIndex; measuerIndex >= 0; i--) {
-    for (let j = msSymbolIndex; msSymbolIndex >= 0; j--) {
+  for (let i = measuerIndex; i >= 0; i--) {
+    for (let j = msSymbolIndex; j >= 0; j--) {
       const curMsSymbol = singleStaff.measureArray[i].msSymbolArray[j]
       const childMsSymbolArray = singleStaff.measureArray[i].msSymbolArray[j].msSymbolArray
       if (childMsSymbolArray) {
@@ -159,6 +166,7 @@ function staffRegionToBottom(region: MusicScoreRegionEnum, measureHeight: number
 
 
 }
+
 onMounted(() => {
   // 如果是音符头，获取到谱号
 

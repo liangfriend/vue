@@ -47,7 +47,7 @@ type BasePosition = {
 export function calculationOfStaffRegion(
     clef: ClefEnum,
     musicalAlphabet: MusicalAlphabetEnum
-): MusicScoreRegionEnum | null {
+): MusicScoreRegionEnum {
     const noteOrder = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
     const basePositions: Record<ClefEnum, BasePosition> = {
         [ClefEnum.g]: {note: 'G', octave: 4, lineIndex: 2},     // G4 on line_2
@@ -80,10 +80,17 @@ export function calculationOfStaffRegion(
     ];
 
     const base = basePositions[clef];
-    if (!base) return null;
-
+    if (!base) {
+        console.error("线谱区域识别错误", clef, musicalAlphabet)
+        return MusicScoreRegionEnum.line_1
+    }
+    ;
+    console.log('chicken', musicalAlphabet)
     const match = musicalAlphabet.match(/^([A-G])(\d)$/);
-    if (!match) return null;
+    if (!match) {
+        console.error("线谱区域识别错误", clef, musicalAlphabet)
+        return MusicScoreRegionEnum.line_1
+    }
 
     const [_, noteLetter, octaveStr] = match;
     const octave = parseInt(octaveStr);
@@ -92,8 +99,14 @@ export function calculationOfStaffRegion(
 
     const steps = targetIndex - baseIndex;
     const regionIndex = base.lineIndex * 2 + steps;
+    if (regionList[regionIndex]) {
+        return regionList[regionIndex]
+    } else {
+        console.error("线谱区域识别错误", clef, musicalAlphabet)
+        return MusicScoreRegionEnum.line_1;
+    }
 
-    return regionList[regionIndex] ?? null;
+
 }
 
 
