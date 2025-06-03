@@ -1,5 +1,5 @@
 export enum ClefEnum {
-    g = 'g',
+    treble = 'g',
     alto = 'alto',
     bass = 'bass',
 }

@@ -4,8 +4,11 @@
 <script setup lang="ts">
 import {computed, CSSProperties, PropType} from "vue";
 import {MsSymbol} from "@/applications/ChuangKeApplication/components/musicScore/types";
-import {MsSymbolTypeEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import {ClefEnum, MsSymbolTypeEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import noteHeadSvg from "../musicSymbols/noteHead.svg"
+import trebleClefSvg from "../musicSymbols/trebleClef.svg"
+import altoClefSvg from "../musicSymbols/altoClef.svg"
+import bassClefSvg from "../musicSymbols/bassClef.svg"
 
 const props = defineProps({
   symbol: {
@@ -24,7 +27,19 @@ const svgHref = computed(() => {
     case MsSymbolTypeEnum.NoteHead: {
       return noteHeadSvg
     }
+    case MsSymbolTypeEnum.Clef: {
+      if (props.symbol.clef === ClefEnum.treble) {
+        return trebleClefSvg
+      } else if (props.symbol.clef === ClefEnum.alto) {
+        return altoClefSvg
+      } else if (props.symbol.clef === ClefEnum.bass) {
+        return bassClefSvg
+      }
+      console.error('未知的谱号类别', props.symbol.clef)
+      return trebleClefSvg
+    }
     default: {
+      console.error("未知的符号类别", props.symbol?.type)
       return noteHeadSvg
     }
   }

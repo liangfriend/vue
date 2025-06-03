@@ -16,7 +16,7 @@ const data: MusicScore = {
             measureArray: [{
                 options: {},
                 msSymbolArray: [{
-                    clef: ClefEnum.g,
+                    clef: ClefEnum.treble,
                     type: MsSymbolTypeEnum.Clef,
                     options: {},
                     measureRelativeRect: {},
@@ -58,18 +58,35 @@ const data: MusicScore = {
             }, {
                 options: {},
                 msSymbolArray: [{
-                    clef: ClefEnum.g,
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                }, {
+                    musicalAlphabet: MusicalAlphabetEnum.C4,
+                    chronaxie: ChronaxieEnum.quarter,
+                    type: MsSymbolTypeEnum.NoteHead,
+                    options: {},
+                    measureRelativeRect: {}
+                },]
+            }, {
+                options: {},
+                msSymbolArray: [{
+                    clef: ClefEnum.treble,
                     type: MsSymbolTypeEnum.Clef,
-                    options: {},
-                    measureRelativeRect: {}
-                }, {
-                    timeSignature: TimeSignatureEnum['4/4'],
-                    type: MsSymbolTypeEnum.TimeSignature,
-                    options: {},
-                    measureRelativeRect: {}
-                }, {
-                    keySignature: KeySignatureEnum.c,
-                    type: MsSymbolTypeEnum.KeySignature,
                     options: {},
                     measureRelativeRect: {}
                 }, {
@@ -100,49 +117,7 @@ const data: MusicScore = {
             }, {
                 options: {},
                 msSymbolArray: [{
-                    clef: ClefEnum.g,
-                    type: MsSymbolTypeEnum.Clef,
-                    options: {},
-                    measureRelativeRect: {}
-                }, {
-                    timeSignature: TimeSignatureEnum['4/4'],
-                    type: MsSymbolTypeEnum.TimeSignature,
-                    options: {},
-                    measureRelativeRect: {}
-                }, {
-                    keySignature: KeySignatureEnum.c,
-                    type: MsSymbolTypeEnum.KeySignature,
-                    options: {},
-                    measureRelativeRect: {}
-                }, {
-                    musicalAlphabet: MusicalAlphabetEnum.C4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.NoteHead,
-                    options: {},
-                    measureRelativeRect: {}
-                }, {
-                    musicalAlphabet: MusicalAlphabetEnum.C4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.NoteHead,
-                    options: {},
-                    measureRelativeRect: {}
-                }, {
-                    musicalAlphabet: MusicalAlphabetEnum.C4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.NoteHead,
-                    options: {},
-                    measureRelativeRect: {}
-                }, {
-                    musicalAlphabet: MusicalAlphabetEnum.C4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.NoteHead,
-                    options: {},
-                    measureRelativeRect: {}
-                },]
-            }, {
-                options: {},
-                msSymbolArray: [{
-                    clef: ClefEnum.g,
+                    clef: ClefEnum.treble,
                     type: MsSymbolTypeEnum.Clef,
                     options: {},
                     measureRelativeRect: {}
@@ -188,7 +163,7 @@ const data: MusicScore = {
             measureArray: [{
                 options: {},
                 msSymbolArray: [{
-                    clef: ClefEnum.g,
+                    clef: ClefEnum.treble,
                     type: MsSymbolTypeEnum.Clef,
                     options: {},
                     measureRelativeRect: {}
@@ -230,7 +205,7 @@ const data: MusicScore = {
             }, {
                 options: {},
                 msSymbolArray: [{
-                    clef: ClefEnum.g,
+                    clef: ClefEnum.treble,
                     type: MsSymbolTypeEnum.Clef,
                     options: {},
                     measureRelativeRect: {}
@@ -272,7 +247,7 @@ const data: MusicScore = {
             }, {
                 options: {},
                 msSymbolArray: [{
-                    clef: ClefEnum.g,
+                    clef: ClefEnum.treble,
                     type: MsSymbolTypeEnum.Clef,
                     options: {},
                     measureRelativeRect: {}
@@ -314,7 +289,7 @@ const data: MusicScore = {
             }, {
                 options: {},
                 msSymbolArray: [{
-                    clef: ClefEnum.g,
+                    clef: ClefEnum.treble,
                     type: MsSymbolTypeEnum.Clef,
                     options: {},
                     measureRelativeRect: {}

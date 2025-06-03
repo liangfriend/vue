@@ -50,7 +50,7 @@ export function calculationOfStaffRegion(
 ): MusicScoreRegionEnum {
     const noteOrder = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
     const basePositions: Record<ClefEnum, BasePosition> = {
-        [ClefEnum.g]: {note: 'G', octave: 4, lineIndex: 2},     // G4 on line_2
+        [ClefEnum.treble]: {note: 'G', octave: 4, lineIndex: 2},     // G4 on line_2
         [ClefEnum.alto]: {note: 'C', octave: 4, lineIndex: 3},  // C4 on line_3
         [ClefEnum.bass]: {note: 'F', octave: 3, lineIndex: 4},  // F3 on line_4
     };
