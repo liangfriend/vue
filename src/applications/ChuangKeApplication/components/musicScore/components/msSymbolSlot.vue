@@ -73,6 +73,8 @@ const msSymbolContainerStyle = computed<CSSProperties>(() => {
     console.error("缺少必要的参数，坐标计算出错")
     return {bottom: `${bottom.value}px`}
   }
+  let height = 0 // 符号容器的高度度等于小节的高度
+  let width = 0 // 定宽容器的宽度等于主符号宽度（通过调用符号组件暴露的获取宽高比方法获取宽高比），非定宽容器宽度通过计算宽度系数设置
 
   return {
     left: getLeft(props.msSymbol, props.measure, props.singleStaff),

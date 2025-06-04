@@ -26,10 +26,39 @@ export const widthRatioConstantMap = {
 }
 
 // 定宽符号容器映射
-export const fixedWidthSymbolContainerMap = {
-    [MsSymbolTypeEnum.clef]: true,               // 谱号：段首常见，占相对宽度
-    [MsSymbolTypeEnum.keySignature]: true,       // 调号：位置集中但需占空间
-    [MsSymbolTypeEnum.timeSignature]: true,      // 拍号：中等占位量
+export const fixedWidthSymbolContainerMap: Record<MsSymbolTypeEnum, boolean> = {
+    [MsSymbolTypeEnum.clef]: true,
+    [MsSymbolTypeEnum.keySignature]: true,
+    [MsSymbolTypeEnum.timeSignature]: true,
+    [MsSymbolTypeEnum.noteHead]: true,
+    [MsSymbolTypeEnum.noteBar]: true,
+    [MsSymbolTypeEnum.noteTail]: true,
+    [MsSymbolTypeEnum.rest]: true,
+    [MsSymbolTypeEnum.slur]: true,
+    [MsSymbolTypeEnum.tie]: true,
+    [MsSymbolTypeEnum.durationDot]: true,
+    [MsSymbolTypeEnum.accidental_double_flat]: true,
+    [MsSymbolTypeEnum.accidental_flat]: true,
+    [MsSymbolTypeEnum.accidental_natural]: true,
+    [MsSymbolTypeEnum.accidental_sharp]: true,
+    [MsSymbolTypeEnum.accidental_double_sharp]: true,
+    [MsSymbolTypeEnum.tuplet]: true,
+    [MsSymbolTypeEnum.volta]: true,
+
+
+    // ,
+    // ,  // 延音线  延音线只能连接两个音
+    // , // 附点
+    // ,
+    // ,
+    // ,
+    // ,
+    // ,
+    // , // 连音符
+    // , // 反复小房子记号
+    // ,
+    // ,  //
+    // ,
 }
 
 export const KeySignatureTonicSemitones: Record<KeySignatureEnum, number> = {

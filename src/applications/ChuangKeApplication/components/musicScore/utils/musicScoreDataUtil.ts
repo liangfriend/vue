@@ -121,7 +121,7 @@ export function getPreWidthConstantForMsSymbolOnMeasure(msSymbol: MsSymbol, meas
     let preWidthConstant = 0
     for (let j = 0; j < measure.msSymbolArray.length; j++) {
         const curMsSymbol = measure.msSymbolArray[j]
-        if (excludeFixedWidthContainer && fixedWidthSymbolContainerMap[curMsSymbol.type]) continue
+        if (excludeFixedWidthContainer && isFixedWidthSymbolContainerMap(curMsSymbol.type)) continue
         if (curMsSymbol === msSymbol) {
             return preWidthConstant
         }
@@ -153,6 +153,7 @@ export function getTotalWidthConstantOnMeasure(measure: Measure, excludeFixedWid
                 const childMsSymbol = msSymbol.msSymbolArray[k]
                 if (widthRatioConstantMap[childMsSymbol.type]) {
                     totalWidthConstant += widthRatioConstantMap[childMsSymbol.type]
+
                 }
             }
         }

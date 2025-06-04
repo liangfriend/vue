@@ -46,8 +46,10 @@ const svgHref = computed(() => {
   }
 })
 const symbolStyle = computed<CSSProperties>(() => {
+  let height = 0 // 符号的高度度等于小节的高度
+  let width = 0 // 符号的宽高比不变 通过js获取svg的width和height属性得到宽高比
   return {
-    width: `${props.measureHeight / 5}px`,
+    width: `${width}px`,
     height: `${props.measureHeight}px`,
     backgroundColor: 'black',
     mask: `url(${svgHref.value}) no-repeat center`,
