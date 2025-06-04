@@ -41,6 +41,7 @@ const props = defineProps({
 
 const measureStyle = computed(() => {
   return {
+    'width': '100%',
     'display': 'grid',
     'grid-template-rows': '1fr',
     'grid-template-columns': `1fr ${props.strokeWidth}px`,

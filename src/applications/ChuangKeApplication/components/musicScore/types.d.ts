@@ -24,21 +24,21 @@ export declare type BaseSymbol = {
     measureRelativeRect: MeasureRelativeRect;
 }
 export declare type MsSymbol = ({
-    type: MsSymbolTypeEnum.NoteHead,
+    type: MsSymbolTypeEnum.noteHead,
     chronaxie: ChronaxieEnum; // 时值
     musicalAlphabet: MusicalAlphabetEnum; // 音名
 } & BaseSymbol) | ({
-    type: MsSymbolTypeEnum.Clef,
+    type: MsSymbolTypeEnum.clef,
     clef: ClefEnum
 } & BaseSymbol) | ({
-    type: MsSymbolTypeEnum.TimeSignature,
+    type: MsSymbolTypeEnum.timeSignature,
     timeSignature: TimeSignatureEnum
 } & BaseSymbol) | ({
-    type: MsSymbolTypeEnum.KeySignature,
+    type: MsSymbolTypeEnum.keySignature,
     keySignature: KeySignatureEnum
 } & BaseSymbol) | ({
-    type: Exclude<MsSymbolTypeEnum, MsSymbolTypeEnum.NoteHead | MsSymbolTypeEnum.Clef |
-        MsSymbolTypeEnum.TimeSignature | MsSymbolTypeEnum.KeySignature>,
+    type: Exclude<MsSymbolTypeEnum, MsSymbolTypeEnum.noteHead | MsSymbolTypeEnum.clef |
+        MsSymbolTypeEnum.timeSignature | MsSymbolTypeEnum.keySignature>,
 } & BaseSymbol)
 
 export declare interface Measure {

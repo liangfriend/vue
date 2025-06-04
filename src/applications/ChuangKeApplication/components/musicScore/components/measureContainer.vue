@@ -9,7 +9,7 @@
            :style="singleStaffStyle(singleStaff,multipleStaves)"
            class="singleStaff">
         <div v-for="(measure,measureIndex) in singleStaff.measureArray"
-             :style="measureStyle(measure, singleStaff, multipleStaves)" class="measure"
+             :style="measureSlotStyle(measure, singleStaff, multipleStaves)" class="measureSlot"
              :key="'measure'+measureIndex">
           <!-- 使用作用域插槽，传递 measure 等数据 -->
           <slot
@@ -77,6 +77,11 @@ const getMeasureWidthRatioIndex = (measure: Measure) => {
   let fr = 0;
   measure.msSymbolArray.forEach((msSymbol: MsSymbol) => {
     fr += widthRatioConstantMap[msSymbol.type];
+    if (msSymbol.msSymbolArray) {
+      msSymbol.msSymbolArray.forEach((childMsSymbol: MsSymbol) => {
+        fr += widthRatioConstantMap[childMsSymbol.type];
+      })
+    }
   });
   return fr;
 };
@@ -111,11 +116,9 @@ const measureWidth = computed(() => (measure: Measure, singleStaff: SingleStaff,
   const selfFr = getMeasureWidthRatioIndex(measure);
   return props.width * selfFr / totalFr;
 });
-const measureStyle = computed(() => (measure: Measure, singleStaff: SingleStaff, multipleStaves: MultipleStaves) => {
+const measureSlotStyle = computed(() => (measure: Measure, singleStaff: SingleStaff, multipleStaves: MultipleStaves) => {
   let style: any = {};
   style.height = props.measureHeight + 'px';
-  style['justify-content'] = 'space-evenly';
-  style['grid-auto-flow'] = 'column';
   style.width = measureWidth.value(measure, singleStaff, multipleStaves) + 'px';
   return style;
 });
@@ -127,7 +130,7 @@ const measureStyle = computed(() => (measure: Measure, singleStaff: SingleStaff,
   grid-template-rows: 1fr;
 }
 
-.measure {
+.measureSlot {
   display: grid;
   position: relative;
 }

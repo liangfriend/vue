@@ -51,7 +51,7 @@ const props = defineProps({
 const bottom = computed(() => {
   if (!props.msSymbol) return 0
   switch (props.msSymbol.type) {
-    case MsSymbolTypeEnum.NoteHead: {
+    case MsSymbolTypeEnum.noteHead: {
       if (!props.msSymbol || !props.measure || !props.singleStaff) return 0
       const clef = getClef(props.measure, props.singleStaff, props.msSymbol)
       if (clef) {
@@ -99,8 +99,9 @@ function getWidth(msSymbol: MsSymbol, measure: Measure, singleStaff: SingleStaff
 
   return preWidthConstantOnMeasure / totalWidthConstantOnMeasure * 100 + '%'
 }
+
 function getClef(measure: Measure, singleStaff: SingleStaff, noteHead: Extract<MsSymbol, {
-  type: MsSymbolTypeEnum.NoteHead
+  type: MsSymbolTypeEnum.noteHead
 }>): ClefEnum | null {
 
 
@@ -115,15 +116,15 @@ function getClef(measure: Measure, singleStaff: SingleStaff, noteHead: Extract<M
       if (childMsSymbolArray) {
         // 寻找最近的音符上的谱号信息
         for (let k = 0; j < childMsSymbolArray.length; j++) {
-          if (childMsSymbolArray[k].type === MsSymbolTypeEnum.Clef) {
-            const clefSymbol = childMsSymbolArray[k] as Extract<MsSymbol, { type: MsSymbolTypeEnum.Clef }>
+          if (childMsSymbolArray[k].type === MsSymbolTypeEnum.clef) {
+            const clefSymbol = childMsSymbolArray[k] as Extract<MsSymbol, { type: MsSymbolTypeEnum.clef }>
             clef = clefSymbol.clef
             break;
           }
         }
       }
       // 寻找小节上的谱号信息
-      if (curMsSymbol.type === MsSymbolTypeEnum.Clef) {
+      if (curMsSymbol.type === MsSymbolTypeEnum.clef) {
         clef = curMsSymbol.clef
       }
     }

@@ -6,54 +6,41 @@
 import * as Tone from "tone";
 import {MusicScore} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
-    ChronaxieEnum,
-    MusicalAlphabetEnum, NoteTypeEnum
+    ChronaxieEnum, MsSymbolTypeEnum,
+    MusicalAlphabetEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
-enum CacheType {
-    toneSequence,
-    url
-}
 
 type ToneSequence = {
-    type: string | number,
     note: string,
     duration: string,
     time: string | number // Tone中的相对时间单位,节拍数。 1 = 4n 这个不会改变，永远是1 = 4n
 }
 type MusicDataType = string | ToneSequence[] | MusicScore
 type CacheDataType = {
-    type: CacheType.url,
-    data: Exclude<MusicDataType, ToneSequence[] | MusicScore>,
-    player: Tone.Player
-} | {
-    type: CacheType.toneSequence,
     data: Exclude<MusicDataType, string>,
     synth: Tone.Synth,
     part: Tone.Part
 }
 
-// 支持三种类型缓存，mp3、wav等音频文件，data-url或者tone生成的播放序列。
+// 支持一种类型缓存，tone生成的播放序列。
 const cacheMap = new Map<string, CacheDataType>();
 
 // 播放
 async function play(key: string) {
     const data = cacheMap.get(key);
     if (!data) {
-        console.warn(`No music data found for key: ${key}`);
+        console.warn(`找不到缓存的播放序列，key: ${key}`);
         return;
     }
 
     await Tone.start();
 
-    if (data.type === CacheType.toneSequence) {
-        Tone.getTransport().stop();
-        data.part.stop();
-        data.part.start(0);
-        Tone.getTransport().start();
-    } else if (data.type === CacheType.url) {
-        data.player.start();
-    }
+    Tone.getTransport().stop();
+    data.part.stop();
+    data.part.start(0);
+    Tone.getTransport().start();
+
 }
 
 // 暂停
@@ -61,11 +48,8 @@ function pause(key: string) {
     const data = cacheMap.get(key);
     if (!data) return;
 
-    if (data.type === CacheType.toneSequence) {
-        Tone.getTransport().pause();
-    } else if (data.type === CacheType.url) {
-        console.error('音频目前不支持播放')
-    }
+    Tone.getTransport().pause();
+
 }
 
 // 恢复播放
@@ -73,11 +57,8 @@ function resume(key: string) {
     const data = cacheMap.get(key);
     if (!data) return;
 
-    if (data.type === CacheType.toneSequence) {
-        Tone.getTransport().start();
-    } else if (data.type === CacheType.url) {
-        data.player.start();
-    }
+    Tone.getTransport().start();
+
 }
 
 // 停止
@@ -85,12 +66,9 @@ function stop(key: string) {
     const data = cacheMap.get(key);
     if (!data) return;
 
-    if (data.type === CacheType.toneSequence) {
-        data.part.stop();
-        Tone.getTransport().stop();
-    } else if (data.type === CacheType.url) {
-        data.player.stop();
-    }
+    data.part.stop();
+    Tone.getTransport().stop();
+
 }
 
 // 添加音乐数据到缓存
@@ -104,7 +82,6 @@ async function addMusicToMap(key: string, data: MusicDataType, callback?: () => 
             synth.triggerAttackRelease(note.note, note.duration, time);
         }, data)
         cacheData = {
-            type: CacheType.toneSequence,
             data: data,
             part: tonePart,
             synth: synth
@@ -121,20 +98,10 @@ async function addMusicToMap(key: string, data: MusicDataType, callback?: () => 
             }, toneSequence)
             tonePart.loop = false; // ✅ 确保它会只执行一次而不是静默
             cacheData = {
-                type: CacheType.toneSequence,
                 data: data,
                 part: tonePart,
                 synth: synth
             }
-        } else { // 如果是url, 加载音频
-            const player = new Tone.Player().toDestination();
-            await player.load(data); // 等待加载完成
-            cacheData = {
-                type: CacheType.url,
-                data: data,
-                player: player
-            };
-
         }
     }
 
@@ -146,14 +113,8 @@ async function addMusicToMap(key: string, data: MusicDataType, callback?: () => 
 function removeMusicFromMap(key: string) {
     const data = cacheMap.get(key);
     if (!data) return;
-
-    if (data.type === CacheType.toneSequence) {
-        data.part.dispose();
-        data.synth.dispose();
-    } else if (data.type === CacheType.url) {
-        data.player.dispose();
-    }
-
+    data.part.dispose();
+    data.synth.dispose();
     cacheMap.delete(key);
 }
 
@@ -172,11 +133,7 @@ const chronaxieToDurationMap: Record<ChronaxieEnum, string> = {
     [ChronaxieEnum.eighth]: '8n',
     [ChronaxieEnum.sixteenth]: '16n',
 };
-// Tone 识别的音符类型
-const noteTypeMap = {
-    [NoteTypeEnum.normal]: 'note',
-    [NoteTypeEnum.rest]: 'rest',
-}
+
 
 function durationToBeats(duration: string): number {
     // 拍子表，对应每种基础音符的拍数（以4n为1拍）
@@ -217,49 +174,25 @@ function musicScoreToToneSequence(musicData: MusicScore): ToneSequence[] {
     for (const multiStaff of musicData.multipleStavesArray) {
         for (const singleStaff of multiStaff.singleStaffArray) {
             for (const measure of singleStaff.measureArray) {
-                for (const note of measure.noteArray) {
-                    // 跳过休止符
-                    if (note.type === NoteTypeEnum.rest) continue;
+                for (const msSymbol of measure.msSymbolArray) {
+                    if (msSymbol.type === MsSymbolTypeEnum.noteHead) {
+                        // 构造音名（暂不考虑变音符）
+                        let noteName: string = msSymbol.musicalAlphabet;
 
-                    // 构造音名（暂不考虑变音符）
-                    let noteName: string = note.musicalAlphabet;
-                    if (note.accidental && note.accidental !== 'none') {
-                        switch (note.accidental) {
-                            case 'sharp':
-                                noteName += '#';
-                                break;
-                            case 'flat':
-                                noteName += 'b';
-                                break;
-                            case 'doubleSharp':
-                                noteName += '##';
-                                break;
-                            case 'doubleFlat':
-                                noteName += 'bb';
-                                break;
-                            // 其他变音暂不处理
-                        }
+
+                        // 时值转换
+                        let duration = chronaxieToDurationMap[msSymbol.chronaxie as ChronaxieEnum] || '4n';
+
+
+                        sequence.push({
+                            note: noteName,
+                            duration,
+                            time: accumulatorTime,
+                        });
+                        accumulatorTime += durationToBeats(duration)
+
                     }
 
-                    // 时值转换
-                    let duration = chronaxieToDurationMap[note.chronaxie as ChronaxieEnum] || '4n';
-
-                    // 附点处理（1 个附点 = 原始时值 * 1.5，两个附点 *1.75）
-                    if (note.augmentationDot === 1) {
-                        duration += '.';
-                    } else if (note.augmentationDot >= 2) {
-                        // Tone 不支持两个附点直接标记，先转换为更小时值 + 多个事件处理更合适
-                        duration += '..'; // 虽不完全支持，但可保留标记
-                    }
-                    const noteType = noteTypeMap[note.type]
-
-                    sequence.push({
-                        type: noteType,
-                        note: noteName,
-                        duration,
-                        time: accumulatorTime,
-                    });
-                    accumulatorTime += durationToBeats(duration)
                 }
             }
         }

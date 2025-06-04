@@ -25,10 +25,10 @@ const props = defineProps({
 
 const svgHref = computed(() => {
   switch (props.symbol?.type) {
-    case MsSymbolTypeEnum.NoteHead: {
+    case MsSymbolTypeEnum.noteHead: {
       return noteHeadSvg
     }
-    case MsSymbolTypeEnum.Clef: {
+    case MsSymbolTypeEnum.clef: {
       if (props.symbol.clef === ClefEnum.treble) {
         return trebleClefSvg
       } else if (props.symbol.clef === ClefEnum.alto) {

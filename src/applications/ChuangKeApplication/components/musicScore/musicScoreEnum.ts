@@ -5,13 +5,21 @@ export enum ClefEnum {
 }
 
 export enum KeySignatureEnum {
-    c = 'c',
-    d = 'd',
-    e = 'e',
-    f = 'f',
-    g = 'g',
-    a = 'a',
-    b = 'b',
+    Cb = "Cb",
+    Gb = "Gb",
+    Db = "Db",
+    Ab = "Ab",
+    Eb = "Eb",
+    Bb = "Bb",
+    F = "F",
+    C = "C",
+    G = "G",
+    D = "D",
+    A = "A",
+    E = "E",
+    B = "B",
+    'F#' = "F#",
+    'C#' = "C#"
 }
 
 export enum TimeSignatureEnum {
@@ -19,11 +27,6 @@ export enum TimeSignatureEnum {
     '3/4' = '3/4',
 }
 
-//音符类别
-export enum NoteTypeEnum {
-    normal = 1,
-    rest = 2
-}
 
 export enum MusicalAlphabetEnum {
     C1 = 'C1',
@@ -53,6 +56,7 @@ export enum MusicalAlphabetEnum {
     F4 = 'F4',
     G4 = 'G4',
     A4 = 'A4',
+    Bb4 = 'Bb4',
     B4 = 'B4',
     C5 = 'C5',
     D5 = 'D5',
@@ -117,31 +121,31 @@ export enum ChronaxieEnum {
 
 // 符号类型
 export enum MsSymbolTypeEnum {
-    NoteHead, // 线谱指音符头， 简谱指音符
-    NoteBar,
-    NoteTail,
-    Rest,
-    Slur, // 圆滑线  不同音高
-    Tie,  // 延音线  延音线只能连接两个音
-    DurationDot, // 附点
-    Accidental_double_flat,
-    Accidental_flat,
-    Accidental_natural,
-    Accidental_sharp,
-    Accidental_double_sharp,
-    Tuplet, // 连音符
-    Volta, // 反复小房子记号
-    Clef,
-    KeySignature,  //
-    TimeSignature,
+    noteHead, // 线谱指音符头， 简谱指音符
+    noteBar,
+    noteTail,
+    rest,
+    slur, // 圆滑线  不同音高
+    tie,  // 延音线  延音线只能连接两个音
+    durationDot, // 附点
+    accidental_double_flat,
+    accidental_flat,
+    accidental_natural,
+    accidental_sharp,
+    accidental_double_sharp,
+    tuplet, // 连音符
+    volta, // 反复小房子记号
+    clef,
+    keySignature,  //
+    timeSignature,
 }
 
 // 曲谱展示模式
 export enum MusicScoreShowModeEnum {
-    StandardStaff,        // 五线谱
-    NumberNotation,      // 简谱（数字谱）
-    DualNotation,          // 简线双谱（五线+简谱）
-    RhythmNotation,      // 节奏谱（主要显示节奏）
-    Tablature,                 // 简谱形式的吉他/尤克里里谱（可选）
-    Percussion,               // 打击乐谱（可选）
+    standardStaff,        // 五线谱
+    numberNotation,      // 简谱（数字谱）
+    dualNotation,          // 简线双谱（五线+简谱）
+    rhythmNotation,      // 节奏谱（主要显示节奏）
+    tablature,                 // 简谱形式的吉他/尤克里里谱（可选）
+    percussion,               // 打击乐谱（可选）
 }

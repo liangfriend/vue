@@ -28,7 +28,8 @@ const router = useRouter()
 const wb: Ref<WBElement> = ref(null!);
 const ms: Ref<HTMLElement> = ref(null!)
 const play = async () => {
-
+// 存储播放序列
+  await msPlayUtils.addMusicToMap(MusicMapKey.CMK, musicScoreData.value)
   await msPlayUtils.play(MusicMapKey.CMK)
 };
 const pause = () => {
