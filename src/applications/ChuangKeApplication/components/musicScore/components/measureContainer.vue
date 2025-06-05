@@ -27,14 +27,15 @@
   </div>
 </template>
 <script setup lang="ts">
-import {computed} from "vue";
 import type {PropType} from 'vue';
-import type {
-  SingleStaff,
-  Measure,
-  MultipleStaves, MusicScore, MsSymbol
-} from "../types";
-import {widthRatioConstantMap} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
+import {computed} from "vue";
+import type {Measure, MsSymbol, MultipleStaves, MusicScore, SingleStaff, WidthConstant} from "../types";
+import {
+  getWidthConstantInMeasure, getWidthConstantInSingleStaff, getWidthFixedContainerWidthSumInMeasure,
+  getWidthFixedContainerWidthSumInSingleStaff
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
+import {MsSymbolInformationMap} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
+import {MsSymbolCategoryEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 const props = defineProps({
   musicScoreData: {
@@ -70,33 +71,6 @@ const props = defineProps({
     default: 1
   },
 });
-
-//动态style
-//获取一个小节的宽度占比常数
-const getMeasureWidthRatioIndex = (measure: Measure) => {
-  let fr = 0;
-  measure.msSymbolArray.forEach((msSymbol: MsSymbol) => {
-    fr += widthRatioConstantMap[msSymbol.type];
-    if (msSymbol.msSymbolArray) {
-      msSymbol.msSymbolArray.forEach((childMsSymbol: MsSymbol) => {
-        fr += widthRatioConstantMap[childMsSymbol.type];
-      })
-    }
-  });
-  return fr;
-};
-//获取一个单谱表下宽度占比常数
-const getSingleStaffWidthRatioIndex = (singleStaffStyle: SingleStaff) => {
-  let fr = 0;
-  const distribution = [];
-  singleStaffStyle.measureArray.forEach((measure: Measure) => {
-    fr += getMeasureWidthRatioIndex(measure);
-    distribution.push(measure);
-  });
-  return fr;
-};
-
-
 const MultipleStavesStyle = computed(() => (MultipleStaves: MultipleStaves) => {
   return {
     'grid-template-rows': `repeat(${MultipleStaves.singleStaffArray.length},1fr)`,
@@ -112,9 +86,11 @@ const singleStaffStyle = computed(() => (singleStaff: SingleStaff, _multipleStav
   };
 });
 const measureWidth = computed(() => (measure: Measure, singleStaff: SingleStaff, _multipleStaves: MultipleStaves) => {
-  const totalFr = getSingleStaffWidthRatioIndex(singleStaff);
-  const selfFr = getMeasureWidthRatioIndex(measure);
-  return props.width * selfFr / totalFr;
+  const totalSingleStaffWidthConstant = getWidthConstantInSingleStaff(singleStaff,);
+  const totalMeasureWidthConstant = getWidthConstantInMeasure(measure,);
+  const fixedContainerWidthInSngleStaff = getWidthFixedContainerWidthSumInSingleStaff(singleStaff, props.measureHeight)
+  const fixedContainerWidthInMeasure = getWidthFixedContainerWidthSumInMeasure(measure, props.measureHeight)
+  return (props.width - fixedContainerWidthInSngleStaff) / totalSingleStaffWidthConstant * totalMeasureWidthConstant + fixedContainerWidthInMeasure;
 });
 const measureSlotStyle = computed(() => (measure: Measure, singleStaff: SingleStaff, multipleStaves: MultipleStaves) => {
   let style: any = {};

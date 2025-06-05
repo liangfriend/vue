@@ -24,13 +24,16 @@ import {computed, CSSProperties, onMounted, PropType} from "vue";
 import {
   ClefEnum,
   MsSymbolCategoryEnum,
+  MsSymbolContainerTypeEnum,
   MsSymbolTypeEnum,
   MusicScoreRegionEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import msSymbolVue from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbol.vue";
 import {
-  calculationOfStaffRegion, getWidthFixedContainerWidthSumInMeasure,
-  getWidthConstantInMeasure
+  calculationOfStaffRegion,
+  getWidthConstantInMeasure,
+  getWidthConstantInMsSymbol,
+  getWidthFixedContainerWidthSumInMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {MsSymbolInformationMap} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 
@@ -46,6 +49,10 @@ const props = defineProps({
   measure: {
     type: Object as PropType<Measure>,
   },
+  measureWidth: {
+    type: Number,
+    default: 200
+  },
   singleStaff: {
     type: Object as PropType<SingleStaff>,
   },
@@ -54,24 +61,6 @@ const props = defineProps({
   }
 })
 
-const bottom = computed(() => {
-  if (!props.msSymbol) return 0
-  switch (props.msSymbol.type) {
-    case MsSymbolTypeEnum.noteHead: {
-      if (!props.msSymbol || !props.measure || !props.singleStaff) return 0
-      const clef = getClef(props.measure, props.singleStaff, props.msSymbol)
-      if (clef) {
-        const noteRegion: MusicScoreRegionEnum = calculationOfStaffRegion(clef, props.msSymbol.musicalAlphabet)
-        return staffRegionToBottom(noteRegion, props.measureHeight)
-      }
-      return 0
-    }
-    default: {
-      return 0
-    }
-
-  }
-});
 const mainSymbolAspectRatio = computed<number>(() => {
   if (!props.msSymbol?.type) return 1
   // 单小节符号，赋值
@@ -87,40 +76,72 @@ const msSymbolSlotStyle = computed<CSSProperties>(() => {
     return {bottom: `${bottom.value}px`}
   }
 
-  let width = 0 // 定宽容器的宽度等于主符号宽度（通过调用符号组件暴露的获取宽高比方法获取宽高比），非定宽容器宽度通过计算宽度系数设置
-  const mainSymbolInformation = MsSymbolInformationMap[props.msSymbol.type]
-  if (mainSymbolInformation.category === MsSymbolCategoryEnum.singleMeasure && mainSymbolInformation.containerIsFixed) { // 如果是定宽容器
 
-    width = props.measureHeight * mainSymbolInformation.aspectRatio
-  } else { // 如果是变宽容器  宽度 = (小节宽度(100%) - 定宽容器宽度) / (变宽容器宽度系数和 * 当前容器宽度系数)
-    const fixedSymbolContainerSum = getWidthFixedContainerWidthSumInMeasure(props.measure, props.measureHeight)
-    const totalWidthConstantOfFixedContainerInMeasure = getWidthConstantInMeasure(props.msSymbol, props.measure, true, false)
-    width = `calc(100% - ${fixedSymbolContainerSum / totalWidthConstantOfFixedContainerInMeasure})`
-  }
   return {
-    left: getLeft(props.msSymbol, props.measure, props.singleStaff),
+    left: getLeft(props.msSymbol, props.measure, props.singleStaff, props.measureHeight, props.measureWidth) + 'px',
     height: props.measureHeight + 'px',
-    width: width,
-    bottom: `${bottom.value}px`,
+    width: getWidth(props.msSymbol, props.measure, props.singleStaff, props.measureHeight, props.measureWidth) + 'px',
+    bottom: getBottom(props.msSymbol, props.measure, props.singleStaff, props.measureHeight, props.measureWidth) + 'px',
 
   }
 });
 
-// 符号横坐标计算
-function getLeft(msSymbol: MsSymbol, measure: Measure, singleStaff: SingleStaff): string {
-  const symnbolIndex = measure.msSymbolArray.indexOf(msSymbol)
-  const preWidthConstantOnMeasure = getWidthConstantInMeasure(msSymbol, measure, true, true)
-  const totalWidthConstantOnMeasure = getWidthConstantInMeasure(msSymbol, measure)
+// 符号容器宽度计算
+function getWidth(msSymbol: MsSymbol, measure: Measure, singleStaff: SingleStaff, measureHeight: number, measureWidth: number): number {
+  let width: string | number = 0 // 定宽容器的宽度等于主符号宽度（通过调用符号组件暴露的获取宽高比方法获取宽高比），非定宽容器宽度通过计算宽度系数设置
+  const mainSymbolInformation = MsSymbolInformationMap[msSymbol.type]
+  if ('containerType' in mainSymbolInformation && [MsSymbolContainerTypeEnum.frontFixed, MsSymbolContainerTypeEnum.rearFixed].includes(mainSymbolInformation.containerType)) { // 如果是定宽容器
+    width = measureHeight * mainSymbolInformation.aspectRatio
+  } else { // 如果是变宽容器  宽度 = (小节宽度 - 定宽容器宽度) / 变宽容器宽度系数和 * 当前容器宽度系数
+    const fixedSymbolContainerSum = getWidthFixedContainerWidthSumInMeasure(measure, props.measureHeight)
+    const totalWidthConstantOfFixedContainerInMeasure = getWidthConstantInMeasure(measure,)
+    const curMsSymbolWidthConstant = getWidthConstantInMsSymbol(msSymbol)
 
-  return preWidthConstantOnMeasure / totalWidthConstantOnMeasure * 100 + '%'
+    width = (measureWidth - fixedSymbolContainerSum) / totalWidthConstantOfFixedContainerInMeasure * curMsSymbolWidthConstant
+  }
+  return width
 }
 
-// 获取变宽符号容器宽度
-function getWidth(msSymbol: MsSymbol, measure: Measure, singleStaff: SingleStaff): string {
+// 符号容器横坐标计算
+function getLeft(msSymbol: MsSymbol, measure: Measure, singleStaff: SingleStaff, measureHeight: number, measureWidth: number): number {
+  let left = 0
+  const mainSymbolInformation = MsSymbolInformationMap[msSymbol.type]
+  if ('containerType' in mainSymbolInformation && [MsSymbolContainerTypeEnum.frontFixed].includes(mainSymbolInformation.containerType)) { // 如果是前置定宽容器 left = 当前符号之前的前置定宽容器的宽度
+    left = getWidthFixedContainerWidthSumInMeasure(measure, measureHeight, 'front', msSymbol)
+  } else if ('containerType' in mainSymbolInformation && [MsSymbolContainerTypeEnum.rearFixed].includes(mainSymbolInformation.containerType)) {// 如果是后置定宽容器 left =  小节宽度 - 小节定宽容器宽度 + 当前小节之前的定宽容器的宽度
 
-  return 0
+    left = measureWidth - getWidthFixedContainerWidthSumInMeasure(measure, measureHeight) + getWidthFixedContainerWidthSumInMeasure(measure, measureHeight, 'all', msSymbol)
+  } else {  //变宽容器 （小节宽度 - 定宽容器宽度）/ 小节变宽容器宽度系数之和 * 截止当前容器小节的宽度系数之和 + 前置定宽容器宽度之和
+    const widthFixedContainerWidthSumInMeasure = getWidthFixedContainerWidthSumInMeasure(measure, measureHeight)
+    const widthConstantInMeasure = getWidthConstantInMeasure(measure)
+    const preWidConstantInMeasure = getWidthConstantInMeasure(measure, msSymbol)
+    const preWidthFixedContainerWidthSumInMeasure = getWidthFixedContainerWidthSumInMeasure(measure, measureHeight, 'front')
+    left = (measureWidth - widthFixedContainerWidthSumInMeasure) / widthConstantInMeasure * preWidConstantInMeasure + preWidthFixedContainerWidthSumInMeasure
+  }
+
+
+  return left
 }
 
+// 符号容器纵坐标计算
+function getBottom(msSymbol: MsSymbol, measure: Measure, singleStaff: SingleStaff, measureHeight: number, measureWidth: number): number {
+  if (!msSymbol) return 0
+  switch (msSymbol.type) {
+    case MsSymbolTypeEnum.noteHead: {
+      if (!msSymbol || !measure || !singleStaff) return 0
+      const clef = getClef(measure, singleStaff, msSymbol)
+      if (clef) {
+        const noteRegion: MusicScoreRegionEnum = calculationOfStaffRegion(clef, msSymbol.musicalAlphabet)
+        return staffRegionToBottom(noteRegion, props.measureHeight)
+      }
+      return 0
+    }
+    default: {
+      return 0
+    }
+
+  }
+}
 function getClef(measure: Measure, singleStaff: SingleStaff, noteHead: Extract<MsSymbol, {
   type: MsSymbolTypeEnum.noteHead
 }>): ClefEnum | null {
@@ -154,8 +175,8 @@ function getClef(measure: Measure, singleStaff: SingleStaff, noteHead: Extract<M
     }
   }
 
-
-  return clef
+  // TODO 完成前置谱号功能，记录好符号顺序必须固定这个原则，并且就算符号顺序固定，也要分清前后置符号，否则没有变宽符号时，就没办法区分前后置了
+  return clef || ClefEnum.treble
 }
 
 function staffRegionToBottom(region: MusicScoreRegionEnum, measureHeight: number): number {

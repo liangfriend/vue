@@ -1,6 +1,6 @@
 // 宽度占比常数。与MsSymbolTypeEnum组合使用
 import {
-    KeySignatureEnum, MsSymbolCategoryEnum,
+    KeySignatureEnum, MsSymbolCategoryEnum, MsSymbolContainerTypeEnum,
     MsSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
@@ -24,49 +24,52 @@ export const KeySignatureTonicSemitones: Record<KeySignatureEnum, number> = {
 };
 
 
-type FixedWidthSymbolInfo = {
-    containerIsFixed: true
+type FixedWidthSymbolInfo = { // 定宽符号没有宽度占比系数
+    containerType: MsSymbolContainerTypeEnum.rearFixed | MsSymbolContainerTypeEnum.frontFixed
     aspectRatio: number
-    widthRatioConstant: 0 // 必须为 0
     category: MsSymbolCategoryEnum.singleMeasure
 }
 
 type VariableWidthSymbolInfo = {
-    containerIsFixed: false
+    containerType: MsSymbolContainerTypeEnum.variable
     aspectRatio: number
     widthRatioConstant: number // 可为任意正数
     category: MsSymbolCategoryEnum.singleMeasure
+}
+type pureFollowSymbolInfo = { // 纯粹的符号跟随类型  没有容器类型属性
+    aspectRatio: number
+    category: MsSymbolCategoryEnum
+    widthRatioConstant: number
 }
 
 type MultipleMeasureSymbolInfo = {
     category: MsSymbolCategoryEnum.multipleMeasure
 }
 
-type MsSymbolInformationMap =
+type MsSymbolInformation =
     | FixedWidthSymbolInfo
     | VariableWidthSymbolInfo
     | MultipleMeasureSymbolInfo
-export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformationMap> = {
+    | pureFollowSymbolInfo
+export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformation> = {
     [MsSymbolTypeEnum.noteHead]: {
-        containerIsFixed: false,
+        containerType: MsSymbolContainerTypeEnum.variable,
         aspectRatio: 0.2,
         widthRatioConstant: 1,
         category: MsSymbolCategoryEnum.singleMeasure,
     },
-    [MsSymbolTypeEnum.noteBar]: {
-        containerIsFixed: false,
-        aspectRatio: 0.1,
-        widthRatioConstant: 0,
+    [MsSymbolTypeEnum.noteBar]: {  // 有些纯粹的符号跟随类型是没有符号容器类型的
+        aspectRatio: 1,
         category: MsSymbolCategoryEnum.singleMeasure,
+        widthRatioConstant: 0
     },
     [MsSymbolTypeEnum.noteTail]: {
-        containerIsFixed: true,
         aspectRatio: 1,
-        widthRatioConstant: 0,
         category: MsSymbolCategoryEnum.singleMeasure,
+        widthRatioConstant: 0
     },
     [MsSymbolTypeEnum.rest]: {// 休止符：不如音符重要，但需占位
-        containerIsFixed: true,
+        containerType: MsSymbolContainerTypeEnum.variable,
         aspectRatio: 1,
         widthRatioConstant: 0,
         category: MsSymbolCategoryEnum.singleMeasure,
@@ -78,40 +81,45 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
         category: MsSymbolCategoryEnum.multipleMeasure,
     },
     [MsSymbolTypeEnum.durationDot]: {// 附点：相对于音符有一点影响
-        containerIsFixed: true,
+
         aspectRatio: 1,
-        widthRatioConstant: 0,
         category: MsSymbolCategoryEnum.singleMeasure,
+        widthRatioConstant: 0.5
     },
     [MsSymbolTypeEnum.accidental_double_flat]: {
-        containerIsFixed: false,
+
         aspectRatio: 1,
-        widthRatioConstant: 0.4,
         category: MsSymbolCategoryEnum.singleMeasure,
+        widthRatioConstant: 0.5
+
     },
     [MsSymbolTypeEnum.accidental_flat]: {
-        containerIsFixed: false,
+
         aspectRatio: 1,
-        widthRatioConstant: 0.4,
         category: MsSymbolCategoryEnum.singleMeasure,
+        widthRatioConstant: 0.5
+
     },
     [MsSymbolTypeEnum.accidental_natural]: {
-        containerIsFixed: false,
+
         aspectRatio: 1,
-        widthRatioConstant: 0.4,
         category: MsSymbolCategoryEnum.singleMeasure,
+        widthRatioConstant: 0.5
+
     },
     [MsSymbolTypeEnum.accidental_sharp]: {
-        containerIsFixed: false,
+
         aspectRatio: 1,
-        widthRatioConstant: 0.4,
         category: MsSymbolCategoryEnum.singleMeasure,
+        widthRatioConstant: 0.5
+
     },
     [MsSymbolTypeEnum.accidental_double_sharp]: {
-        containerIsFixed: false,
+
         aspectRatio: 1,
-        widthRatioConstant: 0.4,
         category: MsSymbolCategoryEnum.singleMeasure,
+        widthRatioConstant: 0.5
+
     },
     [MsSymbolTypeEnum.tuplet]: { // 连音记号
         category: MsSymbolCategoryEnum.multipleMeasure,
@@ -119,22 +127,19 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
     [MsSymbolTypeEnum.volta]: {  // 反复记号小房子
         category: MsSymbolCategoryEnum.multipleMeasure,
     },
-    [MsSymbolTypeEnum.clef]: {
-        containerIsFixed: true,
+    [MsSymbolTypeEnum.clef]: { // 谱号有点特殊，虽然是后置的，但是在小节索引为0时，也有可能前置
+        containerType: MsSymbolContainerTypeEnum.rearFixed,
         aspectRatio: 0.6,
-        widthRatioConstant: 0,
         category: MsSymbolCategoryEnum.singleMeasure,
     },
     [MsSymbolTypeEnum.timeSignature]: {
-        containerIsFixed: true,
+        containerType: MsSymbolContainerTypeEnum.frontFixed,
         aspectRatio: 0.6,
-        widthRatioConstant: 0,
         category: MsSymbolCategoryEnum.singleMeasure,
     },
     [MsSymbolTypeEnum.keySignature]: {
-        containerIsFixed: true,
+        containerType: MsSymbolContainerTypeEnum.frontFixed,
         aspectRatio: 0.6,
-        widthRatioConstant: 0,
         category: MsSymbolCategoryEnum.singleMeasure,
     },
 }

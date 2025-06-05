@@ -56,15 +56,14 @@ const aspectRatio = computed<number>(() => {
   if (!props.msSymbol?.type) return 1
   // 单小节符号，赋值
   const information = MsSymbolInformationMap[props.msSymbol.type]
-  if (information.category === MsSymbolCategoryEnum.singleMeasure) {
+  if ('aspectRatio' in information) {
     return information.aspectRatio
   }
   return 1
 })
 
 const msSymbolStyle = computed<CSSProperties>(() => {
-  let height = 0 // 符号的高度度等于小节的高度
-  let width = 0 // 符号的宽高比不变 通过js获取svg的width和height属性得到宽高比
+
   return {
     width: `${props.measureHeight * aspectRatio.value}px`,
     height: `${props.measureHeight}px`,

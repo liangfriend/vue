@@ -21,6 +21,7 @@
         <ms-symbol-slot v-for="(msSymbol,symbolIndex) in measure.msSymbolArray"
                         :msSymbol="msSymbol"
                         :measure="measure"
+                        :measureWidth="measureWidth"
                         :singleStaff="singleStaff"
                         :multipleStaves="multipleStaves"
                         :measureHeight="measureHeight"

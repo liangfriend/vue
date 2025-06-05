@@ -5,7 +5,7 @@ import {
     MusicalAlphabetEnum,
     MsSymbolTypeEnum,
     TimeSignatureEnum,
-    MusicScoreShowModeEnum
+    MusicScoreShowModeEnum, MsSymbolContainerTypeEnum
 } from "./musicScoreEnum.ts";
 
 
@@ -61,6 +61,6 @@ export declare interface MusicScore {
     showMode: MusicScoreShowModeEnum
 }
 
-export declare type Px = `${number}px`
+
 // 宽度系数
 export declare type WidthConstant = number

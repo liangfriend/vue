@@ -121,7 +121,7 @@ export enum ChronaxieEnum {
 
 // 符号类型
 export enum MsSymbolTypeEnum {
-    noteHead, // 线谱指音符头， 简谱指音符
+    noteHead = 1, // 线谱指音符头， 简谱指音符
     noteBar,
     noteTail,
     rest,
@@ -142,7 +142,7 @@ export enum MsSymbolTypeEnum {
 
 // 曲谱展示模式
 export enum MusicScoreShowModeEnum {
-    standardStaff,        // 五线谱
+    standardStaff = 1,        // 五线谱
     numberNotation,      // 简谱（数字谱）
     dualNotation,          // 简线双谱（五线+简谱）
     rhythmNotation,      // 节奏谱（主要显示节奏）
@@ -152,6 +152,13 @@ export enum MusicScoreShowModeEnum {
 
 // 符号类型
 export enum MsSymbolCategoryEnum {
-    singleMeasure, //单小节类型
+    singleMeasure = 1, //单小节类型
     multipleMeasure, // 跨小节类型
+}
+
+// 符号容器类型
+export enum MsSymbolContainerTypeEnum {
+    frontFixed = 1, // 前置定宽
+    rearFixed, // 后置定宽
+    variable, // 变宽
 }

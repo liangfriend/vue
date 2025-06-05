@@ -1,18 +1,20 @@
 /*渲染 */
 import {
     ClefEnum,
-    MsSymbolCategoryEnum,
+    MsSymbolCategoryEnum, MsSymbolContainerTypeEnum,
     MsSymbolTypeEnum,
     MusicalAlphabetEnum,
     MusicScoreRegionEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {
     Measure,
-    MsSymbol, Px,
+    MsSymbol,
     SingleStaff,
     WidthConstant
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
-import {MsSymbolInformationMap,} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
+import {
+    MsSymbolInformationMap,
+} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 
 
 // 计算出音符所在间线
@@ -117,18 +119,19 @@ export function calculationOfStaffRegion(
 
 }
 
-// 获取当前符号的宽度系数之和
+// --------------------------------------------------------------------------------------------------------------宽度系数
+// 获取当前符号的宽度占比常数之和之和
 export function getWidthConstantInMsSymbol(msSymbol: MsSymbol): WidthConstant {
     let widthConstant: WidthConstant = 0
     const information = MsSymbolInformationMap[msSymbol.type]
-    if (information.category === MsSymbolCategoryEnum.singleMeasure) {
+    if ('widthRatioConstant' in information) {
         widthConstant += information.widthRatioConstant
     }
     if (msSymbol.msSymbolArray) {
         for (let k = 0; k < msSymbol.msSymbolArray.length; k++) {
             const childMsSymbol = msSymbol.msSymbolArray[k]
             const childInformation = MsSymbolInformationMap[childMsSymbol.type]
-            if (childInformation.category === MsSymbolCategoryEnum.singleMeasure) {
+            if ('widthRatioConstant' in childInformation) {
                 widthConstant += childInformation.widthRatioConstant
             }
         }
@@ -136,14 +139,13 @@ export function getWidthConstantInMsSymbol(msSymbol: MsSymbol): WidthConstant {
     return widthConstant
 }
 
-// 获取当前符号在其所在小节的宽度系数之和, 第三个参数判断计算是否排除定宽容器, 第四个符号判断是否只计算当前符号之前的
-export function getWidthConstantInMeasure(msSymbol: MsSymbol, measure: Measure, excludeFixedWidthContainer: boolean = false, onlyPreSymbol: boolean = false): WidthConstant {
+// 获取小节的宽度占比常数之和, 第二个参数判断是否只计算当前符号之前的
+export function getWidthConstantInMeasure(measure: Measure, msSymbol?: MsSymbol | null): WidthConstant {
 
     let widthConstant: WidthConstant = 0
     for (let j = 0; j < measure.msSymbolArray.length; j++) {
         const curMsSymbol = measure.msSymbolArray[j]
-        if (excludeFixedWidthContainer && isFixedWidthSymbolContainerMap(curMsSymbol.type)) continue
-        if (onlyPreSymbol && curMsSymbol === msSymbol) {
+        if (msSymbol && curMsSymbol === msSymbol) {
             return widthConstant
         }
         widthConstant += getWidthConstantInMsSymbol(curMsSymbol)
@@ -152,34 +154,57 @@ export function getWidthConstantInMeasure(msSymbol: MsSymbol, measure: Measure, 
 }
 
 
-// 获取当前符号在其所在单谱表之前的宽度系数之和, 第三个参数判断计算是否排除定宽容器
-export function getPreWidthConstantForMsSymbolOnSingleStaff(msSymbol: MsSymbol, singleStaff: SingleStaff, excludeFixedWidthContainer: boolean = false): WidthConstant {
+// 获取单谱表的宽度占比常数之和, 第二个参数判断是否只计算当前符号之前的
+export function getWidthConstantInSingleStaff(singleStaff: SingleStaff, msSymbol?: MsSymbol | null): WidthConstant {
     let preWidthConstant = 0
     for (let i = 0; i < singleStaff.measureArray.length; i++) {
         const measure = singleStaff.measureArray[i]
-        preWidthConstant += getWidthConstantInMeasure(msSymbol, measure, excludeFixedWidthContainer, true)
+        preWidthConstant += getWidthConstantInMeasure(measure, msSymbol)
     }
     return preWidthConstant
 }
 
-// 获取当前小节内定宽符号容器宽度之和,单位px
-export function getWidthFixedContainerWidthSumInMeasure(measure: Measure, measureHeight: number): number {
+// -----------------------------------------------------------------------------------------------------------------宽度
+// 获取当前小节内定宽符号容器宽度之和,单位px, 第二个参数判断是否只计算当前符号之前的
+export function getWidthFixedContainerWidthSumInMeasure(measure: Measure, measureHeight: number, filter: 'front' | 'rear' | 'all' = 'all', msSymbol?: MsSymbol | null): number {
     let widthSum = 0
-    measure.msSymbolArray.forEach((msSymbol: MsSymbol) => {
-        const information = MsSymbolInformationMap[msSymbol.type]
-        if (information.category === MsSymbolCategoryEnum.singleMeasure && information.containerIsFixed) {
-            widthSum += information.aspectRatio * measureHeight
+    for (let i = 0; i < measure.msSymbolArray.length; i++) {
+        const curMsSymbol: MsSymbol = measure.msSymbolArray[i]
+
+        if (msSymbol === curMsSymbol) {
+            return widthSum
         }
+        const information = MsSymbolInformationMap[curMsSymbol.type]
+        if ('containerType' in information) {
+            if (filter === 'all' && [MsSymbolContainerTypeEnum.frontFixed, MsSymbolContainerTypeEnum.rearFixed].includes(information.containerType)) {
+                widthSum += information.aspectRatio * measureHeight
+            } else if (filter === 'front' && [MsSymbolContainerTypeEnum.frontFixed].includes(information.containerType)) {
+                widthSum += information.aspectRatio * measureHeight
+            } else if (filter === 'rear' && [MsSymbolContainerTypeEnum.rearFixed].includes(information.containerType)) {
+                widthSum += information.aspectRatio * measureHeight
+            }
+
+        }
+    }
+    return widthSum
+}
+
+// 获取单谱表内定宽容器符号宽度之和，单位px
+export function getWidthFixedContainerWidthSumInSingleStaff(singleStaff: SingleStaff, measureHeight: number, filter: 'front' | 'rear' | 'all' = 'all', msSymbol?: MsSymbol | null): number {
+    let widthSum = 0
+    singleStaff.measureArray.forEach((measure: Measure) => {
+        widthSum += getWidthFixedContainerWidthSumInMeasure(measure, measureHeight, filter, msSymbol)
     })
     return widthSum
 }
 
-
+// 获取小节内前置定宽容器符号宽度之和
+// -----------------------------------------------------------------------------------------------------------------其它
 // 是否是定宽容器
 export function isFixedWidthSymbolContainerMap(msSymbolType: MsSymbolTypeEnum): boolean {
     const information = MsSymbolInformationMap[msSymbolType]
-    if (information.category === MsSymbolCategoryEnum.singleMeasure) {
-        return information.containerIsFixed
+    if ('containerType' in information) {
+        return [MsSymbolContainerTypeEnum.frontFixed, MsSymbolContainerTypeEnum.rearFixed].includes(information.containerType)
     }
     return false
 }
