@@ -18,7 +18,8 @@ export declare interface MeasureRelativeRect {
 
 }
 
-export declare type BaseSymbol = {
+
+export declare type BaseMsSymbol = {
     msSymbolArray?: Array<MsSymbol>
     options: musicScoreOptions
     measureRelativeRect: MeasureRelativeRect;
@@ -27,19 +28,19 @@ export declare type MsSymbol = ({
     type: MsSymbolTypeEnum.noteHead,
     chronaxie: ChronaxieEnum; // 时值
     musicalAlphabet: MusicalAlphabetEnum; // 音名
-} & BaseSymbol) | ({
+} & BaseMsSymbol) | ({
     type: MsSymbolTypeEnum.clef,
     clef: ClefEnum
-} & BaseSymbol) | ({
+} & BaseMsSymbol) | ({
     type: MsSymbolTypeEnum.timeSignature,
     timeSignature: TimeSignatureEnum
-} & BaseSymbol) | ({
+} & BaseMsSymbol) | ({
     type: MsSymbolTypeEnum.keySignature,
     keySignature: KeySignatureEnum
-} & BaseSymbol) | ({
+} & BaseMsSymbol) | ({
     type: Exclude<MsSymbolTypeEnum, MsSymbolTypeEnum.noteHead | MsSymbolTypeEnum.clef |
         MsSymbolTypeEnum.timeSignature | MsSymbolTypeEnum.keySignature>,
-} & BaseSymbol)
+} & BaseMsSymbol)
 
 export declare interface Measure {
     msSymbolArray: Array<MsSymbol>
@@ -60,3 +61,6 @@ export declare interface MusicScore {
     showMode: MusicScoreShowModeEnum
 }
 
+export declare type Px = `${number}px`
+// 宽度系数
+export declare type WidthConstant = number

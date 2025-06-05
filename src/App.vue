@@ -2,7 +2,6 @@
 // import * as Tone from "tone";
 //
 // async function testPlay() {
-//   console.log('chicken', 'testPlay')
 //   await Tone.start();
 //   const synth = new Tone.Synth().toDestination();
 //   const part = new Tone.Part((time) => {

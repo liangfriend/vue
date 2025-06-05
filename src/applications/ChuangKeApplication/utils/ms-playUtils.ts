@@ -91,9 +91,7 @@ async function addMusicToMap(key: string, data: MusicDataType, callback?: () => 
         if (typeof data === 'object') { // 如果是musicScoreData, 转换出ToneSequence序列
             const synth = new Tone.Synth().toDestination();
             const toneSequence: ToneSequence[] = musicScoreToToneSequence(data)
-            console.log('chicken', toneSequence)
             const tonePart: Tone.Part = new Tone.Part((time, note: ToneSequence) => {
-                console.log('chicken', '播放')
                 synth.triggerAttackRelease(note.note, note.duration, time);
             }, toneSequence)
             tonePart.loop = false; // ✅ 确保它会只执行一次而不是静默

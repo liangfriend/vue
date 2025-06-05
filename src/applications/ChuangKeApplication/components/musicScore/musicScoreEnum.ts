@@ -149,3 +149,9 @@ export enum MusicScoreShowModeEnum {
     tablature,                 // 简谱形式的吉他/尤克里里谱（可选）
     percussion,               // 打击乐谱（可选）
 }
+
+// 符号类型
+export enum MsSymbolCategoryEnum {
+    singleMeasure, //单小节类型
+    multipleMeasure, // 跨小节类型
+}

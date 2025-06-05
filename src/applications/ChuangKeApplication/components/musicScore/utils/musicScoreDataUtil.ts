@@ -1,15 +1,18 @@
 /*渲染 */
 import {
     ClefEnum,
-    KeySignatureEnum, MsSymbolTypeEnum,
-    MusicalAlphabetEnum, MusicScoreRegionEnum,
-    TimeSignatureEnum
+    MsSymbolCategoryEnum,
+    MsSymbolTypeEnum,
+    MusicalAlphabetEnum,
+    MusicScoreRegionEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
-import type {Measure, MsSymbol, SingleStaff} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
-    fixedWidthSymbolContainerMap,
-    widthRatioConstantMap
-} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
+    Measure,
+    MsSymbol, Px,
+    SingleStaff,
+    WidthConstant
+} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {MsSymbolInformationMap,} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 
 
 // 计算出音符所在间线
@@ -107,7 +110,6 @@ export function calculationOfStaffRegion(
     if (regionList[regionIndex]) {
         return regionList[regionIndex]
     } else {
-        console.log('chicken', baseIndex, targetIndex)
         console.error("线谱区域识别错误", clef, musicalAlphabet)
         return MusicScoreRegionEnum.line_1;
     }
@@ -115,62 +117,87 @@ export function calculationOfStaffRegion(
 
 }
 
-// 获取当前符号在其所在小节之前的宽度系数之和, 第三个参数判断计算是否排除定宽容器
-export function getPreWidthConstantForMsSymbolOnMeasure(msSymbol: MsSymbol, measure: Measure, excludeFixedWidthContainer: boolean = false) {
+// 获取当前符号的宽度系数之和
+export function getWidthConstantInMsSymbol(msSymbol: MsSymbol): WidthConstant {
+    let widthConstant: WidthConstant = 0
+    const information = MsSymbolInformationMap[msSymbol.type]
+    if (information.category === MsSymbolCategoryEnum.singleMeasure) {
+        widthConstant += information.widthRatioConstant
+    }
+    if (msSymbol.msSymbolArray) {
+        for (let k = 0; k < msSymbol.msSymbolArray.length; k++) {
+            const childMsSymbol = msSymbol.msSymbolArray[k]
+            const childInformation = MsSymbolInformationMap[childMsSymbol.type]
+            if (childInformation.category === MsSymbolCategoryEnum.singleMeasure) {
+                widthConstant += childInformation.widthRatioConstant
+            }
+        }
+    }
+    return widthConstant
+}
 
-    let preWidthConstant = 0
+// 获取当前符号在其所在小节的宽度系数之和, 第三个参数判断计算是否排除定宽容器, 第四个符号判断是否只计算当前符号之前的
+export function getWidthConstantInMeasure(msSymbol: MsSymbol, measure: Measure, excludeFixedWidthContainer: boolean = false, onlyPreSymbol: boolean = false): WidthConstant {
+
+    let widthConstant: WidthConstant = 0
     for (let j = 0; j < measure.msSymbolArray.length; j++) {
         const curMsSymbol = measure.msSymbolArray[j]
         if (excludeFixedWidthContainer && isFixedWidthSymbolContainerMap(curMsSymbol.type)) continue
-        if (curMsSymbol === msSymbol) {
-            return preWidthConstant
+        if (onlyPreSymbol && curMsSymbol === msSymbol) {
+            return widthConstant
         }
-        if (widthRatioConstantMap[curMsSymbol.type]) {
-            preWidthConstant += widthRatioConstantMap[curMsSymbol.type]
-        }
-        if (curMsSymbol.msSymbolArray) {
-            for (let k = 0; k < curMsSymbol.msSymbolArray.length; k++) {
-                const childMsSymbol = curMsSymbol.msSymbolArray[k]
-                if (widthRatioConstantMap[childMsSymbol.type]) {
-                    preWidthConstant += widthRatioConstantMap[childMsSymbol.type]
-                }
-            }
-        }
+        widthConstant += getWidthConstantInMsSymbol(curMsSymbol)
     }
-    return preWidthConstant
+    return widthConstant
 }
 
-// 获取当前符号所在小节的宽度系数之和, 第三个参数判断计算是否排除定宽容器
-export function getTotalWidthConstantOnMeasure(measure: Measure, excludeFixedWidthContainer: boolean = false) {
-    let totalWidthConstant = 0
-    for (let j = 0; j < measure.msSymbolArray.length; j++) {
-        const msSymbol = measure.msSymbolArray[j]
-        if (widthRatioConstantMap[msSymbol.type]) {
-            totalWidthConstant += widthRatioConstantMap[msSymbol.type]
-        }
-        if (msSymbol.msSymbolArray) {
-            for (let k = 0; k < msSymbol.msSymbolArray.length; k++) {
-                const childMsSymbol = msSymbol.msSymbolArray[k]
-                if (widthRatioConstantMap[childMsSymbol.type]) {
-                    totalWidthConstant += widthRatioConstantMap[childMsSymbol.type]
-
-                }
-            }
-        }
-    }
-    return totalWidthConstant
-}
 
 // 获取当前符号在其所在单谱表之前的宽度系数之和, 第三个参数判断计算是否排除定宽容器
-export function getPreWidthConstantForMsSymbolOnSingleStaff(msSymbol: MsSymbol, singleStaff: SingleStaff, excludeFixedWidthContainer: boolean = false) {
+export function getPreWidthConstantForMsSymbolOnSingleStaff(msSymbol: MsSymbol, singleStaff: SingleStaff, excludeFixedWidthContainer: boolean = false): WidthConstant {
     let preWidthConstant = 0
     for (let i = 0; i < singleStaff.measureArray.length; i++) {
         const measure = singleStaff.measureArray[i]
-        preWidthConstant += getPreWidthConstantForMsSymbolOnMeasure(msSymbol, measure)
+        preWidthConstant += getWidthConstantInMeasure(msSymbol, measure, excludeFixedWidthContainer, true)
     }
     return preWidthConstant
 }
 
-export function isFixedWidthSymbolContainerMap(msSymbolType: MsSymbolTypeEnum): boolean {
-    return fixedWidthSymbolContainerMap[msSymbolType] as boolean
+// 获取当前小节内定宽符号容器宽度之和,单位px
+export function getWidthFixedContainerWidthSumInMeasure(measure: Measure, measureHeight: number): number {
+    let widthSum = 0
+    measure.msSymbolArray.forEach((msSymbol: MsSymbol) => {
+        const information = MsSymbolInformationMap[msSymbol.type]
+        if (information.category === MsSymbolCategoryEnum.singleMeasure && information.containerIsFixed) {
+            widthSum += information.aspectRatio * measureHeight
+        }
+    })
+    return widthSum
 }
+
+
+// 是否是定宽容器
+export function isFixedWidthSymbolContainerMap(msSymbolType: MsSymbolTypeEnum): boolean {
+    const information = MsSymbolInformationMap[msSymbolType]
+    if (information.category === MsSymbolCategoryEnum.singleMeasure) {
+        return information.containerIsFixed
+    }
+    return false
+}
+
+// 通过js动态的获取svg的aspectRatio
+// export async function getAspectRatioOfSvg(svgUrl: string): Promise<number | null> {
+//     const res = await fetch(svgUrl)
+//     const text = await res.text()
+//     const parser = new DOMParser()
+//     const doc = parser.parseFromString(text, "image/svg+xml")
+//     const svg = doc.querySelector("svg")
+//     if (!svg) return null
+//
+//     const width = parseFloat(svg.getAttribute("width") || "")
+//     const height = parseFloat(svg.getAttribute("height") || "")
+//     if (!isNaN(width) && !isNaN(height) && height !== 0) {
+//         return width / height
+//     }
+//
+//     return null
+// }

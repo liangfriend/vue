@@ -1,9 +1,12 @@
 <template>
   <div class="msSymbolContainer p-stackItem"
-       :style="msSymbolContainerStyle">
-    <msSymbolVue v-if="msSymbol" :measureHeight="measureHeight" :symbol="msSymbol"></msSymbolVue>
+
+       :style="msSymbolSlotStyle">
+    <msSymbolVue v-if="msSymbol" ref="mainMsSymbolRef" :measureHeight="measureHeight"
+                 :ms-symbol="msSymbol"></msSymbolVue>
     <template v-if="msSymbol?.msSymbolArray">
-      <msSymbolVue :measureHeight="measureHeight" v-for="item in msSymbol.msSymbolArray" :symol="item"></msSymbolVue>
+      <msSymbolVue :measureHeight="measureHeight" v-for="item in msSymbol.msSymbolArray"
+                   :ms-symbol="item"></msSymbolVue>
     </template>
   </div>
 
@@ -13,20 +16,23 @@
 <script setup lang="ts">
 import type {
   Measure,
+  MsSymbol,
   MultipleStaves,
   SingleStaff,
-  MsSymbol,
 } from "@/applications/ChuangKeApplication/components/musicScore/types.d.ts";
 import {computed, CSSProperties, onMounted, PropType} from "vue";
 import {
   ClefEnum,
+  MsSymbolCategoryEnum,
   MsSymbolTypeEnum,
   MusicScoreRegionEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import msSymbolVue from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbol.vue";
 import {
-  calculationOfStaffRegion, getPreWidthConstantForMsSymbolOnMeasure, getTotalWidthConstantOnMeasure
+  calculationOfStaffRegion, getWidthFixedContainerWidthSumInMeasure,
+  getWidthConstantInMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
+import {MsSymbolInformationMap} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 
 const props = defineProps({
   msSymbol: {
@@ -56,7 +62,6 @@ const bottom = computed(() => {
       const clef = getClef(props.measure, props.singleStaff, props.msSymbol)
       if (clef) {
         const noteRegion: MusicScoreRegionEnum = calculationOfStaffRegion(clef, props.msSymbol.musicalAlphabet)
-        console.log('chicken', staffRegionToBottom(noteRegion, props.measureHeight))
         return staffRegionToBottom(noteRegion, props.measureHeight)
       }
       return 0
@@ -67,19 +72,35 @@ const bottom = computed(() => {
 
   }
 });
-const msSymbolContainerStyle = computed<CSSProperties>(() => {
+const mainSymbolAspectRatio = computed<number>(() => {
+  if (!props.msSymbol?.type) return 1
+  // 单小节符号，赋值
+  const information = MsSymbolInformationMap[props.msSymbol.type]
+  if (information.category === MsSymbolCategoryEnum.singleMeasure) {
+    return information.aspectRatio
+  }
+  return 1
+})
+const msSymbolSlotStyle = computed<CSSProperties>(() => {
   if (!props.msSymbol || !props.measure || !props.singleStaff) {
-    console.log('chicken', props.msSymbol, props.measure, props.singleStaff)
     console.error("缺少必要的参数，坐标计算出错")
     return {bottom: `${bottom.value}px`}
   }
-  let height = 0 // 符号容器的高度度等于小节的高度
-  let width = 0 // 定宽容器的宽度等于主符号宽度（通过调用符号组件暴露的获取宽高比方法获取宽高比），非定宽容器宽度通过计算宽度系数设置
 
+  let width = 0 // 定宽容器的宽度等于主符号宽度（通过调用符号组件暴露的获取宽高比方法获取宽高比），非定宽容器宽度通过计算宽度系数设置
+  const mainSymbolInformation = MsSymbolInformationMap[props.msSymbol.type]
+  if (mainSymbolInformation.category === MsSymbolCategoryEnum.singleMeasure && mainSymbolInformation.containerIsFixed) { // 如果是定宽容器
+
+    width = props.measureHeight * mainSymbolInformation.aspectRatio
+  } else { // 如果是变宽容器  宽度 = (小节宽度(100%) - 定宽容器宽度) / (变宽容器宽度系数和 * 当前容器宽度系数)
+    const fixedSymbolContainerSum = getWidthFixedContainerWidthSumInMeasure(props.measure, props.measureHeight)
+    const totalWidthConstantOfFixedContainerInMeasure = getWidthConstantInMeasure(props.msSymbol, props.measure, true, false)
+    width = `calc(100% - ${fixedSymbolContainerSum / totalWidthConstantOfFixedContainerInMeasure})`
+  }
   return {
     left: getLeft(props.msSymbol, props.measure, props.singleStaff),
     height: props.measureHeight + 'px',
-    width: getWidth(props.msSymbol, props.measure, props.singleStaff),
+    width: width,
     bottom: `${bottom.value}px`,
 
   }
@@ -88,18 +109,16 @@ const msSymbolContainerStyle = computed<CSSProperties>(() => {
 // 符号横坐标计算
 function getLeft(msSymbol: MsSymbol, measure: Measure, singleStaff: SingleStaff): string {
   const symnbolIndex = measure.msSymbolArray.indexOf(msSymbol)
-  const preWidthConstantOnMeasure = getPreWidthConstantForMsSymbolOnMeasure(msSymbol, measure)
-  const totalWidthConstantOnMeasure = getTotalWidthConstantOnMeasure(measure)
+  const preWidthConstantOnMeasure = getWidthConstantInMeasure(msSymbol, measure, true, true)
+  const totalWidthConstantOnMeasure = getWidthConstantInMeasure(msSymbol, measure)
 
   return preWidthConstantOnMeasure / totalWidthConstantOnMeasure * 100 + '%'
 }
 
+// 获取变宽符号容器宽度
 function getWidth(msSymbol: MsSymbol, measure: Measure, singleStaff: SingleStaff): string {
-  const symbolIndex = measure.msSymbolArray.indexOf(msSymbol)
-  const preWidthConstantOnMeasure = getPreWidthConstantForMsSymbolOnMeasure(msSymbol, measure)
-  const totalWidthConstantOnMeasure = getTotalWidthConstantOnMeasure(measure)
 
-  return preWidthConstantOnMeasure / totalWidthConstantOnMeasure * 100 + '%'
+  return 0
 }
 
 function getClef(measure: Measure, singleStaff: SingleStaff, noteHead: Extract<MsSymbol, {

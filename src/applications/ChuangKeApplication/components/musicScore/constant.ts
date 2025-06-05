@@ -1,65 +1,9 @@
 // 宽度占比常数。与MsSymbolTypeEnum组合使用
 import {
-    KeySignatureEnum,
+    KeySignatureEnum, MsSymbolCategoryEnum,
     MsSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
-// 符号宽度系数映射
-export const widthRatioConstantMap = {
-    [MsSymbolTypeEnum.noteHead]: 1,             // 音符头：主要决定小节宽度
-    [MsSymbolTypeEnum.noteBar]: 0,              // 符杠（Bar）：附属于音符，宽度不单独计算
-    [MsSymbolTypeEnum.noteTail]: 0,             // 符尾（旗子）：视觉装饰，不影响布局
-    [MsSymbolTypeEnum.rest]: 0.6,               // 休止符：不如音符重要，但需占位
-    [MsSymbolTypeEnum.slur]: 0,                 // 圆滑线：跨音符装饰线，不占宽度
-    [MsSymbolTypeEnum.tie]: 0,                  // 延音线：连接两个音符，不影响宽度
-    [MsSymbolTypeEnum.durationDot]: 0.2,        // 附点：相对于音符有一点影响
-    [MsSymbolTypeEnum.accidental_double_flat]: 0.4,  // 重降
-    [MsSymbolTypeEnum.accidental_flat]: 0.3,
-    [MsSymbolTypeEnum.accidental_natural]: 0.3,
-    [MsSymbolTypeEnum.accidental_sharp]: 0.3,
-    [MsSymbolTypeEnum.accidental_double_sharp]: 0.4,
-    [MsSymbolTypeEnum.tuplet]: 0.2,             // 连音记号：占一点额外空间
-    [MsSymbolTypeEnum.volta]: 0.5,              // 反复记号小房子：需额外空间标注
-    [MsSymbolTypeEnum.clef]: 0.8,               // 谱号：段首常见，占相对宽度
-    [MsSymbolTypeEnum.keySignature]: 0.6,       // 调号：位置集中但需占空间
-    [MsSymbolTypeEnum.timeSignature]: 0.5,      // 拍号：中等占位量
-}
-
-// 定宽符号容器映射
-export const fixedWidthSymbolContainerMap: Record<MsSymbolTypeEnum, boolean> = {
-    [MsSymbolTypeEnum.clef]: true,
-    [MsSymbolTypeEnum.keySignature]: true,
-    [MsSymbolTypeEnum.timeSignature]: true,
-    [MsSymbolTypeEnum.noteHead]: true,
-    [MsSymbolTypeEnum.noteBar]: true,
-    [MsSymbolTypeEnum.noteTail]: true,
-    [MsSymbolTypeEnum.rest]: true,
-    [MsSymbolTypeEnum.slur]: true,
-    [MsSymbolTypeEnum.tie]: true,
-    [MsSymbolTypeEnum.durationDot]: true,
-    [MsSymbolTypeEnum.accidental_double_flat]: true,
-    [MsSymbolTypeEnum.accidental_flat]: true,
-    [MsSymbolTypeEnum.accidental_natural]: true,
-    [MsSymbolTypeEnum.accidental_sharp]: true,
-    [MsSymbolTypeEnum.accidental_double_sharp]: true,
-    [MsSymbolTypeEnum.tuplet]: true,
-    [MsSymbolTypeEnum.volta]: true,
-
-
-    // ,
-    // ,  // 延音线  延音线只能连接两个音
-    // , // 附点
-    // ,
-    // ,
-    // ,
-    // ,
-    // ,
-    // , // 连音符
-    // , // 反复小房子记号
-    // ,
-    // ,  //
-    // ,
-}
 
 export const KeySignatureTonicSemitones: Record<KeySignatureEnum, number> = {
     [KeySignatureEnum.Cb]: 11,  // B
@@ -78,3 +22,119 @@ export const KeySignatureTonicSemitones: Record<KeySignatureEnum, number> = {
     [KeySignatureEnum['F#']]: 6,   // F#
     [KeySignatureEnum['C#']]: 1    // C#
 };
+
+
+type FixedWidthSymbolInfo = {
+    containerIsFixed: true
+    aspectRatio: number
+    widthRatioConstant: 0 // 必须为 0
+    category: MsSymbolCategoryEnum.singleMeasure
+}
+
+type VariableWidthSymbolInfo = {
+    containerIsFixed: false
+    aspectRatio: number
+    widthRatioConstant: number // 可为任意正数
+    category: MsSymbolCategoryEnum.singleMeasure
+}
+
+type MultipleMeasureSymbolInfo = {
+    category: MsSymbolCategoryEnum.multipleMeasure
+}
+
+type MsSymbolInformationMap =
+    | FixedWidthSymbolInfo
+    | VariableWidthSymbolInfo
+    | MultipleMeasureSymbolInfo
+export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformationMap> = {
+    [MsSymbolTypeEnum.noteHead]: {
+        containerIsFixed: false,
+        aspectRatio: 0.2,
+        widthRatioConstant: 1,
+        category: MsSymbolCategoryEnum.singleMeasure,
+    },
+    [MsSymbolTypeEnum.noteBar]: {
+        containerIsFixed: false,
+        aspectRatio: 0.1,
+        widthRatioConstant: 0,
+        category: MsSymbolCategoryEnum.singleMeasure,
+    },
+    [MsSymbolTypeEnum.noteTail]: {
+        containerIsFixed: true,
+        aspectRatio: 1,
+        widthRatioConstant: 0,
+        category: MsSymbolCategoryEnum.singleMeasure,
+    },
+    [MsSymbolTypeEnum.rest]: {// 休止符：不如音符重要，但需占位
+        containerIsFixed: true,
+        aspectRatio: 1,
+        widthRatioConstant: 0,
+        category: MsSymbolCategoryEnum.singleMeasure,
+    },
+    [MsSymbolTypeEnum.slur]: {// 圆滑线：跨音符装饰线，不占宽度
+        category: MsSymbolCategoryEnum.multipleMeasure,
+    },
+    [MsSymbolTypeEnum.tie]: {// 延音线：连接两个音符，不影响宽度
+        category: MsSymbolCategoryEnum.multipleMeasure,
+    },
+    [MsSymbolTypeEnum.durationDot]: {// 附点：相对于音符有一点影响
+        containerIsFixed: true,
+        aspectRatio: 1,
+        widthRatioConstant: 0,
+        category: MsSymbolCategoryEnum.singleMeasure,
+    },
+    [MsSymbolTypeEnum.accidental_double_flat]: {
+        containerIsFixed: false,
+        aspectRatio: 1,
+        widthRatioConstant: 0.4,
+        category: MsSymbolCategoryEnum.singleMeasure,
+    },
+    [MsSymbolTypeEnum.accidental_flat]: {
+        containerIsFixed: false,
+        aspectRatio: 1,
+        widthRatioConstant: 0.4,
+        category: MsSymbolCategoryEnum.singleMeasure,
+    },
+    [MsSymbolTypeEnum.accidental_natural]: {
+        containerIsFixed: false,
+        aspectRatio: 1,
+        widthRatioConstant: 0.4,
+        category: MsSymbolCategoryEnum.singleMeasure,
+    },
+    [MsSymbolTypeEnum.accidental_sharp]: {
+        containerIsFixed: false,
+        aspectRatio: 1,
+        widthRatioConstant: 0.4,
+        category: MsSymbolCategoryEnum.singleMeasure,
+    },
+    [MsSymbolTypeEnum.accidental_double_sharp]: {
+        containerIsFixed: false,
+        aspectRatio: 1,
+        widthRatioConstant: 0.4,
+        category: MsSymbolCategoryEnum.singleMeasure,
+    },
+    [MsSymbolTypeEnum.tuplet]: { // 连音记号
+        category: MsSymbolCategoryEnum.multipleMeasure,
+    },
+    [MsSymbolTypeEnum.volta]: {  // 反复记号小房子
+        category: MsSymbolCategoryEnum.multipleMeasure,
+    },
+    [MsSymbolTypeEnum.clef]: {
+        containerIsFixed: true,
+        aspectRatio: 0.6,
+        widthRatioConstant: 0,
+        category: MsSymbolCategoryEnum.singleMeasure,
+    },
+    [MsSymbolTypeEnum.timeSignature]: {
+        containerIsFixed: true,
+        aspectRatio: 0.6,
+        widthRatioConstant: 0,
+        category: MsSymbolCategoryEnum.singleMeasure,
+    },
+    [MsSymbolTypeEnum.keySignature]: {
+        containerIsFixed: true,
+        aspectRatio: 0.6,
+        widthRatioConstant: 0,
+        category: MsSymbolCategoryEnum.singleMeasure,
+    },
+}
