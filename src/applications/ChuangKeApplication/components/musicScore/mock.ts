@@ -15,6 +15,11 @@ const data: MusicScore = {
             measureArray: [{
                 options: {},
                 msSymbolArray: [{
+                    clef: ClefEnum.treble,
+                    type: MsSymbolTypeEnum.clef_f,
+                    options: {},
+                    measureRelativeRect: {},
+                }, {
                     keySignature: KeySignatureEnum.F,
                     type: MsSymbolTypeEnum.keySignature,
                     options: {},
@@ -170,13 +175,13 @@ const data: MusicScore = {
                     options: {},
                     measureRelativeRect: {}
                 }, {
-                    musicalAlphabet: MusicalAlphabetEnum.Bb4,
+                    musicalAlphabet: MusicalAlphabetEnum['B-4'],
                     chronaxie: ChronaxieEnum.eighth,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
                     measureRelativeRect: {}
                 }, {
-                    musicalAlphabet: MusicalAlphabetEnum.Bb4,
+                    musicalAlphabet: MusicalAlphabetEnum['B-4'],
                     chronaxie: ChronaxieEnum.eighth,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},

@@ -1,11 +1,13 @@
 /*渲染 */
 import {
+    AccidentalEnum,
+    ChronaxieEnum,
     ClefEnum,
     MsSymbolCategoryEnum, MsSymbolContainerTypeEnum,
     MsSymbolTypeEnum,
-    MusicalAlphabetEnum,
-    MusicScoreRegionEnum
+    MusicalAlphabetEnum, MusicScoreRegionEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+
 import {
     Measure,
     MsSymbol,
@@ -17,55 +19,80 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 
 
-// 计算出音符所在间线
-// export function calculateNotePosition(clef: ClefEnum, keySignature: KeySignatureEnum, musicalAlphabet: MusicalAlphabetEnum): {
-//     position: MusicScoreRegionEnum;
-//     accidental: string   //这个后续可能要去掉，不需要数组，确定唯一position
-// }[] {
-//     const map: Record<string, MusicScoreRegionEnum> = {
-//         'g-c-C4': MusicScoreRegionEnum.space_3,
-//         'g-c-D4': MusicScoreRegionEnum.line_4,
-//         'g-c-E4': MusicScoreRegionEnum.space_4,
-//         'g-c-F4': MusicScoreRegionEnum.line_5,
-//         'g-c-G4': MusicScoreRegionEnum.upper_space_1,
-//         'g-c-A4': MusicScoreRegionEnum.upper_line_1,
-//         'g-c-B4': MusicScoreRegionEnum.upper_space_2,
-//         'g-c-C5': MusicScoreRegionEnum.upper_line_2,
-//         'g-c-D5': MusicScoreRegionEnum.upper_space_3,
-//         'g-c-E5': MusicScoreRegionEnum.upper_line_3,
-//         'g-c-F5': MusicScoreRegionEnum.upper_space_4,
-//         'g-c-G5': MusicScoreRegionEnum.upper_line_4,
-//         'g-c-A5': MusicScoreRegionEnum.upper_space_5,
-//         'g-c-B5': MusicScoreRegionEnum.upper_line_5,
-//     };
-//     const position = map[`${clef}-${keySignature}-${musicalAlphabet}`];
-//
-//     if (position) {
-//         return [{position, accidental: ''}];  // 返回找到的音符位置,是一个数组，因为不同升降还原号会导致不同的position
-//     }
-//     console.error('找不到对位置', `${clef}-${keySignature}-${musicalAlphabet}`);
-//     return [{position: MusicScoreRegionEnum.space_3, accidental: ''}];
-// }
-// 计算出音符所在间线 ai生成算法
-type BasePosition = {
-    note: string;      // 其实可以限定成 'A' | 'B' | ... 但 string 更灵活
-    octave: number;
-    lineIndex: number; // 基于五线谱下标，如 line_1 => 0, line_2 => 1 ...
+// 计算音符所在五线谱区域 半音偏移参考表：C = 0, C# = 1, D = 2, D# = 3, ..., B = 11
+const noteToSemitone: Record<string, number> = {
+    'C': 0, 'C#': 1, 'D-': 1,
+    'D': 2, 'D#': 3, 'E-': 3,
+    'E': 4,
+    'F': 5, 'F#': 6, 'G-': 6,
+    'G': 7, 'G#': 8, 'A-': 8,
+    'A': 9, 'A#': 10, 'B-': 10,
+    'B': 11, 'B#': 12 // 视作 C+1
 };
 
-// 计算音符所在五线谱区域
+// 每个谱号的基准音对应的 MIDI 值和谱线位置索引
+const basePositions: Record<ClefEnum, { midi: number, regionIndex: number }> = {
+    [ClefEnum.treble]: {midi: 67, regionIndex: 14}, // G4 在 line_2
+    [ClefEnum.alto]: {midi: 60, regionIndex: 16},   // C4 在 line_3
+    [ClefEnum.bass]: {midi: 53, regionIndex: 18},   // F3 在 line_4
+};
+type CalculationOfStaffRegion = [{
+    region: MusicScoreRegionEnum,
+}] | [{
+    region: MusicScoreRegionEnum,
+    accidental: AccidentalEnum
+}, {
+    region: MusicScoreRegionEnum,
+    accidental: AccidentalEnum
+}]
+
+function getEnharmonicVariants(midi: number): { key: string, accidental: AccidentalEnum, regionShift: number }[] {
+    const semitone = midi % 12;
+    const octave = Math.floor(midi / 12) - 1;
+
+    const enharmonicMap: Record<number, { key: string, accidental: AccidentalEnum, regionShift: number }[]> = {
+        1: [
+            {key: `C#${octave}`, accidental: AccidentalEnum.sharp, regionShift: 0},
+            {key: `D-${octave}`, accidental: AccidentalEnum.flat, regionShift: 1}
+        ],
+        3: [
+            {key: `D#${octave}`, accidental: AccidentalEnum.sharp, regionShift: 0},
+            {key: `E-${octave}`, accidental: AccidentalEnum.flat, regionShift: 1}
+        ],
+        6: [
+            {key: `F#${octave}`, accidental: AccidentalEnum.sharp, regionShift: 0},
+            {key: `G-${octave}`, accidental: AccidentalEnum.flat, regionShift: 1}
+        ],
+        8: [
+            {key: `G#${octave}`, accidental: AccidentalEnum.sharp, regionShift: 0},
+            {key: `A-${octave}`, accidental: AccidentalEnum.flat, regionShift: 1}
+        ],
+        10: [
+            {key: `A#${octave}`, accidental: AccidentalEnum.sharp, regionShift: 0},
+            {key: `B-${octave}`, accidental: AccidentalEnum.flat, regionShift: 1}
+        ],
+    };
+
+    return enharmonicMap[semitone] ?? [];
+}
+
 export function calculationOfStaffRegion(
     clef: ClefEnum,
     musicalAlphabet: MusicalAlphabetEnum
-): MusicScoreRegionEnum {
-    const noteOrder = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-    const basePositions: Record<ClefEnum, BasePosition> = {
-        [ClefEnum.treble]: {note: 'G', octave: 4, lineIndex: 2},     // G4 on line_2
-        [ClefEnum.alto]: {note: 'C', octave: 4, lineIndex: 3},  // C4 on line_3
-        [ClefEnum.bass]: {note: 'F', octave: 3, lineIndex: 4},  // F3 on line_4
-    };
-
+): CalculationOfStaffRegion {
     const regionList: MusicScoreRegionEnum[] = [
+        MusicScoreRegionEnum.lower_line_6,
+        MusicScoreRegionEnum.lower_space_6,
+        MusicScoreRegionEnum.lower_line_5,
+        MusicScoreRegionEnum.lower_space_5,
+        MusicScoreRegionEnum.lower_line_4,
+        MusicScoreRegionEnum.lower_space_4,
+        MusicScoreRegionEnum.lower_line_3,
+        MusicScoreRegionEnum.lower_space_3,
+        MusicScoreRegionEnum.lower_line_2,
+        MusicScoreRegionEnum.lower_space_2,
+        MusicScoreRegionEnum.lower_line_1,
+        MusicScoreRegionEnum.lower_space_1,
         MusicScoreRegionEnum.line_1,
         MusicScoreRegionEnum.space_1,
         MusicScoreRegionEnum.line_2,
@@ -87,36 +114,54 @@ export function calculationOfStaffRegion(
         MusicScoreRegionEnum.upper_line_5,
         MusicScoreRegionEnum.upper_space_6,
         MusicScoreRegionEnum.upper_line_6,
+        MusicScoreRegionEnum.upper_space_7,
+        MusicScoreRegionEnum.upper_line_7,
+        MusicScoreRegionEnum.upper_space_8,
+        MusicScoreRegionEnum.upper_line_8,
     ];
 
     const base = basePositions[clef];
     if (!base) {
-        console.error("线谱区域识别错误", clef, musicalAlphabet)
-        return MusicScoreRegionEnum.line_1
-    }
-    ;
-    const match = musicalAlphabet.match(/^([A-G])(\d)$/);
-    if (!match) {
-        console.error("线谱区域识别错误", clef, musicalAlphabet)
-        return MusicScoreRegionEnum.line_1
+        console.error("未知谱号", clef);
+        return [{region: MusicScoreRegionEnum.line_1}];
     }
 
-    const [_, noteLetter, octaveStr] = match;
+    const match = musicalAlphabet.match(/^([A-G])([#-]?)(\d)$/);
+    if (!match) {
+        console.error("音名格式错误", clef, musicalAlphabet);
+        return [{region: MusicScoreRegionEnum.line_1}];
+    }
+
+    const [_, note, accidental, octaveStr] = match;
+    const key = accidental ? `${note}${accidental}` : note;
+    const semitone = noteToSemitone[key];
+    if (semitone === undefined) {
+        console.error("未支持音名", key);
+        return [{region: MusicScoreRegionEnum.line_1}];
+    }
 
     const octave = parseInt(octaveStr);
-    const baseIndex = noteOrder.indexOf(base.note) + base.octave * 7;
-    const targetIndex = noteOrder.indexOf(noteLetter) + octave * 7;
+    const targetMidi = (octave + 1) * 12 + semitone;
+    const enharmonics = getEnharmonicVariants(targetMidi);
 
-    const steps = targetIndex - baseIndex;
-    const regionIndex = base.lineIndex * 2 + steps;
-    if (regionList[regionIndex]) {
-        return regionList[regionIndex]
-    } else {
-        console.error("线谱区域识别错误", clef, musicalAlphabet)
-        return MusicScoreRegionEnum.line_1;
+    const getRegion = (midi: number, shift: number = 0) => {
+        const semitoneDiff = midi - base.midi;
+        const degreeDiff = Math.floor(semitoneDiff / 2) + shift;
+        const regionIndex = base.regionIndex + degreeDiff;
+        return regionList[regionIndex] ?? MusicScoreRegionEnum.line_1;
+    };
+
+    if (enharmonics.length === 2) {
+        return enharmonics.map(({key, accidental, regionShift}) => {
+            const midi = targetMidi; // MIDI 不变
+            const region = getRegion(midi, regionShift);
+            return {region, accidental};
+        }) as CalculationOfStaffRegion;
     }
 
-
+    // 正常音名，无等音处理
+    const region = getRegion(targetMidi);
+    return [{region}];
 }
 
 // --------------------------------------------------------------------------------------------------------------宽度系数

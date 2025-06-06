@@ -127,8 +127,13 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
     [MsSymbolTypeEnum.volta]: {  // 反复记号小房子
         category: MsSymbolCategoryEnum.multipleMeasure,
     },
-    [MsSymbolTypeEnum.clef]: { // 谱号有点特殊，虽然是后置的，但是在小节索引为0时，也有可能前置
+    [MsSymbolTypeEnum.clef]: { // 谱号
         containerType: MsSymbolContainerTypeEnum.rearFixed,
+        aspectRatio: 0.6,
+        category: MsSymbolCategoryEnum.singleMeasure,
+    },
+    [MsSymbolTypeEnum.clef_f]: { // 前置谱号
+        containerType: MsSymbolContainerTypeEnum.frontFixed,
         aspectRatio: 0.6,
         category: MsSymbolCategoryEnum.singleMeasure,
     },

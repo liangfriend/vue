@@ -18,15 +18,15 @@
                        :style="{width:width+'px',height:height+'px'}"
                        comment="符号层">
       <template #default="{ measure, measureIndex, singleStaff, multipleStaves, measureWidth }">
-        <ms-symbol-slot v-for="(msSymbol,symbolIndex) in measure.msSymbolArray"
-                        :msSymbol="msSymbol"
-                        :measure="measure"
-                        :measureWidth="measureWidth"
-                        :singleStaff="singleStaff"
-                        :multipleStaves="multipleStaves"
-                        :measureHeight="measureHeight"
-                        :key="'note-symbol'+symbolIndex"
-        ></ms-symbol-slot>
+        <ms-symbol-container v-for="(msSymbol,symbolIndex) in measure.msSymbolArray"
+                             :msSymbol="msSymbol"
+                             :measure="measure"
+                             :measureWidth="measureWidth"
+                             :singleStaff="singleStaff"
+                             :multipleStaves="multipleStaves"
+                             :measureHeight="measureHeight"
+                             :key="'note-symbol'+symbolIndex"
+        ></ms-symbol-container>
       </template>
     </measure-container>
   </div>
@@ -41,7 +41,8 @@ import type {
 } from "./types.d.ts";
 import MeasureContainer from "@/applications/ChuangKeApplication/components/musicScore/components/measureContainer.vue";
 
-import MsSymbolSlot from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbolSlot.vue";
+import MsSymbolContainer
+  from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbolContainer.vue";
 
 const props = defineProps({
   modelValue: {

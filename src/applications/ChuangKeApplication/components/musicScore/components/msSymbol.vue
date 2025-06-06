@@ -1,5 +1,12 @@
 <template>
-  <div ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle"></div>
+
+  <clef
+      v-if="msSymbol?.type === MsSymbolTypeEnum.clef || msSymbol?.type === MsSymbolTypeEnum.clef_f && 'clef' in msSymbol"
+      :clef="msSymbol?.clef" class="msSymbol"
+      :style="msSymbolStyle"></clef>
+  <key-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.keySignature" :style="msSymbolStyle"></key-signature>
+  <time-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.timeSignature" :style="msSymbolStyle"></time-signature>
+  <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle"></div>
 </template>
 <script setup lang="ts">
 import {computed, CSSProperties, onMounted, PropType, ref} from "vue";
@@ -15,17 +22,28 @@ import altoClefSvg from "../musicSymbols/altoClef.svg"
 import bassClefSvg from "../musicSymbols/bassClef.svg"
 import defaultSymbolSvg from "../musicSymbols/defaultSymbol.svg"
 import {MsSymbolInformationMap} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
+import Clef from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/clef.vue";
+import KeySignature from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/keySignature.vue";
+import TimeSignature from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/timeSignature.vue";
 
 const props = defineProps({
   msSymbol: {
     type: Object as PropType<MsSymbol>,
   },
-  clef: {},
+  containerWidth: {
+    type: Number,
+    default: 200
+  },
+  isMain: {
+    type: Boolean,
+    default: false,
+  },
   //小节高度， 此属性会控制音符，休止符，谱号，拍号等符号大小
   measureHeight: {
     type: Number,
     default: 60
   },
+
 })
 
 const svgHref = computed(() => {
@@ -34,19 +52,14 @@ const svgHref = computed(() => {
       return noteHeadSvg
     }
     case MsSymbolTypeEnum.clef: {
-      if (props.msSymbol.clef === ClefEnum.treble) {
-        return trebleClefSvg
-      } else if (props.msSymbol.clef === ClefEnum.alto) {
-        return altoClefSvg
-      } else if (props.msSymbol.clef === ClefEnum.bass) {
-        return bassClefSvg
-      }
-      console.error('未知的谱号类别', props.msSymbol.clef)
-      return defaultSymbolSvg
+      return ''
+    }
+    case MsSymbolTypeEnum.clef_f: {
+      return ''
     }
     default: {
       console.error("未知的符号类别", props.msSymbol?.type)
-      return defaultSymbolSvg
+      return ''
     }
   }
 })
@@ -63,17 +76,47 @@ const aspectRatio = computed<number>(() => {
 })
 
 const msSymbolStyle = computed<CSSProperties>(() => {
-
-  return {
-    width: `${props.measureHeight * aspectRatio.value}px`,
-    height: `${props.measureHeight}px`,
-    backgroundColor: 'black',
-    mask: `url(${svgHref.value}) no-repeat center`,
+  let bgColor = 'black'
+  if (props.msSymbol?.type && [MsSymbolTypeEnum.keySignature, MsSymbolTypeEnum.timeSignature].includes(props.msSymbol.type)) {
+    bgColor = 'unset'
+  }
+  const style: CSSProperties = {
+    width: `${width.value}px`,
+    height: `${height.value}px`,
+    backgroundColor: bgColor,
     maskSize: '100% 100%',
     position: 'absolute',
-    bottom: '0',
+    left: msSymbolLeft.value + 'px',
+    bottom: msSymbolBottom.value + 'px',
+
   }
+  if (svgHref.value) {
+    style.mask = `url(${svgHref.value}) no-repeat center`
+  }
+
+  return style
 });
+const width = computed(() => {
+  return props.measureHeight * aspectRatio.value
+})
+const height = computed(() => {
+  return props.measureHeight
+})
+const msSymbolLeft = computed(() => {
+  switch (props.msSymbol?.type) {
+    case MsSymbolTypeEnum.noteHead: { // 音符头居中
+      return props.containerWidth / 2 - width.value / 2
+    }
+  }
+
+  return 0
+})
+
+const msSymbolBottom = computed(() => {
+
+  return 0
+})
+
 onMounted(() => {
 
 })

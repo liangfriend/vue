@@ -29,7 +29,7 @@ export declare type MsSymbol = ({
     chronaxie: ChronaxieEnum; // 时值
     musicalAlphabet: MusicalAlphabetEnum; // 音名
 } & BaseMsSymbol) | ({
-    type: MsSymbolTypeEnum.clef,
+    type: MsSymbolTypeEnum.clef | MsSymbolTypeEnum.clef_f,
     clef: ClefEnum
 } & BaseMsSymbol) | ({
     type: MsSymbolTypeEnum.timeSignature,
