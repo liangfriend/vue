@@ -34,7 +34,7 @@ import {
 
 import msSymbolVue from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbol.vue";
 import {
-  calculationOfStaffRegion,
+  calculationOfStaffRegion, getClef,
   getWidthConstantInMeasure,
   getWidthConstantInMsSymbol,
   getWidthFixedContainerWidthSumInMeasure
@@ -155,42 +155,6 @@ const containerBottom = computed(() => {
   }
 })
 
-function getClef(measure: Measure, singleStaff: SingleStaff, noteHead: Extract<MsSymbol, {
-  type: MsSymbolTypeEnum.noteHead
-}>): ClefEnum | null {
-
-
-  let clef: ClefEnum | null = null
-  // 如果音符上没有clef，就从最近的小节上找
-  const measuerIndex = singleStaff.measureArray.indexOf(measure)
-  let msSymbolIndex = measure.msSymbolArray.indexOf(noteHead)
-  for (let i = measuerIndex; i >= 0; i--) {
-    for (let j = msSymbolIndex; j >= 0; j--) {
-      const curMsSymbol = singleStaff.measureArray[i].msSymbolArray[j]
-      const childMsSymbolArray = singleStaff.measureArray[i].msSymbolArray[j].msSymbolArray
-      if (childMsSymbolArray) {
-        // 寻找最近的音符上的谱号信息
-        for (let k = 0; j < childMsSymbolArray.length; j++) {
-          if (childMsSymbolArray[k].type === MsSymbolTypeEnum.clef) {
-            const clefSymbol = childMsSymbolArray[k] as Extract<MsSymbol, { type: MsSymbolTypeEnum.clef }>
-            clef = clefSymbol.clef
-            break;
-          }
-        }
-      }
-      // 寻找小节上的谱号信息
-      if (curMsSymbol.type === MsSymbolTypeEnum.clef) {
-        clef = curMsSymbol.clef
-      }
-    }
-    if (i > 1) {
-      msSymbolIndex = singleStaff.measureArray[i - 1].msSymbolArray.length - 1
-    }
-  }
-
-  // TODO 完成前置谱号功能，记录好符号顺序必须固定这个原则，并且就算符号顺序固定，也要分清前后置符号，否则没有变宽符号时，就没办法区分前后置了
-  return clef || ClefEnum.treble
-}
 
 // 五线谱区域转换bottom
 function staffRegionToBottom(region: MusicScoreRegionEnum, measureHeight: number): number {

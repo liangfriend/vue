@@ -86,36 +86,7 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
         category: MsSymbolCategoryEnum.singleMeasure,
         widthRatioConstant: 0.5
     },
-    [MsSymbolTypeEnum.accidental_double_flat]: {
-
-        aspectRatio: 1,
-        category: MsSymbolCategoryEnum.singleMeasure,
-        widthRatioConstant: 0.5
-
-    },
-    [MsSymbolTypeEnum.accidental_flat]: {
-
-        aspectRatio: 1,
-        category: MsSymbolCategoryEnum.singleMeasure,
-        widthRatioConstant: 0.5
-
-    },
-    [MsSymbolTypeEnum.accidental_natural]: {
-
-        aspectRatio: 1,
-        category: MsSymbolCategoryEnum.singleMeasure,
-        widthRatioConstant: 0.5
-
-    },
-    [MsSymbolTypeEnum.accidental_sharp]: {
-
-        aspectRatio: 1,
-        category: MsSymbolCategoryEnum.singleMeasure,
-        widthRatioConstant: 0.5
-
-    },
-    [MsSymbolTypeEnum.accidental_double_sharp]: {
-
+    [MsSymbolTypeEnum.accidental]: {
         aspectRatio: 1,
         category: MsSymbolCategoryEnum.singleMeasure,
         widthRatioConstant: 0.5

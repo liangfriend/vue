@@ -254,6 +254,45 @@ export function isFixedWidthSymbolContainerMap(msSymbolType: MsSymbolTypeEnum): 
     return false
 }
 
+export function getClef(measure: Measure, singleStaff: SingleStaff, noteHead: Extract<MsSymbol, {
+    type: MsSymbolTypeEnum.noteHead
+}>): ClefEnum {
+
+
+    let clef: ClefEnum | null = null
+    // 如果音符上没有clef，就从最近的小节上找
+    const measuerIndex = singleStaff.measureArray.indexOf(measure)
+    let msSymbolIndex = measure.msSymbolArray.indexOf(noteHead)
+    for (let i = measuerIndex; i >= 0; i--) {
+        for (let j = msSymbolIndex; j >= 0; j--) {
+            const curMsSymbol = singleStaff.measureArray[i].msSymbolArray[j]
+            const childMsSymbolArray = singleStaff.measureArray[i].msSymbolArray[j].msSymbolArray
+            if (childMsSymbolArray) {
+                // 寻找最近的音符上的谱号信息
+                for (let k = 0; j < childMsSymbolArray.length; j++) {
+                    if (childMsSymbolArray[k].type === MsSymbolTypeEnum.clef) { // 前置谱号不会出现在跟随符号中
+                        const clefSymbol = childMsSymbolArray[k] as Extract<MsSymbol, {
+                            type: MsSymbolTypeEnum.clef | MsSymbolTypeEnum.clef_f
+                        }>
+                        clef = clefSymbol.clef
+                        return clef
+                    }
+                }
+            }
+            // 寻找小节上的谱号信息
+            if (curMsSymbol.type === MsSymbolTypeEnum.clef || curMsSymbol.type === MsSymbolTypeEnum.clef_f && 'clef' in curMsSymbol) {
+                clef = curMsSymbol.clef
+                return clef
+            }
+        }
+        if (i > 1) {
+            msSymbolIndex = singleStaff.measureArray[i - 1].msSymbolArray.length - 1
+        }
+    }
+    console.error("缺少谱号信息，默认高音谱号")
+    return ClefEnum.treble
+}
+
 // 通过js动态的获取svg的aspectRatio
 // export async function getAspectRatioOfSvg(svgUrl: string): Promise<number | null> {
 //     const res = await fetch(svgUrl)
