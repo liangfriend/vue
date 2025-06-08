@@ -2,6 +2,7 @@
   <div class="musicScore stack" :style="musicScoreStyle">
     <measure-container :musicScoreData="modelValue" class="stackItem lineLayer"
                        :style="{width:width+'px',height:height+'px'}"
+                       :measureHeight="measureHeight"
                        comment="谱线层">
       <template #default="{ measure, measureIndex, singleStaff, multipleStaves, measureWidth }">
         <measure
@@ -15,6 +16,7 @@
       </template>
     </measure-container>
     <measure-container :musicScoreData="modelValue" class="stackItem symbolLayer"
+                       :measureHeight="measureHeight"
                        :style="{width:width+'px',height:height+'px'}"
                        comment="符号层">
       <template #default="{ measure, measureIndex, singleStaff, multipleStaves, measureWidth }">

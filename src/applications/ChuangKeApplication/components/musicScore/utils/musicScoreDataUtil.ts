@@ -269,7 +269,7 @@ export function getClef(measure: Measure, singleStaff: SingleStaff, noteHead: Ex
             const childMsSymbolArray = singleStaff.measureArray[i].msSymbolArray[j].msSymbolArray
             if (childMsSymbolArray) {
                 // 寻找最近的音符上的谱号信息
-                for (let k = 0; j < childMsSymbolArray.length; j++) {
+                for (let k = 0; k < childMsSymbolArray.length; k++) {
                     if (childMsSymbolArray[k].type === MsSymbolTypeEnum.clef) { // 前置谱号不会出现在跟随符号中
                         const clefSymbol = childMsSymbolArray[k] as Extract<MsSymbol, {
                             type: MsSymbolTypeEnum.clef | MsSymbolTypeEnum.clef_f

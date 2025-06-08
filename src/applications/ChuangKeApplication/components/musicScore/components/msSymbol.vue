@@ -49,6 +49,7 @@ const props = defineProps({
 const svgHref = computed(() => {
   switch (props.msSymbol?.type) {
     case MsSymbolTypeEnum.noteHead: {
+      // TODO 不同时值用不同svg,accidental，clef也一样 ,timeSignature这种要组合，所以写成组件
       return noteHeadSvg
     }
     case MsSymbolTypeEnum.clef: {
@@ -75,6 +76,43 @@ const aspectRatio = computed<number>(() => {
   return 1
 })
 
+
+const height = computed(() => {
+  switch (props.msSymbol?.type) {
+    case MsSymbolTypeEnum.noteHead: {
+      return props.measureHeight / 4
+    }
+    case MsSymbolTypeEnum.noteBar: {
+      return props.measureHeight * 0.6
+    }
+  }
+  return props.measureHeight
+})
+const width = computed(() => {
+
+  return height.value * aspectRatio.value
+})
+const msSymbolLeft = computed(() => {
+  switch (props.msSymbol?.type) {
+    case MsSymbolTypeEnum.noteHead: { // 音符头居中
+      return props.containerWidth / 2 - width.value / 2
+    }
+    case MsSymbolTypeEnum.noteBar: { // 音符头居中
+      return props.containerWidth / 2 + props.measureHeight / 8 - width.value
+    }
+  }
+  return 0
+})
+
+const msSymbolBottom = computed(() => {
+  switch (props.msSymbol?.type) {
+
+    case MsSymbolTypeEnum.noteBar: {
+      return props.measureHeight / 8
+    }
+  }
+  return 0
+})
 const msSymbolStyle = computed<CSSProperties>(() => {
   let bgColor = 'black'
   if (props.msSymbol?.type && [MsSymbolTypeEnum.keySignature, MsSymbolTypeEnum.timeSignature].includes(props.msSymbol.type)) {
@@ -84,39 +122,17 @@ const msSymbolStyle = computed<CSSProperties>(() => {
     width: `${width.value}px`,
     height: `${height.value}px`,
     backgroundColor: bgColor,
-    maskSize: '100% 100%',
     position: 'absolute',
     left: msSymbolLeft.value + 'px',
     bottom: msSymbolBottom.value + 'px',
 
   }
   if (svgHref.value) {
-    style.mask = `url(${svgHref.value}) no-repeat center`
+    style.mask = `url(${svgHref.value}) center center / cover no-repeat`
   }
 
   return style
 });
-const width = computed(() => {
-  return props.measureHeight * aspectRatio.value
-})
-const height = computed(() => {
-  return props.measureHeight
-})
-const msSymbolLeft = computed(() => {
-  switch (props.msSymbol?.type) {
-    case MsSymbolTypeEnum.noteHead: { // 音符头居中
-      return props.containerWidth / 2 - width.value / 2
-    }
-  }
-
-  return 0
-})
-
-const msSymbolBottom = computed(() => {
-
-  return 0
-})
-
 onMounted(() => {
 
 })

@@ -21,7 +21,7 @@ const mask = computed(() => {
   }
   console.log('chicken', svgUrl)
   return {
-    mask: `url(${svgUrl}) no-repeat center`
+    mask: `url(${svgUrl}) center center / 100% 100% no-repeat`
   }
 })
 </script>

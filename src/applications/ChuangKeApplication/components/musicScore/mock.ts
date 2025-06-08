@@ -34,13 +34,25 @@ const data: MusicScore = {
                     chronaxie: ChronaxieEnum.eighth,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {},
+
+                    },]
                 }, {
                     musicalAlphabet: MusicalAlphabetEnum.C4,
                     chronaxie: ChronaxieEnum.eighth,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {},
+
+                    },]
                 }, {
                     clef: ClefEnum.treble,
                     type: MsSymbolTypeEnum.clef,
@@ -54,19 +66,35 @@ const data: MusicScore = {
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {},
+
+                    },]
                 }, {
                     musicalAlphabet: MusicalAlphabetEnum.C4,
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 }, {
                     musicalAlphabet: MusicalAlphabetEnum.F4,
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 },]
             }, {
                 options: {},
@@ -75,19 +103,34 @@ const data: MusicScore = {
                     chronaxie: ChronaxieEnum.half,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 }, {
                     musicalAlphabet: MusicalAlphabetEnum.C4,
                     chronaxie: ChronaxieEnum.eighth,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 }, {
                     musicalAlphabet: MusicalAlphabetEnum.C4,
                     chronaxie: ChronaxieEnum.eighth,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 },]
             }, {
                 options: {},
@@ -96,19 +139,34 @@ const data: MusicScore = {
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 }, {
                     musicalAlphabet: MusicalAlphabetEnum.C4,
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 }, {
                     musicalAlphabet: MusicalAlphabetEnum.G4,
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 },]
             }, {
                 options: {},
@@ -117,19 +175,34 @@ const data: MusicScore = {
                     chronaxie: ChronaxieEnum.half,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 }, {
                     musicalAlphabet: MusicalAlphabetEnum.C4,
                     chronaxie: ChronaxieEnum.eighth,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 }, {
                     musicalAlphabet: MusicalAlphabetEnum.C4,
                     chronaxie: ChronaxieEnum.eighth,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 },]
             }]
         }]
@@ -141,30 +214,47 @@ const data: MusicScore = {
                     clef: ClefEnum.treble,
                     type: MsSymbolTypeEnum.clef,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+
                 }, {
                     keySignature: KeySignatureEnum.F,
                     type: MsSymbolTypeEnum.keySignature,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+
                 }, {
                     musicalAlphabet: MusicalAlphabetEnum.C5,
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 }, {
                     musicalAlphabet: MusicalAlphabetEnum.A4,
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 }, {
                     musicalAlphabet: MusicalAlphabetEnum.F4,
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 },]
             }, {
                 options: {},
@@ -173,19 +263,34 @@ const data: MusicScore = {
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 }, {
                     musicalAlphabet: MusicalAlphabetEnum['B-4'],
                     chronaxie: ChronaxieEnum.eighth,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 }, {
                     musicalAlphabet: MusicalAlphabetEnum['B-4'],
                     chronaxie: ChronaxieEnum.eighth,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 },]
             }, {
                 options: {},
@@ -194,19 +299,34 @@ const data: MusicScore = {
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 }, {
                     musicalAlphabet: MusicalAlphabetEnum.F4,
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 }, {
                     musicalAlphabet: MusicalAlphabetEnum.G4,
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 },]
             }, {
                 options: {},
@@ -215,7 +335,12 @@ const data: MusicScore = {
                     chronaxie: ChronaxieEnum.quarter,
                     type: MsSymbolTypeEnum.noteHead,
                     options: {},
-                    measureRelativeRect: {}
+                    measureRelativeRect: {},
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.noteBar,
+                        options: {},
+                        measureRelativeRect: {}
+                    },]
                 }]
             }]
         }]

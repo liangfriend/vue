@@ -1,6 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="10" height="50">
+<svg xmlns="http://www.w3.org/2000/svg" width="10" height="100">
     <!-- 音符杆 -->
-    <line x1="5" y1="0" x2="5" y2="40" stroke="black" stroke-width="2"></line>
-    <!-- 音符头 -->
-    <circle cx="5" cy="45" r="5" fill="black"></circle>
+    <line x1="5" y1="0" x2="5" y2="100" stroke="black" stroke-width="10"></line>
+
 </svg>

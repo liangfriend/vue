@@ -54,12 +54,12 @@ type MsSymbolInformation =
 export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformation> = {
     [MsSymbolTypeEnum.noteHead]: {
         containerType: MsSymbolContainerTypeEnum.variable,
-        aspectRatio: 0.2,
+        aspectRatio: 1,
         widthRatioConstant: 1,
         category: MsSymbolCategoryEnum.singleMeasure,
     },
     [MsSymbolTypeEnum.noteBar]: {  // 有些纯粹的符号跟随类型是没有符号容器类型的
-        aspectRatio: 1,
+        aspectRatio: 0.08,
         category: MsSymbolCategoryEnum.singleMeasure,
         widthRatioConstant: 0
     },
