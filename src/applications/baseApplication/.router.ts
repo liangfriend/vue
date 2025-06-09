@@ -2,7 +2,7 @@
 const routes = {
     path: '/base',
     component: () => import('./views/index.vue'),
-    redirect: '/base/typescript',
+    redirect: '/base/widget',
     meta: {title: '基础管理'},
     children: [{
         name: 'typescript',
@@ -25,7 +25,19 @@ const routes = {
             component: () => import('./views/ai/deepseek.vue'),
             meta: {title: 'deepseek'}
         }]
-    }]
+    },
+        {
+            name: 'widget',
+            path: '/base/widget',
+            redirect: '/base/widget/liamVideo',
+            meta: {title: '通用组件库'},
+            children: [{
+                name: 'liam-video',
+                path: '/base/widget/liamVideo',
+                component: () => import('./views/widget/liamVideoShow.vue'),
+                meta: {title: '视频播放'}
+            }]
+        },]
 };
 
 export default routes;
