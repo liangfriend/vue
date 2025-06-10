@@ -68,11 +68,6 @@ export enum KeySignatureEnum {
     'C#' = "C#"
 }
 
-export enum TimeSignatureEnum {
-    '4/4' = '4/4',
-    '3/4' = '3/4',
-}
-
 
 export enum MusicalAlphabetEnum {
     C1 = 'C1',

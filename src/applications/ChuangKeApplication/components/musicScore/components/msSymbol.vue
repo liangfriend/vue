@@ -4,8 +4,10 @@
       v-if="msSymbol?.type === MsSymbolTypeEnum.clef || msSymbol?.type === MsSymbolTypeEnum.clef_f && 'clef' in msSymbol"
       :clef="msSymbol?.clef" class="msSymbol"
       :style="msSymbolStyle"></clef>
-  <key-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.keySignature" :style="msSymbolStyle"></key-signature>
-  <time-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.timeSignature" :style="msSymbolStyle"></time-signature>
+  <key-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.keySignature" :style="msSymbolStyle"
+                 :msSymbol="msSymbol"></key-signature>
+  <time-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.timeSignature" :style="msSymbolStyle"
+                  :msSymbol="msSymbol" :measure-height="measureHeight"></time-signature>
   <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle"></div>
 </template>
 <script setup lang="ts">
@@ -17,6 +19,7 @@ import {
   MsSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import noteHeadSvg from "../musicSymbols/noteHead.svg"
+import noteBarSvg from "../musicSymbols/noteHead.svg"
 import trebleClefSvg from "../musicSymbols/trebleClef.svg"
 import altoClefSvg from "../musicSymbols/altoClef.svg"
 import bassClefSvg from "../musicSymbols/bassClef.svg"
@@ -59,7 +62,13 @@ const svgHref = computed(() => {
     case MsSymbolTypeEnum.clef: {
       return ''
     }
+    case MsSymbolTypeEnum.noteBar: {
+      return noteBarSvg
+    }
     case MsSymbolTypeEnum.clef_f: {
+      return ''
+    }
+    case MsSymbolTypeEnum.keySignature: {
       return ''
     }
     default: {

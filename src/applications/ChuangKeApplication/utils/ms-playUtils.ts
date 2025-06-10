@@ -37,6 +37,7 @@ async function play(key: string) {
     await Tone.start();
 
     Tone.getTransport().stop();
+    Tone.getTransport().cancel(); //重置所有调度， 否则会越播越响，不知道为什么
     data.part.stop();
     data.part.start(0);
     Tone.getTransport().start();
@@ -172,8 +173,10 @@ function musicScoreToToneSequence(musicData: MusicScore): ToneSequence[] {
     for (const multiStaff of musicData.multipleStavesArray) {
         for (const singleStaff of multiStaff.singleStaffArray) {
             for (const measure of singleStaff.measureArray) {
-                for (const msSymbol of measure.msSymbolArray) {
-                    if (msSymbol.type === MsSymbolTypeEnum.noteHead) {
+                for (const msSymbolContainer of measure.msSymbolContainerArray) {
+                    for (const msSymbol of msSymbolContainer.msSymbolArray) {
+
+                        if (msSymbol.type === MsSymbolTypeEnum.noteHead) {
                         // 构造音名（暂不考虑变音符）
                         let noteName: string = msSymbol.musicalAlphabet;
 
@@ -189,6 +192,7 @@ function musicScoreToToneSequence(musicData: MusicScore): ToneSequence[] {
                         });
                         accumulatorTime += durationToBeats(duration)
 
+                        }
                     }
 
                 }

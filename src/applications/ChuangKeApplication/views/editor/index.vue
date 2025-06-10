@@ -99,9 +99,12 @@ watch(musicScoreData, (newVal) => {
   })
 }, {deep: true})
 onMounted(() => {
+  //TEST
+  window.musicScore = mockData
   initMusicScore()
 });
 onUnmounted(() => {
+
   // 卸载 Vue app
   if (app) {
     app.unmount();
