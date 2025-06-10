@@ -1,22 +1,22 @@
 /*渲染 */
 import {
     AccidentalEnum,
-    ChronaxieEnum,
     ClefEnum,
-    MsSymbolCategoryEnum, MsSymbolContainerTypeEnum,
+    MsSymbolContainerTypeEnum,
     MsSymbolTypeEnum,
-    MusicalAlphabetEnum, MusicScoreRegionEnum
+    MusicalAlphabetEnum,
+    MusicScoreRegionEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 import {
     Measure,
     MsSymbol,
+    MsSymbolContainer,
+    MusicScore,
     SingleStaff,
     WidthConstant
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
-import {
-    MsSymbolInformationMap,
-} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
+import {MsSymbolInformationMap,} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 
 
 // 计算音符所在五线谱区域 半音偏移参考表：C = 0, C# = 1, D = 2, D# = 3, ..., B = 11
@@ -165,7 +165,7 @@ export function calculationOfStaffRegion(
 }
 
 // --------------------------------------------------------------------------------------------------------------宽度系数
-// 获取当前符号的宽度占比常数之和之和
+// 获取当前符号的宽度系数之和
 export function getWidthConstantInMsSymbol(msSymbol: MsSymbol): WidthConstant {
     let widthConstant: WidthConstant = 0
     const information = MsSymbolInformationMap[msSymbol.type]
@@ -184,61 +184,98 @@ export function getWidthConstantInMsSymbol(msSymbol: MsSymbol): WidthConstant {
     return widthConstant
 }
 
-// 获取小节的宽度占比常数之和, 第二个参数判断是否只计算当前符号之前的
-export function getWidthConstantInMeasure(measure: Measure, msSymbol?: MsSymbol | null): WidthConstant {
+// 获取当前符号容器的宽度系数之和 取宽度系数最大的符号的宽度系数
+export function getWidthConstantInMsSymbolContainer(msSymbolContainer: MsSymbolContainer): WidthConstant {
+    let widthConstant: WidthConstant = 0
+
+    if (msSymbolContainer.msSymbolArray) {
+        for (let k = 0; k < msSymbolContainer.msSymbolArray.length; k++) {
+            const curMsSymbol = msSymbolContainer.msSymbolArray[k]
+            const curWidthConstant = getWidthConstantInMsSymbol(curMsSymbol)
+            // 取最大值
+            if (widthConstant < curWidthConstant) {
+                widthConstant = curWidthConstant
+            }
+        }
+    }
+    return widthConstant
+}
+
+// 获取小节的宽度占比常数之和, 第二个参数判断是否只计算当前符号容器之前的
+export function getWidthConstantInMeasure(measure: Measure, msSymbolContainer?: MsSymbolContainer | null): WidthConstant {
 
     let widthConstant: WidthConstant = 0
-    for (let j = 0; j < measure.msSymbolArray.length; j++) {
-        const curMsSymbol = measure.msSymbolArray[j]
-        if (msSymbol && curMsSymbol === msSymbol) {
+    for (let j = 0; j < measure.msSymbolContainerArray.length; j++) {
+        const curMsSymbolContainer = measure.msSymbolContainerArray[j]
+        if (msSymbolContainer && curMsSymbolContainer === msSymbolContainer) {
             return widthConstant
         }
-        widthConstant += getWidthConstantInMsSymbol(curMsSymbol)
+
+        widthConstant += getWidthConstantInMsSymbolContainer(curMsSymbolContainer)
     }
     return widthConstant
 }
 
 
 // 获取单谱表的宽度占比常数之和, 第二个参数判断是否只计算当前符号之前的
-export function getWidthConstantInSingleStaff(singleStaff: SingleStaff, msSymbol?: MsSymbol | null): WidthConstant {
+export function getWidthConstantInSingleStaff(singleStaff: SingleStaff, msSymbolContainer?: MsSymbolContainer | null): WidthConstant {
     let preWidthConstant = 0
     for (let i = 0; i < singleStaff.measureArray.length; i++) {
         const measure = singleStaff.measureArray[i]
-        preWidthConstant += getWidthConstantInMeasure(measure, msSymbol)
+        preWidthConstant += getWidthConstantInMeasure(measure, msSymbolContainer)
     }
     return preWidthConstant
 }
 
 // -----------------------------------------------------------------------------------------------------------------宽度
-// 获取当前小节内定宽符号容器宽度之和,单位px, 第二个参数判断是否只计算当前符号之前的
-export function getWidthFixedContainerWidthSumInMeasure(measure: Measure, measureHeight: number, filter: 'front' | 'rear' | 'all' = 'all', msSymbol?: MsSymbol | null): number {
-    let widthSum = 0
-    for (let i = 0; i < measure.msSymbolArray.length; i++) {
-        const curMsSymbol: MsSymbol = measure.msSymbolArray[i]
+// 获取定宽容器的宽度
+export function getWidthFixedContainerWidth(msSymbolContainer: MsSymbolContainer, measureHeight: number): number {
+    let width = 0
+    for (let i = 0; i < msSymbolContainer.msSymbolArray.length; i++) {
+        const curMsSymbol: MsSymbol = msSymbolContainer.msSymbolArray[i]
+        const information = MsSymbolInformationMap[curMsSymbol.type]
+        let curW = 0
+        if ('aspectRatio' in information) {
+            curW += information.aspectRatio * measureHeight
+        } else {
+            console.error('符号的svg宽高比不存在')
+        }
+        if (width < curW) {
+            width = curW
+        }
 
-        if (msSymbol === curMsSymbol) {
+    }
+    return width
+}
+
+// 获取当前小节内定宽符号容器宽度之和, 第二个参数判断是否只计算当前符号之前的
+export function getWidthFixedContainerWidthSumInMeasure(measure: Measure, measureHeight: number, filter: 'front' | 'rear' | 'all' = 'all', msSymbolContainer?: MsSymbolContainer): number {
+    let widthSum = 0
+    for (let i = 0; i < measure.msSymbolContainerArray.length; i++) {
+        const curMsSymbolContainer: MsSymbolContainer = measure.msSymbolContainerArray[i]
+
+        if (msSymbolContainer && msSymbolContainer === curMsSymbolContainer) {
             return widthSum
         }
-        const information = MsSymbolInformationMap[curMsSymbol.type]
-        if ('containerType' in information) {
-            if (filter === 'all' && [MsSymbolContainerTypeEnum.frontFixed, MsSymbolContainerTypeEnum.rearFixed].includes(information.containerType)) {
-                widthSum += information.aspectRatio * measureHeight
-            } else if (filter === 'front' && [MsSymbolContainerTypeEnum.frontFixed].includes(information.containerType)) {
-                widthSum += information.aspectRatio * measureHeight
-            } else if (filter === 'rear' && [MsSymbolContainerTypeEnum.rearFixed].includes(information.containerType)) {
-                widthSum += information.aspectRatio * measureHeight
-            }
-
+        const containerType = curMsSymbolContainer.type
+        if (filter === 'all' && [MsSymbolContainerTypeEnum.frontFixed, MsSymbolContainerTypeEnum.rearFixed].includes(containerType)) {
+            widthSum += getWidthFixedContainerWidth(curMsSymbolContainer, measureHeight)
+        } else if (filter === 'front' && [MsSymbolContainerTypeEnum.frontFixed].includes(containerType)) {
+            widthSum += getWidthFixedContainerWidth(curMsSymbolContainer, measureHeight)
+        } else if (filter === 'rear' && [MsSymbolContainerTypeEnum.rearFixed].includes(containerType)) {
+            widthSum += getWidthFixedContainerWidth(curMsSymbolContainer, measureHeight)
         }
+
     }
     return widthSum
 }
 
+
 // 获取单谱表内定宽容器符号宽度之和，单位px
-export function getWidthFixedContainerWidthSumInSingleStaff(singleStaff: SingleStaff, measureHeight: number, filter: 'front' | 'rear' | 'all' = 'all', msSymbol?: MsSymbol | null): number {
+export function getWidthFixedContainerWidthSumInSingleStaff(singleStaff: SingleStaff, measureHeight: number, filter: 'front' | 'rear' | 'all' = 'all', msSymbolContainer?: MsSymbolContainer): number {
     let widthSum = 0
     singleStaff.measureArray.forEach((measure: Measure) => {
-        widthSum += getWidthFixedContainerWidthSumInMeasure(measure, measureHeight, filter, msSymbol)
+        widthSum += getWidthFixedContainerWidthSumInMeasure(measure, measureHeight, filter, msSymbolContainer)
     })
     return widthSum
 }
@@ -254,59 +291,29 @@ export function isFixedWidthSymbolContainerMap(msSymbolType: MsSymbolTypeEnum): 
     return false
 }
 
-export function getClef(measure: Measure, singleStaff: SingleStaff, noteHead: Extract<MsSymbol, {
-    type: MsSymbolTypeEnum.noteHead
-}>): ClefEnum {
-
-
-    let clef: ClefEnum | null = null
-    // 如果音符上没有clef，就从最近的小节上找
-    const measuerIndex = singleStaff.measureArray.indexOf(measure)
-    let msSymbolIndex = measure.msSymbolArray.indexOf(noteHead)
-    for (let i = measuerIndex; i >= 0; i--) {
-        for (let j = msSymbolIndex; j >= 0; j--) {
-            const curMsSymbol = singleStaff.measureArray[i].msSymbolArray[j]
-            const childMsSymbolArray = singleStaff.measureArray[i].msSymbolArray[j].msSymbolArray
-            if (childMsSymbolArray) {
-                // 寻找最近的音符上的谱号信息
-                for (let k = 0; k < childMsSymbolArray.length; k++) {
-                    if (childMsSymbolArray[k].type === MsSymbolTypeEnum.clef) { // 前置谱号不会出现在跟随符号中
-                        const clefSymbol = childMsSymbolArray[k] as Extract<MsSymbol, {
-                            type: MsSymbolTypeEnum.clef | MsSymbolTypeEnum.clef_f
-                        }>
-                        clef = clefSymbol.clef
-                        return clef
+// 整体赋值clef 初始化、数据更改时调用 会更改数据的computed属性
+export function computedClef(musicScore: MusicScore): void {
+    let clef: ClefEnum = ClefEnum.treble
+    for (let i = 0; i < musicScore.multipleStavesArray.length; i++) {
+        const muptipleStaves = musicScore.multipleStavesArray[i]
+        for (let j = 0; j < muptipleStaves.singleStaffArray.length; j++) {
+            const singleStaff = muptipleStaves.singleStaffArray[j]
+            for (let k = 0; k < singleStaff.measureArray.length; k++) {
+                const measure = singleStaff.measureArray[k]
+                for (let l = 0; l < measure.msSymbolContainerArray.length; l++) {
+                    const msSymbolContainer = measure.msSymbolContainerArray[l]
+                    for (let t = 0; t < msSymbolContainer.msSymbolArray.length; t++) {
+                        const msSymbol = msSymbolContainer.msSymbolArray[t]
+                        if (msSymbol.type === MsSymbolTypeEnum.clef) {
+                            clef = msSymbol.clef
+                        }
+                        if (msSymbol.type === MsSymbolTypeEnum.noteHead) {
+                            msSymbol.computed.clef = clef
+                        }
                     }
                 }
             }
-            // 寻找小节上的谱号信息
-            if (curMsSymbol.type === MsSymbolTypeEnum.clef || curMsSymbol.type === MsSymbolTypeEnum.clef_f && 'clef' in curMsSymbol) {
-                clef = curMsSymbol.clef
-                return clef
-            }
-        }
-        if (i > 1) {
-            msSymbolIndex = singleStaff.measureArray[i - 1].msSymbolArray.length - 1
         }
     }
-    console.error("缺少谱号信息，默认高音谱号")
-    return ClefEnum.treble
 }
 
-// 通过js动态的获取svg的aspectRatio
-// export async function getAspectRatioOfSvg(svgUrl: string): Promise<number | null> {
-//     const res = await fetch(svgUrl)
-//     const text = await res.text()
-//     const parser = new DOMParser()
-//     const doc = parser.parseFromString(text, "image/svg+xml")
-//     const svg = doc.querySelector("svg")
-//     if (!svg) return null
-//
-//     const width = parseFloat(svg.getAttribute("width") || "")
-//     const height = parseFloat(svg.getAttribute("height") || "")
-//     if (!isNaN(width) && !isNaN(height) && height !== 0) {
-//         return width / height
-//     }
-//
-//     return null
-// }

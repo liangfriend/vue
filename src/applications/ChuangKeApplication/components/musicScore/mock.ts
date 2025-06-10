@@ -2,9 +2,11 @@ import {
     ChronaxieEnum,
     ClefEnum,
     KeySignatureEnum,
-    MusicalAlphabetEnum,
+    MsSymbolContainerTypeEnum,
     MsSymbolTypeEnum,
-    TimeSignatureEnum, MusicScoreShowModeEnum
+    MusicalAlphabetEnum,
+    MusicScoreShowModeEnum,
+    TimeSignatureEnum
 } from './musicScoreEnum.ts';
 import type {MusicScore} from "./types.d.ts";
 
@@ -13,335 +15,547 @@ const data: MusicScore = {
     multipleStavesArray: [{
         singleStaffArray: [{
             measureArray: [{
-                options: {},
-                msSymbolArray: [{
-                    clef: ClefEnum.treble,
-                    type: MsSymbolTypeEnum.clef_f,
-                    options: {},
-                    measureRelativeRect: {},
-                }, {
-                    keySignature: KeySignatureEnum.F,
-                    type: MsSymbolTypeEnum.keySignature,
-                    options: {},
-                    measureRelativeRect: {}
-                }, {
-                    timeSignature: TimeSignatureEnum['3/4'],
-                    type: MsSymbolTypeEnum.timeSignature,
-                    options: {},
-                    measureRelativeRect: {}
-                }, {
-                    musicalAlphabet: MusicalAlphabetEnum.C4,
-                    chronaxie: ChronaxieEnum.eighth,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                msSymbolContainerArray: [{
+                    type: MsSymbolContainerTypeEnum.frontFixed,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        clef: ClefEnum.treble,
+                        type: MsSymbolTypeEnum.clef_f,
                         options: {},
-                        measureRelativeRect: {},
+                        measureRelativeRect: {}, computed: {},
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.frontFixed,
+                    msSymbolArray: [{
+                        keySignature: KeySignatureEnum.F,
+                        type: MsSymbolTypeEnum.keySignature,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.frontFixed,
+                    msSymbolArray: [{
+                        timeSignature: TimeSignatureEnum['3/4'],
+                        type: MsSymbolTypeEnum.timeSignature,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.variable,
+                    msSymbolArray: [{
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
 
-                    },]
+                        },]
+                    }]
                 }, {
-                    musicalAlphabet: MusicalAlphabetEnum.C4,
-                    chronaxie: ChronaxieEnum.eighth,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                    type: MsSymbolContainerTypeEnum.variable,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
                         options: {},
-                        measureRelativeRect: {},
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
 
-                    },]
+                        },]
+                    }]
                 }, {
-                    clef: ClefEnum.treble,
-                    type: MsSymbolTypeEnum.clef,
-                    options: {},
-                    measureRelativeRect: {},
-                },]
-            }, {
-                options: {},
-                msSymbolArray: [{
-                    musicalAlphabet: MusicalAlphabetEnum.D4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                    type: MsSymbolContainerTypeEnum.rearFixed,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        clef: ClefEnum.treble,
+                        type: MsSymbolTypeEnum.clef,
                         options: {},
-                        measureRelativeRect: {},
+                        measureRelativeRect: {}, computed: {},
+                    }]
+                }],
 
-                    },]
-                }, {
-                    musicalAlphabet: MusicalAlphabetEnum.C4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
-                    msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
-                        options: {},
-                        measureRelativeRect: {}
-                    },]
-                }, {
-                    musicalAlphabet: MusicalAlphabetEnum.F4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
-                    msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
-                        options: {},
-                        measureRelativeRect: {}
-                    },]
-                },]
             }, {
-                options: {},
-                msSymbolArray: [{
-                    musicalAlphabet: MusicalAlphabetEnum.E4,
-                    chronaxie: ChronaxieEnum.half,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                msSymbolContainerArray: [{
+                    type: MsSymbolContainerTypeEnum.frontFixed,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        timeSignature: TimeSignatureEnum['3/4'],
+                        type: MsSymbolTypeEnum.timeSignature,
                         options: {},
-                        measureRelativeRect: {}
-                    },]
+                        measureRelativeRect: {}, computed: {},
+                    }]
                 }, {
-                    musicalAlphabet: MusicalAlphabetEnum.C4,
-                    chronaxie: ChronaxieEnum.eighth,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                    type: MsSymbolContainerTypeEnum.variable,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
                         options: {},
-                        measureRelativeRect: {}
-                    },]
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
+
+                        },]
+                    }]
                 }, {
-                    musicalAlphabet: MusicalAlphabetEnum.C4,
-                    chronaxie: ChronaxieEnum.eighth,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                    type: MsSymbolContainerTypeEnum.variable,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
                         options: {},
-                        measureRelativeRect: {}
-                    },]
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
+
+                        },]
+                    }]
                 },]
+
             }, {
-                options: {},
-                msSymbolArray: [{
-                    musicalAlphabet: MusicalAlphabetEnum.D4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                msSymbolContainerArray: [{
+                    type: MsSymbolContainerTypeEnum.frontFixed,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        keySignature: KeySignatureEnum.F,
+                        type: MsSymbolTypeEnum.keySignature,
                         options: {},
-                        measureRelativeRect: {}
-                    },]
+                        measureRelativeRect: {}, computed: {},
+                    }]
                 }, {
-                    musicalAlphabet: MusicalAlphabetEnum.C4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                    type: MsSymbolContainerTypeEnum.variable,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        timeSignature: TimeSignatureEnum['3/4'],
+                        type: MsSymbolTypeEnum.timeSignature,
                         options: {},
-                        measureRelativeRect: {}
-                    },]
+                        measureRelativeRect: {}, computed: {},
+                    }]
                 }, {
-                    musicalAlphabet: MusicalAlphabetEnum.G4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                    type: MsSymbolContainerTypeEnum.variable,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
                         options: {},
-                        measureRelativeRect: {}
-                    },]
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
+
+                        },]
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.variable,
+                    msSymbolArray: [{
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
+
+                        },]
+                    }]
                 },]
+
             }, {
-                options: {},
-                msSymbolArray: [{
-                    musicalAlphabet: MusicalAlphabetEnum.D4,
-                    chronaxie: ChronaxieEnum.half,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                msSymbolContainerArray: [{
+                    type: MsSymbolContainerTypeEnum.frontFixed,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        clef: ClefEnum.treble,
+                        type: MsSymbolTypeEnum.clef_f,
                         options: {},
-                        measureRelativeRect: {}
-                    },]
+                        measureRelativeRect: {}, computed: {},
+                    }]
                 }, {
-                    musicalAlphabet: MusicalAlphabetEnum.C4,
-                    chronaxie: ChronaxieEnum.eighth,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                    type: MsSymbolContainerTypeEnum.frontFixed,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        keySignature: KeySignatureEnum.F,
+                        type: MsSymbolTypeEnum.keySignature,
                         options: {},
-                        measureRelativeRect: {}
-                    },]
+                        measureRelativeRect: {}, computed: {},
+                    }]
                 }, {
-                    musicalAlphabet: MusicalAlphabetEnum.C4,
-                    chronaxie: ChronaxieEnum.eighth,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                    type: MsSymbolContainerTypeEnum.variable,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        timeSignature: TimeSignatureEnum['3/4'],
+                        type: MsSymbolTypeEnum.timeSignature,
                         options: {},
-                        measureRelativeRect: {}
-                    },]
-                },]
+                        measureRelativeRect: {}, computed: {},
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.variable,
+                    msSymbolArray: [{
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
+
+                        },]
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.variable,
+                    msSymbolArray: [{
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
+
+                        },]
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.rearFixed,
+                    msSymbolArray: [{
+                        clef: ClefEnum.treble,
+                        type: MsSymbolTypeEnum.clef,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                    }]
+                }],
+
+            }, {
+                msSymbolContainerArray: [{
+                    type: MsSymbolContainerTypeEnum.frontFixed,
+                    msSymbolArray: [{
+                        keySignature: KeySignatureEnum.F,
+                        type: MsSymbolTypeEnum.keySignature,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.frontFixed,
+                    msSymbolArray: [{
+                        timeSignature: TimeSignatureEnum['3/4'],
+                        type: MsSymbolTypeEnum.timeSignature,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.variable,
+                    msSymbolArray: [{
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
+
+                        },]
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.variable,
+                    msSymbolArray: [{
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
+
+                        },]
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.rearFixed,
+                    msSymbolArray: [{
+                        clef: ClefEnum.treble,
+                        type: MsSymbolTypeEnum.clef,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                    }]
+                }],
+
             }]
         }]
     }, {
         singleStaffArray: [{
             measureArray: [{
-                options: {},
-                msSymbolArray: [{
-                    clef: ClefEnum.treble,
-                    type: MsSymbolTypeEnum.clef,
-                    options: {},
-                    measureRelativeRect: {},
+                msSymbolContainerArray: [{
+                    type: MsSymbolContainerTypeEnum.frontFixed,
+                    msSymbolArray: [{
+                        clef: ClefEnum.treble,
+                        type: MsSymbolTypeEnum.clef_f,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.frontFixed,
+                    msSymbolArray: [{
+                        keySignature: KeySignatureEnum.F,
+                        type: MsSymbolTypeEnum.keySignature,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.frontFixed,
+                    msSymbolArray: [{
+                        timeSignature: TimeSignatureEnum['3/4'],
+                        type: MsSymbolTypeEnum.timeSignature,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.variable,
+                    msSymbolArray: [{
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
 
+                        },]
+                    }]
                 }, {
-                    keySignature: KeySignatureEnum.F,
-                    type: MsSymbolTypeEnum.keySignature,
-                    options: {},
-                    measureRelativeRect: {},
+                    type: MsSymbolContainerTypeEnum.variable,
+                    msSymbolArray: [{
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
 
+                        },]
+                    }]
                 }, {
-                    musicalAlphabet: MusicalAlphabetEnum.C5,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                    type: MsSymbolContainerTypeEnum.rearFixed,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        clef: ClefEnum.treble,
+                        type: MsSymbolTypeEnum.clef,
                         options: {},
-                        measureRelativeRect: {}
-                    },]
-                }, {
-                    musicalAlphabet: MusicalAlphabetEnum.A4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
-                    msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
-                        options: {},
-                        measureRelativeRect: {}
-                    },]
-                }, {
-                    musicalAlphabet: MusicalAlphabetEnum.F4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
-                    msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
-                        options: {},
-                        measureRelativeRect: {}
-                    },]
-                },]
+                        measureRelativeRect: {}, computed: {},
+                    }]
+                }],
+
             }, {
-                options: {},
-                msSymbolArray: [{
-                    musicalAlphabet: MusicalAlphabetEnum.E4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                msSymbolContainerArray: [{
+                    type: MsSymbolContainerTypeEnum.frontFixed,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        clef: ClefEnum.treble,
+                        type: MsSymbolTypeEnum.clef_f,
                         options: {},
-                        measureRelativeRect: {}
-                    },]
+                        measureRelativeRect: {}, computed: {},
+                    }]
                 }, {
-                    musicalAlphabet: MusicalAlphabetEnum['B-4'],
-                    chronaxie: ChronaxieEnum.eighth,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                    type: MsSymbolContainerTypeEnum.frontFixed,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        keySignature: KeySignatureEnum.F,
+                        type: MsSymbolTypeEnum.keySignature,
                         options: {},
-                        measureRelativeRect: {}
-                    },]
+                        measureRelativeRect: {}, computed: {},
+                    }]
                 }, {
-                    musicalAlphabet: MusicalAlphabetEnum['B-4'],
-                    chronaxie: ChronaxieEnum.eighth,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                    type: MsSymbolContainerTypeEnum.frontFixed,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        timeSignature: TimeSignatureEnum['3/4'],
+                        type: MsSymbolTypeEnum.timeSignature,
                         options: {},
-                        measureRelativeRect: {}
-                    },]
-                },]
+                        measureRelativeRect: {}, computed: {},
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.variable,
+                    msSymbolArray: [{
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
+
+                        },]
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.variable,
+                    msSymbolArray: [{
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
+
+                        },]
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.rearFixed,
+                    msSymbolArray: [{
+                        clef: ClefEnum.treble,
+                        type: MsSymbolTypeEnum.clef,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                    }]
+                }],
+
             }, {
-                options: {},
-                msSymbolArray: [{
-                    musicalAlphabet: MusicalAlphabetEnum.A4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                msSymbolContainerArray: [{
+                    type: MsSymbolContainerTypeEnum.frontFixed,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        clef: ClefEnum.treble,
+                        type: MsSymbolTypeEnum.clef_f,
                         options: {},
-                        measureRelativeRect: {}
-                    },]
+                        measureRelativeRect: {}, computed: {},
+                    }]
                 }, {
-                    musicalAlphabet: MusicalAlphabetEnum.F4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                    type: MsSymbolContainerTypeEnum.frontFixed,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        keySignature: KeySignatureEnum.F,
+                        type: MsSymbolTypeEnum.keySignature,
                         options: {},
-                        measureRelativeRect: {}
-                    },]
+                        measureRelativeRect: {}, computed: {},
+                    }]
                 }, {
-                    musicalAlphabet: MusicalAlphabetEnum.G4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                    type: MsSymbolContainerTypeEnum.frontFixed,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        timeSignature: TimeSignatureEnum['3/4'],
+                        type: MsSymbolTypeEnum.timeSignature,
                         options: {},
-                        measureRelativeRect: {}
-                    },]
-                },]
+                        measureRelativeRect: {}, computed: {},
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.variable,
+                    msSymbolArray: [{
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
+
+                        },]
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.variable,
+                    msSymbolArray: [{
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
+
+                        },]
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.frontFixed,
+                    msSymbolArray: [{
+                        clef: ClefEnum.treble,
+                        type: MsSymbolTypeEnum.clef,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                    }]
+                }],
+
             }, {
-                options: {},
-                msSymbolArray: [{
-                    musicalAlphabet: MusicalAlphabetEnum.G4,
-                    chronaxie: ChronaxieEnum.quarter,
-                    type: MsSymbolTypeEnum.noteHead,
-                    options: {},
-                    measureRelativeRect: {},
+                msSymbolContainerArray: [{
+                    type: MsSymbolContainerTypeEnum.variable,
                     msSymbolArray: [{
-                        type: MsSymbolTypeEnum.noteBar,
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
                         options: {},
-                        measureRelativeRect: {}
-                    },]
-                }]
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
+
+                        },]
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.variable,
+                    msSymbolArray: [{
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
+
+                        },]
+                    }]
+                },],
+
+            }, {
+                msSymbolContainerArray: [{
+                    type: MsSymbolContainerTypeEnum.variable,
+                    msSymbolArray: [{
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
+
+                        },]
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.variable,
+                    msSymbolArray: [{
+                        musicalAlphabet: MusicalAlphabetEnum.C4,
+                        chronaxie: ChronaxieEnum.eighth,
+                        type: MsSymbolTypeEnum.noteHead,
+                        options: {},
+                        measureRelativeRect: {}, computed: {},
+                        msSymbolArray: [{
+                            type: MsSymbolTypeEnum.noteBar,
+                            options: {},
+                            measureRelativeRect: {}, computed: {},
+
+                        },]
+                    }]
+                },],
+
             }]
         }]
     }]

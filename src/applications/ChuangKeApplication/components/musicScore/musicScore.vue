@@ -20,8 +20,8 @@
                        :style="{width:width+'px',height:height+'px'}"
                        comment="符号层">
       <template #default="{ measure, measureIndex, singleStaff, multipleStaves, measureWidth }">
-        <ms-symbol-container v-for="(msSymbol,symbolIndex) in measure.msSymbolArray"
-                             :msSymbol="msSymbol"
+        <ms-symbol-container v-for="(msSymbolContainer,symbolIndex) in measure.msSymbolContainerArray"
+                             :msSymbolContainer="msSymbolContainer"
                              :measure="measure"
                              :measureWidth="measureWidth"
                              :singleStaff="singleStaff"
@@ -35,9 +35,7 @@
 </template>
 <script setup lang="ts">
 import measure from './components/measure.vue';
-import {computed, onMounted, onUnmounted, type PropType, ref} from 'vue';
-import note from './components/note.vue';
-import * as Tone from 'tone';
+import {computed, onMounted, onUnmounted, type PropType, provide, ref} from 'vue';
 import type {
   MusicScore
 } from "./types.d.ts";
@@ -45,6 +43,8 @@ import MeasureContainer from "@/applications/ChuangKeApplication/components/musi
 
 import MsSymbolContainer
   from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbolContainer.vue";
+import {ClefEnum, MsSymbolTypeEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import {computedClef} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 
 const props = defineProps({
   modelValue: {
@@ -90,9 +90,12 @@ const musicScoreStyle = computed(() => {
   };
 });
 
+function mounted() {
+  // 计算clef
+  computedClef(props.modelValue)
+}
 
-onMounted(() => {
-});
+onMounted(mounted);
 onUnmounted(() => {
 
 });

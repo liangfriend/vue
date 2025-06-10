@@ -9,8 +9,12 @@ import {
 } from "./musicScoreEnum.ts";
 
 
-export declare interface musicScoreOptions {
+export declare interface MusicScoreOptions {
     hightlight?: Boolean;
+}
+
+export declare interface MusicScoreComputed {
+    clef?: ClefEnum;
 }
 
 // 几何信息。位置信息都是相对小节的
@@ -21,7 +25,8 @@ export declare interface MeasureRelativeRect {
 
 export declare type BaseMsSymbol = {
     msSymbolArray?: Array<MsSymbol>
-    options: musicScoreOptions
+    options: MusicScoreOptions
+    computed: MusicScoreComputed // 运行时通过计算得来的属性
     measureRelativeRect: MeasureRelativeRect;
 }
 export declare type MsSymbol = ({
@@ -41,10 +46,13 @@ export declare type MsSymbol = ({
     type: Exclude<MsSymbolTypeEnum, MsSymbolTypeEnum.noteHead | MsSymbolTypeEnum.clef |
         MsSymbolTypeEnum.timeSignature | MsSymbolTypeEnum.keySignature>,
 } & BaseMsSymbol)
+export declare type MsSymbolContainer = {
+    msSymbolArray: Array<MsSymbol>
+    type: MsSymbolContainerTypeEnum
+}
 
 export declare interface Measure {
-    msSymbolArray: Array<MsSymbol>
-    options: musicScoreOptions
+    msSymbolContainerArray: Array<MsSymbolContainer>
 }
 
 export declare interface SingleStaff {

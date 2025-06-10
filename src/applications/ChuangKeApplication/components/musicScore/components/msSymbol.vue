@@ -43,7 +43,11 @@ const props = defineProps({
     type: Number,
     default: 60
   },
-
+  // 符号槽位宽度（父级符号宽度）
+  slotWidth: {
+    type: Number,
+    default: 30
+  }
 })
 
 const svgHref = computed(() => {
@@ -88,6 +92,7 @@ const height = computed(() => {
   }
   return props.measureHeight
 })
+// 符号宽度
 const width = computed(() => {
 
   return height.value * aspectRatio.value
@@ -95,10 +100,10 @@ const width = computed(() => {
 const msSymbolLeft = computed(() => {
   switch (props.msSymbol?.type) {
     case MsSymbolTypeEnum.noteHead: { // 音符头居中
-      return props.containerWidth / 2 - width.value / 2
+      return
     }
     case MsSymbolTypeEnum.noteBar: { // 音符头居中
-      return props.containerWidth / 2 + props.measureHeight / 8 - width.value
+      return props.slotWidth - width.value
     }
   }
   return 0
