@@ -17,7 +17,7 @@ import {App, createApp, onMounted, onUnmounted, Ref, ref, watch} from 'vue';
 import MusicScore from "@/applications/ChuangKeApplication/components/musicScore/musicScore.vue";
 import {AddElementOptions, WBElement} from "@/applications/ChuangKeApplication/components/whiteBoard/types";
 import {whiteBoardState} from "@/applications/ChuangKeApplication/components/whiteBoard/enum.ts";
-import mockData from "@/applications/ChuangKeApplication/components/musicScore/mock.ts";
+import mockData from "@/applications/ChuangKeApplication/components/musicScore/musicScoreData/happyBirthdayToYou.ts";
 import BottomMenu from "@/applications/ChuangKeApplication/views/editor/components/bottomMenu.vue";
 import {msPlayUtils} from "@/applications/ChuangKeApplication/utils/ms-playUtils.ts";
 import {MusicMapKey} from "@/applications/ChuangKeApplication/views/editor/constant.ts";

@@ -4,8 +4,11 @@
       v-if="msSymbol?.type === MsSymbolTypeEnum.clef || msSymbol?.type === MsSymbolTypeEnum.clef_f && 'clef' in msSymbol"
       :clef="msSymbol?.clef" class="msSymbol"
       :style="msSymbolStyle"></clef>
-  <key-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.keySignature" :style="msSymbolStyle"
-                 :msSymbol="msSymbol"></key-signature>
+  <key-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.keySignature && msSymbol.computed?.clef"
+                 :style="msSymbolStyle"
+                 :measure-height="measureHeight"
+                 :slotWidth="slotWidth"
+                 :msSymbol="msSymbol" :clef="msSymbol.computed.clef"></key-signature>
   <time-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.timeSignature" :style="msSymbolStyle"
                   :msSymbol="msSymbol" :measure-height="measureHeight"></time-signature>
   <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle"></div>
@@ -14,16 +17,18 @@
 import {computed, CSSProperties, onMounted, PropType, ref} from "vue";
 import {MsSymbol} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
-  ClefEnum,
-  MsSymbolCategoryEnum,
+  AccidentalEnum,
   MsSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import noteHeadSvg from "../musicSymbols/noteHead.svg"
 import noteBarSvg from "../musicSymbols/noteHead.svg"
-import trebleClefSvg from "../musicSymbols/trebleClef.svg"
-import altoClefSvg from "../musicSymbols/altoClef.svg"
-import bassClefSvg from "../musicSymbols/bassClef.svg"
-import defaultSymbolSvg from "../musicSymbols/defaultSymbol.svg"
+import sharpSvg from '../musicSymbols/sharp.svg'
+import flatSvg from '../musicSymbols/flat.svg'
+import natureSvg from '../musicSymbols/nature.svg'
+import doubleSharpSvg from '../musicSymbols/sharp.svg'
+import doubleFlatpSvg from '../musicSymbols/flat.svg'
+
+
 import {MsSymbolInformationMap} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 import Clef from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/clef.vue";
 import KeySignature from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/keySignature.vue";
@@ -49,7 +54,7 @@ const props = defineProps({
   // 符号槽位宽度（父级符号宽度）
   slotWidth: {
     type: Number,
-    default: 30
+    default: 60
   }
 })
 
@@ -71,6 +76,31 @@ const svgHref = computed(() => {
     case MsSymbolTypeEnum.keySignature: {
       return ''
     }
+    case MsSymbolTypeEnum.timeSignature: {
+      return ''
+    }
+    case MsSymbolTypeEnum.accidental: {
+      switch (props.msSymbol?.accidental) {
+        case AccidentalEnum.sharp: {
+          return sharpSvg
+        }
+        case AccidentalEnum.flat: {
+          return flatSvg
+        }
+        case AccidentalEnum.nature: {
+          return natureSvg
+        }
+        case AccidentalEnum.doubleSharp: {
+          return doubleSharpSvg
+        }
+        case AccidentalEnum.doubleFlat: {
+          return doubleFlatpSvg
+        }
+
+      }
+      console.error("未知的变音符号", props.msSymbol)
+      return ''
+    }
     default: {
       console.error("未知的符号类别", props.msSymbol?.type)
       return ''
@@ -83,8 +113,12 @@ const aspectRatio = computed<number>(() => {
   if (!props.msSymbol?.type) return 1
   // 单小节符号，赋值
   const information = MsSymbolInformationMap[props.msSymbol.type]
-  if ('aspectRatio' in information) {
+  if ('aspectRatio' in information && (typeof information.aspectRatio === 'number')) {
     return information.aspectRatio
+  } else if ('aspectRatio' in information && (typeof information.aspectRatio === 'object')) {
+    if (props.msSymbol.type === MsSymbolTypeEnum.keySignature) {
+      return information.aspectRatio[props.msSymbol.keySignature]
+    }
   }
   return 1
 })
@@ -98,12 +132,14 @@ const height = computed(() => {
     case MsSymbolTypeEnum.noteBar: {
       return props.measureHeight * 0.6
     }
+    case MsSymbolTypeEnum.accidental: {
+      return props.measureHeight * 0.4
+    }
   }
   return props.measureHeight
 })
 // 符号宽度
 const width = computed(() => {
-
   return height.value * aspectRatio.value
 })
 const msSymbolLeft = computed(() => {
@@ -113,6 +149,9 @@ const msSymbolLeft = computed(() => {
     }
     case MsSymbolTypeEnum.noteBar: { // 音符头居中
       return props.slotWidth - width.value
+    }
+    case MsSymbolTypeEnum.accidental: { // 音符头居中
+      return -width.value
     }
   }
   return 0

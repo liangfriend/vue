@@ -16,9 +16,13 @@
 </template>
 
 <script setup lang="ts">
-import {computed, PropType} from "vue";
+import {computed, CSSProperties, PropType} from "vue";
 import {MsSymbol} from "@/applications/ChuangKeApplication/components/musicScore/types";
-import {MsSymbolTypeEnum, ClefEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import {
+  MsSymbolTypeEnum,
+  ClefEnum,
+  KeySignatureEnum
+} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import sharpSvg from './sharp.svg';
 import flatSvg from './flat.svg';
 
@@ -27,9 +31,9 @@ const props = defineProps({
     type: Object as PropType<MsSymbol>,
     required: true,
   },
-  width: {
+  slotWidth: {
     type: Number,
-    default: 200,
+    default: 50,
   },
   measureHeight: {
     type: Number,
@@ -42,7 +46,7 @@ const props = defineProps({
 });
 
 const keySignatureInfo = computed(() => {
-  const map = {
+  const map: Record<KeySignatureEnum, { type: 'flat' | 'sharp' | 'none', count: number }> = {
     'Cb': {type: 'flat', count: 7},
     'Gb': {type: 'flat', count: 6},
     'Db': {type: 'flat', count: 5},
@@ -58,8 +62,14 @@ const keySignatureInfo = computed(() => {
     'B': {type: 'sharp', count: 5},
     'F#': {type: 'sharp', count: 6},
     'C#': {type: 'sharp', count: 7},
-  } as const;
-  return map[props.msSymbol?.keySignature ?? 'C'];
+  }
+  if (props.msSymbol.type === MsSymbolTypeEnum.keySignature) {
+    return map[props.msSymbol.keySignature];
+  } else {
+    console.error("keySignature出错，没有keySignature属性", props.msSymbol)
+    return map[KeySignatureEnum.C];
+  }
+
 });
 
 const symbolSrc = computed(() =>
@@ -98,18 +108,21 @@ const verticalOffsets = computed(() => {
   return [];
 });
 
-const getSymbolStyle = (index: number, yOffset: number) => {
+const getSymbolStyle = computed(() => {
   const symbolSize = props.measureHeight * 0.4;
-  const horizontalGap = props.measureHeight * 0.6; // 水平间距比符号略大
-  return {
-    width: symbolSize + 'px',
-    height: symbolSize + 'px',
-    position: 'absolute',
-    left: `${index * horizontalGap}px`,
-    // 因为0是最底线，向上是增加y坐标，这里从底部往上算，减去符号高度一半垂直居中
-    top: `${props.measureHeight - yOffset - symbolSize / 2}px`,
+  const horizontalGap = props.measureHeight * 0.4; // 水平间距比符号略大
+  return (index: number, yOffset: number): CSSProperties => {
+    return {
+      width: symbolSize + 'px',
+      height: symbolSize + 'px',
+      position: 'absolute',
+      left: `${index * horizontalGap}px`,
+      // 因为0是最底线，向上是增加y坐标，这里从底部往上算，减去符号高度一半垂直居中
+      top: `${props.measureHeight - yOffset - symbolSize / 2}px`,
+    }
+
   };
-};
+});
 </script>
 
 <style scoped>

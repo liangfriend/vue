@@ -19,7 +19,6 @@ const mask = computed(() => {
   } else if (props.clef === ClefEnum.bass) {
     svgUrl = bassClefSvg
   }
-  console.log('chicken', svgUrl)
   return {
     mask: `url(${svgUrl}) center center / 100% 100% no-repeat`
   }

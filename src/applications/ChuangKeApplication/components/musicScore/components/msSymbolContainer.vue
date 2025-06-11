@@ -1,6 +1,5 @@
 <template>
   <div class="msSymbolContainer "
-
        :style="msSymbolContainerStyle">
     <ms-symbol-slot v-for="msSymbol in msSymbolContainer?.msSymbolArray"
                     :msSymbol="msSymbol"
@@ -45,14 +44,17 @@ import measure from "@/applications/ChuangKeApplication/components/musicScore/co
 const props = defineProps({
   msSymbolContainer: {
     type: Object as PropType<MsSymbolContainer>,
+    required: true
   },
   //小节高度， 此属性会控制音符，休止符，谱号，拍号等符号大小
   measureHeight: {
     type: Number,
-    default: 60
+    default: 60,
+    required: true
   },
   measure: {
     type: Object as PropType<Measure>,
+    required: true
   },
   measureWidth: {
     type: Number,
@@ -60,9 +62,11 @@ const props = defineProps({
   },
   singleStaff: {
     type: Object as PropType<SingleStaff>,
+    required: true
   },
   multipleStaves: {
     type: Object as PropType<MultipleStaves>,
+    required: true
   }
 })
 

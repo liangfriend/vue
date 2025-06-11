@@ -76,10 +76,20 @@ function getEnharmonicVariants(midi: number): { key: string, accidental: Acciden
     return enharmonicMap[semitone] ?? [];
 }
 
+function getNoteNameFromMidi(midi: number): string {
+    const names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    return names[midi % 12].replace('#', ''); // 去掉升降是为了 degree 计算
+}
+
+function getOctaveFromMidi(midi: number): number {
+    return Math.floor(midi / 12) - 1;
+}
+
 export function calculationOfStaffRegion(
     clef: ClefEnum,
     musicalAlphabet: MusicalAlphabetEnum
 ): CalculationOfStaffRegion {
+    // 定义五线谱的所有区域索引列表，按从下至上排列
     const regionList: MusicScoreRegionEnum[] = [
         MusicScoreRegionEnum.lower_line_6,
         MusicScoreRegionEnum.lower_space_6,
@@ -120,49 +130,96 @@ export function calculationOfStaffRegion(
         MusicScoreRegionEnum.upper_line_8,
     ];
 
+    // 获取该谱号下的参考音高（MIDI）与它对应在 regionList 中的索引
     const base = basePositions[clef];
     if (!base) {
         console.error("未知谱号", clef);
         return [{region: MusicScoreRegionEnum.line_1}];
     }
 
-    const match = musicalAlphabet.match(/^([A-G])([#-]?)(\d)$/);
+    // 解析音名（形如 C#4、Eb5、A3）
+    const match = musicalAlphabet.match(/^([A-G])([#-♯-]?)(\d)$/);
     if (!match) {
         console.error("音名格式错误", clef, musicalAlphabet);
         return [{region: MusicScoreRegionEnum.line_1}];
     }
 
     const [_, note, accidental, octaveStr] = match;
+
+    // 组成升降音的 key，例如 "C#"、"Eb"
     const key = accidental ? `${note}${accidental}` : note;
+
+    // 查表获取半音值（MIDI 中用于换算）
     const semitone = noteToSemitone[key];
     if (semitone === undefined) {
         console.error("未支持音名", key);
         return [{region: MusicScoreRegionEnum.line_1}];
     }
 
+    // 获取该音符的 MIDI 值
     const octave = parseInt(octaveStr);
     const targetMidi = (octave + 1) * 12 + semitone;
+
+    // 获取等音（例如 F# 和 Gb）
     const enharmonics = getEnharmonicVariants(targetMidi);
 
-    const getRegion = (midi: number, shift: number = 0) => {
-        const semitoneDiff = midi - base.midi;
-        const degreeDiff = Math.floor(semitoneDiff / 2) + shift;
-        const regionIndex = base.regionIndex + degreeDiff;
-        return regionList[regionIndex] ?? MusicScoreRegionEnum.line_1;
+    // 音名映射到 diatonic degree（C=0, D=1, ..., B=6），用于五线谱位置推导
+    const noteNameToDegree: Record<string, number> = {
+        'C': 0,
+        'D': 1,
+        'E': 2,
+        'F': 3,
+        'G': 4,
+        'A': 5,
+        'B': 6,
     };
 
+    // 获取该音符的 degree 值：每升一个八度增加 7 个 degree
+    const getDegree = (noteName: string, octave: number): number => {
+        return noteNameToDegree[noteName] + octave * 7;
+    };
+
+    /**
+     * 将目标 MIDI 值换算为 regionList 中的索引（即 staff 位置）
+     * shift 是 enharmonic shift（等音修正）
+     */
+    const getRegion = (midi: number, shift: number = 0) => {
+        const targetMatch = musicalAlphabet.match(/^([A-G])([#b♯♭]?)(\d)$/);
+        if (!targetMatch) return MusicScoreRegionEnum.line_1;
+
+        const [, targetNote, , targetOctaveStr] = targetMatch;
+        const targetOctave = parseInt(targetOctaveStr);
+        const targetDegree = getDegree(targetNote, targetOctave);
+
+        // 基准音 degree
+        const baseNote = getNoteNameFromMidi(base.midi);
+        const baseOctave = getOctaveFromMidi(base.midi);
+        const baseDegree = getDegree(baseNote, baseOctave);
+
+        // 目标与基准的 diatonic 音级差，用于映射到 regionList 的位置
+        const degreeDiff = targetDegree - baseDegree + shift;
+
+        // 映射到 regionList 中的索引
+        const regionIndex = base.regionIndex + degreeDiff;
+
+        return regionList[regionIndex] ?? MusicScoreRegionEnum.line_1;
+    };
+    if (musicalAlphabet === MusicalAlphabetEnum['B-5']) {
+        console.log('chicken', targetMidi, enharmonics)
+    }
+    // 如果该音符有两个等音（如 F# / Gb），则分别计算其 region 和变音
     if (enharmonics.length === 2) {
         return enharmonics.map(({key, accidental, regionShift}) => {
-            const midi = targetMidi; // MIDI 不变
-            const region = getRegion(midi, regionShift);
+            const region = getRegion(targetMidi, regionShift);
             return {region, accidental};
         }) as CalculationOfStaffRegion;
     }
 
-    // 正常音名，无等音处理
+    // 默认路径：返回主音名所处的 region
     const region = getRegion(targetMidi);
     return [{region}];
 }
+
 
 // --------------------------------------------------------------------------------------------------------------宽度系数
 // 获取当前符号的宽度系数之和
@@ -235,8 +292,12 @@ export function getWidthFixedContainerWidth(msSymbolContainer: MsSymbolContainer
         const curMsSymbol: MsSymbol = msSymbolContainer.msSymbolArray[i]
         const information = MsSymbolInformationMap[curMsSymbol.type]
         let curW = 0
-        if ('aspectRatio' in information) {
+        if ('aspectRatio' in information && (typeof information.aspectRatio === 'number')) {
             curW += information.aspectRatio * measureHeight
+        } else if ('aspectRatio' in information && (typeof information.aspectRatio === 'object')) { // 特殊情况处理
+            if (curMsSymbol.type === MsSymbolTypeEnum.keySignature) {
+                curW += information.aspectRatio[curMsSymbol.keySignature] * measureHeight
+            }
         } else {
             console.error('符号的svg宽高比不存在')
         }
@@ -307,9 +368,7 @@ export function computedClef(musicScore: MusicScore): void {
                         if (msSymbol.type === MsSymbolTypeEnum.clef) {
                             clef = msSymbol.clef
                         }
-                        if (msSymbol.type === MsSymbolTypeEnum.noteHead) {
-                            msSymbol.computed.clef = clef
-                        }
+                        msSymbol.computed.clef = clef
                     }
                 }
             }

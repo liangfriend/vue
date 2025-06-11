@@ -28,7 +28,12 @@ type FixedWidthSymbolInfo = { // 定宽符号没有宽度占比系数
     containerType: MsSymbolContainerTypeEnum.rearFixed | MsSymbolContainerTypeEnum.frontFixed
     aspectRatio: number
     category: MsSymbolCategoryEnum.singleMeasure
+} | { // 特殊的定宽容器，宽高比有多个，取决于具体情况
+    containerType: MsSymbolContainerTypeEnum.rearFixed | MsSymbolContainerTypeEnum.frontFixed
+    aspectRatio: Record<string, number>
+    category: MsSymbolCategoryEnum.singleMeasure
 }
+
 
 type VariableWidthSymbolInfo = {
     containerType: MsSymbolContainerTypeEnum.variable
@@ -115,7 +120,23 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
     },
     [MsSymbolTypeEnum.keySignature]: {
         containerType: MsSymbolContainerTypeEnum.frontFixed,
-        aspectRatio: 0.6,
+        aspectRatio: {
+            [KeySignatureEnum.Cb]: 0.4 * 7,   // 7 flats
+            [KeySignatureEnum.Gb]: 0.4 * 6,   // 6 flats
+            [KeySignatureEnum.Db]: 0.4 * 5,   // 5 flats
+            [KeySignatureEnum.Ab]: 0.4 * 4,   // 4 flats
+            [KeySignatureEnum.Eb]: 0.4 * 3,   // 3 flats
+            [KeySignatureEnum.Bb]: 0.4 * 2,   // 2 flats
+            [KeySignatureEnum.F]: 0.4,    // 1 flat
+            [KeySignatureEnum.C]: 0.0,    // 0
+            [KeySignatureEnum.G]: 0.4,    // 1 sharp
+            [KeySignatureEnum.D]: 0.4 * 2,    // 2 sharps
+            [KeySignatureEnum.A]: 0.4 * 3,    // 3 sharps
+            [KeySignatureEnum.E]: 0.4 * 4,    // 4 sharps
+            [KeySignatureEnum.B]: 0.4 * 5,    // 5 sharps
+            [KeySignatureEnum['F#']]: 0.4 * 6,// 6 sharps
+            [KeySignatureEnum['C#']]: 0.4 * 7 // 7 sharps
+        },
         category: MsSymbolCategoryEnum.singleMeasure,
     },
 }
