@@ -44,7 +44,10 @@ import MeasureContainer from "@/applications/ChuangKeApplication/components/musi
 import MsSymbolContainer
   from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbolContainer.vue";
 import {ClefEnum, MsSymbolTypeEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
-import {computedClef} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
+import {
+  computedClef,
+  computedKeySignature, computedMusicalAlphabet
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 
 const props = defineProps({
   modelValue: {
@@ -93,6 +96,11 @@ const musicScoreStyle = computed(() => {
 function mounted() {
   // 计算clef
   computedClef(props.modelValue)
+  // 计算keySignature
+  computedKeySignature(props.modelValue)
+  // 计算alphabet
+  computedMusicalAlphabet(props.modelValue)
+  console.log('chicken', props.modelValue)
 }
 
 onMounted(mounted);

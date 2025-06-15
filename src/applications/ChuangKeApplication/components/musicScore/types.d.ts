@@ -4,7 +4,7 @@ import {
     KeySignatureEnum,
     MusicalAlphabetEnum,
     MsSymbolTypeEnum,
-    MusicScoreShowModeEnum, MsSymbolContainerTypeEnum, AccidentalEnum
+    MusicScoreShowModeEnum, MsSymbolContainerTypeEnum, AccidentalEnum, MusicScoreRegionEnum
 } from "./musicScoreEnum.ts";
 
 
@@ -12,8 +12,9 @@ export declare interface MusicScoreOptions {
     hightlight?: Boolean;
 }
 
-export declare interface MusicScoreComputed {
+export declare interface MusicScoreComputed {  // 运行时通过计算得来的属性
     clef?: ClefEnum;
+    musicalAlphabet?: MusicalAlphabetEnum;
 }
 
 
@@ -25,13 +26,18 @@ export declare interface TimeSignature {
 export declare type BaseMsSymbol = {
     msSymbolArray?: Array<MsSymbol>
     options: MusicScoreOptions
-    computed: MusicScoreComputed // 运行时通过计算得来的属性
 }
-export declare type MsSymbol = ({
+export declare type NoteHead = ({
     type: MsSymbolTypeEnum.noteHead,
+    region: MusicScoreRegionEnum   // 五线谱区域
     chronaxie: ChronaxieEnum; // 时值
-    musicalAlphabet: MusicalAlphabetEnum; // 音名
-} & BaseMsSymbol) | ({
+    computed: {
+        clef?: ClefEnum;  // 谱号
+        keySignature: KeySignatureEnum; // 调号
+        musicalAlphabet?: MusicalAlphabetEnum; // 音名
+    }
+} & BaseMsSymbol)
+export declare type MsSymbol = NoteHead | ({
     type: MsSymbolTypeEnum.clef | MsSymbolTypeEnum.clef_f,
     clef: ClefEnum
 } & BaseMsSymbol) | ({
@@ -39,7 +45,10 @@ export declare type MsSymbol = ({
     timeSignature: TimeSignature
 } & BaseMsSymbol) | ({
     type: MsSymbolTypeEnum.keySignature,
-    keySignature: KeySignatureEnum
+    keySignature: KeySignatureEnum,
+    computed: {
+        clef?: ClefEnum;  // 谱号
+    }
 } & BaseMsSymbol) | ({
     type: MsSymbolTypeEnum.accidental,
     accidental: AccidentalEnum,

@@ -87,7 +87,7 @@ const sharpPositionsMap = {
 };
 
 const flatPositionsMap = {
-  [ClefEnum.treble]: [3, 5.5, 2, 4.5, 1, 3.5, 0.5],
+  [ClefEnum.treble]: [5, 8, 4, 7, 3, 6, 2],
   [ClefEnum.bass]: [6, 3.5, 5, 2.5, 4, 2, 3],
   [ClefEnum.alto]: [2, 4.5, 1, 3.5, 0, 2.5, -0.5],
 };
@@ -109,8 +109,8 @@ const verticalOffsets = computed(() => {
 });
 
 const getSymbolStyle = computed(() => {
-  const symbolSize = props.measureHeight * 0.4;
-  const horizontalGap = props.measureHeight * 0.4; // 水平间距比符号略大
+  const symbolSize = props.measureHeight * 0.5;
+  const horizontalGap = props.measureHeight * 0.4;
   return (index: number, yOffset: number): CSSProperties => {
     return {
       width: symbolSize + 'px',

@@ -35,9 +35,7 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 import msSymbolVue from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbol.vue";
-import {
-  calculationOfStaffRegion
-} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
+
 import {MsSymbolInformationMap} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 
 const props = defineProps({
@@ -140,7 +138,7 @@ const slotBottom = computed(() => {
       if (!props.msSymbol || !props.measure || !props.singleStaff) return 0
       const clef = props.msSymbol.computed.clef
       if (clef) {
-        const noteRegion: MusicScoreRegionEnum = calculationOfStaffRegion(clef, props.msSymbol.musicalAlphabet)[0].region
+        const noteRegion: MusicScoreRegionEnum = props.msSymbol.region
         return staffRegionToBottom(noteRegion, props.measureHeight)
       }
       return 0

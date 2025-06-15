@@ -32,7 +32,6 @@ import {
 
 import msSymbolVue from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbol.vue";
 import {
-  calculationOfStaffRegion,
   getWidthConstantInMeasure,
   getWidthConstantInMsSymbol, getWidthConstantInMsSymbolContainer, getWidthFixedContainerWidth,
   getWidthFixedContainerWidthSumInMeasure
