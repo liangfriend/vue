@@ -71,6 +71,7 @@ const props = defineProps({
     default: 1
   },
 });
+// 边距全部用padding避免margin折叠
 const MultipleStavesStyle = computed(() => (MultipleStaves: MultipleStaves) => {
   return {
     'grid-template-rows': `repeat(${MultipleStaves.singleStaffArray.length},1fr)`,

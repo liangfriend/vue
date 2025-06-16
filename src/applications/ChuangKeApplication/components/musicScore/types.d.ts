@@ -37,6 +37,14 @@ export declare type NoteHead = ({
         musicalAlphabet?: MusicalAlphabetEnum; // 音名
     }
 } & BaseMsSymbol)
+export declare type Barline = ({
+    type: MsSymbolTypeEnum.barline | MsSymbolTypeEnum.barline_f,
+    barlineType: Exclude<BarlineTypeEnum, BarlineTypeEnum.endRepeatSign | BarlineTypeEnum.startRepeatSign>,
+} & BaseMsSymbol) | ({
+    type: MsSymbolTypeEnum.barline | MsSymbolTypeEnum.barline_f,
+    barlineType: BarlineTypeEnum.endRepeatSign | BarlineTypeEnum.startRepeatSign,
+    loopCount: number
+} & BaseMsSymbol)
 export declare type MsSymbol = NoteHead | ({
     type: MsSymbolTypeEnum.clef | MsSymbolTypeEnum.clef_f,
     clef: ClefEnum
@@ -55,7 +63,7 @@ export declare type MsSymbol = NoteHead | ({
 } & BaseMsSymbol) | ({
     type: MsSymbolTypeEnum.barline | MsSymbolTypeEnum.barline_f,
     barlineType: BarlineTypeEnum,
-} & BaseMsSymbol) | ({
+} & BaseMsSymbol) | Barline | ({
     type: Exclude<MsSymbolTypeEnum, MsSymbolTypeEnum.noteHead | MsSymbolTypeEnum.clef |
         MsSymbolTypeEnum.timeSignature | MsSymbolTypeEnum.keySignature | MsSymbolTypeEnum.accidental | MsSymbolTypeEnum.barline | MsSymbolTypeEnum.barline_f>,
 } & BaseMsSymbol)

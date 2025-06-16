@@ -120,8 +120,8 @@ const data: MusicScore = {
                     msSymbolArray: [{
                         type: MsSymbolTypeEnum.barline,
                         options: {},
-                        barlineType: BarlineTypeEnum.endRepeatSign
-
+                        barlineType: BarlineTypeEnum.endRepeatSign,
+                        loopCount: 2
                     }]
                 }],
             }, {
