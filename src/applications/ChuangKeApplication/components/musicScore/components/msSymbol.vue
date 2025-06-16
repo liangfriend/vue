@@ -17,22 +17,37 @@
 import {computed, CSSProperties, onMounted, PropType, ref} from "vue";
 import {MsSymbol} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
-  AccidentalEnum,
+  AccidentalEnum, BarlineTypeEnum, ChronaxieEnum,
   MsSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
-import noteHeadSvg from "../musicSymbols/noteHead.svg"
-import noteBarSvg from "../musicSymbols/noteHead.svg"
+// 音符头
+import noteHeadWholeSvg from "../musicSymbols/noteHeadWhole.svg"
+import noteHeadHalfSvg from "../musicSymbols/noteHeadHalf.svg"
+import noteHeadQuarterSvg from "../musicSymbols/noteHeadQuarter.svg"
+// 符杠
+import noteBarSvg from '../musicSymbols/noteBar.svg'
+
+// 变音符号
 import sharpSvg from '../musicSymbols/sharp.svg'
 import flatSvg from '../musicSymbols/flat.svg'
 import natureSvg from '../musicSymbols/nature.svg'
 import doubleSharpSvg from '../musicSymbols/sharp.svg'
 import doubleFlatpSvg from '../musicSymbols/flat.svg'
+// 小节线
+import barlineSingleSvg from '../musicSymbols/barlineSingle.svg'
+import barlineFinalSvg from '../musicSymbols/barlineFinal.svg'
+import barlineReverseFinalSvg from '../musicSymbols/barlineReverseFinal.svg'
+import barlineStartRepeatSignSvg from '../musicSymbols/barlineStartRepeatSign.svg'
+import barlineEndRepeatSignSvg from '../musicSymbols/barlineEndRepeatSign.svg'
 
 
 import {MsSymbolInformationMap} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 import Clef from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/clef.vue";
 import KeySignature from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/keySignature.vue";
 import TimeSignature from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/timeSignature.vue";
+import {
+  getMultipleAspectRatio
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 
 const props = defineProps({
   msSymbol: {
@@ -61,16 +76,73 @@ const props = defineProps({
 const svgHref = computed(() => {
   switch (props.msSymbol?.type) {
     case MsSymbolTypeEnum.noteHead: {
-      // TODO 不同时值用不同svg,accidental，clef也一样 ,timeSignature这种要组合，所以写成组件
-      return noteHeadSvg
-    }
-    case MsSymbolTypeEnum.clef: {
-      return ''
+      console.log('chicken', props.msSymbol?.chronaxie)
+      switch (props.msSymbol?.chronaxie) {
+        case ChronaxieEnum.whole: {
+          return noteHeadWholeSvg
+        }
+        case ChronaxieEnum.half: {
+          return noteHeadHalfSvg
+        }
+        case ChronaxieEnum.quarter: {
+          return noteHeadQuarterSvg
+        }
+        default: {
+          return noteHeadQuarterSvg
+        }
+
+      }
     }
     case MsSymbolTypeEnum.noteBar: {
       return noteBarSvg
     }
+    case MsSymbolTypeEnum.clef: {
+      return ''
+    }
     case MsSymbolTypeEnum.clef_f: {
+      return ''
+    }
+    case MsSymbolTypeEnum.barline: {
+      switch (props.msSymbol?.barlineType) {
+        case BarlineTypeEnum.single: {
+          return barlineSingleSvg
+        }
+        case BarlineTypeEnum.final: {
+          return barlineFinalSvg
+        }
+        case BarlineTypeEnum.reverseFinal: {
+          return barlineReverseFinalSvg
+        }
+        case BarlineTypeEnum.startRepeatSign: {
+          return barlineStartRepeatSignSvg
+        }
+        case BarlineTypeEnum.endRepeatSign: {
+          return barlineEndRepeatSignSvg
+        }
+
+      }
+
+      return ''
+    }
+    case MsSymbolTypeEnum.barline_f: {
+      switch (props.msSymbol?.barlineType) {
+        case BarlineTypeEnum.single: {
+          return barlineSingleSvg
+        }
+        case BarlineTypeEnum.final: {
+          return barlineFinalSvg
+        }
+        case BarlineTypeEnum.reverseFinal: {
+          return barlineReverseFinalSvg
+        }
+        case BarlineTypeEnum.startRepeatSign: {
+          return barlineStartRepeatSignSvg
+        }
+        case BarlineTypeEnum.endRepeatSign: {
+          return barlineEndRepeatSignSvg
+        }
+
+      }
       return ''
     }
     case MsSymbolTypeEnum.keySignature: {
@@ -116,9 +188,7 @@ const aspectRatio = computed<number>(() => {
   if ('aspectRatio' in information && (typeof information.aspectRatio === 'number')) {
     return information.aspectRatio
   } else if ('aspectRatio' in information && (typeof information.aspectRatio === 'object')) {
-    if (props.msSymbol.type === MsSymbolTypeEnum.keySignature) {
-      return information.aspectRatio[props.msSymbol.keySignature]
-    }
+    return getMultipleAspectRatio(props.msSymbol)
   }
   return 1
 })
@@ -171,6 +241,7 @@ const msSymbolStyle = computed<CSSProperties>(() => {
   if (props.msSymbol?.type && [MsSymbolTypeEnum.keySignature, MsSymbolTypeEnum.timeSignature].includes(props.msSymbol.type)) {
     bgColor = 'unset'
   }
+  console.log('chicken', width.value)
   const style: CSSProperties = {
     width: `${width.value}px`,
     height: `${height.value}px`,

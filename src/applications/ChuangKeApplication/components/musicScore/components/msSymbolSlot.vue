@@ -37,6 +37,9 @@ import {
 import msSymbolVue from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbol.vue";
 
 import {MsSymbolInformationMap} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
+import {
+  getMultipleAspectRatio
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 
 const props = defineProps({
   msSymbol: {
@@ -99,9 +102,7 @@ const aspectRatio = computed<number>(() => {
   if ('aspectRatio' in information && typeof information.aspectRatio === 'number') {
     return information.aspectRatio
   } else if ('aspectRatio' in information && typeof information.aspectRatio === 'object') {
-    if (props.msSymbol.type === MsSymbolTypeEnum.keySignature) {
-      return information.aspectRatio[props.msSymbol.keySignature]
-    }
+    return getMultipleAspectRatio(props.msSymbol)
   }
   return 1
 })

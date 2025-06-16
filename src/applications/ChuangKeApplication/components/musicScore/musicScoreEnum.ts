@@ -54,6 +54,7 @@ export enum ClefEnum {
     bass,         // 低音谱号（F）
     subbass       // 次低音谱号（F）
 }
+
 export enum KeySignatureEnum {
     Cb = "Cb",
     Gb = "Gb",
@@ -223,6 +224,8 @@ export enum MsSymbolTypeEnum {
     clef_f, // 前置谱号
     keySignature,  //
     timeSignature,
+    barline, // 小节线
+    barline_f,
 }
 
 // 曲谱展示模式
@@ -246,4 +249,13 @@ export enum MsSymbolContainerTypeEnum {
     frontFixed = 1, // 前置定宽
     rearFixed, // 后置定宽
     variable, // 变宽
+}
+
+// 小节线类型
+export enum BarlineTypeEnum {
+    single = 1,
+    final,
+    reverseFinal,
+    startRepeatSign,
+    endRepeatSign,
 }

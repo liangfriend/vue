@@ -1,5 +1,6 @@
 // 宽度占比常数。与MsSymbolTypeEnum组合使用
 import {
+    BarlineTypeEnum,
     KeySignatureEnum, MsSymbolCategoryEnum, MsSymbolContainerTypeEnum,
     MsSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
@@ -136,6 +137,28 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
             [KeySignatureEnum.B]: 0.4 * 5,    // 5 sharps
             [KeySignatureEnum['F#']]: 0.4 * 6,// 6 sharps
             [KeySignatureEnum['C#']]: 0.4 * 7 // 7 sharps
+        },
+        category: MsSymbolCategoryEnum.singleMeasure,
+    },
+    [MsSymbolTypeEnum.barline]: {
+        containerType: MsSymbolContainerTypeEnum.rearFixed,
+        aspectRatio: {
+            [BarlineTypeEnum.single]: 1 / 50,   // 7 flats
+            [BarlineTypeEnum.final]: 2 / 5,   // 7 flats
+            [BarlineTypeEnum.reverseFinal]: 2 / 5,   // 7 flats
+            [BarlineTypeEnum.startRepeatSign]: 3 / 5,   // 7 flats
+            [BarlineTypeEnum.endRepeatSign]: 3 / 5,   // 7 flats
+        },
+        category: MsSymbolCategoryEnum.singleMeasure,
+    },
+    [MsSymbolTypeEnum.barline_f]: {
+        containerType: MsSymbolContainerTypeEnum.frontFixed,
+        aspectRatio: {
+            [BarlineTypeEnum.single]: 1 / 400,   // 7 flats
+            [BarlineTypeEnum.final]: 2 / 5,   // 7 flats
+            [BarlineTypeEnum.reverseFinal]: 2 / 5,   // 7 flats
+            [BarlineTypeEnum.startRepeatSign]: 3 / 5,   // 7 flats
+            [BarlineTypeEnum.endRepeatSign]: 3 / 5,   // 7 flats
         },
         category: MsSymbolCategoryEnum.singleMeasure,
     },

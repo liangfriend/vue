@@ -4,7 +4,7 @@ import {
     KeySignatureEnum,
     MusicalAlphabetEnum,
     MsSymbolTypeEnum,
-    MusicScoreShowModeEnum, MsSymbolContainerTypeEnum, AccidentalEnum, MusicScoreRegionEnum
+    MusicScoreShowModeEnum, MsSymbolContainerTypeEnum, AccidentalEnum, MusicScoreRegionEnum, BarlineTypeEnum
 } from "./musicScoreEnum.ts";
 
 
@@ -33,7 +33,7 @@ export declare type NoteHead = ({
     chronaxie: ChronaxieEnum; // 时值
     computed: {
         clef?: ClefEnum;  // 谱号
-        keySignature: KeySignatureEnum; // 调号
+        keySignature?: KeySignatureEnum; // 调号
         musicalAlphabet?: MusicalAlphabetEnum; // 音名
     }
 } & BaseMsSymbol)
@@ -53,8 +53,11 @@ export declare type MsSymbol = NoteHead | ({
     type: MsSymbolTypeEnum.accidental,
     accidental: AccidentalEnum,
 } & BaseMsSymbol) | ({
+    type: MsSymbolTypeEnum.barline | MsSymbolTypeEnum.barline_f,
+    barlineType: BarlineTypeEnum,
+} & BaseMsSymbol) | ({
     type: Exclude<MsSymbolTypeEnum, MsSymbolTypeEnum.noteHead | MsSymbolTypeEnum.clef |
-        MsSymbolTypeEnum.timeSignature | MsSymbolTypeEnum.keySignature | MsSymbolTypeEnum.accidental>,
+        MsSymbolTypeEnum.timeSignature | MsSymbolTypeEnum.keySignature | MsSymbolTypeEnum.accidental | MsSymbolTypeEnum.barline | MsSymbolTypeEnum.barline_f>,
 } & BaseMsSymbol)
 export declare type MsSymbolContainer = {
     msSymbolArray: Array<MsSymbol>

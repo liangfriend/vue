@@ -1,6 +1,6 @@
 import {MusicScore, TimeSignature} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
-    AccidentalEnum,
+    AccidentalEnum, BarlineTypeEnum,
     ChronaxieEnum,
     ClefEnum,
     KeySignatureEnum,
@@ -66,6 +66,14 @@ const data: MusicScore = {
                             options: {},
                         }]
                     }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.rearFixed,
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.barline,
+                        options: {},
+                        barlineType: BarlineTypeEnum.single
+
+                    }]
                 }],
             }, {
                 msSymbolContainerArray: [{
@@ -106,6 +114,14 @@ const data: MusicScore = {
                             type: MsSymbolTypeEnum.noteBar,
                             options: {},
                         }]
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.rearFixed,
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.barline,
+                        options: {},
+                        barlineType: BarlineTypeEnum.endRepeatSign
+
                     }]
                 }],
             }, {
@@ -148,6 +164,14 @@ const data: MusicScore = {
                             options: {},
                         }]
                     }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.rearFixed,
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.barline,
+                        options: {},
+                        barlineType: BarlineTypeEnum.single
+
+                    }]
                 }],
             }, {
                 msSymbolContainerArray: [{
@@ -189,6 +213,14 @@ const data: MusicScore = {
                             options: {},
                         }]
                     }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.rearFixed,
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.barline,
+                        options: {},
+                        barlineType: BarlineTypeEnum.single
+
+                    }]
                 }],
             }, {
                 msSymbolContainerArray: [{
@@ -229,6 +261,14 @@ const data: MusicScore = {
                             type: MsSymbolTypeEnum.noteBar,
                             options: {},
                         }]
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.rearFixed,
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.barline,
+                        options: {},
+                        barlineType: BarlineTypeEnum.single
+
                     }]
                 }],
             },]
@@ -288,6 +328,14 @@ const data: MusicScore = {
                             options: {},
                         }]
                     }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.rearFixed,
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.barline,
+                        options: {},
+                        barlineType: BarlineTypeEnum.single
+
+                    }]
                 }]
             }, {
                 msSymbolContainerArray: [{
@@ -342,6 +390,14 @@ const data: MusicScore = {
                             options: {},
                         }]
                     }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.rearFixed,
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.barline,
+                        options: {},
+                        barlineType: BarlineTypeEnum.single
+
+                    }]
                 }]
             }, {
                 msSymbolContainerArray: [{
@@ -383,6 +439,14 @@ const data: MusicScore = {
                             options: {},
                         }]
                     }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.rearFixed,
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.barline,
+                        options: {},
+                        barlineType: BarlineTypeEnum.single
+
+                    }]
                 }]
             }, {
                 msSymbolContainerArray: [{
@@ -397,6 +461,14 @@ const data: MusicScore = {
                             type: MsSymbolTypeEnum.noteBar,
                             options: {},
                         }]
+                    }]
+                }, {
+                    type: MsSymbolContainerTypeEnum.rearFixed,
+                    msSymbolArray: [{
+                        type: MsSymbolTypeEnum.barline,
+                        options: {},
+                        barlineType: BarlineTypeEnum.final
+
                     }]
                 }]
             }]

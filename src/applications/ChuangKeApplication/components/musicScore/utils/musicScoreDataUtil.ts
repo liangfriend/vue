@@ -58,8 +58,19 @@ export function getNoteMusicalAlphabet(
     msSymbol: NoteHead,
 ): MusicalAlphabetEnum {
     const region = msSymbol.region
-    const clef = msSymbol.computed.clef
-    const keySignature: KeySignatureEnum = msSymbol.computed.keySignature
+    let clef: ClefEnum = ClefEnum.treble;
+    if (msSymbol.computed.clef) {
+        clef = msSymbol.computed.clef
+    } else {
+        console.warn("音符缺少计算属性clef")
+    }
+    let keySignature: KeySignatureEnum = KeySignatureEnum.C
+    if (msSymbol.computed.keySignature) {
+        keySignature = msSymbol.computed.keySignature
+    } else {
+        console.warn("音符缺少计算属性keySignature")
+    }
+
     const accidental = getAccidental(msSymbol)
     const regionIndexMap: Record<MusicScoreRegionEnum, number> = {
         lower_line_6: -11, lower_space_6: -10, lower_line_5: -9, lower_space_5: -8,
@@ -253,6 +264,21 @@ export function computedMusicalAlphabet(musicScore: MusicScore) {
 
 }
 
+// 复合性aspectRatiao获取
+export function getMultipleAspectRatio(msSymbol: MsSymbol): number {
+    const information = MsSymbolInformationMap[msSymbol.type]
+    if ('aspectRatio' in information && typeof information.aspectRatio === 'object') {
+        if (msSymbol.type === MsSymbolTypeEnum.keySignature) {
+            return information.aspectRatio[msSymbol.keySignature]
+        } else if (msSymbol.type === MsSymbolTypeEnum.barline || msSymbol.type === MsSymbolTypeEnum.barline_f) {
+            return information.aspectRatio[msSymbol.barlineType]
+        }
+    }
+    console.error('符号有误或符号不是复合aspectRatio类型')
+    return 0
+
+}
+
 //---------------------------------------------------------------------------------------------宽度系数
 // 获取当前符号的宽度系数之和
 export function getWidthConstantInMsSymbol(msSymbol: MsSymbol): WidthConstant {
@@ -329,6 +355,8 @@ export function getWidthFixedContainerWidth(msSymbolContainer: MsSymbolContainer
         } else if ('aspectRatio' in information && (typeof information.aspectRatio === 'object')) { // 特殊情况处理
             if (curMsSymbol.type === MsSymbolTypeEnum.keySignature) {
                 curW += information.aspectRatio[curMsSymbol.keySignature] * measureHeight
+            } else if (curMsSymbol.type === MsSymbolTypeEnum.barline || curMsSymbol.type === MsSymbolTypeEnum.barline_f) {
+                curW += information.aspectRatio[curMsSymbol.barlineType] * measureHeight
             }
         } else {
             console.error('符号的svg宽高比不存在')
