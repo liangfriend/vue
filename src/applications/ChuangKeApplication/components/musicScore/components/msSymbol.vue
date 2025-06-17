@@ -241,7 +241,6 @@ const msSymbolStyle = computed<CSSProperties>(() => {
   if (props.msSymbol?.type && [MsSymbolTypeEnum.keySignature, MsSymbolTypeEnum.timeSignature].includes(props.msSymbol.type)) {
     bgColor = 'unset'
   }
-  console.log('chicken', width.value)
   const style: CSSProperties = {
     width: `${width.value}px`,
     height: `${height.value}px`,

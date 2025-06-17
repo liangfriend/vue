@@ -27,7 +27,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import type {PropType} from 'vue';
+import type {CSSProperties, PropType} from 'vue';
 import {computed} from "vue";
 import type {Measure, MsSymbol, MultipleStaves, MusicScore, SingleStaff, WidthConstant} from "../types";
 import {
@@ -94,7 +94,7 @@ const measureWidth = computed(() => (measure: Measure, singleStaff: SingleStaff,
   return (props.width - fixedContainerWidthInSngleStaff) / totalSingleStaffWidthConstant * totalMeasureWidthConstant + fixedContainerWidthInMeasure;
 });
 const measureSlotStyle = computed(() => (measure: Measure, singleStaff: SingleStaff, multipleStaves: MultipleStaves) => {
-  let style: any = {};
+  let style: CSSProperties = {};
   style.height = props.measureHeight + 'px';
   style.width = measureWidth.value(measure, singleStaff, multipleStaves) + 'px';
   return style;
