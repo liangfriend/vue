@@ -401,14 +401,26 @@ export function getWidthFixedContainerWidthSumInSingleStaff(singleStaff: SingleS
     return widthSum
 }
 
-// 获取小节内前置定宽容器符号宽度之和
-// -----------------------------------------------------------------------------------------------------------------其它
-// 是否是定宽容器
-export function isFixedWidthSymbolContainerMap(msSymbolType: MsSymbolTypeEnum): boolean {
-    const information = MsSymbolInformationMap[msSymbolType]
-    if ('containerType' in information) {
-        return [MsSymbolContainerTypeEnum.frontFixed, MsSymbolContainerTypeEnum.rearFixed].includes(information.containerType)
-    }
-    return false
+// -----------------------------------------------------------------------------------------------------------------底部距离计算
+// 获取小节内最高的单小节符号bottom + 符号高度
+export function getMaxBottomPlusMsSymbolHeightInMeasure(measure: Measure) {
+    let maxBottom = 0
+
+}
+
+// 获取小节表内最低的单小节符号bottom
+export function getMinBottomInSingleStaff() {
+
+}
+
+// 获取单谱表内最高的单小节符号bottom + 符号高度
+export function getMaxBottomPlusMsSymbolHeightInMeasure(measure: Measure) {
+    let maxBottom = 0
+
+}
+
+// 获取单谱表内最低的单小节符号bottom
+export function getMinBottomInSingleStaff() {
+
 }
 

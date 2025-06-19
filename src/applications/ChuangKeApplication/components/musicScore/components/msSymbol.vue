@@ -76,7 +76,6 @@ const props = defineProps({
 const svgHref = computed(() => {
   switch (props.msSymbol?.type) {
     case MsSymbolTypeEnum.noteHead: {
-      console.log('chicken', props.msSymbol?.chronaxie)
       switch (props.msSymbol?.chronaxie) {
         case ChronaxieEnum.whole: {
           return noteHeadWholeSvg
@@ -141,8 +140,8 @@ const svgHref = computed(() => {
         case BarlineTypeEnum.endRepeatSign: {
           return barlineEndRepeatSignSvg
         }
-
       }
+      console.error("未知的小节线类型", props.msSymbol)
       return ''
     }
     case MsSymbolTypeEnum.keySignature: {

@@ -188,7 +188,7 @@ export enum MusicalAlphabetEnum {
     'B#6' = 'B#6',
 }
 
-//变音符
+// 变音符
 export enum AccidentalEnum {
     flat = 'flat',  //降
     nature = 'nature',   //还原
@@ -199,7 +199,7 @@ export enum AccidentalEnum {
     natureFlat = 'natureFlat',   //还原降
 }
 
-//时值
+// 时值
 export enum ChronaxieEnum {
     whole = 1,
     half = 2,
@@ -219,7 +219,6 @@ export enum MsSymbolTypeEnum {
     durationDot, // 附点
     accidental,
     tuplet, // 连音符
-    volta, // 反复小房子记号
     clef,
     clef_f, // 前置谱号
     keySignature,  //
@@ -244,11 +243,25 @@ export enum MsSymbolCategoryEnum {
     multipleMeasure, // 跨小节类型
 }
 
+// 跨小节符号类型
+export enum SpanSymbolTypeEnum {
+    volta = 1
+}
+
+// 跨小节符号跟随类型
+export enum SpanSymbolFollowingCategoryEnum {
+    msSymbol = 1,
+    measure,
+    singleStaff,
+    multipleStaves,
+}
+
 // 符号容器类型
 export enum MsSymbolContainerTypeEnum {
     frontFixed = 1, // 前置定宽
     rearFixed, // 后置定宽
     variable, // 变宽
+    span, // 跨小节符号容器，不影响小节宽度
 }
 
 // 小节线类型

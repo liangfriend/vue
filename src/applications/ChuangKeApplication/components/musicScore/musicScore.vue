@@ -1,5 +1,6 @@
 <template>
   <div class="musicScore stack" :style="musicScoreStyle">
+    <!--    -->
     <measure-container :musicScoreData="modelValue" class="stackItem lineLayer"
                        :style="{width:width+'px',height:height+'px'}"
                        :measureHeight="measureHeight"
@@ -19,6 +20,23 @@
                        :measureHeight="measureHeight"
                        :style="{width:width+'px',height:height+'px'}"
                        comment="符号层">
+      <template #default="{ measure, measureIndex, singleStaff, multipleStaves, measureWidth }">
+        <ms-symbol-container v-for="(msSymbolContainer,symbolIndex) in measure.msSymbolContainerArray"
+                             :msSymbolContainer="msSymbolContainer"
+                             :measure="measure"
+                             :measureWidth="measureWidth"
+                             :singleStaff="singleStaff"
+                             :multipleStaves="multipleStaves"
+                             :measureHeight="measureHeight"
+                             :key="'note-symbol'+symbolIndex"
+        ></ms-symbol-container>
+      </template>
+    </measure-container>
+    <!--  跨小节符号目前只有小节跟随型和符号（音符头）跟随型  -->
+    <measure-container :musicScoreData="modelValue" class="stackItem symbolLayer"
+                       :measureHeight="measureHeight"
+                       :style="{width:width+'px',height:height+'px'}"
+                       comment="跨小节符号">
       <template #default="{ measure, measureIndex, singleStaff, multipleStaves, measureWidth }">
         <ms-symbol-container v-for="(msSymbolContainer,symbolIndex) in measure.msSymbolContainerArray"
                              :msSymbolContainer="msSymbolContainer"
@@ -67,16 +85,7 @@ const props = defineProps({
     type: Number,
     default: 60
   },
-  //单谱表的上下内边距
-  singleStaffPadding: {
-    type: Number,
-    default: 60
-  },
-  //复谱表的上下内边距
-  MultipleStavesPadding: {
-    type: Number,
-    default: 60
-  },
+
   //小节的线条宽度
   strokeWidth: {
     type: Number,

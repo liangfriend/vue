@@ -4,7 +4,12 @@ import {
     KeySignatureEnum,
     MusicalAlphabetEnum,
     MsSymbolTypeEnum,
-    MusicScoreShowModeEnum, MsSymbolContainerTypeEnum, AccidentalEnum, MusicScoreRegionEnum, BarlineTypeEnum
+    MusicScoreShowModeEnum,
+    MsSymbolContainerTypeEnum,
+    AccidentalEnum,
+    MusicScoreRegionEnum,
+    BarlineTypeEnum,
+    SpanSymbolFollowingCategoryEnum, SpanSymbolTypeEnum
 } from "./musicScoreEnum.ts";
 
 
@@ -21,6 +26,9 @@ export declare interface TimeSignature {
 export declare type BaseMsSymbol = {
     msSymbolArray?: Array<MsSymbol>
     options: MusicScoreOptions
+    id: number,
+    bindingStartId: Array<number>,
+    bindingEndId: Array<number>,
 }
 export declare type NoteHead = ({
     type: MsSymbolTypeEnum.noteHead,
@@ -62,27 +70,56 @@ export declare type MsSymbol = NoteHead | ({
     type: Exclude<MsSymbolTypeEnum, MsSymbolTypeEnum.noteHead | MsSymbolTypeEnum.clef |
         MsSymbolTypeEnum.timeSignature | MsSymbolTypeEnum.keySignature | MsSymbolTypeEnum.accidental | MsSymbolTypeEnum.barline | MsSymbolTypeEnum.barline_f>,
 } & BaseMsSymbol)
+// 跨小节符号
+export declare type BaseSpanSymbol = {
+    id: number,
+    width: number,
+    bottom: number,
+}
+// 跨小节符号目前只有小节跟随型和符号（音符头）跟随型
+export declare type SpanSymbol = (BaseSpanSymbol & {
+    type: SpanSymbolTypeEnum
+    spanSymbolFollowingCategoryEnum: SpanSymbolFollowingCategoryEnum.measure,
+    startTargetId: number
+    endTargetId: number
+})
 export declare type MsSymbolContainer = {
     msSymbolArray: Array<MsSymbol>
     type: MsSymbolContainerTypeEnum
 }
 
 export declare interface Measure {
+    id: number,
     msSymbolContainerArray: Array<MsSymbolContainer>
+    bindingStartId: Array<number>,
+    bindingEndId: Array<number>,
 }
 
 export declare interface SingleStaff {
+    id: number,
     measureArray: Array<Measure>;
+    singleStaffPaddingTop: number,
+    singleStaffPaddingBottom: number,
+    singleStaffMarginBottom: number,
+    bindingStartId: Array<number>,
+    bindingEndId: Array<number>,
+
 }
 
 export declare interface MultipleStaves { //复谱表
+    id: number,
     singleStaffArray: Array<SingleStaff>;
+    multipleStavesPaddingTop: number,
+    multipleStavesPaddingBottom: number,
+    multipleStavesMarginBottom: number,
+    spanSymbolArray: Array<SpanSymbol>,
 }
 
 //调号，拍号只能小节有，谱号是音符有（但是谱号给第一个音符加谱号，会加到前一个小节上，也可以给小节加谱号，相当于给小节的第一个音符加谱号）小节也有
 export declare interface MusicScore {
     title?: string;
     multipleStavesArray: Array<MultipleStaves>;
+    measureHeight: number,
     showMode: MusicScoreShowModeEnum
 }
 

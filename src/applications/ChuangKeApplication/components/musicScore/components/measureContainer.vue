@@ -1,13 +1,15 @@
 <template>
-  <div comment="精确到measure的循环体">
+  <div>
     <div v-for="(multipleStaves, multipleStavesIndex) in musicScoreData.multipleStavesArray"
-         :key="'MultipleStaves'+multipleStavesIndex"
-         :style="MultipleStavesStyle(multipleStaves)"
-         class="MultipleStaves">
+         :key="'multipleStaves'+multipleStavesIndex"
+         :style="multipleStavesStyle(multipleStaves)"
+         class="multipleStaves">
+      <slot name="multipleStaves"></slot>
       <div v-for="(singleStaff,singleStaffIndex) in multipleStaves.singleStaffArray"
            :key="'singleStaff'+singleStaffIndex"
            :style="singleStaffStyle(singleStaff,multipleStaves)"
            class="singleStaff">
+        <slot name="singleStaff"></slot>
         <div v-for="(measure,measureIndex) in singleStaff.measureArray"
              :style="measureSlotStyle(measure, singleStaff, multipleStaves)" class="measureSlot"
              :key="'measure'+measureIndex">
@@ -50,52 +52,34 @@ const props = defineProps({
     type: Number,
     default: 800,
   },
-  //小节高度， 此属性会控制音符，休止符，谱号，拍号等符号大小
-  measureHeight: {
-    type: Number,
-    default: 60
-  },
-  //单谱表的上下内边距
-  singleStaffPadding: {
-    type: Number,
-    default: 60
-  },
-  //复谱表的上下内边距
-  MultipleStavesPadding: {
-    type: Number,
-    default: 60
-  },
-  //小节的线条宽度
-  strokeWidth: {
-    type: Number,
-    default: 1
-  },
 });
 // 边距全部用padding避免margin折叠
-const MultipleStavesStyle = computed(() => (MultipleStaves: MultipleStaves) => {
+const multipleStavesStyle = computed(() => (multipleStaves: MultipleStaves) => {
   return {
-    'grid-template-rows': `repeat(${MultipleStaves.singleStaffArray.length},1fr)`,
-    'padding-top': props.MultipleStavesPadding + 'px',
-    'padding-bottom': props.MultipleStavesPadding + 'px',
+    'grid-template-rows': `repeat(${multipleStaves.singleStaffArray.length},1fr)`,
+    'padding-top': multipleStaves.multipleStavesPaddingTop + 'px',
+    'padding-bottom': multipleStaves.multipleStavesPaddingBottom + 'px',
+    'margin-bottom': multipleStaves.multipleStavesMarginBottom + 'px'
   };
 });
 const singleStaffStyle = computed(() => (singleStaff: SingleStaff, _multipleStaves: MultipleStaves) => {
   return {
     'grid-template-columns': `repeat(${singleStaff.measureArray.length},1fr)`,
-    'padding-top': props.singleStaffPadding + 'px',
-    'padding-bottom': props.singleStaffPadding + 'px',
+    'padding-top': singleStaff.singleStaffPaddingTop + 'px',
+    'padding-bottom': singleStaff.singleStaffPaddingBottom + 'px',
+    'margin-bottom': singleStaff.singleStaffMarginBottom + 'px'
   };
 });
 const measureWidth = computed(() => (measure: Measure, singleStaff: SingleStaff, _multipleStaves: MultipleStaves) => {
   const totalSingleStaffWidthConstant = getWidthConstantInSingleStaff(singleStaff,);
   const totalMeasureWidthConstant = getWidthConstantInMeasure(measure,);
-  const fixedContainerWidthInSngleStaff = getWidthFixedContainerWidthSumInSingleStaff(singleStaff, props.measureHeight)
-  const fixedContainerWidthInMeasure = getWidthFixedContainerWidthSumInMeasure(measure, props.measureHeight)
+  const fixedContainerWidthInSngleStaff = getWidthFixedContainerWidthSumInSingleStaff(singleStaff, props.musicScoreData.measureHeight)
+  const fixedContainerWidthInMeasure = getWidthFixedContainerWidthSumInMeasure(measure, props.musicScoreData.measureHeight)
   return (props.width - fixedContainerWidthInSngleStaff) / totalSingleStaffWidthConstant * totalMeasureWidthConstant + fixedContainerWidthInMeasure;
 });
 const measureSlotStyle = computed(() => (measure: Measure, singleStaff: SingleStaff, multipleStaves: MultipleStaves) => {
   let style: CSSProperties = {};
-  style.height = props.measureHeight + 'px';
+  style.height = props.musicScoreData.measureHeight + 'px';
   style.width = measureWidth.value(measure, singleStaff, multipleStaves) + 'px';
   return style;
 });

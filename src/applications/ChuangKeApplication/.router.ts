@@ -15,6 +15,11 @@ const routes = {
             name: '编辑器',
             path: '/chuangKe/editor',
             component: () => import('./views/editor/index.vue'),
+        },
+        {
+            name: '乐器图鉴',
+            path: '/chuangKe/instrumentHandbook',
+            component: () => import('./views/instrumentHandbook/index.vue'),
         }]
 };
 

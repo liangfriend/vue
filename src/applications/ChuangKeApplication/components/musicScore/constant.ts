@@ -101,9 +101,6 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
     [MsSymbolTypeEnum.tuplet]: { // 连音记号
         category: MsSymbolCategoryEnum.multipleMeasure,
     },
-    [MsSymbolTypeEnum.volta]: {  // 反复记号小房子
-        category: MsSymbolCategoryEnum.multipleMeasure,
-    },
     [MsSymbolTypeEnum.clef]: { // 谱号
         containerType: MsSymbolContainerTypeEnum.rearFixed,
         aspectRatio: 0.6,

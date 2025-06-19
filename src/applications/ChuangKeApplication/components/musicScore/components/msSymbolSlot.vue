@@ -40,6 +40,7 @@ import {MsSymbolInformationMap} from "@/applications/ChuangKeApplication/compone
 import {
   getMultipleAspectRatio
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
+import {getSlotBottom} from "@/applications/ChuangKeApplication/components/musicScore/utils/msSingleRectUtil.ts";
 
 const props = defineProps({
   msSymbol: {
@@ -63,6 +64,7 @@ const props = defineProps({
   },
   measure: {
     type: Object as PropType<Measure>,
+    required: true,
   },
   measureWidth: {
     type: Number,
@@ -133,109 +135,9 @@ const slotLeft = computed(() => {
   return 0
 })
 const slotBottom = computed(() => {
-  if (!props.msSymbol) return 0
-  switch (props.msSymbol.type) {
-    case MsSymbolTypeEnum.noteHead: {
-      if (!props.msSymbol || !props.measure || !props.singleStaff) return 0
-      const clef = props.msSymbol.computed.clef
-      if (clef) {
-        const noteRegion: MusicScoreRegionEnum = props.msSymbol.region
-        return staffRegionToBottom(noteRegion, props.measureHeight)
-      }
-      return 0
-    }
-    default: {
-      return 0
-    }
-
-  }
+  return getSlotBottom(props.msSymbol, props.measure, props.singleStaff, props.measureHeight)
 })
 
-
-// 五线谱区域转换bottom
-function staffRegionToBottom(region: MusicScoreRegionEnum, measureHeight: number): number {
-  switch (region) {
-
-    case 'lower_line_6':
-      return -measureHeight * 26 / 16;
-    case 'lower_space_6':
-      return -measureHeight * 24 / 16;
-    case 'lower_line_5':
-      return -measureHeight * 22 / 16;
-    case 'lower_space_5':
-      return -measureHeight * 20 / 16;
-    case 'lower_line_4':
-      return -measureHeight * 18 / 16;
-    case 'lower_space_4':
-      return -measureHeight * 16 / 16;
-    case 'lower_line_3':
-      return -measureHeight * 14 / 16;
-    case 'lower_space_3':
-      return -measureHeight * 12 / 16;
-    case 'lower_line_2':
-      return -measureHeight * 10 / 16;
-    case 'lower_space_2':
-      return -measureHeight * 8 / 16;
-    case 'lower_line_1':
-      return -measureHeight * 6 / 16;
-    case 'lower_space_1':
-      return -measureHeight * 4 / 16;
-    case 'line_1':
-      return -measureHeight * 2 / 16;
-    case 'space_1':
-      return 0;
-    case 'line_2':
-      return measureHeight * 2 / 16;
-    case 'space_2':
-      return measureHeight * 4 / 16;
-    case 'line_3':
-      return measureHeight * 6 / 16;
-    case 'space_3':
-      return measureHeight * 8 / 16;
-    case 'line_4':
-      return measureHeight * 10 / 16;
-    case 'space_4':
-      return measureHeight * 12 / 16;
-    case 'line_5':
-      return measureHeight * 14 / 16;
-    case 'upper_space_1':
-      return measureHeight * 16 / 16;
-    case 'upper_line_1':
-      return measureHeight * 18 / 16;
-    case 'upper_space_2':
-      return measureHeight * 20 / 16;
-    case 'upper_line_2':
-      return measureHeight * 22 / 16;
-    case 'upper_space_3':
-      return measureHeight * 24 / 16;
-    case 'upper_line_3':
-      return measureHeight * 26 / 16;
-    case 'upper_space_4':
-      return measureHeight * 28 / 16;
-    case 'upper_line_4':
-      return measureHeight * 30 / 16;
-    case 'upper_space_5':
-      return measureHeight * 32 / 16;
-    case 'upper_line_5':
-      return measureHeight * 34 / 16;
-    case 'upper_space_6':
-      return measureHeight * 36 / 16;
-    case 'upper_line_6':
-      return measureHeight * 38 / 16;
-    case 'upper_space_7':
-      return measureHeight * 40 / 16;
-    case 'upper_line_7':
-      return measureHeight * 42 / 16;
-    case 'upper_space_8':
-      return measureHeight * 44 / 16;
-    case 'upper_line_8':
-      return measureHeight * 46 / 16;
-    default:
-      return 0;
-  }
-
-
-}
 
 onMounted(() => {
   // 如果是音符头，获取到谱号

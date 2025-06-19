@@ -39,8 +39,9 @@ const customMenuData = ref([{
   callback: () => {
   },
 }, {
-  title: '乐器模型',
+  title: '乐器图鉴',
   callback: () => {
+    goTo('/chuangKe/instrumentHandbook');
   },
 }, {
   title: '管理任务',
