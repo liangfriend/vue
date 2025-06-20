@@ -41,6 +41,7 @@ import {
   getMultipleAspectRatio
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {getSlotBottom} from "@/applications/ChuangKeApplication/components/musicScore/utils/msSingleRectUtil.ts";
+import {getMsSymbolHeight} from "@/applications/ChuangKeApplication/components/musicScore/utils/heightUtil.ts";
 
 const props = defineProps({
   msSymbol: {
@@ -109,15 +110,7 @@ const aspectRatio = computed<number>(() => {
   return 1
 })
 const height = computed(() => {
-  switch (props.msSymbol?.type) {
-    case MsSymbolTypeEnum.noteHead: {
-      return props.measureHeight / 4
-    }
-    case MsSymbolTypeEnum.noteBar: {
-      return props.measureHeight * 0.6
-    }
-  }
-  return props.measureHeight
+  return getMsSymbolHeight(props.msSymbol, props.measureHeight)
 })
 const slotWidth = computed(() => {
 

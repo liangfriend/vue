@@ -48,10 +48,16 @@ import TimeSignature from "@/applications/ChuangKeApplication/components/musicSc
 import {
   getMultipleAspectRatio
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
+import {getMsSymbolHeight} from "@/applications/ChuangKeApplication/components/musicScore/utils/heightUtil.ts";
+import {
+  getMsSymbolBottomToSlot,
+  getSlotBottomToMeasure
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/bottomUtil.ts";
 
 const props = defineProps({
   msSymbol: {
     type: Object as PropType<MsSymbol>,
+    required: true
   },
   containerWidth: {
     type: Number,
@@ -194,18 +200,7 @@ const aspectRatio = computed<number>(() => {
 
 
 const height = computed(() => {
-  switch (props.msSymbol?.type) {
-    case MsSymbolTypeEnum.noteHead: {
-      return props.measureHeight / 4
-    }
-    case MsSymbolTypeEnum.noteBar: {
-      return props.measureHeight * 0.6
-    }
-    case MsSymbolTypeEnum.accidental: {
-      return props.measureHeight * 0.4
-    }
-  }
-  return props.measureHeight
+  return getMsSymbolHeight(props.msSymbol, props.measureHeight)
 })
 // 符号宽度
 const width = computed(() => {
@@ -227,13 +222,7 @@ const msSymbolLeft = computed(() => {
 })
 
 const msSymbolBottom = computed(() => {
-  switch (props.msSymbol?.type) {
-
-    case MsSymbolTypeEnum.noteBar: {
-      return props.measureHeight / 8
-    }
-  }
-  return 0
+  return getMsSymbolBottomToSlot(props.msSymbol, props.measureHeight)
 })
 const msSymbolStyle = computed<CSSProperties>(() => {
   let bgColor = 'black'

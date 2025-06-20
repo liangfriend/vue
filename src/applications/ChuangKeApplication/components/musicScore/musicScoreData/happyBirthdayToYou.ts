@@ -13,17 +13,18 @@ import {
 const data: MusicScore = {
     showMode: MusicScoreShowModeEnum.standardStaff,
     measureHeight: 60,
+    spanSymbolArray: [{
+        type: SpanSymbolTypeEnum.volta,
+        spanSymbolFollowingCategoryEnum: SpanSymbolFollowingCategoryEnum.measure,
+        startTargetId: 2,
+        endTargetId: 2,
+        id: 4,
+        width: 0,
+        bottom: 0,
+    }],
     multipleStavesArray: [{
         id: 1,
-        spanSymbolArray: [{
-            type: SpanSymbolTypeEnum.volta,
-            spanSymbolFollowingCategoryEnum: SpanSymbolFollowingCategoryEnum.measure,
-            startTargetId: 2,
-            endTargetId: 2,
-            id: 4,
-            width: 0,
-            bottom: 0,
-        }],
+
         multipleStavesPaddingTop: 60,
         multipleStavesPaddingBottom: 60,
         multipleStavesMarginBottom: 60,

@@ -33,22 +33,7 @@
       </template>
     </measure-container>
     <!--  跨小节符号目前只有小节跟随型和符号（音符头）跟随型  -->
-    <measure-container :musicScoreData="modelValue" class="stackItem symbolLayer"
-                       :measureHeight="measureHeight"
-                       :style="{width:width+'px',height:height+'px'}"
-                       comment="跨小节符号">
-      <template #default="{ measure, measureIndex, singleStaff, multipleStaves, measureWidth }">
-        <ms-symbol-container v-for="(msSymbolContainer,symbolIndex) in measure.msSymbolContainerArray"
-                             :msSymbolContainer="msSymbolContainer"
-                             :measure="measure"
-                             :measureWidth="measureWidth"
-                             :singleStaff="singleStaff"
-                             :multipleStaves="multipleStaves"
-                             :measureHeight="measureHeight"
-                             :key="'note-symbol'+symbolIndex"
-        ></ms-symbol-container>
-      </template>
-    </measure-container>
+    <span-symbol-container></span-symbol-container>
   </div>
 </template>
 <script setup lang="ts">
@@ -66,6 +51,8 @@ import {
   computedClef,
   computedKeySignature, computedMusicalAlphabet
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
+import SpanSymbolContainer
+  from "@/applications/ChuangKeApplication/components/musicScore/components/spanSymbolContainer.vue";
 
 const props = defineProps({
   modelValue: {

@@ -1,4 +1,3 @@
-/*渲染 */
 import {
     AccidentalEnum,
     ClefEnum,
@@ -12,7 +11,7 @@ import {
 import {
     Measure,
     MsSymbol,
-    MsSymbolContainer,
+    MsSymbolContainer, MultipleStaves,
     MusicScore,
     NoteHead,
     SingleStaff,
@@ -184,26 +183,116 @@ export function getAccidental(noteHead: NoteHead): AccidentalEnum | undefined {
     return
 }
 
-// 整体赋值clef 初始化、数据更改时调用 会更改数据的computed属性
-export function computedClef(musicScore: MusicScore): void {
-    let clef: ClefEnum = ClefEnum.treble
-    for (let i = 0; i < musicScore.multipleStavesArray.length; i++) {
-        const muptipleStaves = musicScore.multipleStavesArray[i]
-        for (let j = 0; j < muptipleStaves.singleStaffArray.length; j++) {
-            const singleStaff = muptipleStaves.singleStaffArray[j]
-            for (let k = 0; k < singleStaff.measureArray.length; k++) {
-                const measure = singleStaff.measureArray[k]
-                for (let l = 0; l < measure.msSymbolContainerArray.length; l++) {
-                    const msSymbolContainer = measure.msSymbolContainerArray[l]
-                    for (let t = 0; t < msSymbolContainer.msSymbolArray.length; t++) {
-                        const msSymbol = msSymbolContainer.msSymbolArray[t]
-                        if (msSymbol.type === MsSymbolTypeEnum.clef) {
-                            clef = msSymbol.clef
-                        }
-                        if ([MsSymbolTypeEnum.noteHead, MsSymbolTypeEnum.keySignature].includes(msSymbol.type) && 'computed' in msSymbol) {
-                            msSymbol.computed.clef = clef
-                        }
+export type TraverseLevel = 'multipleStaves' | 'singleStaff' | 'measure' | 'container' | 'symbol'
+export type TraverseOrder = 'asc' | 'desc'
 
+export interface TraverseContext {
+    multipleStavesIndex: number
+    singleStaffIndex: number
+    measureIndex: number
+    msSymbolContainerIndex?: number
+    msSymbolIndex?: number
+    multipleStaves?: MultipleStaves
+    singleStaff?: SingleStaff
+    measure?: Measure
+    msSymbolContainer?: MsSymbolContainer
+    msSymbol?: MsSymbol
+}
+
+export type TraverseCallback = (context: TraverseContext) => boolean | void
+
+// 循环方法
+export function traverseMusicScore(
+    musicScore: MusicScore,
+    {
+        level = 'symbol',
+        order = 'asc',
+        callback
+    }: {
+        level: TraverseLevel
+        order?: TraverseOrder
+        callback: TraverseCallback
+    }
+): void {
+    const range = (length: number) => order === 'asc'
+        ? [...Array(length).keys()]
+        : [...Array(length).keys()].reverse()
+
+    const multipleStavesArray = musicScore.multipleStavesArray
+    for (const i of range(multipleStavesArray.length)) {
+        const multipleStaves = multipleStavesArray[i]
+        if (level === 'multipleStaves') {
+            const stop = callback({
+                multipleStavesIndex: i,
+                singleStaffIndex: -1,
+                measureIndex: -1,
+                multipleStaves,
+            })
+            if (stop) return
+            continue
+        }
+
+        for (const j of range(multipleStaves.singleStaffArray.length)) {
+            const singleStaff = multipleStaves.singleStaffArray[j]
+            if (level === 'singleStaff') {
+                const stop = callback({
+                    multipleStavesIndex: i,
+                    singleStaffIndex: j,
+                    measureIndex: -1,
+                    multipleStaves,
+                    singleStaff,
+                })
+                if (stop) return
+                continue
+            }
+
+            for (const k of range(singleStaff.measureArray.length)) {
+                const measure = singleStaff.measureArray[k]
+                if (level === 'measure') {
+                    const stop = callback({
+                        multipleStavesIndex: i,
+                        singleStaffIndex: j,
+                        measureIndex: k,
+                        multipleStaves,
+                        singleStaff,
+                        measure,
+                    })
+                    if (stop) return
+                    continue
+                }
+
+                for (const l of range(measure.msSymbolContainerArray.length)) {
+                    const container = measure.msSymbolContainerArray[l]
+                    if (level === 'container') {
+                        const stop = callback({
+                            multipleStavesIndex: i,
+                            singleStaffIndex: j,
+                            measureIndex: k,
+                            msSymbolContainerIndex: l,
+                            multipleStaves,
+                            singleStaff,
+                            measure,
+                            msSymbolContainer: container
+                        })
+                        if (stop) return
+                        continue
+                    }
+
+                    for (const t of range(container.msSymbolArray.length)) {
+                        const symbol = container.msSymbolArray[t]
+                        const stop = callback({
+                            multipleStavesIndex: i,
+                            singleStaffIndex: j,
+                            measureIndex: k,
+                            msSymbolContainerIndex: l,
+                            msSymbolIndex: t,
+                            multipleStaves,
+                            singleStaff,
+                            measure,
+                            msSymbolContainer: container,
+                            msSymbol: symbol,
+                        })
+                        if (stop) return
                     }
                 }
             }
@@ -211,57 +300,76 @@ export function computedClef(musicScore: MusicScore): void {
     }
 }
 
-// 整体赋值keySignature keySignature是小节上的符号
-export function computedKeySignature(musicScore: MusicScore): void {
+// index赋值
+export function getIndex(musicScore: MusicScore) {
+    for (let i = 0; i < musicScore.multipleStavesArray.length; i++) {
+        const muptipleStaves = musicScore.multipleStavesArray[i]
+        muptipleStaves.index = {
+            multipleStavesIndex: i
+        }
+        for (let j = 0; j < muptipleStaves.singleStaffArray.length; j++) {
+            const singleStaff = muptipleStaves.singleStaffArray[j]
+            singleStaff.index = {
+                multipleStavesIndex: i,
+                singleStaffIndex: j
+            }
+            for (let k = 0; k < singleStaff.measureArray.length; k++) {
+                const measure = singleStaff.measureArray[k]
+                measure.index = {
+                    multipleStavesIndex: i,
+                    singleStaffIndex: j,
+                    measureIndex: k,
+                }
+                for (let l = 0; l < measure.msSymbolContainerArray.length; l++) {
+                    const msSymbolContainer = measure.msSymbolContainerArray[l]
+                    msSymbolContainer.index = {
+                        multipleStavesIndex: i,
+                        singleStaffIndex: j,
+                        measureIndex: k,
+                        msSymbolContainerIndex: l
+                    }
+                    for (let t = 0; t < msSymbolContainer.msSymbolArray.length; t++) {
+                        msSymbolContainer
+                            .index = {
+                            multipleStavesIndex: i,
+                            singleStaffIndex: j,
+                            measureIndex: k,
+                            msSymbolContainerIndex: l
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// 计算属性赋值
+export function msSymbolComputedData(musicScore: MusicScore) {
+    let clef: ClefEnum = ClefEnum.treble
     let keySignature: KeySignatureEnum = KeySignatureEnum.C
-    for (let i = 0; i < musicScore.multipleStavesArray.length; i++) {
-        const muptipleStaves = musicScore.multipleStavesArray[i]
-        for (let j = 0; j < muptipleStaves.singleStaffArray.length; j++) {
-            const singleStaff = muptipleStaves.singleStaffArray[j]
-            for (let k = 0; k < singleStaff.measureArray.length; k++) {
-                const measure = singleStaff.measureArray[k]
-                for (let l = 0; l < measure.msSymbolContainerArray.length; l++) {
-                    const msSymbolContainer = measure.msSymbolContainerArray[l]
-                    for (let t = 0; t < msSymbolContainer.msSymbolArray.length; t++) {
-                        const msSymbol = msSymbolContainer.msSymbolArray[t]
-                        if (msSymbol.type === MsSymbolTypeEnum.keySignature) {
-                            keySignature = msSymbol.keySignature
-                        }
-                        if (msSymbol.type === MsSymbolTypeEnum.noteHead) {
-                            msSymbol.computed.keySignature = keySignature
-                        }
-                    }
-                }
+    traverseMusicScore(musicScore, {
+        level: 'symbol', order: 'asc', callback: ({msSymbol}) => {
+            if (!msSymbol) return
+            // 整体赋值clef 初始化、数据更改时调用
+            if (msSymbol.type === MsSymbolTypeEnum.clef) {
+                clef = msSymbol.clef
+            }
+            if ([MsSymbolTypeEnum.noteHead, MsSymbolTypeEnum.keySignature].includes(msSymbol.type) && 'computed' in msSymbol) {
+                msSymbol.computed.clef = clef
+            }
+            // 整体赋值keySignature keySignature是小节上的符号
+            if (msSymbol.type === MsSymbolTypeEnum.keySignature) {
+                keySignature = msSymbol.keySignature
+            }
+            if (msSymbol.type === MsSymbolTypeEnum.noteHead && 'computed' in msSymbol) {
+                msSymbol.computed.keySignature = keySignature
+            }
+            // 整体赋值音名 需要先计算clef
+            if (msSymbol.type === MsSymbolTypeEnum.noteHead && 'computed' in msSymbol) {
+                msSymbol.computed.musicalAlphabet = getNoteMusicalAlphabet(msSymbol)
             }
         }
-    }
-}
-
-
-// 整体赋值音名 需要先计算clef
-export function computedMusicalAlphabet(musicScore: MusicScore) {
-    let clef: ClefEnum = ClefEnum.treble
-    for (let i = 0; i < musicScore.multipleStavesArray.length; i++) {
-        const muptipleStaves = musicScore.multipleStavesArray[i]
-        for (let j = 0; j < muptipleStaves.singleStaffArray.length; j++) {
-            const singleStaff = muptipleStaves.singleStaffArray[j]
-            for (let k = 0; k < singleStaff.measureArray.length; k++) {
-                const measure = singleStaff.measureArray[k]
-                for (let l = 0; l < measure.msSymbolContainerArray.length; l++) {
-                    const msSymbolContainer = measure.msSymbolContainerArray[l]
-                    for (let t = 0; t < msSymbolContainer.msSymbolArray.length; t++) {
-                        const msSymbol = msSymbolContainer.msSymbolArray[t]
-
-                        if (msSymbol && msSymbol.type === MsSymbolTypeEnum.noteHead && 'computed' in msSymbol) {
-                            msSymbol.computed.musicalAlphabet = getNoteMusicalAlphabet(msSymbol)
-                        }
-
-                    }
-                }
-            }
-        }
-    }
-
+    })
 }
 
 // 复合性aspectRatiao获取
@@ -279,148 +387,8 @@ export function getMultipleAspectRatio(msSymbol: MsSymbol): number {
 
 }
 
-//---------------------------------------------------------------------------------------------宽度系数
-// 获取当前符号的宽度系数之和
-export function getWidthConstantInMsSymbol(msSymbol: MsSymbol): WidthConstant {
-    let widthConstant: WidthConstant = 0
-    const information = MsSymbolInformationMap[msSymbol.type]
-    if ('widthRatioConstant' in information) {
-        widthConstant += information.widthRatioConstant
-    }
-    if (msSymbol.msSymbolArray) {
-        for (let k = 0; k < msSymbol.msSymbolArray.length; k++) {
-            const childMsSymbol = msSymbol.msSymbolArray[k]
-            const childInformation = MsSymbolInformationMap[childMsSymbol.type]
-            if ('widthRatioConstant' in childInformation) {
-                widthConstant += childInformation.widthRatioConstant
-            }
-        }
-    }
-    return widthConstant
-}
-
-// 获取当前符号容器的宽度系数之和 取宽度系数最大的符号的宽度系数
-export function getWidthConstantInMsSymbolContainer(msSymbolContainer: MsSymbolContainer): WidthConstant {
-    let widthConstant: WidthConstant = 0
-
-    if (msSymbolContainer.msSymbolArray) {
-        for (let k = 0; k < msSymbolContainer.msSymbolArray.length; k++) {
-            const curMsSymbol = msSymbolContainer.msSymbolArray[k]
-            const curWidthConstant = getWidthConstantInMsSymbol(curMsSymbol)
-            // 取最大值
-            if (widthConstant < curWidthConstant) {
-                widthConstant = curWidthConstant
-            }
-        }
-    }
-    return widthConstant
-}
-
-// 获取小节的宽度占比常数之和, 第二个参数判断是否只计算当前符号容器之前的
-export function getWidthConstantInMeasure(measure: Measure, msSymbolContainer?: MsSymbolContainer | null): WidthConstant {
-
-    let widthConstant: WidthConstant = 0
-    for (let j = 0; j < measure.msSymbolContainerArray.length; j++) {
-        const curMsSymbolContainer = measure.msSymbolContainerArray[j]
-        if (msSymbolContainer && curMsSymbolContainer === msSymbolContainer) {
-            return widthConstant
-        }
-
-        widthConstant += getWidthConstantInMsSymbolContainer(curMsSymbolContainer)
-    }
-    return widthConstant
-}
-
-
-// 获取单谱表的宽度占比常数之和, 第二个参数判断是否只计算当前符号之前的
-export function getWidthConstantInSingleStaff(singleStaff: SingleStaff, msSymbolContainer?: MsSymbolContainer | null): WidthConstant {
-    let preWidthConstant = 0
-    for (let i = 0; i < singleStaff.measureArray.length; i++) {
-        const measure = singleStaff.measureArray[i]
-        preWidthConstant += getWidthConstantInMeasure(measure, msSymbolContainer)
-    }
-    return preWidthConstant
-}
-
-// -----------------------------------------------------------------------------------------------------------------宽度
-// 获取定宽容器的宽度
-export function getWidthFixedContainerWidth(msSymbolContainer: MsSymbolContainer, measureHeight: number): number {
-    let width = 0
-    for (let i = 0; i < msSymbolContainer.msSymbolArray.length; i++) {
-        const curMsSymbol: MsSymbol = msSymbolContainer.msSymbolArray[i]
-        const information = MsSymbolInformationMap[curMsSymbol.type]
-        let curW = 0
-        if ('aspectRatio' in information && (typeof information.aspectRatio === 'number')) {
-            curW += information.aspectRatio * measureHeight
-        } else if ('aspectRatio' in information && (typeof information.aspectRatio === 'object')) { // 特殊情况处理
-            if (curMsSymbol.type === MsSymbolTypeEnum.keySignature) {
-                curW += information.aspectRatio[curMsSymbol.keySignature] * measureHeight
-            } else if (curMsSymbol.type === MsSymbolTypeEnum.barline || curMsSymbol.type === MsSymbolTypeEnum.barline_f) {
-                curW += information.aspectRatio[curMsSymbol.barlineType] * measureHeight
-            }
-        } else {
-            console.error('符号的svg宽高比不存在')
-        }
-        if (width < curW) {
-            width = curW
-        }
-
-    }
-    return width
-}
-
-// 获取当前小节内定宽符号容器宽度之和, 第二个参数判断是否只计算当前符号之前的
-export function getWidthFixedContainerWidthSumInMeasure(measure: Measure, measureHeight: number, filter: 'front' | 'rear' | 'all' = 'all', msSymbolContainer?: MsSymbolContainer): number {
-    let widthSum = 0
-    for (let i = 0; i < measure.msSymbolContainerArray.length; i++) {
-        const curMsSymbolContainer: MsSymbolContainer = measure.msSymbolContainerArray[i]
-
-        if (msSymbolContainer && msSymbolContainer === curMsSymbolContainer) {
-            return widthSum
-        }
-        const containerType = curMsSymbolContainer.type
-        if (filter === 'all' && [MsSymbolContainerTypeEnum.frontFixed, MsSymbolContainerTypeEnum.rearFixed].includes(containerType)) {
-            widthSum += getWidthFixedContainerWidth(curMsSymbolContainer, measureHeight)
-        } else if (filter === 'front' && [MsSymbolContainerTypeEnum.frontFixed].includes(containerType)) {
-            widthSum += getWidthFixedContainerWidth(curMsSymbolContainer, measureHeight)
-        } else if (filter === 'rear' && [MsSymbolContainerTypeEnum.rearFixed].includes(containerType)) {
-            widthSum += getWidthFixedContainerWidth(curMsSymbolContainer, measureHeight)
-        }
-
-    }
-    return widthSum
-}
-
-
-// 获取单谱表内定宽容器符号宽度之和，单位px
-export function getWidthFixedContainerWidthSumInSingleStaff(singleStaff: SingleStaff, measureHeight: number, filter: 'front' | 'rear' | 'all' = 'all', msSymbolContainer?: MsSymbolContainer): number {
-    let widthSum = 0
-    singleStaff.measureArray.forEach((measure: Measure) => {
-        widthSum += getWidthFixedContainerWidthSumInMeasure(measure, measureHeight, filter, msSymbolContainer)
-    })
-    return widthSum
-}
-
-// -----------------------------------------------------------------------------------------------------------------底部距离计算
-// 获取小节内最高的单小节符号bottom + 符号高度
-export function getMaxBottomPlusMsSymbolHeightInMeasure(measure: Measure) {
-    let maxBottom = 0
-
-}
-
-// 获取小节表内最低的单小节符号bottom
-export function getMinBottomInSingleStaff() {
-
-}
-
-// 获取单谱表内最高的单小节符号bottom + 符号高度
-export function getMaxBottomPlusMsSymbolHeightInMeasure(measure: Measure) {
-    let maxBottom = 0
-
-}
-
-// 获取单谱表内最低的单小节符号bottom
-export function getMinBottomInSingleStaff() {
+// 通过index获取数据
+export function getDataWithIndex() {
 
 }
 

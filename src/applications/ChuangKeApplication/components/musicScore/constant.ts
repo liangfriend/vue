@@ -29,10 +29,12 @@ type FixedWidthSymbolInfo = { // 定宽符号没有宽度占比系数
     containerType: MsSymbolContainerTypeEnum.rearFixed | MsSymbolContainerTypeEnum.frontFixed
     aspectRatio: number
     category: MsSymbolCategoryEnum.singleMeasure
+    heightMultiplier: number    // 相对小节的高度倍数，用于计算高度
 } | { // 特殊的定宽容器，宽高比有多个，取决于具体情况
     containerType: MsSymbolContainerTypeEnum.rearFixed | MsSymbolContainerTypeEnum.frontFixed
     aspectRatio: Record<string, number>
     category: MsSymbolCategoryEnum.singleMeasure
+    heightMultiplier: number
 }
 
 
@@ -41,11 +43,13 @@ type VariableWidthSymbolInfo = {
     aspectRatio: number
     widthRatioConstant: number // 可为任意正数
     category: MsSymbolCategoryEnum.singleMeasure
+    heightMultiplier: number
 }
 type pureFollowSymbolInfo = { // 纯粹的符号跟随类型  没有容器类型属性
     aspectRatio: number
     category: MsSymbolCategoryEnum
     widthRatioConstant: number
+    heightMultiplier: number
 }
 
 type MultipleMeasureSymbolInfo = {
@@ -63,22 +67,26 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
         aspectRatio: 1,
         widthRatioConstant: 1,
         category: MsSymbolCategoryEnum.singleMeasure,
+        heightMultiplier: 0.25,
     },
     [MsSymbolTypeEnum.noteBar]: {  // 有些纯粹的符号跟随类型是没有符号容器类型的
         aspectRatio: 0.08,
         category: MsSymbolCategoryEnum.singleMeasure,
-        widthRatioConstant: 0
+        widthRatioConstant: 0,
+        heightMultiplier: 0.6,
     },
     [MsSymbolTypeEnum.noteTail]: {
         aspectRatio: 1,
         category: MsSymbolCategoryEnum.singleMeasure,
-        widthRatioConstant: 0
+        widthRatioConstant: 0,
+        heightMultiplier: 0.4,
     },
     [MsSymbolTypeEnum.rest]: {// 休止符：不如音符重要，但需占位
         containerType: MsSymbolContainerTypeEnum.variable,
         aspectRatio: 1,
         widthRatioConstant: 0,
         category: MsSymbolCategoryEnum.singleMeasure,
+        heightMultiplier: 0.25,
     },
     [MsSymbolTypeEnum.slur]: {// 圆滑线：跨音符装饰线，不占宽度
         category: MsSymbolCategoryEnum.multipleMeasure,
@@ -87,15 +95,16 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
         category: MsSymbolCategoryEnum.multipleMeasure,
     },
     [MsSymbolTypeEnum.durationDot]: {// 附点：相对于音符有一点影响
-
         aspectRatio: 1,
         category: MsSymbolCategoryEnum.singleMeasure,
-        widthRatioConstant: 0.5
+        widthRatioConstant: 0.5,
+        heightMultiplier: 0.1,
     },
     [MsSymbolTypeEnum.accidental]: {
         aspectRatio: 1,
         category: MsSymbolCategoryEnum.singleMeasure,
-        widthRatioConstant: 0.5
+        widthRatioConstant: 0.5,
+        heightMultiplier: 0.4,
 
     },
     [MsSymbolTypeEnum.tuplet]: { // 连音记号
@@ -105,16 +114,19 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
         containerType: MsSymbolContainerTypeEnum.rearFixed,
         aspectRatio: 0.6,
         category: MsSymbolCategoryEnum.singleMeasure,
+        heightMultiplier: 1,
     },
     [MsSymbolTypeEnum.clef_f]: { // 前置谱号
         containerType: MsSymbolContainerTypeEnum.frontFixed,
         aspectRatio: 0.6,
         category: MsSymbolCategoryEnum.singleMeasure,
+        heightMultiplier: 1,
     },
     [MsSymbolTypeEnum.timeSignature]: {
         containerType: MsSymbolContainerTypeEnum.frontFixed,
         aspectRatio: 0.6,
         category: MsSymbolCategoryEnum.singleMeasure,
+        heightMultiplier: 1,
     },
     [MsSymbolTypeEnum.keySignature]: {
         containerType: MsSymbolContainerTypeEnum.frontFixed,
@@ -136,6 +148,7 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
             [KeySignatureEnum['C#']]: 0.4 * 7 // 7 sharps
         },
         category: MsSymbolCategoryEnum.singleMeasure,
+        heightMultiplier: 1,
     },
     [MsSymbolTypeEnum.barline]: {
         containerType: MsSymbolContainerTypeEnum.rearFixed,
@@ -147,6 +160,7 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
             [BarlineTypeEnum.endRepeatSign]: 3 / 5,   // 7 flats
         },
         category: MsSymbolCategoryEnum.singleMeasure,
+        heightMultiplier: 1,
     },
     [MsSymbolTypeEnum.barline_f]: {
         containerType: MsSymbolContainerTypeEnum.frontFixed,
@@ -158,5 +172,6 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
             [BarlineTypeEnum.endRepeatSign]: 3 / 5,   // 7 flats
         },
         category: MsSymbolCategoryEnum.singleMeasure,
+        heightMultiplier: 1,
     },
 }
