@@ -1,3 +1,12 @@
+export enum MsTypeNameEnum {
+    MultipStaves = 1,
+    SingleStaff,
+    Measure,
+    SpanSymbol,
+    MsSymbolContainer,
+    MsSymbol,
+
+}
 export enum MusicScoreRegionEnum {
     // 下方区域
     lower_line_6 = 'lower_line_6',

@@ -11,7 +11,7 @@ import {
 import {
     Measure,
     MsSymbol,
-    MsSymbolContainer, MultipleStaves,
+    MsSymbolContainer, msType, MultipleStaves,
     MusicScore,
     NoteHead,
     SingleStaff,
@@ -390,5 +390,47 @@ export function getMultipleAspectRatio(msSymbol: MsSymbol): number {
 // 通过index获取数据
 export function getDataWithIndex() {
 
+}
+
+// 生成hsahMap()
+export function mapGenerate(musicScore: MusicScore) {
+    musicScore.map = new Map()
+
+
+    for (let i = 0; i < musicScore.multipleStavesArray.length; i++) {
+        const muptipleStaves = musicScore.multipleStavesArray[i]
+        musicScore.map.set(muptipleStaves.id, muptipleStaves)
+        for (let j = 0; j < muptipleStaves.singleStaffArray.length; j++) {
+            const singleStaff = muptipleStaves.singleStaffArray[j]
+            musicScore.map.set(singleStaff.id, singleStaff)
+            for (let k = 0; k < singleStaff.measureArray.length; k++) {
+                const measure = singleStaff.measureArray[k]
+                musicScore.map.set(measure.id, measure)
+                for (let l = 0; l < measure.msSymbolContainerArray.length; l++) {
+                    const msSymbolContainer = measure.msSymbolContainerArray[l]
+                    musicScore.map.set(msSymbolContainer.id, msSymbolContainer)
+                    for (let t = 0; t < msSymbolContainer.msSymbolArray.length; t++) {
+                        const msSymbol = msSymbolContainer.msSymbolArray[t]
+                        musicScore.map.set(msSymbol.id, msSymbol)
+                    }
+                }
+            }
+        }
+    }
+}
+
+// 查询内容
+export function getTarget(id: number, musicScore: MusicScore): msType | undefined {
+    if (!musicScore.map) {
+        console.error("这个谱表还没有生成map")
+        return
+    }
+    const target = musicScore.map.get(id)
+    if (target) {
+        return target
+    } else {
+        console.warn('此id元素不存在')
+    }
+    return
 }
 

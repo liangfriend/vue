@@ -43,6 +43,7 @@ const data: MusicScore = {
                 bindingStartId: [],
                 bindingEndId: [],
                 msSymbolContainerArray: [{
+                    id: 2,
                     type: MsSymbolContainerTypeEnum.frontFixed,
                     index: {},
                     msSymbolArray: [{
@@ -55,6 +56,7 @@ const data: MusicScore = {
                         index: {}
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.frontFixed,
                     index: {},
                     msSymbolArray: [{
@@ -68,6 +70,7 @@ const data: MusicScore = {
                         index: {}
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.frontFixed,
                     index: {},
                     msSymbolArray: [{
@@ -83,6 +86,7 @@ const data: MusicScore = {
                         bindingEndId: [],
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -105,6 +109,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -127,6 +132,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.rearFixed,
                     index: {},
                     msSymbolArray: [{
@@ -146,6 +152,7 @@ const data: MusicScore = {
                 bindingEndId: [],
                 index: {},
                 msSymbolContainerArray: [{
+                    id: 2,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -168,6 +175,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -191,6 +199,7 @@ const data: MusicScore = {
                     }]
                 }, {
                     index: {},
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     msSymbolArray: [{
                         id: 1,
@@ -212,6 +221,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.rearFixed,
                     index: {},
                     msSymbolArray: [{
@@ -231,6 +241,7 @@ const data: MusicScore = {
                 bindingStartId: [],
                 bindingEndId: [],
                 msSymbolContainerArray: [{
+                    id: 2,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -253,6 +264,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -275,6 +287,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -297,6 +310,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.rearFixed,
                     index: {},
                     msSymbolArray: [{
@@ -316,6 +330,7 @@ const data: MusicScore = {
                 bindingStartId: [],
                 bindingEndId: [],
                 msSymbolContainerArray: [{
+                    id: 2,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -338,6 +353,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -360,6 +376,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -382,6 +399,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.rearFixed,
                     index: {},
                     msSymbolArray: [{
@@ -401,6 +419,7 @@ const data: MusicScore = {
                 bindingStartId: [],
                 bindingEndId: [],
                 msSymbolContainerArray: [{
+                    id: 2,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -423,6 +442,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -445,6 +465,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -467,6 +488,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.rearFixed,
                     index: {},
                     msSymbolArray: [{
@@ -495,6 +517,7 @@ const data: MusicScore = {
                 bindingStartId: [],
                 bindingEndId: [],
                 msSymbolContainerArray: [{
+                    id: 2,
                     type: MsSymbolContainerTypeEnum.frontFixed,
                     index: {},
                     msSymbolArray: [{
@@ -507,6 +530,7 @@ const data: MusicScore = {
                         bindingEndId: [],
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.frontFixed,
                     index: {},
                     msSymbolArray: [{
@@ -520,6 +544,7 @@ const data: MusicScore = {
                         bindingEndId: [],
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -542,6 +567,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -564,6 +590,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -586,6 +613,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.rearFixed,
                     index: {},
                     msSymbolArray: [{
@@ -605,6 +633,7 @@ const data: MusicScore = {
                 bindingStartId: [],
                 bindingEndId: [],
                 msSymbolContainerArray: [{
+                    id: 2,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -627,6 +656,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -649,6 +679,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -671,6 +702,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -693,6 +725,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.rearFixed,
                     index: {},
                     msSymbolArray: [{
@@ -712,6 +745,7 @@ const data: MusicScore = {
                 bindingStartId: [],
                 bindingEndId: [],
                 msSymbolContainerArray: [{
+                    id: 2,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -734,6 +768,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -756,6 +791,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
                     msSymbolArray: [{
@@ -778,6 +814,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.rearFixed,
                     index: {},
                     msSymbolArray: [{
@@ -797,6 +834,7 @@ const data: MusicScore = {
                 bindingStartId: [],
                 bindingEndId: [],
                 msSymbolContainerArray: [{
+                    id: 2,
                     index: {},
                     type: MsSymbolContainerTypeEnum.variable,
                     msSymbolArray: [{
@@ -819,6 +857,7 @@ const data: MusicScore = {
                         }]
                     }]
                 }, {
+                    id: 1,
                     type: MsSymbolContainerTypeEnum.rearFixed,
                     index: {},
                     msSymbolArray: [{

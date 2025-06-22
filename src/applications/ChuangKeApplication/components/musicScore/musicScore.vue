@@ -40,6 +40,7 @@
 import measure from './components/measure.vue';
 import {computed, onMounted, onUnmounted, type PropType, provide, ref} from 'vue';
 import type {
+  Measure,
   MusicScore, SpanSymbol
 } from "./types.d.ts";
 import MeasureContainer from "@/applications/ChuangKeApplication/components/musicScore/components/measureContainer.vue";
@@ -48,13 +49,15 @@ import MsSymbolContainer
   from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbolContainer.vue";
 import {
   ClefEnum,
-  MsSymbolTypeEnum,
+  MsSymbolTypeEnum, MsTypeNameEnum,
   SpanSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 import SpanSymbolVue
   from "@/applications/ChuangKeApplication/components/musicScore/components/spanSymbol.vue";
 import {
+  getTarget,
+  mapGenerate,
   msSymbolComputedData
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 
@@ -88,6 +91,8 @@ const musicScoreStyle = computed(() => {
 });
 
 function mounted() {
+  // 遍历生成hashMap方便快速查找
+  mapGenerate(props.modelValue)
   // 计算属性
   msSymbolComputedData(props.modelValue)
   // 跨小节符号rect计算
@@ -97,12 +102,27 @@ function mounted() {
 function getSpanSymbolRect(spanSymbol: SpanSymbol, musicScoreData: MusicScore) {
   switch (spanSymbol.type) {
     case SpanSymbolTypeEnum.volta: {
-      let width = 0 // 获取开始节点和结束节点的小节宽度， 有三种情况，同单谱表不同小节 同单谱表相同小节 不同单谱表
-      let left = 0 // 获取开始小节的单谱表
-      let bottom = 0 // 小节bottom加范围内小节最高的符号的bottom
+
       break
     }
   }
+}
+
+function voltaRect(volta: Extract<SpanSymbol, { type: SpanSymbolTypeEnum.volta }>) {
+
+  let width = 0 // 获取开始节点和结束节点的小节宽度， 有三种情况，同单谱表不同小节 同单谱表相同小节 不同单谱表
+  let left = 0 // 获取开始小节的单谱表
+  let bottom = 0 // 小节bottom加范围内小节最高的符号的bottom
+
+  const startMeasure = getTarget(volta.startTargetId, props.modelValue)
+  const endMeasure = getTarget(volta.endTargetId, props.modelValue)
+  if (!startMeasure || !endMeasure) return console.error('获取不到绑定元素')
+  if (startMeasure.msTypeName !== MsTypeNameEnum.Measure || endMeasure.msTypeName !== MsTypeNameEnum.Measure) return console.error('volta绑定元素错误')
+  // 处理同行情况
+  if (startMeasure.index.multipleStavesIndex === endMeasure.index.multipleStavesIndex) {
+    
+  }
+
 }
 onMounted(mounted);
 onUnmounted(() => {
