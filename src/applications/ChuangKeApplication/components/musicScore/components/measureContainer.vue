@@ -32,12 +32,17 @@
 import type {CSSProperties, PropType} from 'vue';
 import {computed} from "vue";
 import type {Measure, MsSymbol, MultipleStaves, MusicScore, SingleStaff, WidthConstant} from "../types";
-import {
-  getWidthConstantInMeasure, getWidthConstantInSingleStaff, getWidthFixedContainerWidthSumInMeasure,
-  getWidthFixedContainerWidthSumInSingleStaff
-} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
+
 import {MsSymbolInformationMap} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 import {MsSymbolCategoryEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import {
+  getWidthFixedContainerWidthSumInMeasure,
+  getWidthFixedContainerWidthSumInSingleStaff
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/widthUtil.ts";
+import {
+  getWidthConstantInMeasure,
+  getWidthConstantInSingleStaff
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/widthConstantUtil.ts";
 
 const props = defineProps({
   musicScoreData: {

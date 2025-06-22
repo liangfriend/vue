@@ -3,7 +3,6 @@
     <!--    -->
     <measure-container :musicScoreData="modelValue" class="stackItem lineLayer"
                        :style="{width:width+'px',height:height+'px'}"
-                       :measureHeight="measureHeight"
                        comment="谱线层">
       <template #default="{ measure, measureIndex, singleStaff, multipleStaves, measureWidth }">
         <measure
@@ -11,13 +10,12 @@
             :strokeWidth="strokeWidth"
             :x="measureIndex * measureWidth"
             :width="measureWidth"
-            :height="measureHeight"
+            :height="modelValue.measureHeight"
         >
         </measure>
       </template>
     </measure-container>
     <measure-container :musicScoreData="modelValue" class="stackItem symbolLayer"
-                       :measureHeight="measureHeight"
                        :style="{width:width+'px',height:height+'px'}"
                        comment="符号层">
       <template #default="{ measure, measureIndex, singleStaff, multipleStaves, measureWidth }">
@@ -27,32 +25,38 @@
                              :measureWidth="measureWidth"
                              :singleStaff="singleStaff"
                              :multipleStaves="multipleStaves"
-                             :measureHeight="measureHeight"
+                             :measureHeight="modelValue.measureHeight"
                              :key="'note-symbol'+symbolIndex"
         ></ms-symbol-container>
       </template>
     </measure-container>
     <!--  跨小节符号目前只有小节跟随型和符号（音符头）跟随型  -->
-    <span-symbol-container></span-symbol-container>
+    <span-symbol-vue :key="'span-symbol'+spanSymbolIndex"
+                     v-for="(spanSymbol,spanSymbolIndex) in modelValue.spanSymbolArray"
+                     :spanSymbol="spanSymbol"></span-symbol-vue>
   </div>
 </template>
 <script setup lang="ts">
 import measure from './components/measure.vue';
 import {computed, onMounted, onUnmounted, type PropType, provide, ref} from 'vue';
 import type {
-  MusicScore
+  MusicScore, SpanSymbol
 } from "./types.d.ts";
 import MeasureContainer from "@/applications/ChuangKeApplication/components/musicScore/components/measureContainer.vue";
 
 import MsSymbolContainer
   from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbolContainer.vue";
-import {ClefEnum, MsSymbolTypeEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {
-  computedClef,
-  computedKeySignature, computedMusicalAlphabet
+  ClefEnum,
+  MsSymbolTypeEnum,
+  SpanSymbolTypeEnum
+} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+
+import SpanSymbolVue
+  from "@/applications/ChuangKeApplication/components/musicScore/components/spanSymbol.vue";
+import {
+  msSymbolComputedData
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
-import SpanSymbolContainer
-  from "@/applications/ChuangKeApplication/components/musicScore/components/spanSymbolContainer.vue";
 
 const props = defineProps({
   modelValue: {
@@ -67,12 +71,6 @@ const props = defineProps({
     type: Number,
     default: 800,
   },
-  //小节高度， 此属性会控制音符，休止符，谱号，拍号等符号大小
-  measureHeight: {
-    type: Number,
-    default: 60
-  },
-
   //小节的线条宽度
   strokeWidth: {
     type: Number,
@@ -90,15 +88,22 @@ const musicScoreStyle = computed(() => {
 });
 
 function mounted() {
-  // 计算clef
-  computedClef(props.modelValue)
-  // 计算keySignature
-  computedKeySignature(props.modelValue)
-  // 计算alphabet
-  computedMusicalAlphabet(props.modelValue)
-  console.log('chicken', props.modelValue)
+  // 计算属性
+  msSymbolComputedData(props.modelValue)
+  // 跨小节符号rect计算
+
 }
 
+function getSpanSymbolRect(spanSymbol: SpanSymbol, musicScoreData: MusicScore) {
+  switch (spanSymbol.type) {
+    case SpanSymbolTypeEnum.volta: {
+      let width = 0 // 获取开始节点和结束节点的小节宽度， 有三种情况，同单谱表不同小节 同单谱表相同小节 不同单谱表
+      let left = 0 // 获取开始小节的单谱表
+      let bottom = 0 // 小节bottom加范围内小节最高的符号的bottom
+      break
+    }
+  }
+}
 onMounted(mounted);
 onUnmounted(() => {
 

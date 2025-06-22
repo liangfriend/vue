@@ -23,6 +23,13 @@ export declare interface TimeSignature {
     chronaxie: 1 | 2 | 4 | 8 | 16,
 }
 
+export declare interface Rect {
+    width?: number;
+    height?: number;
+    left?: number;
+    bottom?: number;
+}
+
 export declare type musicScoreIndex = {
     multipleStavesIndex?: number,
     singleStaffIndex?: number,
@@ -83,13 +90,15 @@ export declare type BaseSpanSymbol = {
     id: number,
     width: number,
     bottom: number,
+    rect: {}
 }
 // 跨小节符号.  目前只有小节跟随型和符号（音符头）跟随型
 export declare type SpanSymbol = (BaseSpanSymbol & {
     type: SpanSymbolTypeEnum
     spanSymbolFollowingCategoryEnum: SpanSymbolFollowingCategoryEnum.measure,
     startTargetId: number
-    endTargetId: number
+    endTargetId: number,
+    rect: Rect,
 })
 export declare type MsSymbolContainer = {
     msSymbolArray: Array<MsSymbol>

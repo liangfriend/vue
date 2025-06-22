@@ -40,8 +40,8 @@ import {MsSymbolInformationMap} from "@/applications/ChuangKeApplication/compone
 import {
   getMultipleAspectRatio
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
-import {getSlotBottom} from "@/applications/ChuangKeApplication/components/musicScore/utils/msSingleRectUtil.ts";
 import {getMsSymbolHeight} from "@/applications/ChuangKeApplication/components/musicScore/utils/heightUtil.ts";
+import {getSlotBottomToMeasure} from "@/applications/ChuangKeApplication/components/musicScore/utils/bottomUtil.ts";
 
 const props = defineProps({
   msSymbol: {
@@ -128,7 +128,7 @@ const slotLeft = computed(() => {
   return 0
 })
 const slotBottom = computed(() => {
-  return getSlotBottom(props.msSymbol, props.measure, props.singleStaff, props.measureHeight)
+  return getSlotBottomToMeasure(props.msSymbol, props.measureHeight)
 })
 
 

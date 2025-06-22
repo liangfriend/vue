@@ -18,27 +18,22 @@
 <script setup lang="ts">
 import type {
   Measure,
-  MsSymbol, MsSymbolContainer,
+  MsSymbolContainer,
   MultipleStaves,
   SingleStaff,
 } from "@/applications/ChuangKeApplication/components/musicScore/types.d.ts";
 import {computed, CSSProperties, onMounted, PropType} from "vue";
 import {
-  ClefEnum,
-  MsSymbolCategoryEnum,
   MsSymbolContainerTypeEnum,
-  MsSymbolTypeEnum, MusicScoreRegionEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
-
-import msSymbolVue from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbol.vue";
-import {
-  getWidthConstantInMeasure,
-  getWidthConstantInMsSymbol, getWidthConstantInMsSymbolContainer, getWidthFixedContainerWidth,
-  getWidthFixedContainerWidthSumInMeasure
-} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
-import {MsSymbolInformationMap} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 import MsSymbolSlot from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbolSlot.vue";
-import measure from "@/applications/ChuangKeApplication/components/musicScore/components/measure.vue";
+import {
+  getWidthFixedContainerWidth,
+  getWidthFixedContainerWidthSumInMeasure
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/widthUtil.ts";
+import {
+  getWidthConstantInMeasure, getWidthConstantInMsSymbolContainer
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/widthConstantUtil.ts";
 
 const props = defineProps({
   msSymbolContainer: {

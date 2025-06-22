@@ -14,7 +14,9 @@ const props = defineProps({
 })
 const voltaStyle = computed(() => {
   const style: CSSProperties = {
-    width: props.width + 'px'
+    width: props.width + 'px',
+    left: 0,
+    bottom: 0,
   }
   return style
 })
@@ -24,5 +26,8 @@ const voltaStyle = computed(() => {
 <style scoped>
 .volta {
   height: 40px;
+  position: absolute;
+  border-left: 1px solid black;
+  border-top: 1px solid black;
 }
 </style>
