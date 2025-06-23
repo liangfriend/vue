@@ -32,6 +32,14 @@ const props = defineProps({
     type: Number,
     default: 80,
   },
+  componentWidth: {
+    type: Number,
+    default: 1000,
+  },
+  componentHeight: {
+    type: Number,
+    default: 800,
+  },
   strokeWidth: {
     type: Number,
     default: 1

@@ -92,7 +92,6 @@ async function addMusicToMap(key: string, data: MusicDataType, callback?: () => 
         if (typeof data === 'object') { // 如果是musicScoreData, 转换出ToneSequence序列
             const synth = new Tone.Synth().toDestination();
             const toneSequence: ToneSequence[] = musicScoreToToneSequence(data)
-            console.log('chicken', toneSequence)
             const tonePart: Tone.Part = new Tone.Part((time, note: ToneSequence) => {
                 synth.triggerAttackRelease(note.note, note.duration, time);
             }, toneSequence)
@@ -169,7 +168,6 @@ function durationToBeats(duration: string): number {
 }
 
 function musicScoreToToneSequence(musicData: MusicScore): ToneSequence[] {
-    console.log('chicken', musicData)
     const sequence: ToneSequence[] = [];
     let accumulatorTime = 0
     for (const multiStaff of musicData.multipleStavesArray) {
@@ -179,19 +177,19 @@ function musicScoreToToneSequence(musicData: MusicScore): ToneSequence[] {
                     for (const msSymbol of msSymbolContainer.msSymbolArray) {
 
                         if (msSymbol.type === MsSymbolTypeEnum.noteHead) {
-                        // 构造音名（暂不考虑变音符）
+                            // 构造音名（暂不考虑变音符）
                             let noteName: string = msSymbol.computed.musicalAlphabet || MusicalAlphabetEnum.C4;
 
-                        // 时值转换
-                        let duration = chronaxieToDurationMap[msSymbol.chronaxie as ChronaxieEnum] || '4n';
+                            // 时值转换
+                            let duration = chronaxieToDurationMap[msSymbol.chronaxie as ChronaxieEnum] || '4n';
 
 
-                        sequence.push({
-                            note: noteName,
-                            duration,
-                            time: accumulatorTime,
-                        });
-                        accumulatorTime += durationToBeats(duration)
+                            sequence.push({
+                                note: noteName,
+                                duration,
+                                time: accumulatorTime,
+                            });
+                            accumulatorTime += durationToBeats(duration)
 
                         }
                     }

@@ -76,7 +76,15 @@ const props = defineProps({
   slotWidth: {
     type: Number,
     default: 60
-  }
+  },
+  componentWidth: {
+    type: Number,
+    default: 1000,
+  },
+  componentHeight: {
+    type: Number,
+    default: 800,
+  },
 })
 
 const svgHref = computed(() => {

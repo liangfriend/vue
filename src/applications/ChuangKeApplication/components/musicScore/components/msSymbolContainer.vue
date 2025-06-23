@@ -8,7 +8,10 @@
                     :measureWidth="props.measureWidth"
                     :singleStaff="props.singleStaff"
                     :containerWidth="containerWidth"
+                    :componentWidth="componentWidth"
+                    :componentHeight="componentHeight"
                     :multipleStaves="props.multipleStaves"
+                    :musicScore="props.musicScore"
                     :measureHeight="props.measureHeight"></ms-symbol-slot>
   </div>
 
@@ -16,10 +19,10 @@
 </template>
 
 <script setup lang="ts">
-import type {
+import {
   Measure,
   MsSymbolContainer,
-  MultipleStaves,
+  MultipleStaves, MusicScore,
   SingleStaff,
 } from "@/applications/ChuangKeApplication/components/musicScore/types.d.ts";
 import {computed, CSSProperties, onMounted, PropType} from "vue";
@@ -28,6 +31,7 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import MsSymbolSlot from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbolSlot.vue";
 import {
+  getMsSymboLContainerWidth,
   getWidthFixedContainerWidth,
   getWidthFixedContainerWidthSumInMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/widthUtil.ts";
@@ -54,6 +58,14 @@ const props = defineProps({
     type: Number,
     default: 200
   },
+  componentWidth: {
+    type: Number,
+    default: 1000,
+  },
+  componentHeight: {
+    type: Number,
+    default: 800,
+  },
   singleStaff: {
     type: Object as PropType<SingleStaff>,
     required: true
@@ -61,7 +73,11 @@ const props = defineProps({
   multipleStaves: {
     type: Object as PropType<MultipleStaves>,
     required: true
-  }
+  },
+  musicScore: {
+    type: Object as PropType<MusicScore>,
+    default: {}
+  },
 })
 
 
@@ -83,22 +99,7 @@ const msSymbolContainerStyle = computed<CSSProperties>(() => {
 
 // 符号容器宽度计算
 const containerWidth = computed(() => {
-  if (!props.msSymbolContainer || !props.measure || !props.singleStaff) {
-    console.error("缺少必要的参数，坐标计算出错")
-    return 0
-  }
-  let width: number = 0 // 定宽容器的宽度等于主符号宽度（通过调用符号组件暴露的获取宽高比方法获取宽高比），非定宽容器宽度通过计算宽度系数设置
-  const containerType = props.msSymbolContainer.type
-  if ([MsSymbolContainerTypeEnum.frontFixed, MsSymbolContainerTypeEnum.rearFixed].includes(containerType)) { // 如果是定宽容器
-    width = getWidthFixedContainerWidth(props.msSymbolContainer, props.measureHeight)
-  } else { // 如果是变宽容器  宽度 = (小节宽度 - 定宽容器宽度) / 变宽容器宽度系数和 * 当前容器宽度系数
-    const fixedSymbolContainerSum = getWidthFixedContainerWidthSumInMeasure(props.measure, props.measureHeight)
-    const totalWidthConstantOfFixedContainerInMeasure = getWidthConstantInMeasure(props.measure,)
-    const curMsSymbolContainerWidthConstant = getWidthConstantInMsSymbolContainer(props.msSymbolContainer)
-
-    width = (props.measureWidth - fixedSymbolContainerSum) / totalWidthConstantOfFixedContainerInMeasure * curMsSymbolContainerWidthConstant
-  }
-  return width
+  return getMsSymboLContainerWidth(props.msSymbolContainer, props.measure, props.singleStaff, props.musicScore, props.measureHeight, props.componentWidth)
 })
 
 // 符号容器横坐标计算

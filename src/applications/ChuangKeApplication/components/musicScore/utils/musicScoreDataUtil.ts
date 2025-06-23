@@ -9,10 +9,11 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 import {
+    IndexData,
     Measure,
     MsSymbol,
     MsSymbolContainer, msType, MultipleStaves,
-    MusicScore,
+    MusicScore, musicScoreIndex,
     NoteHead,
     SingleStaff,
     WidthConstant
@@ -300,6 +301,60 @@ export function traverseMusicScore(
     }
 }
 
+// 传入两个小节的index, 循环其中的小节
+export function traverseMeasure(startIndex: musicScoreIndex, endIndex: musicScoreIndex, musicScore: MusicScore, callBack: (measure: Measure, singleStaff: SingleStaff, multipleStaves: MultipleStaves) => void) {
+    if (endIndex.multipleStavesIndex == null || startIndex.multipleStavesIndex == null || startIndex.measureIndex == null || endIndex.measureIndex == null || startIndex.singleStaffIndex == null) {
+        return console.error("索引元素有误，无法正确执行traverseMeasure")
+    }
+    const singleStaffIndex = startIndex.singleStaffIndex
+    const startData = getDataWithIndex(startIndex, musicScore)
+    const endData = getDataWithIndex(endIndex, musicScore)
+    // const startMeasure = startData.measure
+    // const endMeasure = endData.measure
+    const startSingleStaff = startData.singleStaff
+    const endSingleStaff = endData.singleStaff
+    const startMultipleStaves = startData.multipleStaves
+    const endMultipleStaves = endData.multipleStaves
+    if (startMultipleStaves === endMultipleStaves) {  // 在同一行
+
+
+        if (startSingleStaff == null || startMultipleStaves == null) {
+            return console.error("索引元素有误，无法正确执行traverseMeasure")
+        }
+        for (let j = startIndex.measureIndex; j < endIndex.measureIndex; j++) {
+            const curMeasure = startSingleStaff.measureArray[j]
+            callBack(curMeasure, startSingleStaff, startMultipleStaves)
+        }
+
+
+    } else { // 在不同行
+        for (let i = startIndex.multipleStavesIndex; i <= endIndex.multipleStavesIndex; i++) {
+            const curMultipleStaves = musicScore.multipleStavesArray[i]
+            const curSingleStaff = curMultipleStaves.singleStaffArray[singleStaffIndex]
+
+            if (startMultipleStaves === curMultipleStaves) {  // 开头行的情况
+                for (let j = startIndex.measureIndex; j < curSingleStaff.measureArray.length; j++) {
+                    const curMeasure = curSingleStaff.measureArray[j]
+                    callBack(curMeasure, curSingleStaff, curMultipleStaves)
+                }
+            } else if (startMultipleStaves !== curMultipleStaves && endMultipleStaves !== curMultipleStaves) {  // 中间行的情况
+                for (let j = 0; j < curSingleStaff.measureArray.length; j++) {
+                    const curMeasure = curSingleStaff.measureArray[j]
+                    callBack(curMeasure, curSingleStaff, curMultipleStaves)
+                }
+            } else if (endMultipleStaves === curMultipleStaves && startMultipleStaves !== endMultipleStaves) { // 结束行的情况
+                for (let j = 0; j < endIndex.measureIndex; j++) {
+                    const curMeasure = curSingleStaff.measureArray[j]
+                    callBack(curMeasure, curSingleStaff, curMultipleStaves)
+                }
+            }
+
+
+        }
+    }
+
+}
+
 // index赋值
 export function getIndex(musicScore: MusicScore) {
     for (let i = 0; i < musicScore.multipleStavesArray.length; i++) {
@@ -387,11 +442,6 @@ export function getMultipleAspectRatio(msSymbol: MsSymbol): number {
 
 }
 
-// 通过index获取数据
-export function getDataWithIndex() {
-
-}
-
 // 生成hsahMap()
 export function mapGenerate(musicScore: MusicScore) {
     musicScore.map = new Map()
@@ -432,5 +482,39 @@ export function getTarget(id: number, musicScore: MusicScore): msType | undefine
         console.warn('此id元素不存在')
     }
     return
+}
+
+// 通过索引获取内容
+export function getDataWithIndex(index: musicScoreIndex, musicScore: MusicScore): IndexData {
+    const res: IndexData = {
+        multipleStaves: null,
+        singleStaff: null,
+        measure: null,
+        msSymbolContainer: null,
+        msSymbol: null,
+    }
+    if (index.multipleStavesIndex != null) {
+        const multipleStaves = musicScore.multipleStavesArray[index.multipleStavesIndex]
+        res.multipleStaves = multipleStaves
+        if (index.singleStaffIndex != null) {
+            const singleStaff = multipleStaves.singleStaffArray[index.singleStaffIndex]
+            res.singleStaff = singleStaff
+            if (index.measureIndex != null) {
+                const measure = singleStaff.measureArray[index.measureIndex]
+                res.measure = measure
+                if (index.msSymbolContainerIndex != null) {
+                    const msSymbolContainer = measure.msSymbolContainerArray[index.msSymbolContainerIndex]
+                    res.msSymbolContainer = msSymbolContainer
+                    if (index.msSymbolIndex != null) {
+                        res.msSymbol = msSymbolContainer.msSymbolArray[index.msSymbolIndex]
+                    }
+
+                }
+
+            }
+
+        }
+    }
+    return res
 }
 

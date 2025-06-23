@@ -89,10 +89,8 @@ export declare type MsSymbol = NoteHead | ({
 
 export declare type BaseSpanSymbol = {
     id: number,
-    width: number,
-    bottom: number,
     msTypeName: MsTypeNameEnum.SpanSymbol,
-    rect: {}
+    rect: Rect
 }
 // 跨小节符号.  目前只有小节跟随型和符号（音符头）跟随型
 export declare type SpanSymbol = (BaseSpanSymbol & {
@@ -100,7 +98,6 @@ export declare type SpanSymbol = (BaseSpanSymbol & {
     spanSymbolFollowingCategoryEnum: SpanSymbolFollowingCategoryEnum.measure,
     startTargetId: number
     endTargetId: number,
-    rect: Rect,
 })
 export declare type MsSymbolContainer = {
     id: number,
@@ -145,6 +142,7 @@ export declare interface MultipleStaves { //复谱表
 }
 
 export type msType = MultipleStaves | SingleStaff | Measure | MsSymbolContainer | SpanSymbol | MsSymbol
+
 //调号，拍号只能小节有，谱号是音符有（但是谱号给第一个音符加谱号，会加到前一个小节上，也可以给小节加谱号，相当于给小节的第一个音符加谱号）小节也有
 export declare interface MusicScore {
     title?: string;
@@ -158,3 +156,13 @@ export declare interface MusicScore {
 
 // 宽度系数
 export declare type WidthConstant = number
+
+// 通过索引获取的数据类型
+
+export declare type IndexData = {
+    multipleStaves: MultipleStaves | null,
+    singleStaff: SingleStaff | null,
+    measure: Measure | null,
+    msSymbolContainer: MsSymbolContainer | null,
+    msSymbol: MsSymbol | null,
+}

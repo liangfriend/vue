@@ -13,7 +13,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <volta v-if="spanSymbol.type === SpanSymbolTypeEnum.volta" :spanSymbol="spanSymbol"></volta>
+  <volta v-if="spanSymbol && spanSymbol.type === SpanSymbolTypeEnum.volta" :spanSymbol="spanSymbol"></volta>
 </template>
 
 <style scoped>

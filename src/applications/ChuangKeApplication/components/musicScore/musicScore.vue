@@ -11,6 +11,8 @@
             :x="measureIndex * measureWidth"
             :width="measureWidth"
             :height="modelValue.measureHeight"
+            :componentWidth="width"
+            :componentHeight="height"
         >
         </measure>
       </template>
@@ -22,11 +24,14 @@
         <ms-symbol-container v-for="(msSymbolContainer,symbolIndex) in measure.msSymbolContainerArray"
                              :msSymbolContainer="msSymbolContainer"
                              :measure="measure"
+                             :musicScore="modelValue"
                              :measureWidth="measureWidth"
                              :singleStaff="singleStaff"
                              :multipleStaves="multipleStaves"
                              :measureHeight="modelValue.measureHeight"
                              :key="'note-symbol'+symbolIndex"
+                             :componentWidth="width"
+                             :componentHeight="height"
         ></ms-symbol-container>
       </template>
     </measure-container>
@@ -38,10 +43,9 @@
 </template>
 <script setup lang="ts">
 import measure from './components/measure.vue';
-import {computed, onMounted, onUnmounted, type PropType, provide, ref} from 'vue';
+import {computed, onMounted, onBeforeMount, onUnmounted, type PropType, provide, ref} from 'vue';
 import type {
-  Measure,
-  MusicScore, SpanSymbol
+  MusicScore, musicScoreIndex, SpanSymbol, Rect
 } from "./types.d.ts";
 import MeasureContainer from "@/applications/ChuangKeApplication/components/musicScore/components/measureContainer.vue";
 
@@ -56,10 +60,16 @@ import {
 import SpanSymbolVue
   from "@/applications/ChuangKeApplication/components/musicScore/components/spanSymbol.vue";
 import {
+  getIndex,
   getTarget,
   mapGenerate,
-  msSymbolComputedData
+  msSymbolComputedData, traverseMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
+import {getMeasureLeftToMusicScore} from "@/applications/ChuangKeApplication/components/musicScore/utils/leftUtil.ts";
+import {getMeasureWidth} from "@/applications/ChuangKeApplication/components/musicScore/utils/widthUtil.ts";
+import {
+  getMaxMsSymbolBottomInMeasure
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/bottomUtil.ts";
 
 const props = defineProps({
   modelValue: {
@@ -90,41 +100,56 @@ const musicScoreStyle = computed(() => {
   };
 });
 
-function mounted() {
+function created() {
   // 遍历生成hashMap方便快速查找
   mapGenerate(props.modelValue)
+  // 索引生成
+  getIndex(props.modelValue)
   // 计算属性
   msSymbolComputedData(props.modelValue)
-  // 跨小节符号rect计算
 
+  // 跨小节符号rect计算)
+  props.modelValue.spanSymbolArray.forEach((spanSymbol) => {
+    getSpanSymbolRect(spanSymbol, props.modelValue)
+  })
+  window.musicScore = props.modelValue
 }
 
 function getSpanSymbolRect(spanSymbol: SpanSymbol, musicScoreData: MusicScore) {
   switch (spanSymbol.type) {
     case SpanSymbolTypeEnum.volta: {
-
+      voltaRect(spanSymbol)
       break
     }
   }
 }
 
 function voltaRect(volta: Extract<SpanSymbol, { type: SpanSymbolTypeEnum.volta }>) {
-
-  let width = 0 // 获取开始节点和结束节点的小节宽度， 有三种情况，同单谱表不同小节 同单谱表相同小节 不同单谱表
-  let left = 0 // 获取开始小节的单谱表
-  let bottom = 0 // 小节bottom加范围内小节最高的符号的bottom
-
+  const rect = {
+    width: 0,
+    left: 0,
+    bottom: 0
+  }
   const startMeasure = getTarget(volta.startTargetId, props.modelValue)
   const endMeasure = getTarget(volta.endTargetId, props.modelValue)
   if (!startMeasure || !endMeasure) return console.error('获取不到绑定元素')
   if (startMeasure.msTypeName !== MsTypeNameEnum.Measure || endMeasure.msTypeName !== MsTypeNameEnum.Measure) return console.error('volta绑定元素错误')
   // 处理同行情况
   if (startMeasure.index.multipleStavesIndex === endMeasure.index.multipleStavesIndex) {
-    
+    rect.left = getMeasureLeftToMusicScore(startMeasure, props.modelValue, props.width)
+    traverseMeasure(startMeasure.index, endMeasure.index, props.modelValue, (measure, singleStaff, multipleStaves) => {
+      rect.width += getMeasureWidth(measure, singleStaff, props.modelValue, props.width)
+
+      rect.bottom = Math.max(rect.bottom, getMaxMsSymbolBottomInMeasure(measure, props.modelValue.measureHeight))
+    })
   }
 
+  volta.rect = rect
+
 }
-onMounted(mounted);
+
+onBeforeMount(created)
+// onMounted(mounted);
 onUnmounted(() => {
 
 });

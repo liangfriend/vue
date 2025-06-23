@@ -36,6 +36,7 @@ import type {Measure, MsSymbol, MultipleStaves, MusicScore, SingleStaff, WidthCo
 import {MsSymbolInformationMap} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 import {MsSymbolCategoryEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {
+  getMeasureWidth,
   getWidthFixedContainerWidthSumInMeasure,
   getWidthFixedContainerWidthSumInSingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/widthUtil.ts";
@@ -76,11 +77,8 @@ const singleStaffStyle = computed(() => (singleStaff: SingleStaff, _multipleStav
   };
 });
 const measureWidth = computed(() => (measure: Measure, singleStaff: SingleStaff, _multipleStaves: MultipleStaves) => {
-  const totalSingleStaffWidthConstant = getWidthConstantInSingleStaff(singleStaff,);
-  const totalMeasureWidthConstant = getWidthConstantInMeasure(measure,);
-  const fixedContainerWidthInSngleStaff = getWidthFixedContainerWidthSumInSingleStaff(singleStaff, props.musicScoreData.measureHeight)
-  const fixedContainerWidthInMeasure = getWidthFixedContainerWidthSumInMeasure(measure, props.musicScoreData.measureHeight)
-  return (props.width - fixedContainerWidthInSngleStaff) / totalSingleStaffWidthConstant * totalMeasureWidthConstant + fixedContainerWidthInMeasure;
+
+  return getMeasureWidth(measure, singleStaff, props.musicScoreData, props.width)
 });
 const measureSlotStyle = computed(() => (measure: Measure, singleStaff: SingleStaff, multipleStaves: MultipleStaves) => {
   let style: CSSProperties = {};

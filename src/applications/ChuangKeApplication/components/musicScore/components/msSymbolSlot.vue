@@ -6,12 +6,18 @@
                  :slot-width="slotWidth"
                  :containerWidth="containerWidth"
                  :isMain="true"
+                 :componentWidth="componentWidth"
+                 :componentHeight="componentHeight"
+                 :musicScore="props.musicScore"
                  :ms-symbol="msSymbol"></msSymbolVue>
     <template v-if="msSymbol?.msSymbolArray">
       <msSymbolVue :measureHeight="measureHeight" v-for="item in msSymbol.msSymbolArray"
                    :containerWidth="containerWidth"
                    :isMain="false"
                    :slot-width="slotWidth"
+                   :componentWidth="componentWidth"
+                   :componentHeight="componentHeight"
+                   :musicScore="props.musicScore"
                    :ms-symbol="item"></msSymbolVue>
     </template>
   </div>
@@ -20,11 +26,11 @@
 </template>
 
 <script setup lang="ts">
-import type {
+import {
   Measure,
   MsSymbol,
   MsSymbolContainer,
-  MultipleStaves,
+  MultipleStaves, MusicScore,
   SingleStaff,
 } from "@/applications/ChuangKeApplication/components/musicScore/types.d.ts";
 import {computed, CSSProperties, onMounted, PropType} from "vue";
@@ -72,6 +78,14 @@ const props = defineProps({
     default: 200,
     required: true,
   },
+  componentWidth: {
+    type: Number,
+    default: 1000,
+  },
+  componentHeight: {
+    type: Number,
+    default: 800,
+  },
   singleStaff: {
     type: Object as PropType<SingleStaff>,
     required: true,
@@ -79,7 +93,11 @@ const props = defineProps({
   multipleStaves: {
     type: Object as PropType<MultipleStaves>,
     required: true,
-  }
+  },
+  musicScore: {
+    type: Object as PropType<MusicScore>,
+    default: {}
+  },
 })
 
 
