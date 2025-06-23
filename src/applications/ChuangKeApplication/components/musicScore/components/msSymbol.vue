@@ -11,7 +11,7 @@
                  :msSymbol="msSymbol" :clef="msSymbol.computed.clef"></key-signature>
   <time-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.timeSignature" :style="msSymbolStyle"
                   :msSymbol="msSymbol" :measure-height="measureHeight"></time-signature>
-  <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle"></div>
+  <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle" @mousedown="msSymbolMouseDown"></div>
 </template>
 <script setup lang="ts">
 import {computed, CSSProperties, onMounted, PropType, ref} from "vue";
@@ -53,6 +53,7 @@ import {
   getMsSymbolBottomToSlot,
   getSlotBottomToMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/bottomUtil.ts";
+import {MOUSE} from "three";
 
 const props = defineProps({
   msSymbol: {
@@ -86,7 +87,11 @@ const props = defineProps({
     default: 800,
   },
 })
+const emits = defineEmits({msSymbolMouseDown})
 
+function msSymbolMouseDown(e: MouseEvent) {
+  emits("msSymbolMouseDown", e)
+}
 const svgHref = computed(() => {
   switch (props.msSymbol?.type) {
     case MsSymbolTypeEnum.noteHead: {

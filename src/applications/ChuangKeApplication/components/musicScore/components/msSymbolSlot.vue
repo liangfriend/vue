@@ -3,6 +3,7 @@
 
        :style="msSymbolSlotStyle">
     <msSymbolVue v-if="msSymbol" ref="mainMsSymbolRef" :measureHeight="measureHeight"
+                 @ms-symbol-mouse-down="msSymbolMouseDown"
                  :slot-width="slotWidth"
                  :containerWidth="containerWidth"
                  :isMain="true"
@@ -100,6 +101,11 @@ const props = defineProps({
   },
 })
 
+const emits = defineEmits({msSymbolMouseDown})
+
+function msSymbolMouseDown(e: MouseEvent) {
+  emits("msSymbolMouseDown", e)
+}
 
 const msSymbolSlotStyle = computed<CSSProperties>(() => {
   if (!props.msSymbol || !props.measure || !props.singleStaff) {

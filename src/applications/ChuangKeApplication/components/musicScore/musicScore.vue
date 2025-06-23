@@ -37,7 +37,10 @@
     </measure-container>
     <!--  跨小节符号目前只有小节跟随型和符号（音符头）跟随型  -->
     <span-symbol-vue :key="'span-symbol'+spanSymbolIndex"
+                     :musicScore="modelValue"
                      v-for="(spanSymbol,spanSymbolIndex) in modelValue.spanSymbolArray"
+                     :componentWidth="width"
+                     :componentHeight="height"
                      :spanSymbol="spanSymbol"></span-symbol-vue>
   </div>
 </template>
@@ -68,7 +71,7 @@ import {
 import {getMeasureLeftToMusicScore} from "@/applications/ChuangKeApplication/components/musicScore/utils/leftUtil.ts";
 import {getMeasureWidth} from "@/applications/ChuangKeApplication/components/musicScore/utils/widthUtil.ts";
 import {
-  getMaxMsSymbolBottomInMeasure
+  getMaxMsSymbolBottomInMeasure, getMeasureBottomToMusicScore
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/bottomUtil.ts";
 
 const props = defineProps({
@@ -108,45 +111,12 @@ function created() {
   // 计算属性
   msSymbolComputedData(props.modelValue)
 
-  // 跨小节符号rect计算)
-  props.modelValue.spanSymbolArray.forEach((spanSymbol) => {
-    getSpanSymbolRect(spanSymbol, props.modelValue)
-  })
   window.musicScore = props.modelValue
 }
 
-function getSpanSymbolRect(spanSymbol: SpanSymbol, musicScoreData: MusicScore) {
-  switch (spanSymbol.type) {
-    case SpanSymbolTypeEnum.volta: {
-      voltaRect(spanSymbol)
-      break
-    }
-  }
-}
 
-function voltaRect(volta: Extract<SpanSymbol, { type: SpanSymbolTypeEnum.volta }>) {
-  const rect = {
-    width: 0,
-    left: 0,
-    bottom: 0
-  }
-  const startMeasure = getTarget(volta.startTargetId, props.modelValue)
-  const endMeasure = getTarget(volta.endTargetId, props.modelValue)
-  if (!startMeasure || !endMeasure) return console.error('获取不到绑定元素')
-  if (startMeasure.msTypeName !== MsTypeNameEnum.Measure || endMeasure.msTypeName !== MsTypeNameEnum.Measure) return console.error('volta绑定元素错误')
-  // 处理同行情况
-  if (startMeasure.index.multipleStavesIndex === endMeasure.index.multipleStavesIndex) {
-    rect.left = getMeasureLeftToMusicScore(startMeasure, props.modelValue, props.width)
-    traverseMeasure(startMeasure.index, endMeasure.index, props.modelValue, (measure, singleStaff, multipleStaves) => {
-      rect.width += getMeasureWidth(measure, singleStaff, props.modelValue, props.width)
 
-      rect.bottom = Math.max(rect.bottom, getMaxMsSymbolBottomInMeasure(measure, props.modelValue.measureHeight))
-    })
-  }
 
-  volta.rect = rect
-
-}
 
 onBeforeMount(created)
 // onMounted(mounted);

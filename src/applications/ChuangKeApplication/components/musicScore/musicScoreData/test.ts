@@ -39,6 +39,65 @@ const data: MusicScore = {
             singleStaffPaddingBottom: 30,
             singleStaffMarginBottom: 30,
             measureArray: [{
+                id: 19,
+                msTypeName: MsTypeNameEnum.Measure,
+                index: {},
+                bindingStartId: [],
+                bindingEndId: [],
+                msSymbolContainerArray: [{
+                    id: 20,
+                    msTypeName: MsTypeNameEnum.MsSymbolContainer,
+                    type: MsSymbolContainerTypeEnum.variable,
+                    index: {},
+                    msSymbolArray: [{
+                        id: 21,
+                        msTypeName: MsTypeNameEnum.MsSymbol,
+                        index: {},
+                        type: MsSymbolTypeEnum.noteHead,
+                        region: MusicScoreRegionEnum.space_3,
+                        chronaxie: ChronaxieEnum.eighth,
+                        options: {},
+                        computed: {},
+                        bindingStartId: [],
+                        bindingEndId: [],
+                        msSymbolArray: []
+                    }]
+                }, {
+                    id: 22,
+                    msTypeName: MsTypeNameEnum.MsSymbolContainer,
+                    type: MsSymbolContainerTypeEnum.variable,
+                    index: {},
+                    msSymbolArray: [{
+                        id: 23,
+                        msTypeName: MsTypeNameEnum.MsSymbol,
+                        index: {},
+                        type: MsSymbolTypeEnum.noteHead,
+                        region: MusicScoreRegionEnum.space_3,
+                        chronaxie: ChronaxieEnum.eighth,
+                        options: {},
+                        computed: {},
+                        bindingStartId: [],
+                        bindingEndId: [],
+                        msSymbolArray: []
+                    }]
+                }, {
+                    id: 24,
+                    msTypeName: MsTypeNameEnum.MsSymbolContainer,
+                    type: MsSymbolContainerTypeEnum.rearFixed,
+                    index: {},
+                    msSymbolArray: [{
+                        id: 25,
+                        msTypeName: MsTypeNameEnum.MsSymbol,
+                        index: {},
+                        type: MsSymbolTypeEnum.barline,
+                        options: {},
+                        bindingStartId: [],
+                        barlineType: BarlineTypeEnum.single,
+                        bindingEndId: [],
+                        msSymbolArray: []
+                    }]
+                }],
+            }, {
                 id: 3,
                 msTypeName: MsTypeNameEnum.Measure,
                 index: {},

@@ -194,23 +194,28 @@ export function getMinMsSymbolBottomInSingleStaff(singleStaff: SingleStaff, meas
 }
 
 // 获取小节相对于musicScore组件的bottom
-export function getMeasureBottomToMusicScore(measure: Measure, musicScore: MusicScore) {
-    let bottom = 0
+export function getMeasureBottomToMusicScore(measure: Measure, musicScore: MusicScore, componentHeight: number): number {
+    let top = 0
+
     traverseMusicScore(musicScore, {
-        level: 'singleStaff',
-        order: 'desc',
-        callback: ({singleStaff}) => {
-            if (!singleStaff) return false
-            bottom += singleStaff.singleStaffPaddingBottom + singleStaff.singleStaffMarginBottom
-            for (let curMeasure of singleStaff.measureArray) {
-                if (curMeasure === measure) {
-                    return true
+        level: 'multipleStaves',
+        order: 'asc',
+        callback: ({multipleStaves}) => {
+            if (!multipleStaves) return false
+            top += multipleStaves.multipleStavesPaddingTop
+            for (let curSingleStaff of multipleStaves.singleStaffArray) {
+                top += curSingleStaff.singleStaffPaddingTop + musicScore.measureHeight
+                for (let curMeasure of curSingleStaff.measureArray) {
+                    if (curMeasure === measure) {
+                        return false
+                    }
                 }
+                top += curSingleStaff.singleStaffPaddingBottom + curSingleStaff.singleStaffMarginBottom
             }
-            bottom += musicScore.measureHeight + singleStaff.singleStaffPaddingTop
+            top += multipleStaves.multipleStavesPaddingBottom + multipleStaves.multipleStavesMarginBottom
             return false
         }
 
     })
-
+    return componentHeight - top
 }

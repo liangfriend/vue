@@ -321,7 +321,7 @@ export function traverseMeasure(startIndex: musicScoreIndex, endIndex: musicScor
         if (startSingleStaff == null || startMultipleStaves == null) {
             return console.error("索引元素有误，无法正确执行traverseMeasure")
         }
-        for (let j = startIndex.measureIndex; j < endIndex.measureIndex; j++) {
+        for (let j = startIndex.measureIndex; j <= endIndex.measureIndex; j++) {
             const curMeasure = startSingleStaff.measureArray[j]
             callBack(curMeasure, startSingleStaff, startMultipleStaves)
         }
