@@ -93,7 +93,30 @@ const props = defineProps({
     default: 1
   },
 });
+const emits = defineEmits(['msSymbolMouseDown', 'measureMouseDown', 'singleStaffMouseDown', 'multipleStavesMouseDown'])
 
+function msSymbolMouseDown() {
+  emits('msSymbolMouseDown')
+}
+
+function measureMouseDown() {
+  emits('measureMouseDown')
+}
+
+function singleStaffMouseDown() {
+  emits('singleStaffMouseDown')
+}
+
+function multipleStavesMouseDown() {
+  emits('multipleStavesMouseDown')
+}
+
+provide('mousedown', {
+  msSymbolMouseDown,
+  measureMouseDown,
+  singleStaffMouseDown,
+  multipleStavesMouseDown,
+})
 
 const musicScoreStyle = computed(() => {
   return {
@@ -113,9 +136,6 @@ function created() {
 
   window.musicScore = props.modelValue
 }
-
-
-
 
 
 onBeforeMount(created)

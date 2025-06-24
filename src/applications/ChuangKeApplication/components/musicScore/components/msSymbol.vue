@@ -87,11 +87,12 @@ const props = defineProps({
     default: 800,
   },
 })
-const emits = defineEmits({msSymbolMouseDown})
+const mouseDown = inject("mouseDown")
 
 function msSymbolMouseDown(e: MouseEvent) {
-  emits("msSymbolMouseDown", e)
+  mouseDown("msSymbolMouseDown", e)
 }
+
 const svgHref = computed(() => {
   switch (props.msSymbol?.type) {
     case MsSymbolTypeEnum.noteHead: {
