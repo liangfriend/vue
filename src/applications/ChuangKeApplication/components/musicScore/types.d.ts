@@ -9,12 +9,14 @@ import {
     AccidentalEnum,
     MusicScoreRegionEnum,
     BarlineTypeEnum,
-    SpanSymbolFollowingCategoryEnum, SpanSymbolTypeEnum, MsTypeNameEnum
+    SpanSymbolFollowingCategoryEnum, SpanSymbolTypeEnum, MsTypeNameEnum, OrderTypeEnum
 } from "./musicScoreEnum.ts";
 
 
 export declare interface MusicScoreOptions {
-    hightlight?: Boolean;
+    hightlight: Boolean;
+    hightlightColor: string;
+    color: string;
 }
 
 
@@ -165,4 +167,10 @@ export declare type IndexData = {
     measure: Measure | null,
     msSymbolContainer: MsSymbolContainer | null,
     msSymbol: MsSymbol | null,
+}
+
+
+declare interface MouseDownData {
+    msData: msType,
+    orderType: OrderTypeEnum
 }

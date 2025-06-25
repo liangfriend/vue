@@ -9,47 +9,48 @@ export enum MsTypeNameEnum {
 }
 export enum MusicScoreRegionEnum {
     // 下方区域
-    lower_line_6 = 'lower_line_6',
-    lower_space_6 = 'lower_space_6',
-    lower_line_5 = 'lower_line_5',
-    lower_space_5 = 'lower_space_5',
-    lower_line_4 = 'lower_line_4',
-    lower_space_4 = 'lower_space_4',
-    lower_line_3 = 'lower_line_3',
-    lower_space_3 = 'lower_space_3',
-    lower_line_2 = 'lower_line_2',
-    lower_space_2 = 'lower_space_2',
-    lower_line_1 = 'lower_line_1',
-    lower_space_1 = 'lower_space_1',
+    lower_line_6 = 1,
+    lower_space_6,
+    lower_line_5,
+    lower_space_5,
+    lower_line_4,
+    lower_space_4,
+    lower_line_3,
+    lower_space_3,
+    lower_line_2,
+    lower_space_2,
+    lower_line_1,
+    lower_space_1,
 
     // 五线谱本体
-    line_1 = 'line_1',
-    space_1 = 'space_1',
-    line_2 = 'line_2',
-    space_2 = 'space_2',
-    line_3 = 'line_3',
-    space_3 = 'space_3',
-    line_4 = 'line_4',
-    space_4 = 'space_4',
-    line_5 = 'line_5',
+    line_1,
+    space_1,
+    line_2,
+    space_2,
+    line_3,
+    space_3,
+    line_4,
+    space_4,
+    line_5,
 
     // 上方区域
-    upper_space_1 = 'upper_space_1',
-    upper_line_1 = 'upper_line_1',
-    upper_space_2 = 'upper_space_2',
-    upper_line_2 = 'upper_line_2',
-    upper_space_3 = 'upper_space_3',
-    upper_line_3 = 'upper_line_3',
-    upper_space_4 = 'upper_space_4',
-    upper_line_4 = 'upper_line_4',
-    upper_space_5 = 'upper_space_5',
-    upper_line_5 = 'upper_line_5',
-    upper_space_6 = 'upper_space_6',
-    upper_line_6 = 'upper_line_6',
-    upper_space_7 = 'upper_space_7',
-    upper_line_7 = 'upper_line_7',
-    upper_space_8 = 'upper_space_8',
-    upper_line_8 = 'upper_line_8'
+    upper_space_1,
+    upper_line_1,
+    upper_space_2,
+    upper_line_2,
+    upper_space_3,
+    upper_line_3,
+    upper_space_4,
+    upper_line_4,
+    upper_space_5,
+    upper_line_5,
+    upper_space_6,
+    upper_line_6,
+    upper_space_7,
+    upper_line_7,
+    upper_space_8,
+    upper_line_8,
+
 
 }
 
@@ -280,4 +281,9 @@ export enum BarlineTypeEnum {
     reverseFinal,
     startRepeatSign,
     endRepeatSign,
+}
+
+// ----------------------------------------- 非乐谱类型
+export enum OrderTypeEnum {
+    hightlight = 1
 }

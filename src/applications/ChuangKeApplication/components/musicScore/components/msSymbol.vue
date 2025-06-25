@@ -11,14 +11,15 @@
                  :msSymbol="msSymbol" :clef="msSymbol.computed.clef"></key-signature>
   <time-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.timeSignature" :style="msSymbolStyle"
                   :msSymbol="msSymbol" :measure-height="measureHeight"></time-signature>
-  <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle" @mousedown="msSymbolMouseDown"></div>
+  <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle" @mousedown="msSymbolMouseDown"
+       @mousemove="msSymbolMouseMove" @mouseup="msSymbolMouseUp"></div>
 </template>
 <script setup lang="ts">
 import {computed, CSSProperties, inject, onMounted, PropType, ref} from "vue";
-import {MsSymbol} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {MouseDownData, MsSymbol, msType} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
   AccidentalEnum, BarlineTypeEnum, ChronaxieEnum,
-  MsSymbolTypeEnum
+  MsSymbolTypeEnum, MusicScoreRegionEnum, OrderTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 // 音符头
 import noteHeadWholeSvg from "../musicSymbols/noteHeadWhole.svg"
@@ -54,7 +55,6 @@ import {
   getSlotBottomToMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/bottomUtil.ts";
 import {MOUSE} from "three";
-import {MouseDownInject} from "@/applications/ChuangKeApplication/components/musicScore/musicScore";
 
 const props = defineProps({
   msSymbol: {
@@ -88,13 +88,52 @@ const props = defineProps({
     default: 800,
   },
 })
-const mouseDown = inject("mouseDown") as MouseDownInject
 
+// 点击事件处理
+interface MouseDownInject {
+  msSymbolMouseDown: (e: MouseEvent, data: MouseDownData) => void
+  measureMouseDown: (e: MouseEvent, data: MouseDownData) => void
+  singleStaffMouseDown: (e: MouseEvent, data: MouseDownData) => void
+  multipleStavesMouseDown: (e: MouseEvent, data: MouseDownData) => void
+}
+const mouseDown = inject("mouseDown") as MouseDownInject
+const moveLock = ref(true)
+const startX = ref(0)
+const startY = ref(0)
 function msSymbolMouseDown(e: MouseEvent) {
-  console.log('chicken', mouseDown)
-  mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
+  moveLock.value = false
+  props.msSymbol.options.hightlight = true
+  console.log('chicken', e)
+  startX.value = e.clientX;
+  startY.value = e.clientY;
+  // 抛出回调
+  mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol, orderType: OrderTypeEnum.hightlight})
+
 }
 
+function msSymbolMouseMove(e: MouseEvent) {
+  console.log('chicken', moveLock.value)
+  if (moveLock.value) return
+  const dx = e.clientX - startX.value;
+  const dy = e.clientY - startY.value;
+  if (dy > props.measureHeight / 8) {
+    const index = Math.floor(dy / props.measureHeight);
+    console.log('chicken', index)
+    if ('region' in props.msSymbol) {
+
+      props.msSymbol.region = MusicScoreRegionEnum[props.msSymbol.region + index]
+
+    }
+  }
+  // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
+
+
+}
+
+function msSymbolMouseUp(e: MouseEvent) {
+  moveLock.value = true
+  // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
+}
 const svgHref = computed(() => {
   switch (props.msSymbol?.type) {
     case MsSymbolTypeEnum.noteHead: {
@@ -252,6 +291,7 @@ const msSymbolStyle = computed<CSSProperties>(() => {
     position: 'absolute',
     left: msSymbolLeft.value + 'px',
     bottom: msSymbolBottom.value + 'px',
+    background: props.msSymbol.options.hightlight ? props.msSymbol.options.hightlightColor : props.msSymbol.options.color,
 
   }
   if (svgHref.value) {

@@ -65,7 +65,7 @@ let container: HTMLElement | null = null
 function initMusicScore() {
   container = document.createElement('div');
   const props = {
-    modelValue: musicScoreData.value,
+    musicScore: musicScoreData.value,
     width: 1000,
     height: 800,
     measureHeight: 50

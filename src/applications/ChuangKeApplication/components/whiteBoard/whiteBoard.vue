@@ -1,6 +1,7 @@
 <template>
   <div class="stack whiteBoard" comment="浮动展示白板">
-    <div v-drag class="floatBoard stackItem" ref="floatBoard" @mouseup="addElementMouseUp" :style="floatBoardStyle"
+    <!--    v-drag-->
+    <div class="floatBoard stackItem" ref="floatBoard" @mouseup="addElementMouseUp" :style="floatBoardStyle"
          comment="浮动展示白板，此元素可被拖动位移，背景为白色">
     </div>
   </div>

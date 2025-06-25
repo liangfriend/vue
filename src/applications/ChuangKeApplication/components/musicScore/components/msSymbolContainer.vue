@@ -146,4 +146,10 @@ const mouseDownFn = () => {
   position: absolute;
 
 }
+
+.test {
+  height: 50px;
+  width: 10px;
+  background-color: #111111;
+}
 </style>
