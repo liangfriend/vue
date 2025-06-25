@@ -96,6 +96,7 @@ const props = defineProps({
 const emits = defineEmits(['msSymbolMouseDown', 'measureMouseDown', 'singleStaffMouseDown', 'multipleStavesMouseDown'])
 
 function msSymbolMouseDown() {
+  console.log('chicken', '点击')
   emits('msSymbolMouseDown')
 }
 

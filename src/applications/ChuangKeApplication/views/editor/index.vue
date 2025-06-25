@@ -66,7 +66,6 @@ function initMusicScore() {
   container = document.createElement('div');
   const props = {
     modelValue: musicScoreData.value,
-    'update:modelValue': (val: any) => musicScoreData.value = val,
     width: 1000,
     height: 800,
     measureHeight: 50

@@ -14,7 +14,7 @@
   <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle" @mousedown="msSymbolMouseDown"></div>
 </template>
 <script setup lang="ts">
-import {computed, CSSProperties, onMounted, PropType, ref} from "vue";
+import {computed, CSSProperties, inject, onMounted, PropType, ref} from "vue";
 import {MsSymbol} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
   AccidentalEnum, BarlineTypeEnum, ChronaxieEnum,
@@ -54,6 +54,7 @@ import {
   getSlotBottomToMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/bottomUtil.ts";
 import {MOUSE} from "three";
+import {MouseDownInject} from "@/applications/ChuangKeApplication/components/musicScore/musicScore";
 
 const props = defineProps({
   msSymbol: {
@@ -87,10 +88,11 @@ const props = defineProps({
     default: 800,
   },
 })
-const mouseDown = inject("mouseDown")
+const mouseDown = inject("mouseDown") as MouseDownInject
 
 function msSymbolMouseDown(e: MouseEvent) {
-  mouseDown("msSymbolMouseDown", e)
+  console.log('chicken',)
+  mouseDown.msSymbolMouseDown(e)
 }
 
 const svgHref = computed(() => {
