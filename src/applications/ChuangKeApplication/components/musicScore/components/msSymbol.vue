@@ -91,8 +91,8 @@ const props = defineProps({
 const mouseDown = inject("mouseDown") as MouseDownInject
 
 function msSymbolMouseDown(e: MouseEvent) {
-  console.log('chicken',)
-  mouseDown.msSymbolMouseDown(e)
+  console.log('chicken', mouseDown)
+  mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
 }
 
 const svgHref = computed(() => {

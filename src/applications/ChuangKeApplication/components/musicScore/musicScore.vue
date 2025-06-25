@@ -96,7 +96,6 @@ const props = defineProps({
 const emits = defineEmits(['msSymbolMouseDown', 'measureMouseDown', 'singleStaffMouseDown', 'multipleStavesMouseDown'])
 
 function msSymbolMouseDown() {
-  console.log('chicken', '点击')
   emits('msSymbolMouseDown')
 }
 
@@ -112,7 +111,7 @@ function multipleStavesMouseDown() {
   emits('multipleStavesMouseDown')
 }
 
-provide('mousedown', {
+provide('mouseDown', {
   msSymbolMouseDown,
   measureMouseDown,
   singleStaffMouseDown,
@@ -164,7 +163,6 @@ onUnmounted(() => {
 
 .symbolLayer {
   align-items: start;
-  pointer-events: none;
 }
 
 
