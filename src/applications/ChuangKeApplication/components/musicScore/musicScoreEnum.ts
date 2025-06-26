@@ -50,8 +50,6 @@ export enum MusicScoreRegionEnum {
     upper_line_7,
     upper_space_8,
     upper_line_8,
-
-
 }
 
 export enum ClefEnum {

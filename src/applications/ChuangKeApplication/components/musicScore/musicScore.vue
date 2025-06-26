@@ -1,5 +1,5 @@
 <template>
-  <div class="musicScore stack" :style="musicScoreStyle">
+  <div class="musicScore stack" :style="musicScoreStyle" ref="musicScoreRef">
     <!--    -->
     <measure-container :musicScoreData="musicScore" class="stackItem lineLayer"
                        :style="{width:width+'px',height:height+'px'}"
@@ -48,7 +48,7 @@
 import measure from './components/measure.vue';
 import {computed, onMounted, onBeforeMount, onUnmounted, type PropType, provide, ref} from 'vue';
 import type {
-  MusicScore, musicScoreIndex, SpanSymbol, Rect, MouseDownData
+  MusicScore, musicScoreIndex, SpanSymbol, Rect, MouseDownData, msType
 } from "./types.d.ts";
 import MeasureContainer from "@/applications/ChuangKeApplication/components/musicScore/components/measureContainer.vue";
 
@@ -63,6 +63,10 @@ import {
   mapGenerate,
   msSymbolComputedData, traverseMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
+import {
+  MusicScoreRegionEnum,
+  OrderTypeEnum
+} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 
 const props = defineProps({
@@ -85,9 +89,12 @@ const props = defineProps({
   },
 });
 const emits = defineEmits(['msSymbolMouseDown', 'measureMouseDown', 'singleStaffMouseDown', 'multipleStavesMouseDown'])
+const startX = ref(0)
+const startY = ref(0)
 
-function msSymbolMouseDown(_: MouseEvent, msData: MouseDownData) {
-
+function msSymbolMouseDown(e: MouseEvent, msData: MouseDownData) {
+  startX.value = e.clientX;
+  startY.value = e.clientY;
   emits('msSymbolMouseDown')
 }
 
@@ -103,7 +110,22 @@ function multipleStavesMouseDown() {
   emits('multipleStavesMouseDown')
 }
 
+// 采用发布订阅者模式实现编辑模式的数据操作
+const subscriberMap = new Map()
+
+// 添加发布者
+function addSubscriber(key: string, value: msType) {
+  console.log('chicken添加订阅', value)
+  subscriberMap.set(key, value)
+}
+
+function getSubscriber(key: string): msType {
+  return subscriberMap.get(key)
+}
+
 provide('mouseDown', {
+  addSubscriber,
+  getSubscriber,
   msSymbolMouseDown,
   measureMouseDown,
   singleStaffMouseDown,
@@ -132,6 +154,26 @@ function created() {
 
 
 onBeforeMount(created)
+const musicScoreRef = ref<HTMLElement>(null!)
+
+
+onMounted(() => {
+
+  musicScoreRef.value.addEventListener('mousemove', (e) => {
+    const msSymbol = subscriberMap.get('msSymbol')
+    const dx = e.clientX - startX.value;
+    const dy = e.clientY - startY.value;
+    if (Math.abs(dy) > props.musicScore.measureHeight / 8 && msSymbol) {
+      const index = Math.floor(dy / props.musicScore.measureHeight * 8);
+      console.log('chicken', dy / props.musicScore.measureHeight * 8)
+      msSymbol.region = MusicScoreRegionEnum[MusicScoreRegionEnum[msSymbol.region + index]]
+      startY.value = e.clientY
+    }
+  })
+  //遍历所有订阅者，执行操作
+
+
+})
 // onMounted(mounted);
 onUnmounted(() => {
 

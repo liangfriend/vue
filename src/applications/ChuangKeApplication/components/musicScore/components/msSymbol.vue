@@ -12,7 +12,7 @@
   <time-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.timeSignature" :style="msSymbolStyle"
                   :msSymbol="msSymbol" :measure-height="measureHeight"></time-signature>
   <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle" @mousedown="msSymbolMouseDown"
-       @mousemove="msSymbolMouseMove" @mouseup="msSymbolMouseUp"></div>
+  ></div>
 </template>
 <script setup lang="ts">
 import {computed, CSSProperties, inject, onMounted, PropType, ref} from "vue";
@@ -95,45 +95,24 @@ interface MouseDownInject {
   measureMouseDown: (e: MouseEvent, data: MouseDownData) => void
   singleStaffMouseDown: (e: MouseEvent, data: MouseDownData) => void
   multipleStavesMouseDown: (e: MouseEvent, data: MouseDownData) => void
+  addSubscriber: (key: string, value: msType) => void
+  getSubscriber: (key: string) => msType
 }
 const mouseDown = inject("mouseDown") as MouseDownInject
-const moveLock = ref(true)
-const startX = ref(0)
-const startY = ref(0)
+
 function msSymbolMouseDown(e: MouseEvent) {
-  moveLock.value = false
   props.msSymbol.options.hightlight = true
-  console.log('chicken', e)
-  startX.value = e.clientX;
-  startY.value = e.clientY;
+
+
+  // 订阅
+  mouseDown.addSubscriber('msSymbol', props.msSymbol)
   // 抛出回调
   mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol, orderType: OrderTypeEnum.hightlight})
 
 }
 
-function msSymbolMouseMove(e: MouseEvent) {
-  console.log('chicken', moveLock.value)
-  if (moveLock.value) return
-  const dx = e.clientX - startX.value;
-  const dy = e.clientY - startY.value;
-  if (dy > props.measureHeight / 8) {
-    const index = Math.floor(dy / props.measureHeight);
-    console.log('chicken', index)
-    if ('region' in props.msSymbol) {
-
-      props.msSymbol.region = MusicScoreRegionEnum[props.msSymbol.region + index]
-
-    }
-  }
-  // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
 
 
-}
-
-function msSymbolMouseUp(e: MouseEvent) {
-  moveLock.value = true
-  // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
-}
 const svgHref = computed(() => {
   switch (props.msSymbol?.type) {
     case MsSymbolTypeEnum.noteHead: {
