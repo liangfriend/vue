@@ -116,7 +116,8 @@ export declare interface Measure {
     bindingStartId: Array<number>,
     bindingEndId: Array<number>,
     msTypeName: MsTypeNameEnum.Measure,
-    index: Omit<musicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex'>
+    index: Omit<musicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex'>,
+    options: MusicScoreOptions,
 }
 
 export declare interface SingleStaff {
@@ -128,7 +129,8 @@ export declare interface SingleStaff {
     bindingStartId: Array<number>,
     bindingEndId: Array<number>,
     msTypeName: MsTypeNameEnum.SingleStaff,
-    index: Omit<musicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex' | 'measureIndex'>
+    index: Omit<musicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex' | 'measureIndex'>,
+    options: MusicScoreOptions
 
 }
 
@@ -139,7 +141,8 @@ export declare interface MultipleStaves { //复谱表
     multipleStavesPaddingBottom: number,
     multipleStavesMarginBottom: number,
     msTypeName: MsTypeNameEnum.MultipStaves,
-    index: Omit<musicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex' | 'measureIndex' | 'singleStaffIndex'>
+    index: Omit<musicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex' | 'measureIndex' | 'singleStaffIndex'>,
+    options: MusicScoreOptions
 
 }
 

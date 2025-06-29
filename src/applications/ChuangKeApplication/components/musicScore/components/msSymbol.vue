@@ -2,7 +2,7 @@
 
   <clef
       v-if="msSymbol?.type === MsSymbolTypeEnum.clef || msSymbol?.type === MsSymbolTypeEnum.clef_f && 'clef' in msSymbol"
-      :clef="msSymbol?.clef" class="msSymbol"
+      :clef="msSymbol?.clef"
       :style="msSymbolStyle"></clef>
   <key-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.keySignature && msSymbol.computed?.clef"
                  :style="msSymbolStyle"
@@ -55,6 +55,7 @@ import {
   getSlotBottomToMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/bottomUtil.ts";
 import {MOUSE} from "three";
+import {addSubscriber} from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
 
 const props = defineProps({
   msSymbol: {
@@ -88,30 +89,6 @@ const props = defineProps({
     default: 800,
   },
 })
-
-// 点击事件处理
-interface MouseDownInject {
-  msSymbolMouseDown: (e: MouseEvent, data: MouseDownData) => void
-  measureMouseDown: (e: MouseEvent, data: MouseDownData) => void
-  singleStaffMouseDown: (e: MouseEvent, data: MouseDownData) => void
-  multipleStavesMouseDown: (e: MouseEvent, data: MouseDownData) => void
-  addSubscriber: (key: string, value: msType) => void
-  getSubscriber: (key: string) => msType
-}
-const mouseDown = inject("mouseDown") as MouseDownInject
-
-function msSymbolMouseDown(e: MouseEvent) {
-  props.msSymbol.options.hightlight = true
-
-
-  // 订阅
-  mouseDown.addSubscriber('msSymbol', props.msSymbol)
-  // 抛出回调
-  mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol, orderType: OrderTypeEnum.hightlight})
-
-}
-
-
 
 const svgHref = computed(() => {
   switch (props.msSymbol?.type) {
@@ -279,11 +256,35 @@ const msSymbolStyle = computed<CSSProperties>(() => {
 
   return style
 });
+
+
+// 点击事件处理
+interface MouseDownInject {
+  msSymbolMouseDown: (e: MouseEvent, data: MouseDownData) => void
+  measureMouseDown: (e: MouseEvent, data: MouseDownData) => void
+  singleStaffMouseDown: (e: MouseEvent, data: MouseDownData) => void
+  multipleStavesMouseDown: (e: MouseEvent, data: MouseDownData) => void
+  addSubscriber: (key: string, value: msType) => void
+  getSubscriber: (key: string) => msType
+}
+
+const mouseDown = inject("mouseDown") as MouseDownInject
+
+function msSymbolMouseDown(e: MouseEvent) {
+  props.msSymbol.options.hightlight = true
+  // 订阅
+  addSubscriber('msSymbol', props.msSymbol)
+  // 抛出回调
+  // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
+
+}
 onMounted(() => {
 
 })
 defineExpose({aspectRatio})
 </script>
 <style scoped>
-
+.msSymbol {
+  pointer-events: all;
+}
 </style>

@@ -13,12 +13,13 @@
             :height="musicScore.measureHeight"
             :componentWidth="width"
             :componentHeight="height"
+            :measure="measure"
         >
         </measure>
       </template>
     </measure-container>
     <measure-container :musicScoreData="musicScore" class="stackItem symbolLayer"
-                       :style="{width:width+'px',height:height+'px'}"
+                       :style="{width:width+'px',height:height+'px', pointerEvents:'none'}"
                        comment="符号层">
       <template #default="{ measure, measureIndex, singleStaff, multipleStaves, measureWidth }">
         <ms-symbol-container v-for="(msSymbolContainer,symbolIndex) in measure.msSymbolContainerArray"
@@ -35,6 +36,53 @@
         ></ms-symbol-container>
       </template>
     </measure-container>
+    <measure-container :musicScoreData="musicScore" class="stackItem symbolLayer"
+                       :style="{width:width+'px',height:height+'px', pointerEvents:'none'}"
+                       comment="编辑模式虚拟音符层">
+      <template #default="{ measure, measureIndex, singleStaff, multipleStaves, measureWidth }">
+        <virtual-symbol-container
+            comment="第一个变宽容器"
+            :msSymbolContainer="variableContainerArray(measure)[0]"
+            :measure="measure"
+            type="front"
+            :musicScore="musicScore"
+            :measureWidth="measureWidth"
+            :singleStaff="singleStaff"
+            :multipleStaves="multipleStaves"
+            :measureHeight="musicScore.measureHeight"
+            :componentWidth="width"
+            :componentHeight="height"
+        ></virtual-symbol-container>
+        <virtual-symbol-container v-for="(msSymbolContainer,symbolIndex) in variableContainerArray(measure)"
+                                  :msSymbolContainer="msSymbolContainer"
+                                  :measure="measure"
+                                  type="self"
+                                  :musicScore="musicScore"
+                                  :measureWidth="measureWidth"
+                                  :ind="symbolIndex"
+                                  :singleStaff="singleStaff"
+                                  :multipleStaves="multipleStaves"
+                                  :measureHeight="musicScore.measureHeight"
+                                  :key="'virtual-symbol'+symbolIndex"
+                                  :componentWidth="width"
+                                  :componentHeight="height"
+        ></virtual-symbol-container>
+        <virtual-symbol-container v-for="(msSymbolContainer,symbolIndex) in variableContainerArray(measure)"
+                                  :msSymbolContainer="msSymbolContainer"
+                                  :measure="measure"
+                                  :type="(symbolIndex === (variableContainerArray(measure).length - 1))?'end':'middle'"
+                                  :musicScore="musicScore"
+                                  :measureWidth="measureWidth"
+                                  :ind="symbolIndex"
+                                  :singleStaff="singleStaff"
+                                  :multipleStaves="multipleStaves"
+                                  :measureHeight="musicScore.measureHeight"
+                                  :key="'virtual-symbol'+symbolIndex"
+                                  :componentWidth="width"
+                                  :componentHeight="height"
+        ></virtual-symbol-container>
+      </template>
+    </measure-container>
     <!--  跨小节符号目前只有小节跟随型和符号（音符头）跟随型  -->
     <span-symbol-vue :key="'span-symbol'+spanSymbolIndex"
                      :musicScore="musicScore"
@@ -48,7 +96,7 @@
 import measure from './components/measure.vue';
 import {computed, onMounted, onBeforeMount, onUnmounted, type PropType, provide, ref} from 'vue';
 import type {
-  MusicScore, musicScoreIndex, SpanSymbol, Rect, MouseDownData, msType
+  MusicScore, musicScoreIndex, SpanSymbol, Rect, MouseDownData, msType, Measure
 } from "./types.d.ts";
 import MeasureContainer from "@/applications/ChuangKeApplication/components/musicScore/components/measureContainer.vue";
 
@@ -64,15 +112,27 @@ import {
   msSymbolComputedData, traverseMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {
+  MsSymbolContainerTypeEnum,
+  MsTypeNameEnum,
   MusicScoreRegionEnum,
   OrderTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import {
+  cancelMeasureSelected,
+  cancelMsSymbolSelected,
+  eventConstant, measureSelected, msSymbolSelected
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
+import VirtualSymbolContainer
+  from "@/applications/ChuangKeApplication/components/musicScore/components/virtualSymbolContainer.vue";
 
-
+enum Mode {
+  normal = 1,
+  edit,
+}
 const props = defineProps({
   musicScore: {
     type: Object as PropType<MusicScore>,
-    default: {}
+    required: true,
   },
   width: {
     type: Number,
@@ -87,14 +147,23 @@ const props = defineProps({
     type: Number,
     default: 1
   },
+  mode: {
+    type: Object as PropType<Mode>,
+    default: Mode.edit,
+  },
 });
+// 变宽符号容器
+const variableContainerArray = computed(() => {
+  return (measure: Measure) => {
+    return measure.msSymbolContainerArray.filter(e => {
+      return e.type === MsSymbolContainerTypeEnum.variable
+    })
+  }
+})
 const emits = defineEmits(['msSymbolMouseDown', 'measureMouseDown', 'singleStaffMouseDown', 'multipleStavesMouseDown'])
-const startX = ref(0)
-const startY = ref(0)
+
 
 function msSymbolMouseDown(e: MouseEvent, msData: MouseDownData) {
-  startX.value = e.clientX;
-  startY.value = e.clientY;
   emits('msSymbolMouseDown')
 }
 
@@ -110,22 +179,10 @@ function multipleStavesMouseDown() {
   emits('multipleStavesMouseDown')
 }
 
-// 采用发布订阅者模式实现编辑模式的数据操作
-const subscriberMap = new Map()
 
-// 添加发布者
-function addSubscriber(key: string, value: msType) {
-  console.log('chicken添加订阅', value)
-  subscriberMap.set(key, value)
-}
 
-function getSubscriber(key: string): msType {
-  return subscriberMap.get(key)
-}
 
 provide('mouseDown', {
-  addSubscriber,
-  getSubscriber,
   msSymbolMouseDown,
   measureMouseDown,
   singleStaffMouseDown,
@@ -141,7 +198,6 @@ const musicScoreStyle = computed(() => {
 });
 
 function created() {
-  console.log('chicken', props.musicScore)
   // 遍历生成hashMap方便快速查找
   mapGenerate(props.musicScore)
   // 索引生成
@@ -157,19 +213,31 @@ onBeforeMount(created)
 const musicScoreRef = ref<HTMLElement>(null!)
 
 
+const downLock = ref(false) // 鼠标按下锁，鼠标抬起解锁
+function handleMouseDown(e: MouseEvent) {
+  eventConstant.startX = e.clientX;
+  eventConstant.startY = e.clientY;
+  downLock.value = true
+
+}
+
+function handleMouseUp(e: MouseEvent) {
+  downLock.value = false
+  cancelMsSymbolSelected(e)
+  cancelMeasureSelected(e)
+}
+
+function handleMouseMove(e: MouseEvent) {
+  if (props.mode === Mode.edit && downLock.value) {
+    msSymbolSelected(e, props.musicScore?.measureHeight)
+    measureSelected(e)
+  }
+}
 onMounted(() => {
 
-  musicScoreRef.value.addEventListener('mousemove', (e) => {
-    const msSymbol = subscriberMap.get('msSymbol')
-    const dx = e.clientX - startX.value;
-    const dy = e.clientY - startY.value;
-    if (Math.abs(dy) > props.musicScore.measureHeight / 8 && msSymbol) {
-      const index = Math.floor(dy / props.musicScore.measureHeight * 8);
-      console.log('chicken', dy / props.musicScore.measureHeight * 8)
-      msSymbol.region = MusicScoreRegionEnum[MusicScoreRegionEnum[msSymbol.region + index]]
-      startY.value = e.clientY
-    }
-  })
+  musicScoreRef.value.addEventListener('mousemove', handleMouseMove)
+  musicScoreRef.value.addEventListener('mousedown', handleMouseDown)
+  musicScoreRef.value.addEventListener('mouseup', handleMouseUp)
   //遍历所有订阅者，执行操作
 
 

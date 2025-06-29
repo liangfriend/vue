@@ -29,6 +29,11 @@ const data: MusicScore = {
         multipleStavesPaddingTop: 60,
         multipleStavesPaddingBottom: 60,
         multipleStavesMarginBottom: 60,
+        options: {
+            hightlight: false,
+            hightlightColor: 'red',
+            color: 'black',
+        },
         singleStaffArray: [{
             id: 2,
             msTypeName: MsTypeNameEnum.SingleStaff,
@@ -37,6 +42,11 @@ const data: MusicScore = {
             bindingEndId: [4],
             singleStaffPaddingTop: 30,
             singleStaffPaddingBottom: 30,
+            options: {
+                hightlight: false,
+                hightlightColor: 'red',
+                color: 'black',
+            },
             singleStaffMarginBottom: 30,
             measureArray: [{
                 id: 19,
@@ -44,6 +54,11 @@ const data: MusicScore = {
                 index: {},
                 bindingStartId: [],
                 bindingEndId: [],
+                options: {
+                    hightlight: false,
+                    hightlightColor: 'red',
+                    color: 'black',
+                },
                 msSymbolContainerArray: [{
                     id: 20,
                     msTypeName: MsTypeNameEnum.MsSymbolContainer,
@@ -114,6 +129,11 @@ const data: MusicScore = {
                 msTypeName: MsTypeNameEnum.Measure,
                 index: {},
                 bindingStartId: [],
+                options: {
+                    hightlight: false,
+                    hightlightColor: 'red',
+                    color: 'black',
+                },
                 bindingEndId: [],
                 msSymbolContainerArray: [{
                     id: 4,
@@ -184,6 +204,11 @@ const data: MusicScore = {
                 id: 8,
                 msTypeName: MsTypeNameEnum.Measure,
                 index: {},
+                options: {
+                    hightlight: false,
+                    hightlightColor: 'red',
+                    color: 'black',
+                },
                 bindingStartId: [],
                 bindingEndId: [],
                 msSymbolContainerArray: [{

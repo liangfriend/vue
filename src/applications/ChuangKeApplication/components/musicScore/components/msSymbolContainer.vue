@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import {
+import type {
   Measure,
   MsSymbolContainer,
   MultipleStaves, MusicScore,
@@ -144,12 +144,7 @@ const mouseDownFn = () => {
 .msSymbolContainer {
   overflow: visible;
   position: absolute;
-
 }
 
-.test {
-  height: 50px;
-  width: 10px;
-  background-color: #111111;
-}
+
 </style>
