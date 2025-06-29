@@ -7,7 +7,6 @@ export const subscriberMap = new Map()
 
 // 添加发布者
 export function addSubscriber(key: string, value: msType) {
-    console.log('chicken添加订阅', value)
     subscriberMap.set(key, value)
 }
 

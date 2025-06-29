@@ -1,6 +1,7 @@
 <template>
   <div class="stack">
-    <whiteBoard ref="wb" class="stackItem whiteBoard" :floatBoardWidth="1000" :floatBoardHeight="800"></whiteBoard>
+    <whiteBoard :drag="wbDrag" ref="wb" class="stackItem whiteBoard" :floatBoardWidth="1000"
+                :floatBoardHeight="800"></whiteBoard>
     <div class="b-stackItem" comment="工具层">
       <div class="justify-center">
         <bottom-menu class="bottomMenu" v-model="bottomMenuData"></bottom-menu>
@@ -42,6 +43,13 @@ const stop = () => {
 const resume = () => {
   msPlayUtils.resume(MusicMapKey.CMK)
 }
+const wbDrag = ref(true)
+
+function float() {
+
+  wbDrag.value = !wbDrag.value
+  console.log('chicken', wbDrag.value)
+}
 const musicScoreData = ref(mockData);
 const bottomMenuData = ref([{
   title: '播放',
@@ -55,6 +63,9 @@ const bottomMenuData = ref([{
 }, {
   title: '停止',
   callback: stop
+}, {
+  title: '漫游模式',
+  callback: float
 }]);
 
 

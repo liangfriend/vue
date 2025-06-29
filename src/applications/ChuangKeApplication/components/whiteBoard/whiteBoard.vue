@@ -1,7 +1,8 @@
 <template>
   <div class="stack whiteBoard" comment="浮动展示白板">
     <!--    v-drag-->
-    <div class="floatBoard stackItem" ref="floatBoard" @mouseup="addElementMouseUp" :style="floatBoardStyle"
+    <div v-drag="drag" class="floatBoard stackItem" ref="floatBoard" @mouseup="addElementMouseUp"
+         :style="floatBoardStyle"
          comment="浮动展示白板，此元素可被拖动位移，背景为白色">
     </div>
   </div>
@@ -31,6 +32,10 @@ const props = defineProps({
     type: String, //leftTop center
     default: 'center'
   },
+  drag: {
+    type: Boolean,
+    default: true
+  }
 });
 const state = ref<whiteBoardState>(whiteBoardState.normal);
 

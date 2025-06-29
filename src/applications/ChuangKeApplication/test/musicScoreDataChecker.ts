@@ -18,7 +18,6 @@ const clefList = [ClefEnum.treble]
 function testRegion() {
 
     const alphabet: MusicalAlphabetEnum = getNoteMusicalAlphabet(MusicScoreRegionEnum.lower_line_1, ClefEnum.alto, KeySignatureEnum['C#'], AccidentalEnum.nature);
-    console.log('chicken', alphabet)
 }
 
 testRegion()

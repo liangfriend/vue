@@ -160,7 +160,6 @@ const vitrualSymbolLeft = computed(() => {
 
 const virtualSymbolBottom = computed(() => {
   const regionIndex = +((offsetBottom.value - props.measureHeight) / (props.measureHeight / 8)).toFixed(0)
-  console.log('chicken', regionIndex)
   const region = regionIndex + 37
 
   if (!(region in MusicScoreRegionEnum)) return props.measureHeight

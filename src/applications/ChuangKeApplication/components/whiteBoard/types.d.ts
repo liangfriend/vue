@@ -21,3 +21,11 @@ export declare interface WBElement extends HTMLElement {
     delCacheElement: (key: string) => void;
     switchState: (param: whiteBoardState) => void;
 }
+
+declare global {
+    interface HTMLElement {
+        _dragData?: {
+            onMouseDown: (e: MouseEvent) => void;
+        };
+    }
+}

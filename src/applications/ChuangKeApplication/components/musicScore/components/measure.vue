@@ -84,7 +84,6 @@ interface MouseDownInject {
 const mouseDown = inject("mouseDown") as MouseDownInject
 
 function measureMouseDown(e: MouseEvent) {
-  console.log('chicken',)
   props.measure.options.hightlight = true
   // 订阅
   addSubscriber('measure', props.measure)
