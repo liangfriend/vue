@@ -7,6 +7,7 @@ export enum MsTypeNameEnum {
     MsSymbol,
 
 }
+
 export enum MusicScoreRegionEnum {
     // 下方区域
     lower_line_18 = 1,
@@ -324,4 +325,10 @@ export enum BarlineTypeEnum {
 // ----------------------------------------- 非乐谱类型
 export enum OrderTypeEnum {
     hightlight = 1
+}
+
+// 编辑器模式
+export enum MsMode {
+    normal = 1,
+    edit,
 }

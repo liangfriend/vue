@@ -1,10 +1,16 @@
 <template>
   <div class="stack">
-    <whiteBoard :drag="wbDrag" ref="wb" class="stackItem whiteBoard" :floatBoardWidth="1000"
-                :floatBoardHeight="800"></whiteBoard>
+    <prefabWb ref="wbRef" class="stackItem whiteBoard"
+              :wbDrag="wbDrag"
+              :musicScoreData="musicScoreData"
+              :msHeight="800"
+              :msWidth="1000"
+              :floatBoardWidth="1000"
+              :floatBoardHeight="800"
+              :msMode="MsMode.normal"></prefabWb>
     <div class="b-stackItem" comment="工具层">
-      <div class="justify-center">
-        <bottom-menu class="bottomMenu" v-model="bottomMenuData"></bottom-menu>
+      <div class="bottomMenu">
+        <bottom-menu v-model="bottomMenuData"></bottom-menu>
       </div>
       <div class="back" @click="router.go(-1)">返回</div>
     </div>
@@ -12,12 +18,11 @@
 </template>
 
 <script setup lang="ts">
-import whiteBoard from '../../components/whiteBoard/whiteBoard.vue';
-import {App, createApp, onMounted, onUnmounted, Ref, ref, watch} from 'vue';
+import prefabWb from '../../views/prefabWhiteBoard/addedMusicScore.vue';
+import {App, createApp, onMounted, onUnmounted, Ref, ref, watch, computed} from 'vue';
 
 import MusicScore from "@/applications/ChuangKeApplication/components/musicScore/musicScore.vue";
-import {AddElementOptions, WBElement} from "@/applications/ChuangKeApplication/components/whiteBoard/types";
-import {whiteBoardState} from "@/applications/ChuangKeApplication/components/whiteBoard/enum.ts";
+
 // import mockData from "@/applications/ChuangKeApplication/components/musicScore/musicScoreData/happyBirthdayToYou.ts";
 import mockData from "@/applications/ChuangKeApplication/components/musicScore/musicScoreData/test.ts";
 import BottomMenu from "@/applications/ChuangKeApplication/views/editor/components/bottomMenu.vue";
@@ -25,10 +30,29 @@ import {msPlayUtils} from "@/applications/ChuangKeApplication/utils/ms-playUtils
 import {MusicMapKey} from "@/applications/ChuangKeApplication/views/editor/constant.ts";
 import * as Tone from "tone";
 import {useRouter} from "vue-router";
+import {MsMode} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 const router = useRouter()
-const wb: Ref<WBElement> = ref(null!);
-const ms: Ref<HTMLElement> = ref(null!)
+
+const wbRef = ref(null)
+const msRef = computed(() => {
+  return wbRef.value.getMsRef()
+})
+const curModeText = ref("教学模式")
+
+function switchMode() {
+  const curMode = msRef.value.getMode()
+  if (curMode === MsMode.edit) {
+    msRef.value.changeMode(MsMode.normal);
+    curModeText.value = '编辑模式'
+    wbDrag.value = true
+  } else {
+    msRef.value.changeMode(MsMode.edit);
+    curModeText.value = '教学模式'
+    wbDrag.value = false
+  }
+}
+
 const play = async () => {
 // 存储播放序列
   await msPlayUtils.addMusicToMap(MusicMapKey.CMK, musicScoreData.value)
@@ -43,15 +67,14 @@ const stop = () => {
 const resume = () => {
   msPlayUtils.resume(MusicMapKey.CMK)
 }
-const wbDrag = ref(true)
+const wbDrag = ref(false)
 
-function float() {
 
-  wbDrag.value = !wbDrag.value
-  console.log('chicken', wbDrag.value)
-}
 const musicScoreData = ref(mockData);
 const bottomMenuData = ref([{
+  title: curModeText,
+  callback: switchMode
+}, {
   title: '播放',
   callback: play
 }, {
@@ -63,48 +86,11 @@ const bottomMenuData = ref([{
 }, {
   title: '停止',
   callback: stop
-}, {
-  title: '漫游模式',
-  callback: float
 }]);
-
-
-let app: App<Element> | null = null
-let container: HTMLElement | null = null
-
-// 添加musicScore到白板中心
-function initMusicScore() {
-  container = document.createElement('div');
-  const props = {
-    musicScore: musicScoreData.value,
-    width: 1000,
-    height: 800,
-    measureHeight: 50
-  }
-  app = createApp(MusicScore, props);
-  app.mount(container); //
-  const musicScoreDom: Element = container.children[0]!
-  const options: AddElementOptions = {
-    center: 'center',
-    cloneNode: false
-  }
-  wb.value.switchState(whiteBoardState.add)
-  wb.value.cacheElement(musicScoreDom, 'musicScore');
-  wb.value.addElement(options, 'musicScore')
-  wb.value.switchState(whiteBoardState.normal)
-  wb.value.delCacheElement('musicScore')
-
-
-  // 移除 DOM 这行代码似乎是可有可无
-  if (container && container.parentNode) {
-    container.parentNode.removeChild(container);
-  }
-  container = null;
-}
-
 const musicLoaded = ref(false)
 watch(musicScoreData, (newVal) => {
   musicLoaded.value = false
+  // musicScore发生变化时，需要更新播放器生成tonejs序列
   msPlayUtils.addMusicToMap(MusicMapKey.CMK, newVal, () => {
     musicLoaded.value = true
   })
@@ -112,16 +98,8 @@ watch(musicScoreData, (newVal) => {
 onMounted(() => {
   //TEST
   window.musicScore = mockData
-  initMusicScore()
 });
-onUnmounted(() => {
 
-  // 卸载 Vue app
-  if (app) {
-    app.unmount();
-    app = null;
-  }
-});
 </script>
 
 
@@ -133,14 +111,24 @@ onUnmounted(() => {
 
 
 .bottomMenu {
-  position: absolute;
+  position: fixed;
   bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .back {
   cursor: pointer;
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  position: fixed;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: antiquewhite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 10px;
+  left: 10px;
 }
 </style>

@@ -9,7 +9,7 @@ import {
     AccidentalEnum,
     MusicScoreRegionEnum,
     BarlineTypeEnum,
-    SpanSymbolFollowingCategoryEnum, SpanSymbolTypeEnum, MsTypeNameEnum, OrderTypeEnum
+    SpanSymbolFollowingCategoryEnum, SpanSymbolTypeEnum, MsTypeNameEnum, OrderTypeEnum, MsMode
 } from "./musicScoreEnum.ts";
 
 
@@ -176,4 +176,24 @@ export declare type IndexData = {
 declare interface MouseDownData {
     msData: msType,
     orderType: OrderTypeEnum
+}
+
+
+declare interface musicScoreRef {
+    changeMode: (mode: MsMode) => void,
+    root: HTMLElement,
+}
+
+// 点击事件处理
+declare interface MouseDownInject {
+    msSymbolMouseDown: (e: MouseEvent, data: MouseDownData) => void
+    measureMouseDown: (e: MouseEvent, data: MouseDownData) => void
+    singleStaffMouseDown: (e: MouseEvent, data: MouseDownData) => void
+    multipleStavesMouseDown: (e: MouseEvent, data: MouseDownData) => void
+
+}
+
+// 五线谱状态
+declare interface MsState {
+    mode: Boolean,
 }

@@ -13,8 +13,9 @@ import {computed, inject, PropType, ref} from 'vue';
 
 import bar from '../musicSymbols/barlineSingle.svg';
 import barLine from '../musicSymbols/bar.svg';
-import {Measure, MouseDownData, msType} from "@/applications/ChuangKeApplication/components/musicScore/types";
-import {addSubscriber} from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
+import {Measure, MouseDownData, MsState, msType} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {addSubscriber, select} from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
+import {MsMode} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 
 const props = defineProps({
@@ -73,22 +74,18 @@ const barLineStyle = computed(() => {
 });
 
 
-// 点击事件处理
-interface MouseDownInject {
-  msSymbolMouseDown: (e: MouseEvent, data: MouseDownData) => void
-  measureMouseDown: (e: MouseEvent, data: MouseDownData) => void
-  singleStaffMouseDown: (e: MouseEvent, data: MouseDownData) => void
-  multipleStavesMouseDown: (e: MouseEvent, data: MouseDownData) => void
-}
-
 const mouseDown = inject("mouseDown") as MouseDownInject
+const msState = inject("msState") as MsState
 
 function measureMouseDown(e: MouseEvent) {
-  props.measure.options.hightlight = true
-  // 订阅
-  addSubscriber('measure', props.measure)
-  // 抛出回调
-  // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
+  if (msState.mode.value === MsMode.edit) {
+    // 订阅
+    select(props.measure)
+
+    // 抛出回调
+    // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
+  }
+
 
 }
 

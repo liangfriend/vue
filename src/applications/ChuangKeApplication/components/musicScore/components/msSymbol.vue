@@ -16,9 +16,9 @@
 </template>
 <script setup lang="ts">
 import {computed, CSSProperties, inject, onMounted, PropType, ref} from "vue";
-import {MouseDownData, MsSymbol, msType} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {MouseDownData, MsState, MsSymbol, msType} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
-  AccidentalEnum, BarlineTypeEnum, ChronaxieEnum,
+  AccidentalEnum, BarlineTypeEnum, ChronaxieEnum, MsMode,
   MsSymbolTypeEnum, MusicScoreRegionEnum, OrderTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 // 音符头
@@ -55,7 +55,7 @@ import {
   getSlotBottomToMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/bottomUtil.ts";
 import {MOUSE} from "three";
-import {addSubscriber} from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
+import {addSubscriber, select} from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
 
 const props = defineProps({
   msSymbol: {
@@ -264,20 +264,24 @@ interface MouseDownInject {
   measureMouseDown: (e: MouseEvent, data: MouseDownData) => void
   singleStaffMouseDown: (e: MouseEvent, data: MouseDownData) => void
   multipleStavesMouseDown: (e: MouseEvent, data: MouseDownData) => void
-  addSubscriber: (key: string, value: msType) => void
-  getSubscriber: (key: string) => msType
+  select: (value: msType) => void
 }
 
 const mouseDown = inject("mouseDown") as MouseDownInject
+const msState = inject("msState") as MsState
 
 function msSymbolMouseDown(e: MouseEvent) {
-  props.msSymbol.options.hightlight = true
-  // 订阅
-  addSubscriber('msSymbol', props.msSymbol)
-  // 抛出回调
-  // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
+  console.log('chicken', '点击事件')
+  if (msState.mode.value === MsMode.edit) {
+    // 订阅
+    select(props.msSymbol)
+    // 抛出回调
+    // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
+  }
+
 
 }
+
 onMounted(() => {
 
 })

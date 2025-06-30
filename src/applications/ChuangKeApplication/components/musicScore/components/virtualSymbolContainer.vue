@@ -197,9 +197,14 @@ const mouseDownFn = () => {
 
 <style scoped>
 .vitrualSymbolContainer {
-  overflow: visible;
   position: absolute;
   pointer-events: all;
+  opacity: 0;
+}
+
+.vitrualSymbolContainer:hover {
+  opacity: 1;
+
 }
 
 .test {
