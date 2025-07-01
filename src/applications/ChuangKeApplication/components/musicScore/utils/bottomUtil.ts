@@ -32,12 +32,8 @@ export function getSlotBottomToMeasure(msSymbol: MsSymbol, measureHeight: number
     switch (msSymbol.type) {
         case MsSymbolTypeEnum.noteHead: {
             if (!msSymbol) return 0
-            const clef = msSymbol.computed.clef
-            if (clef) {
-                const noteRegion: MusicScoreRegionEnum = msSymbol.region
-                return staffRegionToBottom(noteRegion, measureHeight)
-            }
-            return 0
+            const noteRegion: MusicScoreRegionEnum = msSymbol.region
+            return staffRegionToBottom(noteRegion, measureHeight)
         }
         default: {
             return 0

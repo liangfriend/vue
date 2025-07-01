@@ -117,7 +117,7 @@ import {
   getIndex,
   getTarget,
   mapGenerate,
-  msSymbolComputedData, traverseMeasure
+  msSymbolComputedData, setMultipleStavesIndex, traverseMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {
   MsMode,
@@ -207,19 +207,17 @@ const musicScoreStyle = computed(() => {
   };
 });
 
-function created() {
+function beforeMount() {
   // 遍历生成hashMap方便快速查找
   mapGenerate(props.musicScore)
   // 索引生成
-  getIndex(props.musicScore)
-  // 计算属性
-  msSymbolComputedData(props.musicScore)
+  setMultipleStavesIndex(props.musicScore)
 
   window.musicScore = props.musicScore
 }
 
 
-onBeforeMount(created)
+onBeforeMount(beforeMount)
 const musicScoreRef = ref<HTMLElement>(null!)
 
 const downLock = ref(false) // 鼠标按下锁，鼠标抬起解锁

@@ -8,7 +8,7 @@ import {
     Measure,
     MsState,
     MsSymbol, MsSymbolContainer,
-    MsType,
+    MsType, MultipleStaves, SingleStaff,
     VirtualSymbolContainerType
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 
@@ -18,7 +18,7 @@ import {
     msSymbolTemplate
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
-    addMsSymbolToMeasure, getIndex, msSymbolComputedData
+    addMsSymbolToMeasure, msSymbolComputedData, setMeasureArrayIndex
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 
 // 当前选择对象
@@ -92,12 +92,16 @@ export function virtualSymbolMouseDown(
     e: MouseEvent, params: {
         msState: MsState,
         virtualSymbolContainerType: VirtualSymbolContainerType,
-        msSymbolContainer: MsSymbolContainer,
-        measure: Measure,
+        msData: {
+            msSymbolContainer: MsSymbolContainer,
+            measure: Measure,
+            singleStaff: SingleStaff,
+            multipleStaves: MultipleStaves,
+        },
         msSymbolInformation: {
             region: MusicScoreRegionEnum
         }
-    }, musicScore) {
+    },) {
     if (!currentSelected.value) return
     if (params.msState.mode.value !== MsMode.edit || currentSelected.value.msTypeName !== MsTypeNameEnum.Measure) return
 
@@ -111,20 +115,17 @@ export function virtualSymbolMouseDown(
     if (['front'].includes(params.virtualSymbolContainerType)) {
         newMsSymbolContainer.msSymbolArray.push(newNoteHead)
         console.log('chicken', newMsSymbolContainer)
-        addMsSymbolToMeasure(params.measure, newMsSymbolContainer,
-            {msSymbolContainer: params.msSymbolContainer, type: 'front'})
+        addMsSymbolToMeasure(params.msData.measure, newMsSymbolContainer,
+            {msSymbolContainer: params.msData.msSymbolContainer, type: 'front'})
     } else if (['end', 'middle'].includes(params.virtualSymbolContainerType)) {
         newMsSymbolContainer.msSymbolArray.push(newNoteHead)
-        addMsSymbolToMeasure(params.measure, newMsSymbolContainer,
-            {msSymbolContainer: params.msSymbolContainer, type: 'back'})
+        addMsSymbolToMeasure(params.msData.measure, newMsSymbolContainer,
+            {msSymbolContainer: params.msData.msSymbolContainer, type: 'back'})
     } else if (['self'].includes(params.virtualSymbolContainerType)) {
         // 需要判断同region是否已经存在音符
     }
-    // 这个也许要优化一下，不要每次都是全局赋值
     // 索引生成
-    getIndex(musicScore)
-    // 计算属性
-    msSymbolComputedData(musicScore)
+    setMeasureArrayIndex(params.msData.singleStaff)
 }
 
 export function measureMouseDown(e: MouseEvent, msState: MsState, measure: Measure) {

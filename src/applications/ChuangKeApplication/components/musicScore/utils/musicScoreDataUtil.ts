@@ -12,7 +12,7 @@ import {
     IndexData,
     Measure,
     MsSymbol,
-    MsSymbolContainer, MultipleStaves,
+    MsSymbolContainer, MsType, MultipleStaves,
     MusicScore, musicScoreIndex,
     NoteHead,
     SingleStaff,
@@ -426,49 +426,70 @@ export function traverseMeasure(startIndex: musicScoreIndex, endIndex: musicScor
 }
 
 // index赋值
-export function getIndex(musicScore: MusicScore) {
-    for (let i = 0; i < musicScore.multipleStavesArray.length; i++) {
-        const muptipleStaves = musicScore.multipleStavesArray[i]
-        muptipleStaves.index = {
-            multipleStavesIndex: i
-        }
-        for (let j = 0; j < muptipleStaves.singleStaffArray.length; j++) {
-            const singleStaff = muptipleStaves.singleStaffArray[j]
-            singleStaff.index = {
-                multipleStavesIndex: i,
-                singleStaffIndex: j
-            }
-            for (let k = 0; k < singleStaff.measureArray.length; k++) {
-                const measure = singleStaff.measureArray[k]
-                measure.index = {
-                    multipleStavesIndex: i,
-                    singleStaffIndex: j,
-                    measureIndex: k,
-                }
-                for (let l = 0; l < measure.msSymbolContainerArray.length; l++) {
-                    const msSymbolContainer = measure.msSymbolContainerArray[l]
-                    msSymbolContainer.index = {
-                        multipleStavesIndex: i,
-                        singleStaffIndex: j,
-                        measureIndex: k,
-                        msSymbolContainerIndex: l
-                    }
-                    for (let t = 0; t < msSymbolContainer.msSymbolArray.length; t++) {
-                        msSymbolContainer
-                            .index = {
-                            multipleStavesIndex: i,
-                            singleStaffIndex: j,
-                            measureIndex: k,
-                            msSymbolContainerIndex: l
-                        }
-                    }
-                }
-            }
-        }
-    }
+export function setMultipleStavesIndex(musicScore: MusicScore) {
+    musicScore.multipleStavesArray.forEach((multipleStaves, i) => {
+        multipleStaves.index = {multipleStavesIndex: i};
+        setSingleStaffArrayIndex(multipleStaves);
+    });
 }
 
-// 计算属性赋值
+export function setSingleStaffArrayIndex(multipleStaves: MultipleStaves) {
+    const multipleStavesIndex = multipleStaves.index.multipleStavesIndex
+    if (multipleStavesIndex == null) {
+        return console.error("数据有误，复谱表索引生成失败")
+    }
+    multipleStaves.singleStaffArray.forEach((singleStaff, j) => {
+        singleStaff.index = {multipleStavesIndex, singleStaffIndex: j};
+        setMeasureArrayIndex(singleStaff);
+    });
+}
+
+export function setMeasureArrayIndex(singleStaff: SingleStaff) {
+    const singleStaffIndex = singleStaff.index.singleStaffIndex
+    const multipleStavesIndex = singleStaff.index.multipleStavesIndex
+
+    if (multipleStavesIndex == null || singleStaffIndex == null) {
+        return console.error("数据有误，单谱表索引生成失败")
+    }
+    singleStaff.measureArray.forEach((measure, k) => {
+        measure.index = {multipleStavesIndex, singleStaffIndex, measureIndex: k};
+        setMsSymbolContainerArrayIndex(measure);
+    });
+}
+
+export function setMsSymbolContainerArrayIndex(measure: Measure) {
+    const singleStaffIndex = measure.index.singleStaffIndex
+    const multipleStavesIndex = measure.index.multipleStavesIndex
+    const measureIndex = measure.index.measureIndex
+    if (multipleStavesIndex == null || singleStaffIndex == null || measureIndex == null) {
+        return console.error("数据有误，符号容器索引生成失败")
+    }
+    measure.msSymbolContainerArray.forEach((container, l) => {
+        container.index = {multipleStavesIndex, singleStaffIndex, measureIndex, msSymbolContainerIndex: l};
+        setMsSymbolArrayIndex(container);
+    });
+}
+
+export function setMsSymbolArrayIndex(container: MsSymbolContainer) {
+    const singleStaffIndex = container.index.singleStaffIndex
+    const multipleStavesIndex = container.index.multipleStavesIndex
+    const measureIndex = container.index.measureIndex
+    const msSymbolContainerIndex = container.index.msSymbolContainerIndex
+    if (multipleStavesIndex == null || singleStaffIndex == null || measureIndex == null || msSymbolContainerIndex == null) {
+        return console.error("数据有误，符号索引生成失败")
+    }
+    container.msSymbolArray.forEach((symbol, t) => {
+        symbol.index = {
+            multipleStavesIndex,
+            singleStaffIndex,
+            measureIndex,
+            msSymbolContainerIndex,
+            msSymbolIndex: t
+        };
+    });
+}
+
+// 计算属性赋值， 在播放的时候生成一下
 export function msSymbolComputedData(musicScore: MusicScore) {
     let clef: ClefEnum = ClefEnum.treble
     let keySignature: KeySignatureEnum = KeySignatureEnum.C
@@ -540,7 +561,7 @@ export function mapGenerate(musicScore: MusicScore) {
 }
 
 // 查询内容
-export function getTarget(id: number, musicScore: MusicScore): msType | undefined {
+export function getTarget(id: number, musicScore: MusicScore): MsType | undefined {
     if (!musicScore.map) {
         console.error("这个谱表还没有生成map")
         return

@@ -147,13 +147,17 @@ function handleMouseDown(e: MouseEvent) {
   virtualSymbolMouseDown(e, {
         msState,
         virtualSymbolContainerType: props.type,
-        msSymbolContainer: props.msSymbolContainer,
-        measure: props.measure,
+    msData: {
+      msSymbolContainer: props.msSymbolContainer,
+      measure: props.measure,
+      singleStaff: props.singleStaff,
+      multipleStaves: props.multipleStaves,
+    },
+
         msSymbolInformation: {
           region: region.value
         }
-      },
-      props.musicScore)
+  })
 }
 
 // 虚拟符号相关

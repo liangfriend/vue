@@ -1,14 +1,21 @@
 <template>
   <div class="stack">
-    <prefabWb ref="wbRef" class="stackItem whiteBoard"
-              :wbDrag="wbDrag"
-              :musicScoreData="musicScoreData"
-              :msHeight="800"
-              :msWidth="1000"
-              :floatBoardWidth="1000"
-              :floatBoardHeight="800"
-              :msMode="MsMode.normal"></prefabWb>
-    <div class="b-stackItem" comment="工具层">
+    <div class="stackItem">
+      <prefabWb ref="wbRef" class="whiteBoard"
+                :wbDrag="wbDrag"
+                :musicScoreData="musicScoreData"
+                :msHeight="800"
+                :msWidth="1000"
+                :floatBoardWidth="1000"
+                :floatBoardHeight="800"
+                :msMode="MsMode.normal"></prefabWb>
+    </div>
+
+    <div class="stackItem" comment="工具层">
+      <div class="rightTools">
+        <right-tools></right-tools>
+      </div>
+
       <div class="bottomMenu">
         <bottom-menu v-model="bottomMenuData"></bottom-menu>
       </div>
@@ -32,6 +39,7 @@ import * as Tone from "tone";
 import {useRouter} from "vue-router";
 import {MsMode} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import RightTools from "@/applications/ChuangKeApplication/views/editor/components/rightTools/rightTools.vue";
 
 const router = useRouter()
 type addedWb = {
@@ -116,13 +124,19 @@ onMounted(() => {
 
 
 .bottomMenu {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   width: 100%;
   display: flex;
   justify-content: center;
 }
 
+.rightTools {
+  position: absolute;
+  right: 0;
+  height: 100%;
+
+}
 .back {
   cursor: pointer;
   position: fixed;
