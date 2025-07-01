@@ -21,6 +21,11 @@ const data: MusicScore = {
         endTargetId: 8,
         id: 15,
         rect: {},
+        options: {
+            hightlight: false,
+            hightlightColor: 'red',
+            color: 'black',
+        }
     }],
     multipleStavesArray: [{
         id: 1,
@@ -64,6 +69,11 @@ const data: MusicScore = {
                     msTypeName: MsTypeNameEnum.MsSymbolContainer,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
+                    options: {
+                        hightlight: false,
+                        hightlightColor: 'red',
+                        color: 'black',
+                    },
                     msSymbolArray: [{
                         id: 21,
                         msTypeName: MsTypeNameEnum.MsSymbol,
@@ -85,7 +95,11 @@ const data: MusicScore = {
                     id: 22,
                     msTypeName: MsTypeNameEnum.MsSymbolContainer,
                     type: MsSymbolContainerTypeEnum.variable,
-                    index: {},
+                    index: {}, options: {
+                        hightlight: false,
+                        hightlightColor: 'red',
+                        color: 'black',
+                    },
                     msSymbolArray: [{
                         id: 23,
                         msTypeName: MsTypeNameEnum.MsSymbol,
@@ -104,7 +118,11 @@ const data: MusicScore = {
                         msSymbolArray: []
                     }]
                 }, {
-                    id: 24,
+                    id: 24, options: {
+                        hightlight: false,
+                        hightlightColor: 'red',
+                        color: 'black',
+                    },
                     msTypeName: MsTypeNameEnum.MsSymbolContainer,
                     type: MsSymbolContainerTypeEnum.rearFixed,
                     index: {},
@@ -136,7 +154,11 @@ const data: MusicScore = {
                 },
                 bindingEndId: [],
                 msSymbolContainerArray: [{
-                    id: 4,
+                    id: 4, options: {
+                        hightlight: false,
+                        hightlightColor: 'red',
+                        color: 'black',
+                    },
                     msTypeName: MsTypeNameEnum.MsSymbolContainer,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
@@ -158,7 +180,11 @@ const data: MusicScore = {
                         msSymbolArray: []
                     }]
                 }, {
-                    id: 6,
+                    id: 6, options: {
+                        hightlight: false,
+                        hightlightColor: 'red',
+                        color: 'black',
+                    },
                     msTypeName: MsTypeNameEnum.MsSymbolContainer,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
@@ -180,7 +206,11 @@ const data: MusicScore = {
                         msSymbolArray: []
                     }]
                 }, {
-                    id: 13,
+                    id: 13, options: {
+                        hightlight: false,
+                        hightlightColor: 'red',
+                        color: 'black',
+                    },
                     msTypeName: MsTypeNameEnum.MsSymbolContainer,
                     type: MsSymbolContainerTypeEnum.rearFixed,
                     index: {},
@@ -212,7 +242,11 @@ const data: MusicScore = {
                 bindingStartId: [],
                 bindingEndId: [],
                 msSymbolContainerArray: [{
-                    id: 9,
+                    id: 9, options: {
+                        hightlight: false,
+                        hightlightColor: 'red',
+                        color: 'black',
+                    },
                     msTypeName: MsTypeNameEnum.MsSymbolContainer,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},
@@ -234,7 +268,11 @@ const data: MusicScore = {
                         msSymbolArray: []
                     }]
                 }, {
-                    id: 11,
+                    id: 11, options: {
+                        hightlight: false,
+                        hightlightColor: 'red',
+                        color: 'black',
+                    },
                     msTypeName: MsTypeNameEnum.MsSymbolContainer,
                     type: MsSymbolContainerTypeEnum.variable,
                     index: {},

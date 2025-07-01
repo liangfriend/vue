@@ -12,7 +12,7 @@ import {
     IndexData,
     Measure,
     MsSymbol,
-    MsSymbolContainer, msType, MultipleStaves,
+    MsSymbolContainer, MultipleStaves,
     MusicScore, musicScoreIndex,
     NoteHead,
     SingleStaff,
@@ -588,3 +588,49 @@ export function getDataWithIndex(index: musicScoreIndex, musicScore: MusicScore)
     return res
 }
 
+// 往小节添加符号容器
+export function addMsSymbolToMeasure(
+    measure: Measure,
+    newMsSymbolContainer: MsSymbolContainer,
+    position?: {
+        msSymbolContainer: MsSymbolContainer,
+        type: 'front' | 'back',
+    }
+) {
+    const array = measure.msSymbolContainerArray;
+
+    if (!position) {
+        // 默认添加到末尾
+        array.push(newMsSymbolContainer);
+        return;
+    }
+
+    const targetIndex = array.findIndex(item => item === position.msSymbolContainer);
+
+    if (targetIndex === -1) {
+        // 容器未找到，默认添加到末尾（也可改为抛错）
+        array.push(newMsSymbolContainer);
+        return;
+    }
+
+    if (position.type === 'front') {
+        array.splice(targetIndex, 0, newMsSymbolContainer);
+    } else {
+        array.splice(targetIndex + 1, 0, newMsSymbolContainer);
+    }
+}
+
+// 移除小节中的容器
+export function removeMsSymbolFromMeasure(
+    measure: Measure,
+    targetMsSymbolContainer: MsSymbolContainer
+) {
+    const array = measure.msSymbolContainerArray;
+    const index = array.findIndex(item => item === targetMsSymbolContainer);
+
+    if (index !== -1) {
+        array.splice(index, 1);
+    } else {
+        console.error("找不到目标符号容器")
+    }
+}

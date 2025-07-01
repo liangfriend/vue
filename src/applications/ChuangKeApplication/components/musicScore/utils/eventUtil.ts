@@ -1,17 +1,32 @@
 import {
+    MsMode,
+    MsSymbolTypeEnum,
     MsTypeNameEnum,
     MusicScoreRegionEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
-import {msType} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {
+    Measure,
+    MsState,
+    MsSymbol, MsSymbolContainer,
+    MsType,
+    VirtualSymbolContainerType
+} from "@/applications/ChuangKeApplication/components/musicScore/types";
 
-import {computed, onMounted, onBeforeMount, onUnmounted, type PropType, provide, ref} from 'vue';
+import {computed, onMounted, onBeforeMount, onUnmounted, type PropType, provide, ref, Ref} from 'vue';
+import {
+    msSymbolContainerTemplate,
+    msSymbolTemplate
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
+import {
+    addMsSymbolToMeasure, getIndex, msSymbolComputedData
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 
 // 当前选择对象
-export const currentSelected: MsType = ref(null)
+export const currentSelected: Ref<MsType | null> = ref(null)
 
 
 // 添加发布者
-export function select(value: msType) {
+export function select(value: MsType) {
     if (currentSelected.value) {
         currentSelected.value.options.hightlight = false
     }
@@ -31,16 +46,19 @@ export function handleMouseMoveSelected(e: MouseEvent, measureHeight: number) {
     switch (currentSelected.value.msTypeName) {
         case MsTypeNameEnum.MsSymbol: {
             const msSymbol = currentSelected.value
-            const dx = e.clientX - eventConstant.startX;
-            const dy = e.clientY - eventConstant.startY;
-            if (Math.abs(dy) > measureHeight / 8 && msSymbol) {
-                const index = Math.floor(dy / measureHeight * 8);
-                const targetIndex = msSymbol.region - index;
-                if (targetIndex in MusicScoreRegionEnum) {
-                    msSymbol.region = targetIndex as MusicScoreRegionEnum;
-                    eventConstant.startY = e.clientY;
+            if (msSymbol.type === MsSymbolTypeEnum.noteHead) {
+                const dx = e.clientX - eventConstant.startX;
+                const dy = e.clientY - eventConstant.startY;
+                if (Math.abs(dy) > measureHeight / 8 && msSymbol) {
+                    const index = Math.floor(dy / measureHeight * 8);
+                    const targetIndex = msSymbol.region - index;
+                    if (targetIndex in MusicScoreRegionEnum) {
+                        msSymbol.region = targetIndex as MusicScoreRegionEnum;
+                        eventConstant.startY = e.clientY;
+                    }
                 }
             }
+
             break
         }
     }
@@ -53,10 +71,68 @@ export function handleMouseUpSelected(e: MouseEvent) {
     switch (currentSelected.value.msTypeName) {
         case MsTypeNameEnum.MsSymbol: {
             currentSelected.value.options.hightlight = false
+            break
         }
         case MsTypeNameEnum.Measure: {
         }
     }
 
+}
+
+export function msSymbolMouseDown(e: MouseEvent, msState: MsState, msSymbol: MsSymbol) {
+    if (msState.mode.value === MsMode.edit) {
+        // 订阅
+        select(msSymbol)
+        // 抛出回调
+        // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
+    }
+}
+
+export function virtualSymbolMouseDown(
+    e: MouseEvent, params: {
+        msState: MsState,
+        virtualSymbolContainerType: VirtualSymbolContainerType,
+        msSymbolContainer: MsSymbolContainer,
+        measure: Measure,
+        msSymbolInformation: {
+            region: MusicScoreRegionEnum
+        }
+    }, musicScore) {
+    if (!currentSelected.value) return
+    if (params.msState.mode.value !== MsMode.edit || currentSelected.value.msTypeName !== MsTypeNameEnum.Measure) return
+
+    const newNoteHead = msSymbolTemplate({
+        type: MsSymbolTypeEnum.noteHead,
+        region: params.msSymbolInformation.region
+    })
+    const newMsSymbolContainer = msSymbolContainerTemplate({})
+    // 给音符进行计算属性赋值及index赋值
+
+    if (['front'].includes(params.virtualSymbolContainerType)) {
+        newMsSymbolContainer.msSymbolArray.push(newNoteHead)
+        console.log('chicken', newMsSymbolContainer)
+        addMsSymbolToMeasure(params.measure, newMsSymbolContainer,
+            {msSymbolContainer: params.msSymbolContainer, type: 'front'})
+    } else if (['end', 'middle'].includes(params.virtualSymbolContainerType)) {
+        newMsSymbolContainer.msSymbolArray.push(newNoteHead)
+        addMsSymbolToMeasure(params.measure, newMsSymbolContainer,
+            {msSymbolContainer: params.msSymbolContainer, type: 'back'})
+    } else if (['self'].includes(params.virtualSymbolContainerType)) {
+        // 需要判断同region是否已经存在音符
+    }
+    // 这个也许要优化一下，不要每次都是全局赋值
+    // 索引生成
+    getIndex(musicScore)
+    // 计算属性
+    msSymbolComputedData(musicScore)
+}
+
+export function measureMouseDown(e: MouseEvent, msState: MsState, measure: Measure) {
+    if (msState.mode.value === MsMode.edit) {
+        // 订阅
+        select(measure)
+        // 抛出回调
+        // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
+    }
 }
 

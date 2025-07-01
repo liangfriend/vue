@@ -1,6 +1,7 @@
 <template>
   <div class="vitrualSymbolContainer"
        @mousemove="handleMouseMove"
+       @mousedown="handleMouseDown"
        :style="vitrualSymbolContainerStyle">
     <div ref="vitrualSymbolRef" class="vitrualSymbol" :style="vitrualSymbolStyle"
     ></div>
@@ -10,13 +11,13 @@
 </template>
 
 <script setup lang="ts">
-import type {
-  Measure,
+import {
+  Measure, MsState,
   MsSymbolContainer,
   MultipleStaves, MusicScore,
-  SingleStaff,
+  SingleStaff, VirtualSymbolContainerType,
 } from "@/applications/ChuangKeApplication/components/musicScore/types.d.ts";
-import {computed, CSSProperties, onMounted, PropType, ref} from "vue";
+import {computed, CSSProperties, inject, onMounted, PropType, ref} from "vue";
 
 import {
   getMsSymboLContainerWidth,
@@ -30,6 +31,7 @@ import {
   getMeasureBottomToMusicScore, getSlotBottomToMeasure, staffRegionToBottom
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/bottomUtil.ts";
 import {MusicScoreRegionEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import {virtualSymbolMouseDown} from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
 
 const props = defineProps({
   ind: {},
@@ -44,7 +46,7 @@ const props = defineProps({
     required: true
   },
   type: {
-    type: String as PropType<'front' | 'middle' | 'end' | 'self'>,
+    type: String as PropType<VirtualSymbolContainerType>,
     required: true
   },
   measure: {
@@ -137,7 +139,21 @@ function handleMouseMove(e: MouseEvent) {
   const rect = target.getBoundingClientRect();
 
   offsetBottom.value = rect.height - e.clientY + rect.top;
+}
 
+const msState = inject("msState") as MsState
+
+function handleMouseDown(e: MouseEvent) {
+  virtualSymbolMouseDown(e, {
+        msState,
+        virtualSymbolContainerType: props.type,
+        msSymbolContainer: props.msSymbolContainer,
+        measure: props.measure,
+        msSymbolInformation: {
+          region: region.value
+        }
+      },
+      props.musicScore)
 }
 
 // 虚拟符号相关
@@ -157,14 +173,13 @@ const vitrualSymbolLeft = computed(() => {
 
   return 0
 })
-
-const virtualSymbolBottom = computed(() => {
+const region = computed(() => {
   const regionIndex = +((offsetBottom.value - props.measureHeight) / (props.measureHeight / 8)).toFixed(0)
-  const region = regionIndex + 37
-
-  if (!(region in MusicScoreRegionEnum)) return props.measureHeight
-
-  const bottom = staffRegionToBottom(region, props.measureHeight) + props.measureHeight
+  return regionIndex + 37
+})
+const virtualSymbolBottom = computed(() => {
+  if (!(region.value in MusicScoreRegionEnum)) return props.measureHeight
+  const bottom = staffRegionToBottom(region.value, props.measureHeight) + props.measureHeight
   return bottom
 })
 const vitrualSymbolStyle = computed<CSSProperties>(() => {

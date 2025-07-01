@@ -31,16 +31,21 @@ import {MusicMapKey} from "@/applications/ChuangKeApplication/views/editor/const
 import * as Tone from "tone";
 import {useRouter} from "vue-router";
 import {MsMode} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import {MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
 
 const router = useRouter()
-
-const wbRef = ref(null)
+type addedWb = {
+  getMsRef: () => MusicScoreRef
+}
+const wbRef = ref(null!) as Ref<addedWb>
 const msRef = computed(() => {
+  if (!wbRef.value) return
   return wbRef.value.getMsRef()
 })
 const curModeText = ref("教学模式")
 
 function switchMode() {
+  if (!msRef.value) return
   const curMode = msRef.value.getMode()
   if (curMode === MsMode.edit) {
     msRef.value.changeMode(MsMode.normal);

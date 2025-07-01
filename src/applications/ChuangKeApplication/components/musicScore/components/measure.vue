@@ -1,5 +1,5 @@
 <template>
-  <div class="measure" :style="measureStyle" @mousedown="measureMouseDown">
+  <div class="measure" :style="measureStyle" @mousedown="handleMouseDown">
     <div>
       <div draggable="false" :style="barLineStyle"></div>
     </div>
@@ -13,8 +13,13 @@ import {computed, inject, PropType, ref} from 'vue';
 
 import bar from '../musicSymbols/barlineSingle.svg';
 import barLine from '../musicSymbols/bar.svg';
-import {Measure, MouseDownData, MsState, msType} from "@/applications/ChuangKeApplication/components/musicScore/types";
-import {addSubscriber, select} from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
+import {
+  Measure,
+  MouseDownData,
+  MouseDownInject,
+  MsState,
+} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {measureMouseDown, select} from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
 import {MsMode} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 
@@ -77,16 +82,8 @@ const barLineStyle = computed(() => {
 const mouseDown = inject("mouseDown") as MouseDownInject
 const msState = inject("msState") as MsState
 
-function measureMouseDown(e: MouseEvent) {
-  if (msState.mode.value === MsMode.edit) {
-    // 订阅
-    select(props.measure)
-
-    // 抛出回调
-    // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
-  }
-
-
+function handleMouseDown(e: MouseEvent) {
+  measureMouseDown(e, msState, props.measure);
 }
 
 </script>

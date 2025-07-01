@@ -22,6 +22,7 @@ export declare interface WBElement extends HTMLElement {
     switchState: (param: whiteBoardState) => void;
 }
 
+
 declare global {
     interface HTMLElement {
         _dragData?: {

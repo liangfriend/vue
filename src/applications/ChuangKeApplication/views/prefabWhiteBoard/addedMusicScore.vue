@@ -2,7 +2,7 @@
 import WhiteBoard from "@/applications/ChuangKeApplication/components/whiteBoard/whiteBoard.vue";
 import MusicScoreVue from "@/applications/ChuangKeApplication/components/musicScore/musicScore.vue";
 import {App, onMounted, PropType, Ref, ref, watch} from "vue";
-import {MusicScore, musicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import type {MusicScore, MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {MsMode} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {msPlayUtils} from "@/applications/ChuangKeApplication/utils/ms-playUtils.ts";
 import {MusicMapKey} from "@/applications/ChuangKeApplication/views/editor/constant.ts";
@@ -42,7 +42,7 @@ const props = defineProps({
 })
 
 let container: HTMLElement | null = null
-const msRef = ref<musicScoreRef>(null)
+const msRef = ref<MusicScoreRef>(null)
 
 const wbRef: Ref<WBElement> = ref(null!);
 

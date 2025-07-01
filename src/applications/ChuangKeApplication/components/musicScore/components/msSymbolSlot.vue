@@ -146,6 +146,7 @@ const slotLeft = computed(() => {
   return 0
 })
 const slotBottom = computed(() => {
+  console.log('chicken', props.msSymbol,)
   return getSlotBottomToMeasure(props.msSymbol, props.measureHeight)
 })
 

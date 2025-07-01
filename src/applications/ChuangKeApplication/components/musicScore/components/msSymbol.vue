@@ -11,7 +11,7 @@
                  :msSymbol="msSymbol" :clef="msSymbol.computed.clef"></key-signature>
   <time-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.timeSignature" :style="msSymbolStyle"
                   :msSymbol="msSymbol" :measure-height="measureHeight"></time-signature>
-  <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle" @mousedown="msSymbolMouseDown"
+  <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle" @mousedown="handleMouseDown"
   ></div>
 </template>
 <script setup lang="ts">
@@ -55,7 +55,11 @@ import {
   getSlotBottomToMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/bottomUtil.ts";
 import {MOUSE} from "three";
-import {addSubscriber, select} from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
+import {
+  measureMouseDown,
+  msSymbolMouseDown,
+  select
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
 
 const props = defineProps({
   msSymbol: {
@@ -270,16 +274,8 @@ interface MouseDownInject {
 const mouseDown = inject("mouseDown") as MouseDownInject
 const msState = inject("msState") as MsState
 
-function msSymbolMouseDown(e: MouseEvent) {
-  console.log('chicken', '点击事件')
-  if (msState.mode.value === MsMode.edit) {
-    // 订阅
-    select(props.msSymbol)
-    // 抛出回调
-    // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
-  }
-
-
+function handleMouseDown(e: MouseEvent) {
+  msSymbolMouseDown(e, msState, props.msSymbol);
 }
 
 onMounted(() => {
