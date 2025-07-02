@@ -185,6 +185,7 @@ declare interface MusicScoreRef {
     changeMode: (mode: MsMode) => void,
     root: HTMLElement,
     getMode: () => MsMode,
+    getCurrentSelected: () => MsType | null,
 }
 
 // 点击事件处理
@@ -199,6 +200,7 @@ declare interface MouseDownInject {
 // 五线谱状态
 declare interface MsState {
     mode: Ref<MsMode>,
+    currentSelected: Ref<MsType | null>
 }
 
 // 虚拟符号容器类型

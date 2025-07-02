@@ -13,7 +13,7 @@
 
     <div class="stackItem" comment="工具层">
       <div class="rightTools">
-        <right-tools></right-tools>
+        <right-tools @clickBtn="handleRightToolsBtn"></right-tools>
       </div>
 
       <div class="bottomMenu">
@@ -38,8 +38,8 @@ import {MusicMapKey} from "@/applications/ChuangKeApplication/views/editor/const
 import * as Tone from "tone";
 import {useRouter} from "vue-router";
 import {MsMode} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
-import {MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import RightTools from "@/applications/ChuangKeApplication/views/editor/components/rightTools/rightTools.vue";
+import {MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
 
 const router = useRouter()
 type addedWb = {
@@ -108,6 +108,18 @@ watch(musicScoreData, (newVal) => {
     musicLoaded.value = true
   })
 }, {deep: true})
+
+function handleRightToolsBtn(item: FunctionListItem) {
+  switch (item.key) {
+    case RightToolsBtnEnum.insertMeasureAfter: {
+      break
+    }
+    case RightToolsBtnEnum.insertMeasureBefore: {
+
+      break
+    }
+  }
+}
 onMounted(() => {
   //TEST
   window.musicScore = mockData

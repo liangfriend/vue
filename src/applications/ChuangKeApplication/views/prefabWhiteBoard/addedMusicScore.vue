@@ -42,7 +42,7 @@ const props = defineProps({
 })
 
 let container: HTMLElement | null = null
-const msRef = ref<MusicScoreRef>(null)
+const msRef = ref<MusicScoreRef>(null!)
 
 const wbRef: Ref<WBElement> = ref(null!);
 

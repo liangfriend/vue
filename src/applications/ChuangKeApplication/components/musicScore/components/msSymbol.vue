@@ -16,7 +16,7 @@
 </template>
 <script setup lang="ts">
 import {computed, CSSProperties, inject, onMounted, PropType, ref} from "vue";
-import {MouseDownData, MsState, MsSymbol, msType} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {MouseDownData, MsState, MsSymbol, MsType} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
   AccidentalEnum, BarlineTypeEnum, ChronaxieEnum, MsMode,
   MsSymbolTypeEnum, MusicScoreRegionEnum, OrderTypeEnum
@@ -268,7 +268,7 @@ interface MouseDownInject {
   measureMouseDown: (e: MouseEvent, data: MouseDownData) => void
   singleStaffMouseDown: (e: MouseEvent, data: MouseDownData) => void
   multipleStavesMouseDown: (e: MouseEvent, data: MouseDownData) => void
-  select: (value: msType) => void
+  select: (value: MsType) => void
 }
 
 const mouseDown = inject("mouseDown") as MouseDownInject

@@ -3,13 +3,22 @@ import {ref} from "vue";
 
 const active = ref('function')
 
-function handleClick() {
+const emits = defineEmits<{
+  (e: 'clickBtn', item: FunctionListItem): void
+}>()
 
+function handleClick(item: FunctionListItem) {
+  emits('clickBtn', item)
 }
 
-const functionList = ref([{
+
+const functionList = ref<Array<FunctionListItem>>([{
   name: "向前插入小节",
-}, {name: "向后插入小节"}])
+  key: RightToolsBtnEnum.insertMeasureBefore
+}, {
+  name: "向后插入小节",
+  key: RightToolsBtnEnum.insertMeasureAfter
+}])
 </script>
 
 <template>

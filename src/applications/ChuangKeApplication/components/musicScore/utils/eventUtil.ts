@@ -21,17 +21,15 @@ import {
     addMsSymbolToMeasure, msSymbolComputedData, setMeasureArrayIndex
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 
-// 当前选择对象
-export const currentSelected: Ref<MsType | null> = ref(null)
 
 
 // 添加发布者
-export function select(value: MsType) {
-    if (currentSelected.value) {
-        currentSelected.value.options.hightlight = false
+export function select(value: MsType, currentSelected: null | MsType) {
+    if (currentSelected) {
+        currentSelected.options.hightlight = false
     }
     value.options.hightlight = true
-    currentSelected.value = value
+    currentSelected = value
 }
 
 
@@ -41,11 +39,11 @@ export const eventConstant = {
 }
 
 
-export function handleMouseMoveSelected(e: MouseEvent, measureHeight: number) {
-    if (!currentSelected.value) return
-    switch (currentSelected.value.msTypeName) {
+export function handleMouseMoveSelected(e: MouseEvent, measureHeight: number, currentSelected: MsType | null) {
+    if (!currentSelected) return
+    switch (currentSelected.msTypeName) {
         case MsTypeNameEnum.MsSymbol: {
-            const msSymbol = currentSelected.value
+            const msSymbol = currentSelected
             if (msSymbol.type === MsSymbolTypeEnum.noteHead) {
                 const dx = e.clientX - eventConstant.startX;
                 const dy = e.clientY - eventConstant.startY;
@@ -66,11 +64,11 @@ export function handleMouseMoveSelected(e: MouseEvent, measureHeight: number) {
 }
 
 
-export function handleMouseUpSelected(e: MouseEvent) {
-    if (!currentSelected.value) return
-    switch (currentSelected.value.msTypeName) {
+export function handleMouseUpSelected(e: MouseEvent, currentSelected: MsType | null) {
+    if (!currentSelected) return
+    switch (currentSelected.msTypeName) {
         case MsTypeNameEnum.MsSymbol: {
-            currentSelected.value.options.hightlight = false
+            currentSelected.options.hightlight = false
             break
         }
         case MsTypeNameEnum.Measure: {
@@ -82,7 +80,7 @@ export function handleMouseUpSelected(e: MouseEvent) {
 export function msSymbolMouseDown(e: MouseEvent, msState: MsState, msSymbol: MsSymbol) {
     if (msState.mode.value === MsMode.edit) {
         // 订阅
-        select(msSymbol)
+        select(msSymbol, msState.currentSelected.value)
         // 抛出回调
         // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
     }
@@ -102,8 +100,8 @@ export function virtualSymbolMouseDown(
             region: MusicScoreRegionEnum
         }
     },) {
-    if (!currentSelected.value) return
-    if (params.msState.mode.value !== MsMode.edit || currentSelected.value.msTypeName !== MsTypeNameEnum.Measure) return
+    if (!params.msState.currentSelected.value) return
+    if (params.msState.mode.value !== MsMode.edit || params.msState.currentSelected.value.msTypeName !== MsTypeNameEnum.Measure) return
 
     const newNoteHead = msSymbolTemplate({
         type: MsSymbolTypeEnum.noteHead,
@@ -131,7 +129,7 @@ export function virtualSymbolMouseDown(
 export function measureMouseDown(e: MouseEvent, msState: MsState, measure: Measure) {
     if (msState.mode.value === MsMode.edit) {
         // 订阅
-        select(measure)
+        select(measure, msState.currentSelected.value)
         // 抛出回调
         // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
     }

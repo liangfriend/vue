@@ -104,7 +104,7 @@
 import measure from './components/measure.vue';
 import {computed, onMounted, onBeforeMount, onUnmounted, type PropType, provide, ref} from 'vue';
 import type {
-  MusicScore, musicScoreIndex, SpanSymbol, Rect, MouseDownData, msType, Measure
+  MusicScore, musicScoreIndex, SpanSymbol, Rect, MouseDownData, Measure, MsType, MusicScoreRef
 } from "./types.d.ts";
 import MeasureContainer from "@/applications/ChuangKeApplication/components/musicScore/components/measureContainer.vue";
 
@@ -114,7 +114,6 @@ import MsSymbolContainer
 import SpanSymbolVue
   from "@/applications/ChuangKeApplication/components/musicScore/components/spanSymbol.vue";
 import {
-  getIndex,
   getTarget,
   mapGenerate,
   msSymbolComputedData, setMultipleStavesIndex, traverseMeasure
@@ -125,7 +124,7 @@ import {
 
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {
-  eventConstant, handleMouseMoveSelected, handleMouseUpSelected, currentSelected,
+  eventConstant, handleMouseMoveSelected, handleMouseUpSelected
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
 import VirtualSymbolContainer
   from "@/applications/ChuangKeApplication/components/musicScore/components/virtualSymbolContainer.vue";
@@ -153,6 +152,9 @@ const props = defineProps({
 });
 
 const mode = ref(MsMode.edit)
+
+// 当前选择对象
+const currentSelected = ref<MsType | null>(null)
 // 变宽符号容器
 const variableContainerArray = computed(() => {
   return (measure: Measure) => {
@@ -189,15 +191,10 @@ function getMode() {
   return mode.value
 }
 
-provide('mouseDown', {
-  msSymbolMouseDown,
-  measureMouseDown,
-  singleStaffMouseDown,
-  multipleStavesMouseDown,
-})
-provide('msState', {
-  mode,
-})
+function getCurrentSelected() {
+  return currentSelected.value
+}
+
 
 const musicScoreStyle = computed(() => {
   return {
@@ -229,14 +226,15 @@ function handleMouseDown(e: MouseEvent) {
 
 function handleMouseUp(e: MouseEvent) {
   downLock.value = false
-  handleMouseUpSelected(e)
+  handleMouseUpSelected(e, currentSelected.value)
 }
 
 function handleMouseMove(e: MouseEvent) {
   if (downLock.value) {
-    handleMouseMoveSelected(e, props.musicScore?.measureHeight)
+    handleMouseMoveSelected(e, props.musicScore?.measureHeight, currentSelected.value)
   }
 }
+
 
 onMounted(() => {
 
@@ -250,8 +248,17 @@ onUnmounted(() => {
 
 });
 
-
-defineExpose({changeMode, root: musicScoreRef, getMode})
+provide('mouseDown', {
+  msSymbolMouseDown,
+  measureMouseDown,
+  singleStaffMouseDown,
+  multipleStavesMouseDown,
+})
+provide('msState', {
+  mode,
+  currentSelected
+})
+defineExpose<MusicScoreRef>({changeMode, root: musicScoreRef, getMode, getCurrentSelected})
 </script>
 <style scoped lang="scss" comment="布局">
 .stack {
