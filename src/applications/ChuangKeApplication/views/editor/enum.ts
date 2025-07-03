@@ -1,4 +1,4 @@
-enum RightToolsBtnEnum {
+export enum RightToolsBtnEnum {
     insertMeasureBefore = 1,
     insertMeasureAfter,
 }

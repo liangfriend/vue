@@ -146,8 +146,9 @@ const msState = inject("msState") as MsState
 function handleMouseDown(e: MouseEvent) {
   virtualSymbolMouseDown(e, {
         msState,
-        virtualSymbolContainerType: props.type,
+    virtualSymbolContainerType: props.type,
     msData: {
+      musicScore: props.musicScore,
       msSymbolContainer: props.msSymbolContainer,
       measure: props.measure,
       singleStaff: props.singleStaff,

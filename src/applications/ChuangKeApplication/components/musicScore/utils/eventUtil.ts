@@ -8,7 +8,7 @@ import {
     Measure,
     MsState,
     MsSymbol, MsSymbolContainer,
-    MsType, MultipleStaves, SingleStaff,
+    MsType, MultipleStaves, MusicScore, SingleStaff,
     VirtualSymbolContainerType
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 
@@ -18,18 +18,20 @@ import {
     msSymbolTemplate
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
-    addMsSymbolToMeasure, msSymbolComputedData, setMeasureArrayIndex
+    msSymbolComputedData, setMeasureArrayIndex
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
-
+import {
+    addMsSymbolContainer
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 
 
 // 添加发布者
-export function select(value: MsType, currentSelected: null | MsType) {
-    if (currentSelected) {
-        currentSelected.options.hightlight = false
+export function select(value: MsType, currentSelected: Ref<null | MsType>) {
+    if (currentSelected.value) {
+        currentSelected.value.options.hightlight = false
     }
     value.options.hightlight = true
-    currentSelected = value
+    currentSelected.value = value
 }
 
 
@@ -80,7 +82,7 @@ export function handleMouseUpSelected(e: MouseEvent, currentSelected: MsType | n
 export function msSymbolMouseDown(e: MouseEvent, msState: MsState, msSymbol: MsSymbol) {
     if (msState.mode.value === MsMode.edit) {
         // 订阅
-        select(msSymbol, msState.currentSelected.value)
+        select(msSymbol, msState.currentSelected)
         // 抛出回调
         // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
     }
@@ -91,6 +93,7 @@ export function virtualSymbolMouseDown(
         msState: MsState,
         virtualSymbolContainerType: VirtualSymbolContainerType,
         msData: {
+            musicScore: MusicScore,
             msSymbolContainer: MsSymbolContainer,
             measure: Measure,
             singleStaff: SingleStaff,
@@ -112,13 +115,12 @@ export function virtualSymbolMouseDown(
 
     if (['front'].includes(params.virtualSymbolContainerType)) {
         newMsSymbolContainer.msSymbolArray.push(newNoteHead)
-        console.log('chicken', newMsSymbolContainer)
-        addMsSymbolToMeasure(params.msData.measure, newMsSymbolContainer,
-            {msSymbolContainer: params.msData.msSymbolContainer, type: 'front'})
+        addMsSymbolContainer(params.msData.musicScore, newMsSymbolContainer,
+            params.msData.msSymbolContainer, 'before')
     } else if (['end', 'middle'].includes(params.virtualSymbolContainerType)) {
         newMsSymbolContainer.msSymbolArray.push(newNoteHead)
-        addMsSymbolToMeasure(params.msData.measure, newMsSymbolContainer,
-            {msSymbolContainer: params.msData.msSymbolContainer, type: 'back'})
+        addMsSymbolContainer(params.msData.musicScore, newMsSymbolContainer,
+            params.msData.msSymbolContainer, 'after')
     } else if (['self'].includes(params.virtualSymbolContainerType)) {
         // 需要判断同region是否已经存在音符
     }
@@ -129,7 +131,7 @@ export function virtualSymbolMouseDown(
 export function measureMouseDown(e: MouseEvent, msState: MsState, measure: Measure) {
     if (msState.mode.value === MsMode.edit) {
         // 订阅
-        select(measure, msState.currentSelected.value)
+        select(measure, msState.currentSelected)
         // 抛出回调
         // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
     }

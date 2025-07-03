@@ -71,11 +71,15 @@ export function getMsSymboLContainerWidth(msSymbolContainer: MsSymbolContainer, 
 
 // 获取小节宽度
 export function getMeasureWidth(measure: Measure, singleStaff: SingleStaff, musicScoreData: MusicScore, componentWidth: number) {
-    const totalSingleStaffWidthConstant = getWidthConstantInSingleStaff(singleStaff);
-    const totalMeasureWidthConstant = getWidthConstantInMeasure(measure,);
-    const fixedContainerWidthInSngleStaff = getWidthFixedContainerWidthSumInSingleStaff(singleStaff, musicScoreData.measureHeight)
-    const fixedContainerWidthInMeasure = getWidthFixedContainerWidthSumInMeasure(measure, musicScoreData.measureHeight)
-    return (componentWidth - fixedContainerWidthInSngleStaff) / totalSingleStaffWidthConstant * totalMeasureWidthConstant + fixedContainerWidthInMeasure;
+    const totalSingleStaffWidthConstant = getWidthConstantInSingleStaff(singleStaff); // 获取单谱表宽度系数和
+    const totalMeasureWidthConstant = getWidthConstantInMeasure(measure,); // 获取小节宽度系数和
+    const fixedContainerWidthInSngleStaff = getWidthFixedContainerWidthSumInSingleStaff(singleStaff, musicScoreData.measureHeight) // 单谱表内定宽容器宽度
+    const fixedContainerWidthInMeasure = getWidthFixedContainerWidthSumInMeasure(measure, musicScoreData.measureHeight) // 小节定宽容器宽度
+    const measureLength = singleStaff.measureArray.length
+    const totalVariableContainerWidth = (componentWidth - fixedContainerWidthInSngleStaff) // 变宽容器总宽度
+    const widthPerWidthConstant = totalVariableContainerWidth / totalSingleStaffWidthConstant * musicScoreData.widthDynamicRatio // 每宽度常亮的宽度
+    const fixedWidth = totalVariableContainerWidth * (1 - musicScoreData.widthDynamicRatio) / measureLength
+    return widthPerWidthConstant * totalMeasureWidthConstant + fixedContainerWidthInMeasure + fixedWidth;
 }
 
 // 获取当前小节内定宽符号容器宽度之和, 第二个参数判断是否只计算当前符号之前的

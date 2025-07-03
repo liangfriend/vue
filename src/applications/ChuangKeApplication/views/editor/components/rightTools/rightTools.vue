@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {ref} from "vue";
+import {RightToolsBtnEnum} from "@/applications/ChuangKeApplication/views/editor/enum.ts";
 
 const active = ref('function')
 
@@ -25,7 +26,7 @@ const functionList = ref<Array<FunctionListItem>>([{
   <div class="toolBox">
     <el-tabs class="tabs" v-model="active" type="border-card">
       <el-tab-pane label="功能" name="function">
-        <el-button @click="" v-for="(item) in functionList">
+        <el-button @click="handleClick(item)" v-for="(item) in functionList">
           {{ item.name }}
         </el-button>
       </el-tab-pane>

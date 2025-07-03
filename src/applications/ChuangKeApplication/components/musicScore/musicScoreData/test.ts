@@ -13,6 +13,7 @@ import {
 const data: MusicScore = {
     showMode: MusicScoreShowModeEnum.standardStaff,
     measureHeight: 50,
+    widthDynamicRatio: 0.4,
     spanSymbolArray: [{
         type: SpanSymbolTypeEnum.volta,
         msTypeName: MsTypeNameEnum.SpanSymbol,

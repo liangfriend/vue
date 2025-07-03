@@ -11,7 +11,7 @@
                 :msMode="MsMode.normal"></prefabWb>
     </div>
 
-    <div class="stackItem" comment="工具层">
+    <div class="stackItem toolsLayer" comment="工具层">
       <div class="rightTools">
         <right-tools @clickBtn="handleRightToolsBtn"></right-tools>
       </div>
@@ -26,20 +26,20 @@
 
 <script setup lang="ts">
 import prefabWb from '../../views/prefabWhiteBoard/addedMusicScore.vue';
-import {App, createApp, onMounted, onUnmounted, Ref, ref, watch, computed} from 'vue';
-
-import MusicScore from "@/applications/ChuangKeApplication/components/musicScore/musicScore.vue";
+import {computed, onMounted, ref, Ref, watch} from 'vue';
 
 // import mockData from "@/applications/ChuangKeApplication/components/musicScore/musicScoreData/happyBirthdayToYou.ts";
 import mockData from "@/applications/ChuangKeApplication/components/musicScore/musicScoreData/test.ts";
 import BottomMenu from "@/applications/ChuangKeApplication/views/editor/components/bottomMenu.vue";
 import {msPlayUtils} from "@/applications/ChuangKeApplication/utils/ms-playUtils.ts";
 import {MusicMapKey} from "@/applications/ChuangKeApplication/views/editor/constant.ts";
-import * as Tone from "tone";
 import {useRouter} from "vue-router";
-import {MsMode} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import {BarlineTypeEnum, MsMode} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import RightTools from "@/applications/ChuangKeApplication/views/editor/components/rightTools/rightTools.vue";
 import {MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {RightToolsBtnEnum} from "@/applications/ChuangKeApplication/views/editor/enum.ts";
+import {addMeasure} from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
+import {measureTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 
 const router = useRouter()
 type addedWb = {
@@ -112,10 +112,17 @@ watch(musicScoreData, (newVal) => {
 function handleRightToolsBtn(item: FunctionListItem) {
   switch (item.key) {
     case RightToolsBtnEnum.insertMeasureAfter: {
+      const newMeasure = measureTemplate({barLine: BarlineTypeEnum.single})
+      const currentSelected = msRef.value?.getCurrentSelected()
+      if (!currentSelected) return console.error("缺乏定位元素，小节添加失败")
+      addMeasure(musicScoreData.value, newMeasure, currentSelected, 'after')
       break
     }
     case RightToolsBtnEnum.insertMeasureBefore: {
-
+      const newMeasure = measureTemplate({barLine: BarlineTypeEnum.single})
+      const currentSelected = msRef.value?.getCurrentSelected()
+      if (!currentSelected) return console.error("缺乏定位元素，小节添加失败")
+      addMeasure(musicScoreData.value, newMeasure, currentSelected, 'before')
       break
     }
   }
@@ -143,11 +150,14 @@ onMounted(() => {
   justify-content: center;
 }
 
+.toolsLayer {
+  pointer-events: none;
+}
 .rightTools {
   position: absolute;
   right: 0;
   height: 100%;
-
+  pointer-events: auto;
 }
 .back {
   cursor: pointer;

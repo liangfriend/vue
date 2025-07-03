@@ -53,7 +53,7 @@ export declare type NoteHead = ({
     type: MsSymbolTypeEnum.noteHead,
     region: MusicScoreRegionEnum   // 五线谱区域
     chronaxie: ChronaxieEnum; // 时值
-    computed: {
+    computed: { // TODO 这里可能要废弃，只是播放用的话，不需要放在这
         clef?: ClefEnum;  // 谱号
         keySignature?: KeySignatureEnum; // 调号
         musicalAlphabet?: MusicalAlphabetEnum; // 音名
@@ -158,6 +158,7 @@ export declare interface MusicScore {
     measureHeight: number,
     showMode: MusicScoreShowModeEnum
     spanSymbolArray: Array<SpanSymbol>,
+    widthDynamicRatio: number, //动态宽度部分占比
 }
 
 
@@ -183,7 +184,7 @@ declare interface MouseDownData {
 
 declare interface MusicScoreRef {
     changeMode: (mode: MsMode) => void,
-    root: HTMLElement,
+    root: Ref<HTMLElement>,
     getMode: () => MsMode,
     getCurrentSelected: () => MsType | null,
 }
