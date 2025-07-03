@@ -185,8 +185,8 @@ declare interface MouseDownData {
 declare interface MusicScoreRef {
     changeMode: (mode: MsMode) => void,
     root: Ref<HTMLElement>,
-    getMode: () => MsMode,
-    getCurrentSelected: () => MsType | null,
+    mode: Ref<MsMode>,
+    currentSelected: Ref<MsType | null>,
 }
 
 // 点击事件处理

@@ -4,33 +4,23 @@ import {RightToolsBtnEnum} from "@/applications/ChuangKeApplication/views/editor
 
 const active = ref('function')
 
-const emits = defineEmits<{
-  (e: 'clickBtn', item: FunctionListItem): void
-}>()
-
-function handleClick(item: FunctionListItem) {
-  emits('clickBtn', item)
-}
 
 
-const functionList = ref<Array<FunctionListItem>>([{
-  name: "向前插入小节",
-  key: RightToolsBtnEnum.insertMeasureBefore
-}, {
-  name: "向后插入小节",
-  key: RightToolsBtnEnum.insertMeasureAfter
-}])
+
+
 </script>
 
 <template>
   <div class="toolBox">
     <el-tabs class="tabs" v-model="active" type="border-card">
       <el-tab-pane label="功能" name="function">
-        <el-button @click="handleClick(item)" v-for="(item) in functionList">
-          {{ item.name }}
-        </el-button>
+        <slot name="function">
+
+        </slot>
+
       </el-tab-pane>
       <el-tab-pane label="属性" name="properties">
+        <slot name="properties"></slot>
       </el-tab-pane>
     </el-tabs>
 

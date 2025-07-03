@@ -1,32 +1,8 @@
-<template>
-  <div class="stack">
-    <div class="stackItem">
-      <prefabWb ref="wbRef" class="whiteBoard"
-                :wbDrag="wbDrag"
-                :musicScoreData="musicScoreData"
-                :msHeight="800"
-                :msWidth="1000"
-                :floatBoardWidth="1000"
-                :floatBoardHeight="800"
-                :msMode="MsMode.normal"></prefabWb>
-    </div>
 
-    <div class="stackItem toolsLayer" comment="工具层">
-      <div class="rightTools">
-        <right-tools @clickBtn="handleRightToolsBtn"></right-tools>
-      </div>
-
-      <div class="bottomMenu">
-        <bottom-menu v-model="bottomMenuData"></bottom-menu>
-      </div>
-      <div class="back" @click="router.go(-1)">返回</div>
-    </div>
-  </div>
-</template>
 
 <script setup lang="ts">
 import prefabWb from '../../views/prefabWhiteBoard/addedMusicScore.vue';
-import {computed, onMounted, ref, Ref, watch} from 'vue';
+import {computed, onMounted, ref, Ref, UnwrapRef, watch} from 'vue';
 
 // import mockData from "@/applications/ChuangKeApplication/components/musicScore/musicScoreData/happyBirthdayToYou.ts";
 import mockData from "@/applications/ChuangKeApplication/components/musicScore/musicScoreData/test.ts";
@@ -34,7 +10,11 @@ import BottomMenu from "@/applications/ChuangKeApplication/views/editor/componen
 import {msPlayUtils} from "@/applications/ChuangKeApplication/utils/ms-playUtils.ts";
 import {MusicMapKey} from "@/applications/ChuangKeApplication/views/editor/constant.ts";
 import {useRouter} from "vue-router";
-import {BarlineTypeEnum, MsMode} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import {
+  BarlineTypeEnum,
+  MsMode,
+  MsTypeNameEnum
+} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import RightTools from "@/applications/ChuangKeApplication/views/editor/components/rightTools/rightTools.vue";
 import {MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {RightToolsBtnEnum} from "@/applications/ChuangKeApplication/views/editor/enum.ts";
@@ -43,7 +23,7 @@ import {measureTemplate} from "@/applications/ChuangKeApplication/components/mus
 
 const router = useRouter()
 type addedWb = {
-  getMsRef: () => MusicScoreRef
+  getMsRef: () => UnwrapRef<MusicScoreRef>
 }
 const wbRef = ref(null!) as Ref<addedWb>
 const msRef = computed(() => {
@@ -51,11 +31,12 @@ const msRef = computed(() => {
   return wbRef.value.getMsRef()
 })
 const curModeText = ref("教学模式")
-
+const msMode = computed(() => {
+  return msRef.value?.mode
+})
 function switchMode() {
   if (!msRef.value) return
-  const curMode = msRef.value.getMode()
-  if (curMode === MsMode.edit) {
+  if (msMode.value === MsMode.edit) {
     msRef.value.changeMode(MsMode.normal);
     curModeText.value = '编辑模式'
     wbDrag.value = true
@@ -108,32 +89,75 @@ watch(musicScoreData, (newVal) => {
     musicLoaded.value = true
   })
 }, {deep: true})
-
+const currentSelected = computed(() => {
+  return msRef.value?.currentSelected
+})
 function handleRightToolsBtn(item: FunctionListItem) {
   switch (item.key) {
     case RightToolsBtnEnum.insertMeasureAfter: {
       const newMeasure = measureTemplate({barLine: BarlineTypeEnum.single})
-      const currentSelected = msRef.value?.getCurrentSelected()
-      if (!currentSelected) return console.error("缺乏定位元素，小节添加失败")
-      addMeasure(musicScoreData.value, newMeasure, currentSelected, 'after')
+      console.log('chicken', msRef.value?.currentSelected)
+      if (!currentSelected.value) return console.error("缺乏定位元素，小节添加失败")
+      addMeasure(musicScoreData.value, newMeasure, currentSelected.value, 'after')
       break
     }
     case RightToolsBtnEnum.insertMeasureBefore: {
       const newMeasure = measureTemplate({barLine: BarlineTypeEnum.single})
-      const currentSelected = msRef.value?.getCurrentSelected()
-      if (!currentSelected) return console.error("缺乏定位元素，小节添加失败")
-      addMeasure(musicScoreData.value, newMeasure, currentSelected, 'before')
+      if (!currentSelected.value) return console.error("缺乏定位元素，小节添加失败")
+      addMeasure(musicScoreData.value, newMeasure, currentSelected.value, 'before')
       break
     }
   }
 }
+
+const functionList = ref<Array<FunctionListItem>>([{
+  name: "向前插入小节",
+  key: RightToolsBtnEnum.insertMeasureBefore
+}, {
+  name: "向后插入小节",
+  key: RightToolsBtnEnum.insertMeasureAfter
+}])
+
 onMounted(() => {
   //TEST
   window.musicScore = mockData
 });
 
 </script>
+<template>
+  <div class="stack">
+    <div class="stackItem">
+      <prefabWb ref="wbRef" class="whiteBoard"
+                :wbDrag="wbDrag"
+                :musicScoreData="musicScoreData"
+                :msHeight="800"
+                :msWidth="1000"
+                :floatBoardWidth="1000"
+                :floatBoardHeight="800"
+                :msMode="MsMode.normal"></prefabWb>
+    </div>
 
+    <div class="stackItem toolsLayer" comment="工具层">
+      <div class="rightTools">
+        <right-tools>
+          <template v-slot:function>
+            <template v-if="currentSelected?.msTypeName === MsTypeNameEnum.Measure">
+              <el-button @click="handleRightToolsBtn(item)" v-for="(item) in functionList">
+                {{ item.name }}
+              </el-button>
+            </template>
+
+          </template>
+        </right-tools>
+      </div>
+
+      <div class="bottomMenu">
+        <bottom-menu v-model="bottomMenuData"></bottom-menu>
+      </div>
+      <div class="back" @click="router.go(-1)">返回</div>
+    </div>
+  </div>
+</template>
 
 <style scoped lang="scss">
 .whiteBoard {

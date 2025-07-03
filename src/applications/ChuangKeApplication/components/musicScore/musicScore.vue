@@ -36,6 +36,13 @@
         ></ms-symbol-container>
       </template>
     </measure-container>
+    <!--  跨小节符号目前只有小节跟随型和符号（音符头）跟随型  -->
+    <span-symbol-vue :key="'span-symbol'+spanSymbolIndex"
+                     :musicScore="musicScore"
+                     v-for="(spanSymbol,spanSymbolIndex) in musicScore.spanSymbolArray"
+                     :componentWidth="width"
+                     :componentHeight="height"
+                     :spanSymbol="spanSymbol"></span-symbol-vue>
     <measure-container v-show="mode === MsMode.edit" :musicScoreData="musicScore" class="stackItem symbolLayer"
                        :style="{width:width+'px',height:height+'px', pointerEvents:'none'}"
                        comment="编辑模式虚拟音符层">
@@ -91,13 +98,7 @@
 
       </template>
     </measure-container>
-    <!--  跨小节符号目前只有小节跟随型和符号（音符头）跟随型  -->
-    <span-symbol-vue :key="'span-symbol'+spanSymbolIndex"
-                     :musicScore="musicScore"
-                     v-for="(spanSymbol,spanSymbolIndex) in musicScore.spanSymbolArray"
-                     :componentWidth="width"
-                     :componentHeight="height"
-                     :spanSymbol="spanSymbol"></span-symbol-vue>
+
   </div>
 </template>
 <script setup lang="ts">
@@ -187,15 +188,6 @@ function changeMode(newMode: MsMode) {
   mode.value = newMode
 }
 
-function getMode() {
-  return mode.value
-}
-
-function getCurrentSelected() {
-  return currentSelected.value
-}
-
-
 const musicScoreStyle = computed(() => {
   return {
     width: props.width + 'px',
@@ -258,7 +250,8 @@ provide('msState', {
   mode,
   currentSelected
 })
-defineExpose<MusicScoreRef>({changeMode, root: musicScoreRef, getMode, getCurrentSelected})
+// TODO 这个应该设置为已读，不知道能不能实现
+defineExpose<MusicScoreRef>({changeMode, root: musicScoreRef, mode, currentSelected})
 </script>
 <style scoped lang="scss" comment="布局">
 .stack {

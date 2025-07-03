@@ -31,6 +31,10 @@ const customMenuData = ref([{
   callback: () => {
   },
 }, {
+  title: '实用工具',
+  callback: () => {
+  },
+}, {
   title: '素养训练',
   callback: () => {
   },
