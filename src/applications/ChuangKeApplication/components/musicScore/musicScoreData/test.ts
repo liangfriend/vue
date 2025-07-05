@@ -26,7 +26,8 @@ const data: MusicScore = {
             hightlight: false,
             hightlightColor: 'red',
             color: 'black',
-        }
+        },
+        vueKey: Date.now()
     }],
     multipleStavesArray: [{
         id: 1,
@@ -44,8 +45,8 @@ const data: MusicScore = {
             id: 2,
             msTypeName: MsTypeNameEnum.SingleStaff,
             index: {},
-            bindingStartId: [4],
-            bindingEndId: [4],
+            bindingStartId: [],
+            bindingEndId: [],
             singleStaffPaddingTop: 30,
             singleStaffPaddingBottom: 30,
             options: {
@@ -147,13 +148,14 @@ const data: MusicScore = {
                 id: 3,
                 msTypeName: MsTypeNameEnum.Measure,
                 index: {},
-                bindingStartId: [],
+                bindingStartId: [15],
+                bindingEndId: [],
                 options: {
                     hightlight: false,
                     hightlightColor: 'red',
                     color: 'black',
                 },
-                bindingEndId: [],
+
                 msSymbolContainerArray: [{
                     id: 4, options: {
                         hightlight: false,
@@ -177,7 +179,7 @@ const data: MusicScore = {
                         },
                         computed: {},
                         bindingStartId: [],
-                        bindingEndId: [],
+                        bindingEndId: [15],
                         msSymbolArray: []
                     }]
                 }, {

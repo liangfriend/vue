@@ -102,6 +102,7 @@ export declare type SpanSymbol = (BaseSpanSymbol & {
     startTargetId: number,
     endTargetId: number,
     options: MusicScoreOptions,
+    vueKey: number,
 })
 export declare type MsSymbolContainer = {
     id: number,
@@ -153,7 +154,6 @@ export type MsType = MultipleStaves | SingleStaff | Measure | MsSymbolContainer 
 //调号，拍号只能小节有，谱号是音符有（但是谱号给第一个音符加谱号，会加到前一个小节上，也可以给小节加谱号，相当于给小节的第一个音符加谱号）小节也有
 export declare interface MusicScore {
     title?: string;
-    map?: Map<number, MsType>
     multipleStavesArray: Array<MultipleStaves>;
     measureHeight: number,
     showMode: MusicScoreShowModeEnum
@@ -187,6 +187,7 @@ declare interface MusicScoreRef {
     root: Ref<HTMLElement>,
     mode: Ref<MsMode>,
     currentSelected: Ref<MsType | null>,
+
 }
 
 // 点击事件处理
@@ -201,7 +202,8 @@ declare interface MouseDownInject {
 // 五线谱状态
 declare interface MsState {
     mode: Ref<MsMode>,
-    currentSelected: Ref<MsType | null>
+    currentSelected: Ref<MsType | null>,
+    msDataMap: Ref<Map<number, MsType>>
 }
 
 // 虚拟符号容器类型

@@ -37,7 +37,6 @@ const props = defineProps({
   ind: {},
   msSymbolContainer: {
     type: Object as PropType<MsSymbolContainer>,
-    required: true
   },
   //小节高度， 此属性会控制音符，休止符，谱号，拍号等符号大小
   measureHeight: {
@@ -104,11 +103,10 @@ const containerWidth = computed(() => {
 
 // 符号容器横坐标计算
 const containerLeft = computed(() => {
-  if (!props.msSymbolContainer) {
-    console.error("缺少必要的参数，坐标计算出错")
-    return 0
-  }
   let left = 0
+  if (props.msSymbolContainer) {
+
+
   const containerType = props.msSymbolContainer.type
   //变宽容器 （小节宽度 - 定宽容器宽度）/ 小节变宽容器宽度系数之和 * 截止当前容器小节的宽度系数之和 + 前置定宽容器宽度之和
   const widthFixedContainerWidthSumInMeasure = getWidthFixedContainerWidthSumInMeasure(props.measure, props.measureHeight)
@@ -128,7 +126,10 @@ const containerLeft = computed(() => {
     left += getMsSymboLContainerWidth(props.msSymbolContainer, props.measure, props.singleStaff, props.musicScore, props.measureHeight, props.componentWidth) * 2 / 4
   }
 
+  } else { // 没有符号容器传入的情况，就是空的小节
+    left = props.measureWidth / 2 - containerWidth.value / 2
 
+  }
   return left
 })
 const offsetBottom = ref(props.measureHeight)
@@ -145,20 +146,22 @@ const msState = inject("msState") as MsState
 
 function handleMouseDown(e: MouseEvent) {
   virtualSymbolMouseDown(e, {
-        msState,
+    msState,
     virtualSymbolContainerType: props.type,
     msData: {
       musicScore: props.musicScore,
-      msSymbolContainer: props.msSymbolContainer,
+      msSymbolContainer: props.msSymbolContainer || null,
       measure: props.measure,
       singleStaff: props.singleStaff,
       multipleStaves: props.multipleStaves,
     },
 
-        msSymbolInformation: {
-          region: region.value
-        }
+    msSymbolInformation: {
+      region: region.value
+    }
   })
+
+
 }
 
 // 虚拟符号相关

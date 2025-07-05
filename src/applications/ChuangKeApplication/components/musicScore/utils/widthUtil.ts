@@ -75,10 +75,12 @@ export function getMeasureWidth(measure: Measure, singleStaff: SingleStaff, musi
     const totalMeasureWidthConstant = getWidthConstantInMeasure(measure,); // 获取小节宽度系数和
     const fixedContainerWidthInSngleStaff = getWidthFixedContainerWidthSumInSingleStaff(singleStaff, musicScoreData.measureHeight) // 单谱表内定宽容器宽度
     const fixedContainerWidthInMeasure = getWidthFixedContainerWidthSumInMeasure(measure, musicScoreData.measureHeight) // 小节定宽容器宽度
-    const measureLength = singleStaff.measureArray.length
+    const measureLength = singleStaff.measureArray.length // 单谱表内小节数量
     const totalVariableContainerWidth = (componentWidth - fixedContainerWidthInSngleStaff) // 变宽容器总宽度
     const widthPerWidthConstant = totalVariableContainerWidth / totalSingleStaffWidthConstant * musicScoreData.widthDynamicRatio // 每宽度常亮的宽度
-    const fixedWidth = totalVariableContainerWidth * (1 - musicScoreData.widthDynamicRatio) / measureLength
+    const fixedWidth = totalVariableContainerWidth * (1 - musicScoreData.widthDynamicRatio) / measureLength   // 小节内就算没有变宽符号也要分配一定宽度，这里是计算出来每个小节固定分出来的宽度
+
+    // console.log('chicken', widthPerWidthConstant * totalMeasureWidthConstant + fixedContainerWidthInMeasure + fixedWidth)
     return widthPerWidthConstant * totalMeasureWidthConstant + fixedContainerWidthInMeasure + fixedWidth;
 }
 

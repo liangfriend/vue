@@ -17,9 +17,19 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import RightTools from "@/applications/ChuangKeApplication/views/editor/components/rightTools/rightTools.vue";
 import {MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
-import {RightToolsBtnEnum} from "@/applications/ChuangKeApplication/views/editor/enum.ts";
 import {addMeasure} from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 import {measureTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
+import {
+  getDataWithIndex,
+  getSpanSymbolIdSetInSingleStaff, setMeasureArrayIndex, updateSpanSymbol
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
+import {
+  handleRightToolsBtn,
+  insertMeasureAfter,
+  insertMeasureBefore, measureFunctionList
+} from "@/applications/ChuangKeApplication/views/editor/rightToolsFunction.ts";
+import {FunctionListItem} from "@/applications/ChuangKeApplication/views/editor/type";
+import {measureFunctionEnum} from "@/applications/ChuangKeApplication/views/editor/enum.ts";
 
 const router = useRouter()
 type addedWb = {
@@ -92,31 +102,8 @@ watch(musicScoreData, (newVal) => {
 const currentSelected = computed(() => {
   return msRef.value?.currentSelected
 })
-function handleRightToolsBtn(item: FunctionListItem) {
-  switch (item.key) {
-    case RightToolsBtnEnum.insertMeasureAfter: {
-      const newMeasure = measureTemplate({barLine: BarlineTypeEnum.single})
-      console.log('chicken', msRef.value?.currentSelected)
-      if (!currentSelected.value) return console.error("缺乏定位元素，小节添加失败")
-      addMeasure(musicScoreData.value, newMeasure, currentSelected.value, 'after')
-      break
-    }
-    case RightToolsBtnEnum.insertMeasureBefore: {
-      const newMeasure = measureTemplate({barLine: BarlineTypeEnum.single})
-      if (!currentSelected.value) return console.error("缺乏定位元素，小节添加失败")
-      addMeasure(musicScoreData.value, newMeasure, currentSelected.value, 'before')
-      break
-    }
-  }
-}
 
-const functionList = ref<Array<FunctionListItem>>([{
-  name: "向前插入小节",
-  key: RightToolsBtnEnum.insertMeasureBefore
-}, {
-  name: "向后插入小节",
-  key: RightToolsBtnEnum.insertMeasureAfter
-}])
+
 
 onMounted(() => {
   //TEST
@@ -142,9 +129,13 @@ onMounted(() => {
         <right-tools>
           <template v-slot:function>
             <template v-if="currentSelected?.msTypeName === MsTypeNameEnum.Measure">
-              <el-button @click="handleRightToolsBtn(item)" v-for="(item) in functionList">
-                {{ item.name }}
-              </el-button>
+              <div class="rightToolsFunction">
+                <el-button @click="handleRightToolsBtn(item,currentSelected,musicScoreData)"
+                           v-for="(item) in measureFunctionList">
+                  {{ item.name }}
+                </el-button>
+              </div>
+
             </template>
 
           </template>
@@ -195,5 +186,17 @@ onMounted(() => {
   align-items: center;
   bottom: 10px;
   left: 10px;
+}
+
+.rightToolsFunction {
+  display: flex;
+  justify-content: space-between;
+  row-gap: 10px;
+  flex-wrap: wrap;
+
+  > button {
+    width: 120px;
+    margin-left: 0;
+  }
 }
 </style>

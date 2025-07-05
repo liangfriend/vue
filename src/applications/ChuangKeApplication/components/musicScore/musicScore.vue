@@ -37,7 +37,7 @@
       </template>
     </measure-container>
     <!--  跨小节符号目前只有小节跟随型和符号（音符头）跟随型  -->
-    <span-symbol-vue :key="'span-symbol'+spanSymbolIndex"
+    <span-symbol-vue :key="spanSymbol.vueKey"
                      :musicScore="musicScore"
                      v-for="(spanSymbol,spanSymbolIndex) in musicScore.spanSymbolArray"
                      :componentWidth="width"
@@ -50,7 +50,6 @@
           #default="{ measure, measureIndex, singleStaff, multipleStaves, measureWidth }">
         <template v-if="currentSelected === measure">
           <virtual-symbol-container
-
               comment="第一个变宽容器"
               :msSymbolContainer="variableContainerArray(measure)[0]"
               :measure="measure"
@@ -153,7 +152,7 @@ const props = defineProps({
 });
 
 const mode = ref(MsMode.edit)
-
+const msDataMap = ref(new Map<number, MsType>())
 // 当前选择对象
 const currentSelected = ref<MsType | null>(null)
 // 变宽符号容器
@@ -198,7 +197,7 @@ const musicScoreStyle = computed(() => {
 
 function beforeMount() {
   // 遍历生成hashMap方便快速查找
-  mapGenerate(props.musicScore)
+  msDataMap.value = mapGenerate(props.musicScore)
   // 索引生成
   setMultipleStavesIndex(props.musicScore)
 
@@ -248,7 +247,8 @@ provide('mouseDown', {
 })
 provide('msState', {
   mode,
-  currentSelected
+  currentSelected,
+  msDataMap
 })
 // TODO 这个应该设置为已读，不知道能不能实现
 defineExpose<MusicScoreRef>({changeMode, root: musicScoreRef, mode, currentSelected})

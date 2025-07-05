@@ -21,7 +21,6 @@ import {
 import {MsSymbolInformationMap,} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 import {measureTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 
-
 const semitoneMap: { [key: string]: number } = {
     C: 0, 'C#': 1, Db: 1, D: 2, 'D#': 3, Eb: 3,
     E: 4, F: 5, 'F#': 6, Gb: 6, G: 7, 'G#': 8, Ab: 8,
@@ -535,39 +534,37 @@ export function getMultipleAspectRatio(msSymbol: MsSymbol): number {
 }
 
 // 生成hsahMap()
-export function mapGenerate(musicScore: MusicScore) {
-    musicScore.map = new Map()
+export function mapGenerate(musicScore: MusicScore): Map<number, MsType> {
+    const map = new Map()
 
 
     for (let i = 0; i < musicScore.multipleStavesArray.length; i++) {
         const muptipleStaves = musicScore.multipleStavesArray[i]
-        musicScore.map.set(muptipleStaves.id, muptipleStaves)
+        map.set(muptipleStaves.id, muptipleStaves)
         for (let j = 0; j < muptipleStaves.singleStaffArray.length; j++) {
             const singleStaff = muptipleStaves.singleStaffArray[j]
-            musicScore.map.set(singleStaff.id, singleStaff)
+            map.set(singleStaff.id, singleStaff)
             for (let k = 0; k < singleStaff.measureArray.length; k++) {
                 const measure = singleStaff.measureArray[k]
-                musicScore.map.set(measure.id, measure)
+                map.set(measure.id, measure)
                 for (let l = 0; l < measure.msSymbolContainerArray.length; l++) {
                     const msSymbolContainer = measure.msSymbolContainerArray[l]
-                    musicScore.map.set(msSymbolContainer.id, msSymbolContainer)
+                    map.set(msSymbolContainer.id, msSymbolContainer)
                     for (let t = 0; t < msSymbolContainer.msSymbolArray.length; t++) {
                         const msSymbol = msSymbolContainer.msSymbolArray[t]
-                        musicScore.map.set(msSymbol.id, msSymbol)
+                        map.set(msSymbol.id, msSymbol)
                     }
                 }
             }
         }
     }
+    return map
 }
 
 // 查询内容
-export function getTarget(id: number, musicScore: MusicScore): MsType | undefined {
-    if (!musicScore.map) {
-        console.error("这个谱表还没有生成map")
-        return
-    }
-    const target = musicScore.map.get(id)
+export function getTarget(id: number, msDataMap: Map<number, MsType>): MsType | undefined {
+
+    const target = msDataMap.get(id)
     if (target) {
         return target
     } else {
@@ -610,3 +607,37 @@ export function getDataWithIndex(index: musicScoreIndex, musicScore: MusicScore)
     return res
 }
 
+// 获取小节绑定spanSymbolId
+export function getSpanSymbolIdSetInMeasure(measure: Measure, musicScore: MusicScore): Set<number> {
+    const spanSymbolIdList = new Set<number>();
+    measure.msSymbolContainerArray.forEach((msSymbolContainer, index) => {
+        msSymbolContainer.msSymbolArray.forEach((msSymbol, index) => {
+            msSymbol.bindingEndId.forEach((spanSymbolId) => {
+                spanSymbolIdList.add(spanSymbolId);
+            })
+            msSymbol.bindingStartId.forEach((spanSymbolId) => {
+                spanSymbolIdList.add(spanSymbolId);
+            })
+        })
+    })
+    return spanSymbolIdList
+}
+
+// 获取单谱表绑定spanSymbolId
+export function getSpanSymbolIdSetInSingleStaff(singleStaff: SingleStaff, musicScore: MusicScore): Set<number> {
+    let spanSymbolIdList = new Set<number>();
+    singleStaff.measureArray.forEach((measure) => {
+        const measureSpanIds = getSpanSymbolIdSetInMeasure(measure, musicScore);
+        spanSymbolIdList = new Set([...spanSymbolIdList, ...measureSpanIds]);
+    })
+    return spanSymbolIdList
+}
+
+// 更新spanSymbol视图
+export function updateSpanSymbol(spanSymbolIdList: Set<number>, musicScore: MusicScore) {
+    musicScore.spanSymbolArray.forEach((spanSymbol) => {
+        if (spanSymbolIdList.has(spanSymbol.id)) {
+            spanSymbol.vueKey = Date.now()
+        }
+    })
+}

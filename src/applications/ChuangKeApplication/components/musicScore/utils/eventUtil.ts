@@ -18,7 +18,8 @@ import {
     msSymbolTemplate
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
-    msSymbolComputedData, setMeasureArrayIndex
+    getSpanSymbolIdSetInSingleStaff,
+    msSymbolComputedData, setMeasureArrayIndex, updateSpanSymbol
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {
     addMsSymbolContainer
@@ -94,7 +95,7 @@ export function virtualSymbolMouseDown(
         virtualSymbolContainerType: VirtualSymbolContainerType,
         msData: {
             musicScore: MusicScore,
-            msSymbolContainer: MsSymbolContainer,
+            msSymbolContainer: MsSymbolContainer | null,
             measure: Measure,
             singleStaff: SingleStaff,
             multipleStaves: MultipleStaves,
@@ -115,10 +116,17 @@ export function virtualSymbolMouseDown(
 
     if (['front'].includes(params.virtualSymbolContainerType)) {
         newMsSymbolContainer.msSymbolArray.push(newNoteHead)
-        addMsSymbolContainer(params.msData.musicScore, newMsSymbolContainer,
-            params.msData.msSymbolContainer, 'before')
+        if (params.msData.msSymbolContainer) {
+            addMsSymbolContainer(params.msData.musicScore, newMsSymbolContainer,
+                params.msData.msSymbolContainer, 'before')
+        } else {
+            addMsSymbolContainer(params.msData.musicScore, newMsSymbolContainer,
+                params.msData.measure, 'before')
+        }
+
     } else if (['end', 'middle'].includes(params.virtualSymbolContainerType)) {
         newMsSymbolContainer.msSymbolArray.push(newNoteHead)
+        if (!params.msData.msSymbolContainer) return console.error("没有作为对照的符号容器，符号容器添加失败")
         addMsSymbolContainer(params.msData.musicScore, newMsSymbolContainer,
             params.msData.msSymbolContainer, 'after')
     } else if (['self'].includes(params.virtualSymbolContainerType)) {
@@ -126,6 +134,9 @@ export function virtualSymbolMouseDown(
     }
     // 索引生成
     setMeasureArrayIndex(params.msData.singleStaff)
+    // 跨小节符号位置更新
+    const spanSymbolIdSet = getSpanSymbolIdSetInSingleStaff(params.msData.singleStaff, params.msData.musicScore)
+    updateSpanSymbol(spanSymbolIdSet, params.msData.musicScore)
 }
 
 export function measureMouseDown(e: MouseEvent, msState: MsState, measure: Measure) {

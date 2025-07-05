@@ -15,6 +15,7 @@ import {
 
 // 添加符号容器
 export function addMsSymbolContainer(musicScore: MusicScore, newMsSymbolContainer: MsSymbolContainer, currSelected: MsType, position: 'after' | 'before' = 'after') {
+
     if (currSelected.msTypeName === MsTypeNameEnum.MsSymbolContainer) {
         const measure = getDataWithIndex(currSelected.index, musicScore).measure
         const msSymbolContainer = getDataWithIndex(currSelected.index, musicScore).msSymbolContainer
@@ -27,13 +28,18 @@ export function addMsSymbolContainer(musicScore: MusicScore, newMsSymbolContaine
         } else {
             array.splice(targetIndex + 1, 0, newMsSymbolContainer);
         }
+    } else if (currSelected.msTypeName === MsTypeNameEnum.Measure) {
+        const measure = currSelected
+        if (!measure) return console.error("小节不存在，符号容器添加失败")
+        const array = measure.msSymbolContainerArray;
+        array.push(newMsSymbolContainer)
     }
 }
 
 // 移除符号容器
 export function removeMsSymbolContainer(
+    msSymbolContainer: MsSymbolContainer,
     musicScore: MusicScore,
-    msSymbolContainer: MsSymbolContainer
 ) {
     const measure = getDataWithIndex(msSymbolContainer.index, musicScore).measure
     if (!measure) return console.error("小节不存在，符号容器移除失败")
@@ -76,3 +82,19 @@ export function addMeasure(musicScore: MusicScore, newMeasure: Measure, currSele
 
 }
 
+// 删除小节
+export function removeMeasure(
+    measure: Measure,
+    musicScore: MusicScore,
+) {
+    const singleStaff = getDataWithIndex(measure.index, musicScore).singleStaff
+    if (!singleStaff) return console.error("单谱表不存在，小节移除失败")
+    const array = singleStaff.measureArray;
+    const index = array.findIndex(item => item === measure);
+    if (index !== -1) {
+        array.splice(index, 1);
+    } else {
+        console.error("找不到目标小节")
+    }
+
+}

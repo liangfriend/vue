@@ -17,7 +17,7 @@ export function getMeasureLeftToMusicScore(measure: Measure, musicScore: MusicSc
         if (curMeasure === measure) {
             return left
         }
-        left += getMeasureWidth(measure, indexData.singleStaff, musicScore, componentWidth)
+        left += getMeasureWidth(curMeasure, indexData.singleStaff, musicScore, componentWidth)
     }
     return left
 
