@@ -7,19 +7,25 @@ import {
 import {
     Measure,
     MsState,
-    MsSymbol, MsSymbolContainer,
-    MsType, MultipleStaves, MusicScore, SingleStaff,
+    MsSymbol,
+    MsSymbolContainer,
+    MsType,
+    MultipleStaves,
+    MusicScore,
+    SingleStaff,
     VirtualSymbolContainerType
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 
-import {computed, onMounted, onBeforeMount, onUnmounted, type PropType, provide, ref, Ref} from 'vue';
+import {Ref} from 'vue';
 import {
     msSymbolContainerTemplate,
     msSymbolTemplate
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
+    getDataWithIndex,
     getSpanSymbolIdSetInSingleStaff,
-    msSymbolComputedData, setMeasureArrayIndex, updateSpanSymbol
+    setMeasureArrayIndex,
+    updateSpanSymbol
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {
     addMsSymbolContainer
@@ -33,16 +39,20 @@ export function select(value: MsType, currentSelected: Ref<null | MsType>) {
     }
     value.options.hightlight = true
     currentSelected.value = value
+    console.log('chicken', value)
+
 }
 
 
-export const eventConstant = {
+export const eventConstant: { startX: number, startY: number, originRegion: MusicScoreRegionEnum } = {
     startX: 0, //鼠标按下时相对视口坐标
     startY: 0,
+    originRegion: MusicScoreRegionEnum.space_1, // 音符按下专用，记录初始region
 }
 
-
+// 处理选中元素mousemove事件
 export function handleMouseMoveSelected(e: MouseEvent, measureHeight: number, currentSelected: MsType | null) {
+
     if (!currentSelected) return
     switch (currentSelected.msTypeName) {
         case MsTypeNameEnum.MsSymbol: {
@@ -52,43 +62,41 @@ export function handleMouseMoveSelected(e: MouseEvent, measureHeight: number, cu
                 const dy = e.clientY - eventConstant.startY;
                 if (Math.abs(dy) > measureHeight / 8 && msSymbol) {
                     const index = Math.floor(dy / measureHeight * 8);
-                    const targetIndex = msSymbol.region - index;
+
+                    const targetIndex = eventConstant.originRegion - index;
                     if (targetIndex in MusicScoreRegionEnum) {
                         msSymbol.region = targetIndex as MusicScoreRegionEnum;
-                        eventConstant.startY = e.clientY;
+
                     }
                 }
             }
-
             break
         }
     }
-
 }
 
 
-export function handleMouseUpSelected(e: MouseEvent, currentSelected: MsType | null) {
-    if (!currentSelected) return
-    switch (currentSelected.msTypeName) {
+export function handleMouseUpSelected(e: MouseEvent, currentSelected: Ref<MsType | null>, musicScore: MusicScore) {
+    if (!currentSelected.value) return
+    switch (currentSelected.value.msTypeName) {
         case MsTypeNameEnum.MsSymbol: {
-            currentSelected.options.hightlight = false
+            // 跨小节符号位置更新
+            const singleStaff = getDataWithIndex(currentSelected.value.index, musicScore).singleStaff
+            if (!singleStaff) return console.error("找不到单谱表，跨小节符号更新失败")
+            const spanSymbolIdSet = getSpanSymbolIdSetInSingleStaff(singleStaff, musicScore)
+            updateSpanSymbol(spanSymbolIdSet, musicScore)
+
+            currentSelected.value.options.hightlight = false
+            currentSelected.value = null
+
             break
         }
         case MsTypeNameEnum.Measure: {
         }
     }
-
 }
 
-export function msSymbolMouseDown(e: MouseEvent, msState: MsState, msSymbol: MsSymbol) {
-    if (msState.mode.value === MsMode.edit) {
-        // 订阅
-        select(msSymbol, msState.currentSelected)
-        // 抛出回调
-        // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
-    }
-}
-
+// 虚拟音符鼠标按下事件
 export function virtualSymbolMouseDown(
     e: MouseEvent, params: {
         msState: MsState,
@@ -139,12 +147,39 @@ export function virtualSymbolMouseDown(
     updateSpanSymbol(spanSymbolIdSet, params.msData.musicScore)
 }
 
-export function measureMouseDown(e: MouseEvent, msState: MsState, measure: Measure) {
-    if (msState.mode.value === MsMode.edit) {
+
+export function msSymbolMouseDown(e: MouseEvent, mode: MsMode, currentSelected: Ref<MsType | null>, msSymbol: MsSymbol) {
+    console.log('chicken',)
+    if (msSymbol.type === MsSymbolTypeEnum.noteHead) {  // 赋值region
+        eventConstant.originRegion = msSymbol.region
+    }
+    if (mode === MsMode.edit) {
         // 订阅
-        select(measure, msState.currentSelected)
-        // 抛出回调
-        // mouseDown.msSymbolMouseDown(e, {msData: props.msSymbol})
+        select(msSymbol, currentSelected)
     }
 }
 
+export function msSymbolMouseUp(e: MouseEvent, mode: MsMode, currentSelected: Ref<MsType | null>, msSymbol: MsSymbol) {
+
+}
+
+export function measureMouseDown(e: MouseEvent, mode: MsMode, currentSelected: Ref<MsType | null>, measure: Measure) {
+    if (mode === MsMode.edit) {
+        // 订阅
+        select(measure, currentSelected)
+    }
+}
+
+export function singleStaffMouseDown(e: MouseEvent, mode: MsMode, currentSelected: Ref<MsType | null>, singleStaff: SingleStaff) {
+    if (mode === MsMode.edit) {
+        // 订阅
+        select(singleStaff, currentSelected)
+    }
+}
+
+export function multipleStavesMouseDown(e: MouseEvent, mode: MsMode, currentSelected: Ref<MsType | null>, multipleStaves: MultipleStaves) {
+    if (mode === MsMode.edit) {
+        // 订阅
+        select(multipleStaves, currentSelected)
+    }
+}

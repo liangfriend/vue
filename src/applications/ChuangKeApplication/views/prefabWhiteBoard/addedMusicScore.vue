@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import WhiteBoard from "@/applications/ChuangKeApplication/components/whiteBoard/whiteBoard.vue";
 import MusicScoreVue from "@/applications/ChuangKeApplication/components/musicScore/musicScore.vue";
-import {App, onMounted, PropType, Ref, ref, watch} from "vue";
+import {App, nextTick, onMounted, PropType, Ref, ref, watch} from "vue";
 import type {MusicScore, MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {MsMode} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {msPlayUtils} from "@/applications/ChuangKeApplication/utils/ms-playUtils.ts";
@@ -57,10 +57,8 @@ function initMusicScore() {
     center: 'center',
     cloneNode: false
   }
-  container = document.createElement('div');
-  container.appendChild(msRef.value.root)
   wbRef.value.switchState(whiteBoardState.add)
-  wbRef.value.cacheElement(container.children[0], 'musicScore');
+  wbRef.value.cacheElement(msRef.value.root, 'musicScore');
   wbRef.value.addElement(options, 'musicScore')
   wbRef.value.switchState(whiteBoardState.normal)
   wbRef.value.delCacheElement('musicScore')

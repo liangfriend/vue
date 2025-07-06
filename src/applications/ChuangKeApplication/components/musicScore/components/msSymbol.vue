@@ -1,5 +1,4 @@
 <template>
-
   <clef
       v-if="msSymbol?.type === MsSymbolTypeEnum.clef || msSymbol?.type === MsSymbolTypeEnum.clef_f && 'clef' in msSymbol"
       :clef="msSymbol?.clef"
@@ -11,7 +10,8 @@
                  :msSymbol="msSymbol" :clef="msSymbol.computed.clef"></key-signature>
   <time-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.timeSignature" :style="msSymbolStyle"
                   :msSymbol="msSymbol" :measure-height="measureHeight"></time-signature>
-  <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle" @mousedown="handleMouseDown"
+  <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle" @mouseup.self="handleMouseUp"
+       @mousedown.self="handleMouseDown"
   ></div>
 </template>
 <script setup lang="ts">
@@ -260,23 +260,17 @@ const msSymbolStyle = computed<CSSProperties>(() => {
 
   return style
 });
-
-
-// 点击事件处理
-interface MouseDownInject {
-  msSymbolMouseDown: (e: MouseEvent, data: MouseDownData) => void
-  measureMouseDown: (e: MouseEvent, data: MouseDownData) => void
-  singleStaffMouseDown: (e: MouseEvent, data: MouseDownData) => void
-  multipleStavesMouseDown: (e: MouseEvent, data: MouseDownData) => void
-  select: (value: MsType) => void
-}
-
-const mouseDown = inject("mouseDown") as MouseDownInject
-const msState = inject("msState") as MsState
-
+const emits = defineEmits(['msSymbolMouseDown', 'msSymbolMouseUp']);
 function handleMouseDown(e: MouseEvent) {
-  msSymbolMouseDown(e, msState, props.msSymbol);
+  emits('msSymbolMouseDown', e, props.msSymbol)
+
 }
+
+function handleMouseUp(e: MouseEvent) {
+  console.log('chickenup',)
+  emits('msSymbolMouseUp', e, props.msSymbol)
+}
+
 
 onMounted(() => {
 

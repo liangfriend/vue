@@ -1,23 +1,16 @@
 <template>
-  <div class="measure" :style="measureStyle" @mousedown="handleMouseDown">
-    <div>
-      <div draggable="false" :style="barLineStyle"></div>
-    </div>
-    <!--    <div>-->
-    <!--      <div draggable="false" :style="barStyle"></div>-->
-    <!--    </div>-->
+  <div class="measure" :style="measureStyle" @mousedown.self="handleMouseDown">
+    <div :style="barLineStyle"></div>
   </div>
 </template>
 <script setup lang="ts">
-import {computed, inject, PropType, ref} from 'vue';
+import {computed, CSSProperties, inject, PropType, ref} from 'vue';
 
 import bar from '../musicSymbols/barlineSingle.svg';
 import barLine from '../musicSymbols/bar.svg';
 import {
   Measure,
-  MouseDownData,
-  MouseDownInject,
-  MsState,
+
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {measureMouseDown, select} from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
 import {MsMode} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
@@ -67,7 +60,7 @@ const measureStyle = computed(() => {
 
   };
 });
-const barLineStyle = computed(() => {
+const barLineStyle = computed((): CSSProperties => {
   return {
     width: (props.width) + 'px',
     height: props.height + 'px',
@@ -75,15 +68,13 @@ const barLineStyle = computed(() => {
     mask: `url(${barLine}) no-repeat center`,
     'mask-size': '100% 100%',
     background: props.measure.options.hightlight ? props.measure.options.hightlightColor : props.measure.options.color,
+    pointerEvents: 'none',
   };
 });
-
-
-const mouseDown = inject("mouseDown") as MouseDownInject
-const msState = inject("msState") as MsState
-
+const emits = defineEmits(['measureMouseDown']);
 function handleMouseDown(e: MouseEvent) {
-  measureMouseDown(e, msState, props.measure);
+  emits('measureMouseDown', e, props.measure)
+
 }
 
 </script>

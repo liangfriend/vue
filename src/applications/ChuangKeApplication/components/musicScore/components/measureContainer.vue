@@ -3,11 +3,13 @@
     <div v-for="(multipleStaves, multipleStavesIndex) in musicScoreData.multipleStavesArray"
          :key="'multipleStaves'+multipleStavesIndex"
          :style="multipleStavesStyle(multipleStaves)"
+         @mousedown.self="(e:MouseEvent)=>emits('multipleStavesMouseDown',e,multipleStaves)"
          class="multipleStaves">
       <slot name="multipleStaves"></slot>
       <div v-for="(singleStaff,singleStaffIndex) in multipleStaves.singleStaffArray"
            :key="'singleStaff'+singleStaffIndex"
            :style="singleStaffStyle(singleStaff,multipleStaves)"
+           @mousedown.self="(e:MouseEvent)=>emits('singleStaffMouseDown',e,singleStaff)"
            class="singleStaff">
         <slot name="singleStaff"></slot>
         <div v-for="(measure,measureIndex) in singleStaff.measureArray"
@@ -50,6 +52,10 @@ const props = defineProps({
     type: Object as PropType<MusicScore>,
     default: {}
   },
+  disabled: {
+    type: Boolean,
+    default: true
+  },
   width: {
     type: Number,
     default: 1000,
@@ -59,31 +65,39 @@ const props = defineProps({
     default: 800,
   },
 });
+
+
+const emits = defineEmits(["singleStaffMouseDown", "multipleStavesMouseDown"]);
 // 边距全部用padding避免margin折叠
-const multipleStavesStyle = computed(() => (multipleStaves: MultipleStaves) => {
+const multipleStavesStyle = computed(() => (multipleStaves: MultipleStaves): CSSProperties => {
   return {
     'grid-template-rows': `repeat(${multipleStaves.singleStaffArray.length},1fr)`,
     'padding-top': multipleStaves.multipleStavesPaddingTop + 'px',
     'padding-bottom': multipleStaves.multipleStavesPaddingBottom + 'px',
-    'margin-bottom': multipleStaves.multipleStavesMarginBottom + 'px'
+    'margin-bottom': multipleStaves.multipleStavesMarginBottom + 'px',
+    'pointer-events': props.disabled ? 'none' : 'auto',
+    'outline': `1px solid ` + (multipleStaves.options.hightlight ? multipleStaves.options.hightlightColor : multipleStaves.options.color),
   };
 });
-const singleStaffStyle = computed(() => (singleStaff: SingleStaff, _multipleStaves: MultipleStaves) => {
+const singleStaffStyle = computed(() => (singleStaff: SingleStaff, _multipleStaves: MultipleStaves): CSSProperties => {
   return {
     'grid-template-columns': `repeat(${singleStaff.measureArray.length},1fr)`,
     'padding-top': singleStaff.singleStaffPaddingTop + 'px',
     'padding-bottom': singleStaff.singleStaffPaddingBottom + 'px',
-    'margin-bottom': singleStaff.singleStaffMarginBottom + 'px'
+    'margin-bottom': singleStaff.singleStaffMarginBottom + 'px',
+    'pointer-events': props.disabled ? 'none' : 'auto',
+    'outline': `1px solid ` + (singleStaff.options.hightlight ? singleStaff.options.hightlightColor : singleStaff.options.color),
   };
 });
 const measureWidth = computed(() => (measure: Measure, singleStaff: SingleStaff, _multipleStaves: MultipleStaves) => {
 
   return getMeasureWidth(measure, singleStaff, props.musicScoreData, props.width)
 });
-const measureSlotStyle = computed(() => (measure: Measure, singleStaff: SingleStaff, multipleStaves: MultipleStaves) => {
+const measureSlotStyle = computed(() => (measure: Measure, singleStaff: SingleStaff, multipleStaves: MultipleStaves): CSSProperties => {
   let style: CSSProperties = {};
   style.height = props.musicScoreData.measureHeight + 'px';
   style.width = measureWidth.value(measure, singleStaff, multipleStaves) + 'px';
+  style.pointerEvents = props.disabled ? 'none' : 'auto';
   return style;
 });
 

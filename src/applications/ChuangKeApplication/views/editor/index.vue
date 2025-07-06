@@ -119,8 +119,8 @@ onMounted(() => {
                 :musicScoreData="musicScoreData"
                 :msHeight="800"
                 :msWidth="1000"
-                :floatBoardWidth="1000"
-                :floatBoardHeight="800"
+                :floatBoardWidth="1200"
+                :floatBoardHeight="1000"
                 :msMode="MsMode.normal"></prefabWb>
     </div>
 

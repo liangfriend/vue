@@ -1,26 +1,8 @@
-<template>
-  <div class="msSymbolContainer "
-       :style="msSymbolContainerStyle">
-    <ms-symbol-slot v-for="msSymbol in msSymbolContainer?.msSymbolArray"
-                    :msSymbol="msSymbol"
-                    :msSymbolContainer="props.msSymbolContainer"
-                    :measure="props.measure"
-                    :measureWidth="props.measureWidth"
-                    :singleStaff="props.singleStaff"
-                    :containerWidth="containerWidth"
-                    :componentWidth="componentWidth"
-                    :componentHeight="componentHeight"
-                    :multipleStaves="props.multipleStaves"
-                    :musicScore="props.musicScore"
-                    :measureHeight="props.measureHeight"></ms-symbol-slot>
-  </div>
 
-
-</template>
 
 <script setup lang="ts">
 import type {
-  Measure,
+  Measure, MsSymbol,
   MsSymbolContainer,
   MultipleStaves, MusicScore,
   SingleStaff,
@@ -93,6 +75,7 @@ const msSymbolContainerStyle = computed<CSSProperties>(() => {
     height: props.measureHeight + 'px',
     width: containerWidth.value + 'px',
     bottom: 0 + 'px',
+    pointerEvents: 'none',
 
   }
 });
@@ -126,19 +109,30 @@ const containerLeft = computed(() => {
 
   return left
 })
+const emits = defineEmits(['msSymbolMouseDown', 'msSymbolMouseUp']);
 
-
-onMounted(() => {
-  // 如果是音符头，获取到谱号
-
-})
-
-
-const mouseDownFn = () => {
-
-};
 </script>
+<template>
+  <div class="msSymbolContainer"
+       :style="msSymbolContainerStyle">
+    <ms-symbol-slot v-for="msSymbol in msSymbolContainer?.msSymbolArray"
+                    :msSymbol="msSymbol"
+                    :msSymbolContainer="props.msSymbolContainer"
+                    :measure="props.measure"
+                    :measureWidth="props.measureWidth"
+                    :singleStaff="props.singleStaff"
+                    :containerWidth="containerWidth"
+                    :componentWidth="componentWidth"
+                    :componentHeight="componentHeight"
+                    @msSymbolMouseDown="(e:MouseEvent, msSymbol:MsSymbol) => emits('msSymbolMouseDown',e,msSymbol)"
+                    @msSymbolMouseUp="(e:MouseEvent, msSymbol:MsSymbol) => emits('msSymbolMouseUp',e,msSymbol)"
+                    :multipleStaves="props.multipleStaves"
+                    :musicScore="props.musicScore"
+                    :measureHeight="props.measureHeight"></ms-symbol-slot>
+  </div>
 
+
+</template>
 
 <style scoped>
 .msSymbolContainer {

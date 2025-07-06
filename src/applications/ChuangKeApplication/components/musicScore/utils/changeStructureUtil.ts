@@ -96,5 +96,15 @@ export function removeMeasure(
     } else {
         console.error("找不到目标小节")
     }
+}
 
+// 删除小节相关联的跨小节符号
+export function removeMeasureRelatedSpanSymbol(measure: Measure, musicScore: MusicScore) {
+    for (let i = 0; i < musicScore.spanSymbolArray.length; i++) {
+        const spanSymbol = musicScore.spanSymbolArray[i];
+        if (measure.bindingStartId.includes(spanSymbol.id) || measure.bindingEndId.includes(spanSymbol.id)) {
+            // 删除关联的跨小节符号
+            musicScore.spanSymbolArray.splice(i, 1);
+        }
+    }
 }

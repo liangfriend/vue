@@ -80,7 +80,6 @@ export function getMeasureWidth(measure: Measure, singleStaff: SingleStaff, musi
     const widthPerWidthConstant = totalVariableContainerWidth / totalSingleStaffWidthConstant * musicScoreData.widthDynamicRatio // 每宽度常亮的宽度
     const fixedWidth = totalVariableContainerWidth * (1 - musicScoreData.widthDynamicRatio) / measureLength   // 小节内就算没有变宽符号也要分配一定宽度，这里是计算出来每个小节固定分出来的宽度
 
-    // console.log('chicken', widthPerWidthConstant * totalMeasureWidthConstant + fixedContainerWidthInMeasure + fixedWidth)
     return widthPerWidthConstant * totalMeasureWidthConstant + fixedContainerWidthInMeasure + fixedWidth;
 }
 

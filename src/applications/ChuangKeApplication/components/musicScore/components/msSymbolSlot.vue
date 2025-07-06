@@ -1,32 +1,6 @@
-<template>
-  <div class="msSymbolSlot p-stackItem"
-
-       :style="msSymbolSlotStyle">
-    <msSymbolVue v-if="msSymbol" ref="mainMsSymbolRef" :measureHeight="measureHeight"
-                 :slot-width="slotWidth"
-                 :containerWidth="containerWidth"
-                 :isMain="true"
-                 :componentWidth="componentWidth"
-                 :componentHeight="componentHeight"
-                 :musicScore="props.musicScore"
-                 :ms-symbol="msSymbol"></msSymbolVue>
-    <template v-if="msSymbol?.msSymbolArray">
-      <msSymbolVue :measureHeight="measureHeight" v-for="item in msSymbol.msSymbolArray"
-                   :containerWidth="containerWidth"
-                   :isMain="false"
-                   :slot-width="slotWidth"
-                   :componentWidth="componentWidth"
-                   :componentHeight="componentHeight"
-                   :musicScore="props.musicScore"
-                   :ms-symbol="item"></msSymbolVue>
-    </template>
-  </div>
-
-
-</template>
 
 <script setup lang="ts">
-import {
+import type {
   Measure,
   MsSymbol,
   MsSymbolContainer,
@@ -112,6 +86,7 @@ const msSymbolSlotStyle = computed<CSSProperties>(() => {
     height: props.measureHeight + 'px',
     width: slotWidth.value + 'px',
     bottom: slotBottom.value + 'px',
+    pointEvents: ' none',
 
   }
 });
@@ -149,17 +124,40 @@ const slotBottom = computed(() => {
   return getSlotBottomToMeasure(props.msSymbol, props.measureHeight)
 })
 
-
-onMounted(() => {
-  // 如果是音符头，获取到谱号
-
-})
+const emits = defineEmits(['msSymbolMouseDown', 'msSymbolMouseUp']);
 
 
-const mouseDownFn = () => {
-
-};
 </script>
+<template>
+  <div class="msSymbolSlot p-stackItem"
+
+       :style="msSymbolSlotStyle">
+    <msSymbolVue v-if="msSymbol" ref="mainMsSymbolRef" :measureHeight="measureHeight"
+                 :slot-width="slotWidth"
+                 :containerWidth="containerWidth"
+                 :isMain="true"
+                 :componentWidth="componentWidth"
+                 :componentHeight="componentHeight"
+                 :musicScore="props.musicScore"
+                 @msSymbolMouseDown="(e:MouseEvent, msSymbol:MsSymbol)=>emits('msSymbolMouseDown',e,msSymbol)"
+                 @msSymbolMouseUp="(e:MouseEvent, msSymbol:MsSymbol)=>emits('msSymbolMouseUp',e,msSymbol)"
+                 :ms-symbol="msSymbol"></msSymbolVue>
+    <template v-if="msSymbol?.msSymbolArray">
+      <msSymbolVue :measureHeight="measureHeight" v-for="item in msSymbol.msSymbolArray"
+                   :containerWidth="containerWidth"
+                   :isMain="false"
+                   :slot-width="slotWidth"
+                   :componentWidth="componentWidth"
+                   @msSymbolMouseDown="(e:MouseEvent, msSymbol:MsSymbol)=>emits('msSymbolMouseDown',e,msSymbol)"
+                   @msSymbolMouseUp="(e:MouseEvent, msSymbol:MsSymbol)=>emits('msSymbolMouseUp',e,msSymbol)"
+                   :componentHeight="componentHeight"
+                   :musicScore="props.musicScore"
+                   :ms-symbol="item"></msSymbolVue>
+    </template>
+  </div>
+
+
+</template>
 
 
 <style scoped>

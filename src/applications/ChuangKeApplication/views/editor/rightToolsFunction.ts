@@ -5,7 +5,7 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {
     addMeasure,
-    removeMeasure
+    removeMeasure, removeMeasureRelatedSpanSymbol
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 import {
     getDataWithIndex, getSpanSymbolIdSetInSingleStaff,
@@ -41,7 +41,12 @@ export function insertMeasureBefore(measure: Measure, musicScoreData: MusicScore
 }
 
 export function deleteMeasure(measure: Measure, musicScoreData: MusicScore) {
+    // 如果是单谱表内最后的小节，则不可以删除
+    const singleStaff = getDataWithIndex(measure.index, musicScoreData).singleStaff
+    if (singleStaff && singleStaff.measureArray.length <= 1) return console.error("")
+
     removeMeasure(measure, musicScoreData)
+    removeMeasureRelatedSpanSymbol(measure, musicScoreData)
     updateRelatedData(measure, musicScoreData)
 }
 

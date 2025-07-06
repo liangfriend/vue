@@ -25,7 +25,7 @@ const data: MusicScore = {
         options: {
             hightlight: false,
             hightlightColor: 'red',
-            color: 'black',
+            color: 'transparent',
         },
         vueKey: Date.now()
     }],
@@ -39,7 +39,7 @@ const data: MusicScore = {
         options: {
             hightlight: false,
             hightlightColor: 'red',
-            color: 'black',
+            color: 'transparent',
         },
         singleStaffArray: [{
             id: 2,
@@ -52,7 +52,7 @@ const data: MusicScore = {
             options: {
                 hightlight: false,
                 hightlightColor: 'red',
-                color: 'black',
+                color: 'transparent',
             },
             singleStaffMarginBottom: 30,
             measureArray: [{

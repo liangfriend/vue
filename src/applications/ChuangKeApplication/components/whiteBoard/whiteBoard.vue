@@ -76,6 +76,7 @@ const cacheMap = new Map();
 //添加元素到暂存区
 function cacheElement(element: Element, key = 'element'): void {
   cacheMap.set(key, element);
+
 };
 
 // 删除暂存区元素
@@ -116,26 +117,26 @@ function addElement(options: AddElementOptions, key = 'element'): void {
 
   //这里还要套一层壳，把元素全部放到这层壳里，防止svg元素设置top,left不生效
   const shellDom = document.createElement('div');
+  const rect = element.getBoundingClientRect(); //appendChild后getBoundingRect获取的宽高会变成0，而浏览器不会立即重排而是等待js执行完成，所以要提前保留几何信息
   shellDom.appendChild(element);
+
+
   shellDom.style.position = 'absolute';
   if (!options.center) {
     shellDom.style.top = options.top + 'px';
     shellDom.style.left = options.left + 'px';
   } else {
     if (element instanceof HTMLElement) {
-      shellDom.style.display = 'flex'
-      element.style.flexShrink = '0'
-      element.style.flexGrow = '0';
       switch (options.center) {
         case 'vertical':
-          shellDom.style.alignItems = 'center';
+          shellDom.style.top = parseAndFormatDimension(props.floatBoardHeight).value / 2 - rect.height / 2 + 'px';
           break;
         case 'horizontal':
-          shellDom.style.justifyContent = 'center';
+          shellDom.style.left = parseAndFormatDimension(props.floatBoardWidth).value / 2 - rect.width / 2 + 'px';
           break
         case 'center':
-          shellDom.style.alignItems = 'center';
-          shellDom.style.justifyContent = 'center';
+          shellDom.style.top = parseAndFormatDimension(props.floatBoardHeight).value / 2 - rect.height / 2 + 'px';
+          shellDom.style.left = parseAndFormatDimension(props.floatBoardWidth).value / 2 - rect.width / 2 + 'px';
           break;
         default:
           console.error('addElement方法参数center值有误')

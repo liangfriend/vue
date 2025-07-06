@@ -1,8 +1,11 @@
 <template>
-  <div class="musicScore stack" :style="musicScoreStyle" ref="musicScoreRef">
-    <!--    -->
-    <measure-container :musicScoreData="musicScore" class="stackItem lineLayer"
+  <div class="musicScore stack" :style="musicScoreStyle" ref="musicScoreRef" @mousedown="handleMouseDown"
+       @mousemove="handleMouseMove" @mouseup="handleMouseUp">
+
+    <measure-container :disabled="false" :musicScoreData="musicScore" class="stackItem lineLayer"
                        :style="{width:width+'px',height:height+'px'}"
+                       @multipleStavesMouseDown="handleMultipleStavesMouseDown"
+                       @single-staff-mouse-down="handleSingleStaffMouseDown"
                        comment="谱线层">
       <template #default="{ measure, measureIndex, singleStaff, multipleStaves, measureWidth }">
         <measure
@@ -12,12 +15,20 @@
             :width="measureWidth"
             :height="musicScore.measureHeight"
             :componentWidth="width"
+            @measureMouseDown="handleMeasureMouseDown"
             :componentHeight="height"
             :measure="measure"
         >
         </measure>
       </template>
     </measure-container>
+    <!--    跨小节符号目前只有小节跟随型和符号（音符头）跟随型-->
+    <span-symbol-vue :key="spanSymbol.vueKey"
+                     :musicScore="musicScore"
+                     v-for="(spanSymbol,spanSymbolIndex) in musicScore.spanSymbolArray"
+                     :componentWidth="width"
+                     :componentHeight="height"
+                     :spanSymbol="spanSymbol"></span-symbol-vue>
     <measure-container :musicScoreData="musicScore" class="stackItem symbolLayer"
                        :style="{width:width+'px',height:height+'px', pointerEvents:'none'}"
                        comment="符号层">
@@ -30,20 +41,17 @@
                              :singleStaff="singleStaff"
                              :multipleStaves="multipleStaves"
                              :measureHeight="musicScore.measureHeight"
+                             @msSymbolMouseDown="handleMsSymbolMouseDown"
+                             @msSymbolMousUp="handleMsSymbolMouseUp"
                              :key="'note-symbol'+symbolIndex"
                              :componentWidth="width"
                              :componentHeight="height"
         ></ms-symbol-container>
       </template>
     </measure-container>
-    <!--  跨小节符号目前只有小节跟随型和符号（音符头）跟随型  -->
-    <span-symbol-vue :key="spanSymbol.vueKey"
-                     :musicScore="musicScore"
-                     v-for="(spanSymbol,spanSymbolIndex) in musicScore.spanSymbolArray"
-                     :componentWidth="width"
-                     :componentHeight="height"
-                     :spanSymbol="spanSymbol"></span-symbol-vue>
-    <measure-container v-show="mode === MsMode.edit" :musicScoreData="musicScore" class="stackItem symbolLayer"
+
+    <measure-container v-show="mode === MsMode.edit" :musicScoreData="musicScore"
+                       class="stackItem symbolLayer"
                        :style="{width:width+'px',height:height+'px', pointerEvents:'none'}"
                        comment="编辑模式虚拟音符层">
       <template
@@ -104,7 +112,16 @@
 import measure from './components/measure.vue';
 import {computed, onMounted, onBeforeMount, onUnmounted, type PropType, provide, ref} from 'vue';
 import type {
-  MusicScore, musicScoreIndex, SpanSymbol, Rect, MouseDownData, Measure, MsType, MusicScoreRef
+  MusicScore,
+  musicScoreIndex,
+  SpanSymbol,
+  Rect,
+  MouseDownData,
+  Measure,
+  MsType,
+  MusicScoreRef,
+  SingleStaff,
+  MultipleStaves, MsSymbol
 } from "./types.d.ts";
 import MeasureContainer from "@/applications/ChuangKeApplication/components/musicScore/components/measureContainer.vue";
 
@@ -124,7 +141,12 @@ import {
 
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {
-  eventConstant, handleMouseMoveSelected, handleMouseUpSelected
+  eventConstant,
+  handleMouseMoveSelected,
+  handleMouseUpSelected,
+  measureMouseDown, msSymbolMouseDown, msSymbolMouseUp,
+  multipleStavesMouseDown,
+  singleStaffMouseDown
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
 import VirtualSymbolContainer
   from "@/applications/ChuangKeApplication/components/musicScore/components/virtualSymbolContainer.vue";
@@ -163,22 +185,31 @@ const variableContainerArray = computed(() => {
     })
   }
 })
-const emits = defineEmits(['msSymbolMouseDown', 'measureMouseDown', 'singleStaffMouseDown', 'multipleStavesMouseDown', 'update:mode'])
+const emits = defineEmits(['msSymbolMouseDown', 'measureMouseDown', 'singleStaffMouseDown', 'multipleStavesMouseDown', 'update:mode', 'msSymbolMouseUp'])
 
 
-function msSymbolMouseDown(e: MouseEvent, msData: MouseDownData) {
+function handleMsSymbolMouseDown(e: MouseEvent, msSymbol: MsSymbol) {
+  msSymbolMouseDown(e, mode.value, currentSelected, msSymbol);
   emits('msSymbolMouseDown')
 }
 
-function measureMouseDown() {
+function handleMsSymbolMouseUp(e: MouseEvent, msSymbol: MsSymbol) {
+  msSymbolMouseUp(e, mode.value, currentSelected, msSymbol);
+  emits('msSymbolMouseUp')
+}
+
+function handleMeasureMouseDown(e: MouseEvent, measure: Measure) {
+  measureMouseDown(e, mode.value, currentSelected, measure);
   emits('measureMouseDown')
 }
 
-function singleStaffMouseDown() {
+function handleSingleStaffMouseDown(e: MouseEvent, singleStaff: SingleStaff) {
+  singleStaffMouseDown(e, mode.value, currentSelected, singleStaff)
   emits('singleStaffMouseDown')
 }
 
-function multipleStavesMouseDown() {
+function handleMultipleStavesMouseDown(e: MouseEvent, multipleStaves: MultipleStaves) {
+  multipleStavesMouseDown(e, mode.value, currentSelected, multipleStaves)
   emits('multipleStavesMouseDown')
 }
 
@@ -191,7 +222,7 @@ const musicScoreStyle = computed(() => {
   return {
     width: props.width + 'px',
     height: props.height + 'px',
-    overflow: 'hidden',
+    overflow: 'visible',
   };
 });
 
@@ -210,14 +241,20 @@ const musicScoreRef = ref<HTMLElement>(null!)
 
 const downLock = ref(false) // 鼠标按下锁，鼠标抬起解锁
 function handleMouseDown(e: MouseEvent) {
+  e.preventDefault(); // 默认行为会导致msSymbol拖拽事件出现鼠标禁用状态，原因不明
   eventConstant.startX = e.clientX;
   eventConstant.startY = e.clientY;
   downLock.value = true
 }
 
 function handleMouseUp(e: MouseEvent) {
+  eventConstant.startX = 0
+  eventConstant.startY = 0
   downLock.value = false
-  handleMouseUpSelected(e, currentSelected.value)
+  handleMouseUpSelected(e, currentSelected, props.musicScore)
+  // currentSelected.value = null
+
+
 }
 
 function handleMouseMove(e: MouseEvent) {
@@ -228,10 +265,6 @@ function handleMouseMove(e: MouseEvent) {
 
 
 onMounted(() => {
-
-  musicScoreRef.value.addEventListener('mousemove', handleMouseMove)
-  musicScoreRef.value.addEventListener('mousedown', handleMouseDown)
-  musicScoreRef.value.addEventListener('mouseup', handleMouseUp)
   //遍历所有订阅者，执行操作
 })
 // onMounted(mounted);
@@ -239,12 +272,7 @@ onUnmounted(() => {
 
 });
 
-provide('mouseDown', {
-  msSymbolMouseDown,
-  measureMouseDown,
-  singleStaffMouseDown,
-  multipleStavesMouseDown,
-})
+
 provide('msState', {
   mode,
   currentSelected,
