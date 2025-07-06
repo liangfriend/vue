@@ -90,7 +90,6 @@ const singleStaffStyle = computed(() => (singleStaff: SingleStaff, _multipleStav
   };
 });
 const measureWidth = computed(() => (measure: Measure, singleStaff: SingleStaff, _multipleStaves: MultipleStaves) => {
-
   return getMeasureWidth(measure, singleStaff, props.musicScoreData, props.width)
 });
 const measureSlotStyle = computed(() => (measure: Measure, singleStaff: SingleStaff, multipleStaves: MultipleStaves): CSSProperties => {

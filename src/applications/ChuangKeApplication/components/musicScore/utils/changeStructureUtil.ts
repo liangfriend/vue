@@ -3,14 +3,15 @@ import {MsTypeNameEnum} from "@/applications/ChuangKeApplication/components/musi
 import {
     Measure,
     MsSymbolContainer,
-    MsType, MusicScore,
+    MsType, MultipleStaves, MusicScore,
     SingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {measureTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
     getDataWithIndex,
-    setMeasureArrayIndex
+    setMeasureArrayIndex, setMultipleStavesIndex, setSingleStaffArrayIndex
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
+import Single from "echarts/types/src/coord/single/Single";
 
 
 // 添加符号容器
@@ -97,7 +98,6 @@ export function removeMeasure(
         console.error("找不到目标小节")
     }
 }
-
 // 删除小节相关联的跨小节符号
 export function removeMeasureRelatedSpanSymbol(measure: Measure, musicScore: MusicScore) {
     for (let i = 0; i < musicScore.spanSymbolArray.length; i++) {
@@ -106,5 +106,109 @@ export function removeMeasureRelatedSpanSymbol(measure: Measure, musicScore: Mus
             // 删除关联的跨小节符号
             musicScore.spanSymbolArray.splice(i, 1);
         }
+    }
+}
+
+// 删除单谱表相关联的跨小节符号
+export function removeSingleStaffRelatedSpanSymbol(singleStaff: SingleStaff, musicScore: MusicScore) {
+    for (let i = 0; i < musicScore.spanSymbolArray.length; i++) {
+        const spanSymbol = musicScore.spanSymbolArray[i];
+        singleStaff.measureArray.forEach((measure) => {
+            if (measure.bindingStartId.includes(spanSymbol.id) || measure.bindingEndId.includes(spanSymbol.id)) {
+                // 删除关联的跨小节符号
+                musicScore.spanSymbolArray.splice(i, 1);
+            }
+        })
+
+    }
+}
+
+// 删除复谱表相关联的跨小节符号
+export function removeMultipleStavesRelatedSpanSymbol(multipleStaves: MultipleStaves, musicScore: MusicScore) {
+    for (let i = 0; i < musicScore.spanSymbolArray.length; i++) {
+        const spanSymbol = musicScore.spanSymbolArray[i];
+        multipleStaves.singleStaffArray.forEach((singleStaff) => {
+            singleStaff.measureArray.forEach((measure) => {
+                if (measure.bindingStartId.includes(spanSymbol.id) || measure.bindingEndId.includes(spanSymbol.id)) {
+                    // 删除关联的跨小节符号
+                    musicScore.spanSymbolArray.splice(i, 1);
+                }
+            })
+        })
+    }
+}
+
+// 添加单谱表
+export function addSingleStaff(musicScore: MusicScore, newSingleStaff: SingleStaff, currSelected: MsType, position: 'after' | 'before' = 'after') {
+
+    if (currSelected.msTypeName === MsTypeNameEnum.SingleStaff) {
+        const multipleStaves = getDataWithIndex(currSelected.index, musicScore).multipleStaves
+        if (!multipleStaves) return console.error("复谱表表不存在，单谱表插入失败");
+        const array = multipleStaves.singleStaffArray;
+        const targetIndex = array.findIndex(item => item === currSelected);
+        console.log('chicken', position)
+        if (position === 'before') {
+            array.splice(targetIndex, 0, newSingleStaff);
+        } else {
+            array.splice(targetIndex + 1, 0, newSingleStaff);
+        }
+        // 计算index
+        setSingleStaffArrayIndex(multipleStaves)
+    } else if (currSelected.msTypeName === MsTypeNameEnum.MultipStaves) {
+        const array = currSelected.singleStaffArray
+        if (position === 'before') {
+            array.splice(0, 0, newSingleStaff);
+        } else {
+            array.push(newSingleStaff);
+        }
+        // 计算index
+        setSingleStaffArrayIndex(currSelected)
+    }
+
+}
+
+// 删除单谱表
+export function removeSingleStaff(
+    singleStaff: SingleStaff,
+    musicScore: MusicScore,
+) {
+    const multipleStaves = getDataWithIndex(singleStaff.index, musicScore).multipleStaves
+    if (!multipleStaves) return console.error("复谱表表不存在，单谱表移除失败")
+    const array = multipleStaves.singleStaffArray;
+    const index = array.findIndex(item => item === singleStaff);
+    if (index !== -1) {
+        array.splice(index, 1);
+    } else {
+        console.error("找不到目标单谱表")
+    }
+}
+
+// 添加复谱表
+export function addMultipleStaves(musicScore: MusicScore, newMultipleStaves: MultipleStaves, currSelected: MsType, position: 'after' | 'before' = 'after') {
+    if (currSelected.msTypeName === MsTypeNameEnum.MultipStaves) {
+        const array = musicScore.multipleStavesArray;
+        const targetIndex = array.findIndex(item => item === currSelected);
+        if (position === 'before') {
+            array.splice(targetIndex, 0, newMultipleStaves);
+        } else {
+            array.splice(targetIndex + 1, 0, newMultipleStaves);
+        }
+        // 计算index
+        setMultipleStavesIndex(musicScore)
+    }
+
+}
+
+// 删除复谱表
+export function removeMultipleStaves(
+    multipleStaves: MultipleStaves,
+    musicScore: MusicScore,
+) {
+    const array = musicScore.multipleStavesArray
+    const index = array.findIndex(item => item === multipleStaves);
+    if (index !== -1) {
+        array.splice(index, 1);
+    } else {
+        console.error("找不到目标复谱表")
     }
 }

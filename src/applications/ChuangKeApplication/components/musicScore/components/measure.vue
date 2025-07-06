@@ -49,6 +49,7 @@ const props = defineProps({
     type: Number,
     default: 1
   }
+
 });
 
 const measureStyle = computed(() => {

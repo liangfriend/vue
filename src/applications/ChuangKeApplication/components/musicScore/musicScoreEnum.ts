@@ -309,6 +309,7 @@ export enum SpanSymbolFollowingCategoryEnum {
 export enum MsSymbolContainerTypeEnum {
     frontFixed = 1, // 前置定宽
     rearFixed, // 后置定宽
+    
     variable, // 变宽
     span, // 跨小节符号容器，不影响小节宽度
 }

@@ -79,7 +79,7 @@ export function getMeasureWidth(measure: Measure, singleStaff: SingleStaff, musi
     const totalVariableContainerWidth = (componentWidth - fixedContainerWidthInSngleStaff) // 变宽容器总宽度
     const widthPerWidthConstant = totalVariableContainerWidth / totalSingleStaffWidthConstant * musicScoreData.widthDynamicRatio // 每宽度常亮的宽度
     const fixedWidth = totalVariableContainerWidth * (1 - musicScoreData.widthDynamicRatio) / measureLength   // 小节内就算没有变宽符号也要分配一定宽度，这里是计算出来每个小节固定分出来的宽度
-
+    // 这里对小节的计算，如果小节没有符号，会出现常数系数为0，导致错误，不过小节至少会有一个结束小节线不会被删除，所以暂时没有处理也没有问题
     return widthPerWidthConstant * totalMeasureWidthConstant + fixedContainerWidthInMeasure + fixedWidth;
 }
 

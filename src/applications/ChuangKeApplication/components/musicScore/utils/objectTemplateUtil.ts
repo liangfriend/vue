@@ -10,7 +10,9 @@ import {
     BaseMsSymbol,
     Measure,
     MsSymbol,
-    MsSymbolContainer
+    MsSymbolContainer,
+    MultipleStaves,
+    SingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 
 export function msSymbolTemplate(options: {
@@ -79,7 +81,9 @@ export function msSymbolContainerTemplate(options: { type?: MsSymbolContainerTyp
     return msSymbolContainer;
 }
 
-export function measureTemplate(options: { barLine?: BarlineTypeEnum }): Measure {
+export function measureTemplate(options: { barLineType?: BarlineTypeEnum }): Measure {
+
+
     const measure: Measure = {
         id: Date.now(),
         msTypeName: MsTypeNameEnum.Measure,
@@ -93,12 +97,63 @@ export function measureTemplate(options: { barLine?: BarlineTypeEnum }): Measure
         },
         msSymbolContainerArray: []
     }
-    if (options.barLine) {
-        const barLine: MsSymbol = msSymbolTemplate({type: MsSymbolTypeEnum.barline, barLineType: options.barLine});
-        const container = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.rearFixed})
-        container.msSymbolArray.push(barLine)
-        measure.msSymbolContainerArray.push(container)
-    }
+    // 小节必须有结束小节线
+    const barLine: MsSymbol = msSymbolTemplate({
+        type: MsSymbolTypeEnum.barline,
+        barLineType: options.barLineType || BarlineTypeEnum.single
+    });
+    const container = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.rearFixed})
+    container.msSymbolArray.push(barLine)
+    measure.msSymbolContainerArray.push(container)
+
 
     return measure;
+}
+
+// 会默认添加一个小节
+export function singleStaffTemplate(options: {}): SingleStaff {
+    const singleStaff: SingleStaff = {
+        id: Date.now(),
+        msTypeName: MsTypeNameEnum.SingleStaff,
+        index: {},
+        bindingStartId: [],
+        bindingEndId: [],
+        singleStaffPaddingTop: 30,
+        singleStaffPaddingBottom: 30,
+        options: {
+            hightlight: false,
+            hightlightColor: 'red',
+            color: 'transparent',
+        },
+        singleStaffMarginBottom: 30,
+        measureArray: []
+    }
+    const measure = measureTemplate({})
+    singleStaff.measureArray.push(measure)
+
+
+    return singleStaff;
+}
+
+// 会默认添加一个带小节的单谱表
+export function multipleStavesTemplate(options: {}): MultipleStaves {
+    const multipleStaves: MultipleStaves = {
+        id: Date.now(),
+        msTypeName: MsTypeNameEnum.MultipStaves,
+        index: {},
+        multipleStavesPaddingTop: 60,
+        multipleStavesPaddingBottom: 60,
+        multipleStavesMarginBottom: 60,
+        options: {
+            hightlight: false,
+            hightlightColor: 'red',
+            color: 'transparent',
+        },
+        singleStaffArray: []
+    }
+    const singleStaff = singleStaffTemplate({})
+    multipleStaves.singleStaffArray.push(singleStaff)
+
+
+    return multipleStaves;
 }

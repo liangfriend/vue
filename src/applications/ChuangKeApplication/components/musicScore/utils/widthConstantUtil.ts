@@ -57,6 +57,10 @@ export function getWidthConstantInMeasure(measure: Measure, msSymbolContainer?: 
 
         widthConstant += getWidthConstantInMsSymbolContainer(curMsSymbolContainer)
     }
+    // 一个小节的宽度系数不可以为0，最少为1, 这里这样写有可能在以后导致问题，留心一下
+    if (widthConstant === 0) {
+        return 1
+    }
     return widthConstant
 }
 

@@ -633,6 +633,26 @@ export function getSpanSymbolIdSetInSingleStaff(singleStaff: SingleStaff, musicS
     return spanSymbolIdList
 }
 
+// 获取复谱表绑定spanSymbolId
+export function getSpanSymbolIdSetInMultipleStaves(multipleStaves: MultipleStaves, musicScore: MusicScore): Set<number> {
+    let spanSymbolIdList = new Set<number>();
+    multipleStaves.singleStaffArray.forEach((singleStaff) => {
+        const measureSpanIds = getSpanSymbolIdSetInSingleStaff(singleStaff, musicScore);
+        spanSymbolIdList = new Set([...spanSymbolIdList, ...measureSpanIds]);
+    })
+    return spanSymbolIdList
+}
+
+// 获取谱表所有spanSymbolId
+export function getSpanSymbolIdSetInMusicScore(musicScore: MusicScore): Set<number> {
+    let spanSymbolIdList = new Set<number>();
+    musicScore.spanSymbolArray.forEach((spanSymbol) => {
+        spanSymbolIdList.add(spanSymbol.id)
+    })
+
+    return spanSymbolIdList
+}
+
 // 更新spanSymbol视图
 export function updateSpanSymbol(spanSymbolIdList: Set<number>, musicScore: MusicScore) {
     musicScore.spanSymbolArray.forEach((spanSymbol) => {

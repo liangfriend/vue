@@ -3,3 +3,4 @@
 + whiteboard从其他处按住鼠标拖到内部，拖动会出现问题
 + whiteBoard更新漫游状态会导致whiteBoard位置重置
 + 新增的小节无法添加音符
++ 增加复谱表，volta符号坐标更新出错

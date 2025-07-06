@@ -287,7 +287,6 @@ defineExpose<MusicScoreRef>({changeMode, root: musicScoreRef, mode, currentSelec
 
   > .stackItem {
     position: absolute;
-    display: grid;
   }
 }
 </style>

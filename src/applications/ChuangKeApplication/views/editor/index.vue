@@ -26,7 +26,7 @@ import {
 import {
   handleRightToolsBtn,
   insertMeasureAfter,
-  insertMeasureBefore, measureFunctionList
+  insertMeasureBefore, measureFunctionList, multipleStavesFunctionList, singleStaffFunctionList
 } from "@/applications/ChuangKeApplication/views/editor/rightToolsFunction.ts";
 import {FunctionListItem} from "@/applications/ChuangKeApplication/views/editor/type";
 import {measureFunctionEnum} from "@/applications/ChuangKeApplication/views/editor/enum.ts";
@@ -135,7 +135,22 @@ onMounted(() => {
                   {{ item.name }}
                 </el-button>
               </div>
-
+            </template>
+            <template v-if="currentSelected?.msTypeName === MsTypeNameEnum.SingleStaff">
+              <div class="rightToolsFunction">
+                <el-button @click="handleRightToolsBtn(item,currentSelected,musicScoreData)"
+                           v-for="(item) in singleStaffFunctionList">
+                  {{ item.name }}
+                </el-button>
+              </div>
+            </template>
+            <template v-if="currentSelected?.msTypeName === MsTypeNameEnum.MultipStaves">
+              <div class="rightToolsFunction">
+                <el-button @click="handleRightToolsBtn(item,currentSelected,musicScoreData)"
+                           v-for="(item) in multipleStavesFunctionList">
+                  {{ item.name }}
+                </el-button>
+              </div>
             </template>
 
           </template>
