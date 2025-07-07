@@ -58,7 +58,6 @@ function voltaRect(volta: Extract<SpanSymbol, {
     rect.width += getMeasureWidth(measure, singleStaff, musicScore, componentWidth)
     rect.bottom = Math.max(rect.bottom, getMaxMsSymbolBottomInMeasure(measure, musicScore.measureHeight) + getMeasureBottomToMusicScore(measure, musicScore, componentHeight))
   })
-
   volta.rect = rect
 
 }

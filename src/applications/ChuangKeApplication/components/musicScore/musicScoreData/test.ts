@@ -11,295 +11,668 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 const data: MusicScore = {
-    showMode: MusicScoreShowModeEnum.standardStaff,
-    measureHeight: 50,
-    widthDynamicRatio: 0.4,
-    spanSymbolArray: [{
-        type: SpanSymbolTypeEnum.volta,
-        msTypeName: MsTypeNameEnum.SpanSymbol,
-        spanSymbolFollowingCategoryEnum: SpanSymbolFollowingCategoryEnum.measure,
-        startTargetId: 3,
-        endTargetId: 8,
-        id: 15,
-        rect: {},
-        options: {
-            hightlight: false,
-            hightlightColor: 'red',
-            color: 'transparent',
-        },
-        vueKey: Date.now()
-    }],
-    multipleStavesArray: [{
-        id: 1,
-        msTypeName: MsTypeNameEnum.MultipStaves,
-        index: {},
-        multipleStavesPaddingTop: 60,
-        multipleStavesPaddingBottom: 60,
-        multipleStavesMarginBottom: 60,
-        options: {
-            hightlight: false,
-            hightlightColor: 'red',
-            color: 'transparent',
-        },
-        singleStaffArray: [{
-            id: 2,
-            msTypeName: MsTypeNameEnum.SingleStaff,
-            index: {},
-            bindingStartId: [],
-            bindingEndId: [],
-            singleStaffPaddingTop: 30,
-            singleStaffPaddingBottom: 30,
-            options: {
-                hightlight: false,
-                hightlightColor: 'red',
-                color: 'transparent',
+    "showMode": 1,
+    "measureHeight": 50,
+    "widthDynamicRatio": 0.4,
+    "spanSymbolArray": [
+        {
+            "type": 1,
+            "msTypeName": 4,
+            "spanSymbolFollowingCategoryEnum": 2,
+            "startTargetId": 3,
+            "endTargetId": 8,
+            "id": 15,
+            "rect": {
+                "width": 699.6,
+                "left": 300.4,
+                "bottom": 0
             },
-            singleStaffMarginBottom: 30,
-            measureArray: [{
-                id: 19,
-                msTypeName: MsTypeNameEnum.Measure,
-                index: {},
-                bindingStartId: [],
-                bindingEndId: [],
-                options: {
-                    hightlight: false,
-                    hightlightColor: 'red',
-                    color: 'black',
-                },
-                msSymbolContainerArray: [{
-                    id: 20,
-                    msTypeName: MsTypeNameEnum.MsSymbolContainer,
-                    type: MsSymbolContainerTypeEnum.variable,
-                    index: {},
-                    options: {
-                        hightlight: false,
-                        hightlightColor: 'red',
-                        color: 'black',
+            "options": {
+                "hightlight": false,
+                "hightlightColor": "red",
+                "color": "transparent"
+            },
+            "vueKey": 1751899024999
+        }
+    ],
+    "multipleStavesArray": [
+        {
+            "id": 1,
+            "msTypeName": 1,
+            "index": {
+                "multipleStavesIndex": 0
+            },
+            "multipleStavesPaddingTop": 60,
+            "multipleStavesPaddingBottom": 60,
+            "multipleStavesMarginBottom": 60,
+            "options": {
+                "hightlight": false,
+                "hightlightColor": "red",
+                "color": "transparent"
+            },
+            "singleStaffArray": [
+                {
+                    "id": 2,
+                    "msTypeName": 2,
+                    "index": {
+                        "multipleStavesIndex": 0,
+                        "singleStaffIndex": 0
                     },
-                    msSymbolArray: [{
-                        id: 21,
-                        msTypeName: MsTypeNameEnum.MsSymbol,
-                        index: {},
-                        type: MsSymbolTypeEnum.noteHead,
-                        region: MusicScoreRegionEnum.space_3,
-                        chronaxie: ChronaxieEnum.eighth,
-                        options: {
-                            hightlight: false,
-                            hightlightColor: 'red',
-                            color: 'black',
-                        },
-                        computed: {},
-                        bindingStartId: [],
-                        bindingEndId: [],
-                        msSymbolArray: []
-                    }]
-                }, {
-                    id: 22,
-                    msTypeName: MsTypeNameEnum.MsSymbolContainer,
-                    type: MsSymbolContainerTypeEnum.variable,
-                    index: {}, options: {
-                        hightlight: false,
-                        hightlightColor: 'red',
-                        color: 'black',
+                    "bindingStartId": [],
+                    "bindingEndId": [],
+                    "singleStaffPaddingTop": 30,
+                    "singleStaffPaddingBottom": 30,
+                    "options": {
+                        "hightlight": false,
+                        "hightlightColor": "red",
+                        "color": "transparent"
                     },
-                    msSymbolArray: [{
-                        id: 23,
-                        msTypeName: MsTypeNameEnum.MsSymbol,
-                        index: {},
-                        type: MsSymbolTypeEnum.noteHead,
-                        region: MusicScoreRegionEnum.space_3,
-                        chronaxie: ChronaxieEnum.eighth,
-                        options: {
-                            hightlight: false,
-                            hightlightColor: 'red',
-                            color: 'black',
+                    "singleStaffMarginBottom": 30,
+                    "measureArray": [
+                        {
+                            "id": 19,
+                            "msTypeName": 3,
+                            "index": {
+                                "multipleStavesIndex": 0,
+                                "singleStaffIndex": 0,
+                                "measureIndex": 0
+                            },
+                            "bindingStartId": [],
+                            "bindingEndId": [],
+                            "options": {
+                                "hightlight": false,
+                                "hightlightColor": "red",
+                                "color": "black"
+                            },
+                            "msSymbolContainerArray": [
+                                {
+                                    "id": 20,
+                                    "msTypeName": 5,
+                                    "type": 3,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 0,
+                                        "msSymbolContainerIndex": 0
+                                    },
+                                    "options": {
+                                        "hightlight": false,
+                                        "hightlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 21,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 0,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 0,
+                                                "msSymbolContainerIndex": 0,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "type": 1,
+                                            "region": 42,
+                                            "chronaxie": 8,
+                                            "options": {
+                                                "hightlight": false,
+                                                "hightlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "computed": {},
+                                            "bindingStartId": [],
+                                            "bindingEndId": [],
+                                            "msSymbolArray": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": 22,
+                                    "msTypeName": 5,
+                                    "type": 3,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 0,
+                                        "msSymbolContainerIndex": 1
+                                    },
+                                    "options": {
+                                        "hightlight": false,
+                                        "hightlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 23,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 0,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 0,
+                                                "msSymbolContainerIndex": 1,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "type": 1,
+                                            "region": 42,
+                                            "chronaxie": 8,
+                                            "options": {
+                                                "hightlight": false,
+                                                "hightlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "computed": {},
+                                            "bindingStartId": [],
+                                            "bindingEndId": [],
+                                            "msSymbolArray": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": 24,
+                                    "options": {
+                                        "hightlight": false,
+                                        "hightlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "msTypeName": 5,
+                                    "type": 2,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 0,
+                                        "msSymbolContainerIndex": 2
+                                    },
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 25,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 0,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 0,
+                                                "msSymbolContainerIndex": 2,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "type": 14,
+                                            "options": {
+                                                "hightlight": false,
+                                                "hightlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "bindingStartId": [],
+                                            "barlineType": 1,
+                                            "bindingEndId": [],
+                                            "msSymbolArray": []
+                                        }
+                                    ]
+                                }
+                            ]
                         },
-                        computed: {},
-                        bindingStartId: [],
-                        bindingEndId: [],
-                        msSymbolArray: []
-                    }]
-                }, {
-                    id: 24, options: {
-                        hightlight: false,
-                        hightlightColor: 'red',
-                        color: 'black',
+                        {
+                            "id": 3,
+                            "msTypeName": 3,
+                            "index": {
+                                "multipleStavesIndex": 0,
+                                "singleStaffIndex": 0,
+                                "measureIndex": 1
+                            },
+                            "bindingStartId": [
+                                15
+                            ],
+                            "bindingEndId": [],
+                            "options": {
+                                "hightlight": false,
+                                "hightlightColor": "red",
+                                "color": "black"
+                            },
+                            "msSymbolContainerArray": [
+                                {
+                                    "id": 4,
+                                    "options": {
+                                        "hightlight": false,
+                                        "hightlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "msTypeName": 5,
+                                    "type": 3,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 1,
+                                        "msSymbolContainerIndex": 0
+                                    },
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 5,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 0,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 1,
+                                                "msSymbolContainerIndex": 0,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "type": 1,
+                                            "region": 42,
+                                            "chronaxie": 8,
+                                            "options": {
+                                                "hightlight": false,
+                                                "hightlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "computed": {},
+                                            "bindingStartId": [],
+                                            "bindingEndId": [
+                                                15
+                                            ],
+                                            "msSymbolArray": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": 1751899024998,
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 1751899024998,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 0,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 1,
+                                                "msSymbolContainerIndex": 1,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "options": {
+                                                "hightlight": false,
+                                                "hightlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "bindingStartId": [],
+                                            "bindingEndId": [],
+                                            "msSymbolArray": [],
+                                            "type": 1,
+                                            "region": 38,
+                                            "chronaxie": 8,
+                                            "computed": {}
+                                        }
+                                    ],
+                                    "type": 3,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 1,
+                                        "msSymbolContainerIndex": 1
+                                    },
+                                    "options": {
+                                        "hightlight": false,
+                                        "hightlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "msTypeName": 5
+                                },
+                                {
+                                    "id": 1751899022086,
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 1751899022086,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 0,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 1,
+                                                "msSymbolContainerIndex": 2,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "options": {
+                                                "hightlight": false,
+                                                "hightlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "bindingStartId": [],
+                                            "bindingEndId": [],
+                                            "msSymbolArray": [],
+                                            "type": 1,
+                                            "region": 43,
+                                            "chronaxie": 8,
+                                            "computed": {}
+                                        }
+                                    ],
+                                    "type": 3,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 1,
+                                        "msSymbolContainerIndex": 2
+                                    },
+                                    "options": {
+                                        "hightlight": false,
+                                        "hightlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "msTypeName": 5
+                                },
+                                {
+                                    "id": 6,
+                                    "options": {
+                                        "hightlight": false,
+                                        "hightlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "msTypeName": 5,
+                                    "type": 3,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 1,
+                                        "msSymbolContainerIndex": 3
+                                    },
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 7,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 0,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 1,
+                                                "msSymbolContainerIndex": 3,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "type": 1,
+                                            "region": 42,
+                                            "chronaxie": 8,
+                                            "options": {
+                                                "hightlight": false,
+                                                "hightlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "computed": {},
+                                            "bindingStartId": [],
+                                            "bindingEndId": [],
+                                            "msSymbolArray": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": 13,
+                                    "options": {
+                                        "hightlight": false,
+                                        "hightlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "msTypeName": 5,
+                                    "type": 2,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 1,
+                                        "msSymbolContainerIndex": 4
+                                    },
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 14,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 0,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 1,
+                                                "msSymbolContainerIndex": 4,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "type": 14,
+                                            "options": {
+                                                "hightlight": false,
+                                                "hightlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "bindingStartId": [],
+                                            "barlineType": 1,
+                                            "bindingEndId": [],
+                                            "msSymbolArray": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": 8,
+                            "msTypeName": 3,
+                            "index": {
+                                "multipleStavesIndex": 0,
+                                "singleStaffIndex": 0,
+                                "measureIndex": 2
+                            },
+                            "options": {
+                                "hightlight": false,
+                                "hightlightColor": "red",
+                                "color": "black"
+                            },
+                            "bindingStartId": [],
+                            "bindingEndId": [],
+                            "msSymbolContainerArray": [
+                                {
+                                    "id": 9,
+                                    "options": {
+                                        "hightlight": false,
+                                        "hightlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "msTypeName": 5,
+                                    "type": 3,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 2,
+                                        "msSymbolContainerIndex": 0
+                                    },
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 10,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 0,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 2,
+                                                "msSymbolContainerIndex": 0,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "type": 1,
+                                            "region": 42,
+                                            "chronaxie": 8,
+                                            "options": {
+                                                "hightlight": false,
+                                                "hightlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "computed": {},
+                                            "bindingStartId": [],
+                                            "bindingEndId": [],
+                                            "msSymbolArray": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": 11,
+                                    "options": {
+                                        "hightlight": false,
+                                        "hightlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "msTypeName": 5,
+                                    "type": 3,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 2,
+                                        "msSymbolContainerIndex": 1
+                                    },
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 12,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 0,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 2,
+                                                "msSymbolContainerIndex": 1,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "type": 1,
+                                            "region": 42,
+                                            "chronaxie": 8,
+                                            "options": {
+                                                "hightlight": false,
+                                                "hightlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "computed": {},
+                                            "bindingStartId": [],
+                                            "bindingEndId": [],
+                                            "msSymbolArray": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 1751898743265,
+            "msTypeName": 1,
+            "index": {
+                "multipleStavesIndex": 1
+            },
+            "multipleStavesPaddingTop": 60,
+            "multipleStavesPaddingBottom": 60,
+            "multipleStavesMarginBottom": 60,
+            "options": {
+                "hightlight": false,
+                "hightlightColor": "red",
+                "color": "transparent"
+            },
+            "singleStaffArray": [
+                {
+                    "id": 1751898743265,
+                    "msTypeName": 2,
+                    "index": {
+                        "multipleStavesIndex": 1,
+                        "singleStaffIndex": 0
                     },
-                    msTypeName: MsTypeNameEnum.MsSymbolContainer,
-                    type: MsSymbolContainerTypeEnum.rearFixed,
-                    index: {},
-                    msSymbolArray: [{
-                        id: 25,
-                        msTypeName: MsTypeNameEnum.MsSymbol,
-                        index: {},
-                        type: MsSymbolTypeEnum.barline,
-                        options: {
-                            hightlight: false,
-                            hightlightColor: 'red',
-                            color: 'black',
-                        },
-                        bindingStartId: [],
-                        barlineType: BarlineTypeEnum.single,
-                        bindingEndId: [],
-                        msSymbolArray: []
-                    }]
-                }],
-            }, {
-                id: 3,
-                msTypeName: MsTypeNameEnum.Measure,
-                index: {},
-                bindingStartId: [15],
-                bindingEndId: [],
-                options: {
-                    hightlight: false,
-                    hightlightColor: 'red',
-                    color: 'black',
-                },
-
-                msSymbolContainerArray: [{
-                    id: 4, options: {
-                        hightlight: false,
-                        hightlightColor: 'red',
-                        color: 'black',
+                    "bindingStartId": [],
+                    "bindingEndId": [],
+                    "singleStaffPaddingTop": 30,
+                    "singleStaffPaddingBottom": 30,
+                    "options": {
+                        "hightlight": false,
+                        "hightlightColor": "red",
+                        "color": "transparent"
                     },
-                    msTypeName: MsTypeNameEnum.MsSymbolContainer,
-                    type: MsSymbolContainerTypeEnum.variable,
-                    index: {},
-                    msSymbolArray: [{
-                        id: 5,
-                        msTypeName: MsTypeNameEnum.MsSymbol,
-                        index: {},
-                        type: MsSymbolTypeEnum.noteHead,
-                        region: MusicScoreRegionEnum.space_3,
-                        chronaxie: ChronaxieEnum.eighth,
-                        options: {
-                            hightlight: false,
-                            hightlightColor: 'red',
-                            color: 'black',
-                        },
-                        computed: {},
-                        bindingStartId: [],
-                        bindingEndId: [15],
-                        msSymbolArray: []
-                    }]
-                }, {
-                    id: 6, options: {
-                        hightlight: false,
-                        hightlightColor: 'red',
-                        color: 'black',
-                    },
-                    msTypeName: MsTypeNameEnum.MsSymbolContainer,
-                    type: MsSymbolContainerTypeEnum.variable,
-                    index: {},
-                    msSymbolArray: [{
-                        id: 7,
-                        msTypeName: MsTypeNameEnum.MsSymbol,
-                        index: {},
-                        type: MsSymbolTypeEnum.noteHead,
-                        region: MusicScoreRegionEnum.space_3,
-                        chronaxie: ChronaxieEnum.eighth,
-                        options: {
-                            hightlight: false,
-                            hightlightColor: 'red',
-                            color: 'black',
-                        },
-                        computed: {},
-                        bindingStartId: [],
-                        bindingEndId: [],
-                        msSymbolArray: []
-                    }]
-                }, {
-                    id: 13, options: {
-                        hightlight: false,
-                        hightlightColor: 'red',
-                        color: 'black',
-                    },
-                    msTypeName: MsTypeNameEnum.MsSymbolContainer,
-                    type: MsSymbolContainerTypeEnum.rearFixed,
-                    index: {},
-                    msSymbolArray: [{
-                        id: 14,
-                        msTypeName: MsTypeNameEnum.MsSymbol,
-                        index: {},
-                        type: MsSymbolTypeEnum.barline,
-                        options: {
-                            hightlight: false,
-                            hightlightColor: 'red',
-                            color: 'black',
-                        },
-                        bindingStartId: [],
-                        barlineType: BarlineTypeEnum.single,
-                        bindingEndId: [],
-                        msSymbolArray: []
-                    }]
-                }],
-            }, {
-                id: 8,
-                msTypeName: MsTypeNameEnum.Measure,
-                index: {},
-                options: {
-                    hightlight: false,
-                    hightlightColor: 'red',
-                    color: 'black',
-                },
-                bindingStartId: [],
-                bindingEndId: [],
-                msSymbolContainerArray: [{
-                    id: 9, options: {
-                        hightlight: false,
-                        hightlightColor: 'red',
-                        color: 'black',
-                    },
-                    msTypeName: MsTypeNameEnum.MsSymbolContainer,
-                    type: MsSymbolContainerTypeEnum.variable,
-                    index: {},
-                    msSymbolArray: [{
-                        id: 10,
-                        msTypeName: MsTypeNameEnum.MsSymbol,
-                        index: {},
-                        type: MsSymbolTypeEnum.noteHead,
-                        region: MusicScoreRegionEnum.space_3,
-                        chronaxie: ChronaxieEnum.eighth,
-                        options: {
-                            hightlight: false,
-                            hightlightColor: 'red',
-                            color: 'black',
-                        },
-                        computed: {},
-                        bindingStartId: [],
-                        bindingEndId: [],
-                        msSymbolArray: []
-                    }]
-                }, {
-                    id: 11, options: {
-                        hightlight: false,
-                        hightlightColor: 'red',
-                        color: 'black',
-                    },
-                    msTypeName: MsTypeNameEnum.MsSymbolContainer,
-                    type: MsSymbolContainerTypeEnum.variable,
-                    index: {},
-                    msSymbolArray: [{
-                        id: 12,
-                        msTypeName: MsTypeNameEnum.MsSymbol,
-                        index: {},
-                        type: MsSymbolTypeEnum.noteHead,
-                        region: MusicScoreRegionEnum.space_3,
-                        chronaxie: ChronaxieEnum.eighth,
-                        options: {
-                            hightlight: false,
-                            hightlightColor: 'red',
-                            color: 'black',
-                        },
-                        computed: {},
-                        bindingStartId: [],
-                        bindingEndId: [],
-                        msSymbolArray: []
-                    }]
-                }],
-            }]
-        }]
-    }]
+                    "singleStaffMarginBottom": 30,
+                    "measureArray": [
+                        {
+                            "id": 1751898743265,
+                            "msTypeName": 3,
+                            "index": {
+                                "multipleStavesIndex": 1,
+                                "singleStaffIndex": 0,
+                                "measureIndex": 0
+                            },
+                            "bindingStartId": [],
+                            "bindingEndId": [],
+                            "options": {
+                                "hightlight": false,
+                                "hightlightColor": "red",
+                                "color": "black"
+                            },
+                            "msSymbolContainerArray": [
+                                {
+                                    "id": 1751898743265,
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 1751898743265,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 1,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 0,
+                                                "msSymbolContainerIndex": 0,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "options": {
+                                                "hightlight": false,
+                                                "hightlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "bindingStartId": [],
+                                            "bindingEndId": [],
+                                            "msSymbolArray": [],
+                                            "type": 14,
+                                            "barlineType": 1
+                                        }
+                                    ],
+                                    "type": 2,
+                                    "index": {
+                                        "multipleStavesIndex": 1,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 0,
+                                        "msSymbolContainerIndex": 0
+                                    },
+                                    "options": {
+                                        "hightlight": false,
+                                        "hightlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "msTypeName": 5
+                                },
+                                {
+                                    "id": 1751899017286,
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 1751899017286,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 1,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 0,
+                                                "msSymbolContainerIndex": 1,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "options": {
+                                                "hightlight": false,
+                                                "hightlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "bindingStartId": [],
+                                            "bindingEndId": [],
+                                            "msSymbolArray": [],
+                                            "type": 1,
+                                            "region": 41,
+                                            "chronaxie": 8,
+                                            "computed": {}
+                                        }
+                                    ],
+                                    "type": 3,
+                                    "index": {
+                                        "multipleStavesIndex": 1,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 0,
+                                        "msSymbolContainerIndex": 1
+                                    },
+                                    "options": {
+                                        "hightlight": false,
+                                        "hightlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "msTypeName": 5
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }
 
 export default data;

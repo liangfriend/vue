@@ -117,13 +117,13 @@ export function getMeasureBottomToMusicScore(measure: Measure, musicScore: Music
         level: 'multipleStaves',
         order: 'asc',
         callback: ({multipleStaves}) => {
-            if (!multipleStaves) return false
+            if (!multipleStaves) return true
             top += multipleStaves.multipleStavesPaddingTop
             for (let curSingleStaff of multipleStaves.singleStaffArray) {
                 top += curSingleStaff.singleStaffPaddingTop + musicScore.measureHeight
                 for (let curMeasure of curSingleStaff.measureArray) {
                     if (curMeasure === measure) {
-                        return false
+                        return true
                     }
                 }
                 top += curSingleStaff.singleStaffPaddingBottom + curSingleStaff.singleStaffMarginBottom
@@ -133,5 +133,6 @@ export function getMeasureBottomToMusicScore(measure: Measure, musicScore: Music
         }
 
     })
+    console.log('chicken', measure)
     return componentHeight - top
 }

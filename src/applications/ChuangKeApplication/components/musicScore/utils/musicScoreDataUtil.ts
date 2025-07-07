@@ -272,7 +272,7 @@ export interface TraverseContext {
 
 export type TraverseCallback = (context: TraverseContext) => boolean | void
 
-// 循环方法
+// 循环方法 return停止循环
 export function traverseMusicScore(
     musicScore: MusicScore,
     {
@@ -495,7 +495,7 @@ export function msSymbolComputedData(musicScore: MusicScore) {
     let keySignature: KeySignatureEnum = KeySignatureEnum.C
     traverseMusicScore(musicScore, {
         level: 'symbol', order: 'asc', callback: ({msSymbol}) => {
-            if (!msSymbol) return
+            if (!msSymbol) return true
             // 整体赋值clef 初始化、数据更改时调用
             if (msSymbol.type === MsSymbolTypeEnum.clef) {
                 clef = msSymbol.clef
@@ -514,6 +514,8 @@ export function msSymbolComputedData(musicScore: MusicScore) {
             if (msSymbol.type === MsSymbolTypeEnum.noteHead && 'computed' in msSymbol) {
                 msSymbol.computed.musicalAlphabet = getNoteMusicalAlphabet(msSymbol)
             }
+
+            return false
         }
     })
 }
