@@ -606,10 +606,33 @@ const data: MusicScore = {
                                             },
                                             "bindingStartId": [],
                                             "bindingEndId": [],
-                                            "msSymbolArray": [],
+                                            "msSymbolArray": [
+                                                {
+                                                    "id": 1751898743251,
+                                                    "msTypeName": MsTypeNameEnum.MsSymbol,
+                                                    "index": {
+                                                        "multipleStavesIndex": 1,
+                                                        "singleStaffIndex": 0,
+                                                        "measureIndex": 0,
+                                                        "msSymbolContainerIndex": 0,
+                                                        "msSymbolIndex": 0
+                                                    },
+                                                    "options": {
+                                                        "hightlight": false,
+                                                        "hightlightColor": "red",
+                                                        "color": "black"
+                                                    },
+                                                    "bindingStartId": [],
+                                                    "bindingEndId": [],
+                                                    "msSymbolArray": [],
+                                                    "type": 14,
+                                                    "barlineType": 1
+                                                }
+                                            ],
                                             "type": 14,
                                             "barlineType": 1
-                                        }
+                                        },
+
                                     ],
                                     "type": 2,
                                     "index": {
@@ -645,7 +668,22 @@ const data: MusicScore = {
                                             },
                                             "bindingStartId": [],
                                             "bindingEndId": [],
-                                            "msSymbolArray": [],
+                                            "msSymbolArray": [
+                                                {
+                                                    "id": 1751899017212,
+                                                    "msTypeName": 6,
+                                                    "index": {},
+                                                    "options": {
+                                                        "hightlight": false,
+                                                        "hightlightColor": "red",
+                                                        "color": "black"
+                                                    },
+                                                    "bindingStartId": [],
+                                                    "bindingEndId": [],
+                                                    "msSymbolArray": [],
+                                                    "type": MsSymbolTypeEnum.noteBar,
+                                                }
+                                            ],
                                             "type": 1,
                                             "region": 41,
                                             "chronaxie": 8,

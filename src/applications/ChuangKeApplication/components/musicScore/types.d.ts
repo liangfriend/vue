@@ -208,3 +208,4 @@ declare interface MsState {
 
 // 虚拟符号容器类型
 declare type VirtualSymbolContainerType = 'front' | 'middle' | 'end' | 'self'
+

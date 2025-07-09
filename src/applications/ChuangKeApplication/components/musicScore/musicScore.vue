@@ -137,7 +137,7 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {
   MsMode,
-  MsSymbolContainerTypeEnum,
+  MsSymbolContainerTypeEnum, PreliminaryMsSymbolType,
 
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {
@@ -174,6 +174,20 @@ const props = defineProps({
 });
 
 const mode = ref(MsMode.edit)
+// 预备符号
+const preliminaryMsSymbolMap = ref<Map<PreliminaryMsSymbolType, MsType>>(new Map());
+
+function setPreliminary(key: PreliminaryMsSymbolType, msData: MsType) {
+  preliminaryMsSymbolMap.value.set(key, msData);
+}
+
+function getPreliminary(key: PreliminaryMsSymbolType): MsType | null {
+  if (preliminaryMsSymbolMap.value.has(key)) {
+    return preliminaryMsSymbolMap.value.get(key)!;
+  }
+  return null
+}
+
 const msDataMap = ref(new Map<number, MsType>())
 // 当前选择对象
 const currentSelected = ref<MsType | null>(null)
@@ -279,7 +293,7 @@ provide('msState', {
   msDataMap
 })
 // TODO 这个应该设置为已读，不知道能不能实现
-defineExpose<MusicScoreRef>({changeMode, root: musicScoreRef, mode, currentSelected})
+defineExpose<MusicScoreRef>({changeMode, root: musicScoreRef, mode, currentSelected, setPreliminary, getPreliminary})
 </script>
 <style scoped lang="scss" comment="布局">
 .stack {

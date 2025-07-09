@@ -1,7 +1,7 @@
 import {MsTypeNameEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 import {
-    Measure,
+    Measure, MsSymbol,
     MsSymbolContainer,
     MsType, MultipleStaves, MusicScore,
     SingleStaff
@@ -13,7 +13,45 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import Single from "echarts/types/src/coord/single/Single";
 
+// 添加符号
+export function addMsSymbol(musicScore: MusicScore, newMsSymbol: MsSymbol, currSelected: MsType, position: 'after' | 'before' = 'after') {
+    if (currSelected.msTypeName === MsTypeNameEnum.MsSymbol) {
+        const msSymbolContainer = getDataWithIndex(currSelected.index, musicScore).msSymbolContainer
+        const msSymbol = getDataWithIndex(currSelected.index, musicScore).msSymbol
+        if (!msSymbolContainer) return console.error("符号容器不存在，符号添加失败")
+        if (!msSymbol) return console.error("符号不存在，符号添加失败")
+        const array = msSymbolContainer.msSymbolArray;
+        const targetIndex = array.findIndex(item => item === msSymbol);
+        if (position === 'before') {
+            array.splice(targetIndex, 0, newMsSymbol);
+        } else {
+            array.splice(targetIndex + 1, 0, newMsSymbol);
+        }
+    } else if (currSelected.msTypeName === MsTypeNameEnum.MsSymbolContainer) {
+        const msSymbolContainer = currSelected
+        if (!msSymbolContainer) return console.error("小节不存在，符号容器添加失败")
+        const array = msSymbolContainer.msSymbolArray;
+        array.push(newMsSymbol)
+        console.log('chicken', array)
+    }
+}
 
+// 移除符号
+export function removeMsSymbol(
+    msSymbol: MsSymbol,
+    musicScore: MusicScore,
+) {
+    const msSymbolContainer = getDataWithIndex(msSymbol.index, musicScore).msSymbolContainer
+    if (!msSymbolContainer) return console.error("符号容器不存在，符号移除失败")
+    const array = msSymbolContainer.msSymbolArray;
+    const index = array.findIndex(item => item === msSymbol);
+
+    if (index !== -1) {
+        array.splice(index, 1);
+    } else {
+        console.error("找不到目标符号")
+    }
+}
 // 添加符号容器
 export function addMsSymbolContainer(musicScore: MusicScore, newMsSymbolContainer: MsSymbolContainer, currSelected: MsType, position: 'after' | 'before' = 'after') {
 

@@ -333,3 +333,8 @@ export enum MsMode {
     normal = 1,
     edit,
 }
+
+// 预备符号类型
+export enum PreliminaryMsSymbolType {
+    noteHead = 1 // 音符头
+}

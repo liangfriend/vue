@@ -28,6 +28,7 @@ import {
     updateSpanSymbol
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {
+    addMsSymbol,
     addMsSymbolContainer
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 
@@ -138,7 +139,10 @@ export function virtualSymbolMouseDown(
         addMsSymbolContainer(params.msData.musicScore, newMsSymbolContainer,
             params.msData.msSymbolContainer, 'after')
     } else if (['self'].includes(params.virtualSymbolContainerType)) {
-        // 需要判断同region是否已经存在音符
+        // TODO 需要判断同region是否已经存在音符
+        if (!params.msData.msSymbolContainer) return console.error("没有作为对照的符号容器，符号添加失败")
+        addMsSymbol(params.msData.musicScore, newNoteHead,
+            params.msData.msSymbolContainer, 'after')
     }
     // 索引生成
     setMeasureArrayIndex(params.msData.singleStaff)

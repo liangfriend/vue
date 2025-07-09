@@ -1,28 +1,20 @@
 <template>
-  <h1>typescript</h1>
-  <div v-for="item in teachingList">
-    <code-teaching v-if="item.type === 'codeTeaching'" v-model:code="item.code"></code-teaching>
-
-  </div>
+  <div></div>
 </template>
-<script setup lang="ts">
-import {onMounted, ref} from "vue";
-import CodeTeaching from "@/components/codeTeaching.vue";
 
+<script setup>
+import {ref, onMounted} from 'vue';
 
-function test() {
+const option = ref({
+  series: [{data: []}],
+});
 
+function test(op) {
+  op.value.series[0].data = [{value: 0}];
+  console.log('打印 Proxy 整体对象（未触发 getter）:', op.value);
 }
-const teachingList = ref([{
-  type: 'codeTeaching',
-  code: 'return "helloworld"',
-}])
+
 onMounted(() => {
-  test()
-})
-
-
+  test(option);
+});
 </script>
-<style scoped>
-
-</style>
