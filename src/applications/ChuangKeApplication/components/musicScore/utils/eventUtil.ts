@@ -119,7 +119,7 @@ export function virtualSymbolMouseDown(
     const newNoteHead = msSymbolTemplate({
         type: MsSymbolTypeEnum.noteHead,
         region: params.msSymbolInformation.region
-    })
+    }) as Extract<MsSymbol, { type: MsSymbolTypeEnum.noteHead }>
     const newMsSymbolContainer = msSymbolContainerTemplate({})
     // 给音符进行计算属性赋值及index赋值
 
@@ -141,8 +141,17 @@ export function virtualSymbolMouseDown(
     } else if (['self'].includes(params.virtualSymbolContainerType)) {
         // TODO 需要判断同region是否已经存在音符
         if (!params.msData.msSymbolContainer) return console.error("没有作为对照的符号容器，符号添加失败")
-        addMsSymbol(params.msData.musicScore, newNoteHead,
-            params.msData.msSymbolContainer, 'after')
+
+        const sameRegionNoteHead = params.msData.msSymbolContainer.msSymbolArray.find(m => {
+            return m.type === MsSymbolTypeEnum.noteHead && m.region === newNoteHead.region
+        })
+        if (sameRegionNoteHead) {
+            msSymbolMouseDown(e, params.msState.mode, params.msState.currentSelected, sameRegionNoteHead)
+        } else {
+            addMsSymbol(params.msData.musicScore, newNoteHead,
+                params.msData.msSymbolContainer, 'after')
+        }
+
     }
     // 索引生成
     setMeasureArrayIndex(params.msData.singleStaff)
@@ -152,37 +161,36 @@ export function virtualSymbolMouseDown(
 }
 
 
-export function msSymbolMouseDown(e: MouseEvent, mode: MsMode, currentSelected: Ref<MsType | null>, msSymbol: MsSymbol) {
-    console.log('chicken',)
+export function msSymbolMouseDown(e: MouseEvent, mode: Ref<MsMode>, currentSelected: Ref<MsType | null>, msSymbol: MsSymbol) {
     if (msSymbol.type === MsSymbolTypeEnum.noteHead) {  // 赋值region
         eventConstant.originRegion = msSymbol.region
     }
-    if (mode === MsMode.edit) {
+    if (mode.value === MsMode.edit) {
         // 订阅
         select(msSymbol, currentSelected)
     }
 }
 
-export function msSymbolMouseUp(e: MouseEvent, mode: MsMode, currentSelected: Ref<MsType | null>, msSymbol: MsSymbol) {
+export function msSymbolMouseUp(e: MouseEvent, mode: Ref<MsMode>, currentSelected: Ref<MsType | null>, msSymbol: MsSymbol) {
 
 }
 
-export function measureMouseDown(e: MouseEvent, mode: MsMode, currentSelected: Ref<MsType | null>, measure: Measure) {
-    if (mode === MsMode.edit) {
+export function measureMouseDown(e: MouseEvent, mode: Ref<MsMode>, currentSelected: Ref<MsType | null>, measure: Measure) {
+    if (mode.value === MsMode.edit) {
         // 订阅
         select(measure, currentSelected)
     }
 }
 
-export function singleStaffMouseDown(e: MouseEvent, mode: MsMode, currentSelected: Ref<MsType | null>, singleStaff: SingleStaff) {
-    if (mode === MsMode.edit) {
+export function singleStaffMouseDown(e: MouseEvent, mode: Ref<MsMode>, currentSelected: Ref<MsType | null>, singleStaff: SingleStaff) {
+    if (mode.value === MsMode.edit) {
         // 订阅
         select(singleStaff, currentSelected)
     }
 }
 
-export function multipleStavesMouseDown(e: MouseEvent, mode: MsMode, currentSelected: Ref<MsType | null>, multipleStaves: MultipleStaves) {
-    if (mode === MsMode.edit) {
+export function multipleStavesMouseDown(e: MouseEvent, mode: Ref<MsMode>, currentSelected: Ref<MsType | null>, multipleStaves: MultipleStaves) {
+    if (mode.value === MsMode.edit) {
         // 订阅
         select(multipleStaves, currentSelected)
     }

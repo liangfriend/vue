@@ -203,27 +203,27 @@ const emits = defineEmits(['msSymbolMouseDown', 'measureMouseDown', 'singleStaff
 
 
 function handleMsSymbolMouseDown(e: MouseEvent, msSymbol: MsSymbol) {
-  msSymbolMouseDown(e, mode.value, currentSelected, msSymbol);
+  msSymbolMouseDown(e, mode, currentSelected, msSymbol);
   emits('msSymbolMouseDown')
 }
 
 function handleMsSymbolMouseUp(e: MouseEvent, msSymbol: MsSymbol) {
-  msSymbolMouseUp(e, mode.value, currentSelected, msSymbol);
+  msSymbolMouseUp(e, mode, currentSelected, msSymbol);
   emits('msSymbolMouseUp')
 }
 
 function handleMeasureMouseDown(e: MouseEvent, measure: Measure) {
-  measureMouseDown(e, mode.value, currentSelected, measure);
+  measureMouseDown(e, mode, currentSelected, measure);
   emits('measureMouseDown')
 }
 
 function handleSingleStaffMouseDown(e: MouseEvent, singleStaff: SingleStaff) {
-  singleStaffMouseDown(e, mode.value, currentSelected, singleStaff)
+  singleStaffMouseDown(e, mode, currentSelected, singleStaff)
   emits('singleStaffMouseDown')
 }
 
 function handleMultipleStavesMouseDown(e: MouseEvent, multipleStaves: MultipleStaves) {
-  multipleStavesMouseDown(e, mode.value, currentSelected, multipleStaves)
+  multipleStavesMouseDown(e, mode, currentSelected, multipleStaves)
   emits('multipleStavesMouseDown')
 }
 
