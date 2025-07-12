@@ -13,7 +13,7 @@ import {
     Measure,
     MsSymbol,
     MsSymbolContainer, MsType, MultipleStaves,
-    MusicScore, musicScoreIndex,
+    MusicScore, MusicScoreIndex,
     NoteHead,
     SingleStaff,
     WidthConstant
@@ -372,7 +372,7 @@ export function traverseMusicScore(
 }
 
 // 传入两个小节的index, 循环其中的小节
-export function traverseMeasure(startIndex: musicScoreIndex, endIndex: musicScoreIndex, musicScore: MusicScore, callBack: (measure: Measure, singleStaff: SingleStaff, multipleStaves: MultipleStaves) => void) {
+export function traverseMeasure(startIndex: MusicScoreIndex, endIndex: MusicScoreIndex, musicScore: MusicScore, callBack: (measure: Measure, singleStaff: SingleStaff, multipleStaves: MultipleStaves) => void) {
     if (endIndex.multipleStavesIndex == null || startIndex.multipleStavesIndex == null || startIndex.measureIndex == null || endIndex.measureIndex == null || startIndex.singleStaffIndex == null) {
         return console.error("索引元素有误，无法正确执行traverseMeasure")
     }
@@ -478,15 +478,26 @@ export function setMsSymbolArrayIndex(container: MsSymbolContainer) {
     if (multipleStavesIndex == null || singleStaffIndex == null || measureIndex == null || msSymbolContainerIndex == null) {
         return console.error("数据有误，符号索引生成失败")
     }
-    container.msSymbolArray.forEach((symbol, t) => {
-        symbol.index = {
+    container.msSymbolArray.forEach((curMsSymbol, t) => {
+        const index = {
             multipleStavesIndex,
             singleStaffIndex,
             measureIndex,
             msSymbolContainerIndex,
             msSymbolIndex: t
         };
+        curMsSymbol.index = index
+        setChildMsSymbolArrayIndex(curMsSymbol, index)
     });
+}
+
+export function setChildMsSymbolArrayIndex(msSymbol: MsSymbol, index: MusicScoreIndex) {
+    msSymbol.msSymbolArray.forEach((curMsSymbol, t) => {
+        curMsSymbol.index = index
+        if (curMsSymbol.msSymbolArray.length > 0) {
+            setChildMsSymbolArrayIndex(curMsSymbol, index)
+        }
+    })
 }
 
 // 计算属性赋值， 在播放的时候生成一下
@@ -528,6 +539,8 @@ export function getMultipleAspectRatio(msSymbol: MsSymbol): number {
             return information.aspectRatio[msSymbol.keySignature]
         } else if (msSymbol.type === MsSymbolTypeEnum.barline || msSymbol.type === MsSymbolTypeEnum.barline_f) {
             return information.aspectRatio[msSymbol.barlineType]
+        } else if (msSymbol.type === MsSymbolTypeEnum.noteTail) {
+            return information.aspectRatio[msSymbol.chronaxie]
         }
     }
     console.error('符号有误或符号不是复合aspectRatio类型')
@@ -576,7 +589,7 @@ export function getTarget(id: number, msDataMap: Map<number, MsType>): MsType | 
 }
 
 // 通过索引获取内容
-export function getDataWithIndex(index: musicScoreIndex, musicScore: MusicScore): IndexData {
+export function getDataWithIndex(index: MusicScoreIndex, musicScore: MusicScore): IndexData {
     const res: IndexData = {
         multipleStaves: null,
         singleStaff: null,
@@ -662,4 +675,17 @@ export function updateSpanSymbol(spanSymbolIdList: Set<number>, musicScore: Musi
             spanSymbol.vueKey = Date.now()
         }
     })
+}
+
+// 获取音符aspectRatio
+export function getMsSymbolAspectRatio(msSymbol: MsSymbol) {
+    if (!msSymbol?.type) return 1
+    // 单小节符号，赋值
+    const information = MsSymbolInformationMap[msSymbol.type]
+    if ('aspectRatio' in information && (typeof information.aspectRatio === 'number')) {
+        return information.aspectRatio
+    } else if ('aspectRatio' in information && (typeof information.aspectRatio === 'object')) {
+        return getMultipleAspectRatio(msSymbol)
+    }
+    return 1
 }

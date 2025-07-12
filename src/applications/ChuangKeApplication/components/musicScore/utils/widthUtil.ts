@@ -22,6 +22,11 @@ import {
     getWidthConstantInMeasure,
     getWidthConstantInMsSymbolContainer, getWidthConstantInSingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/widthConstantUtil.ts";
+import {
+    getDataWithIndex,
+    getMsSymbolAspectRatio
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
+import {getMsSymbolHeight} from "@/applications/ChuangKeApplication/components/musicScore/utils/heightUtil.ts";
 
 // 获取定宽容器的宽度
 export function getWidthFixedContainerWidth(msSymbolContainer: MsSymbolContainer, measureHeight: number): number {
@@ -115,3 +120,28 @@ export function getWidthFixedContainerWidthSumInSingleStaff(singleStaff: SingleS
     return widthSum
 }
 
+export function getMsSymbolWidth(msSymbol: MsSymbol, musicScore: MusicScore) {
+    const measureHeight = musicScore.measureHeight
+    const aspectRatio = getMsSymbolAspectRatio(msSymbol)
+    const height = getMsSymbolHeight(msSymbol, musicScore)
+    switch (msSymbol?.type) {
+        case MsSymbolTypeEnum.noteBar: {
+            return measureHeight * aspectRatio
+        }
+        default: {
+            return height * aspectRatio
+
+        }
+    }
+}
+
+export function getMsSymbolSlotWidth(msSymbol: MsSymbol, musicScore: MusicScore) {
+    // symbolSlot在类型上没有单独分出来，其含义为非跟随性符号，为防止传入跟随性符号导致计算错误，这里用index进行获取
+    const parentMsSymbol = getDataWithIndex(msSymbol.index, musicScore).msSymbol
+    if (parentMsSymbol) {
+        const aspectRatio = getMsSymbolAspectRatio(parentMsSymbol)
+        const height = getMsSymbolHeight(parentMsSymbol, musicScore)
+        return height * aspectRatio
+    }
+    return 0
+}

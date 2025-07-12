@@ -1,6 +1,6 @@
 <template>
-  <div class="musicScore stack" :style="musicScoreStyle" ref="musicScoreRef" @mousedown="handleMouseDown"
-       @mousemove="handleMouseMove" @mouseup="handleMouseUp">
+  <div class="musicScore stack" :style="musicScoreStyle" ref="musicScoreRef" @mousedown.stop="handleMouseDown"
+       @mousemove.stop="handleMouseMove" @mouseup.stop="handleMouseUp">
 
     <measure-container :disabled="false" :musicScoreData="musicScore" class="stackItem lineLayer"
                        :style="{width:width+'px',height:height+'px'}"
@@ -110,46 +110,46 @@
 </template>
 <script setup lang="ts">
 import measure from './components/measure.vue';
-import {computed, onMounted, onBeforeMount, onUnmounted, type PropType, provide, ref} from 'vue';
+import {computed, onBeforeMount, onMounted, onUnmounted, type PropType, provide, Ref, ref} from 'vue';
 import type {
-  MusicScore,
-  musicScoreIndex,
-  SpanSymbol,
-  Rect,
-  MouseDownData,
   Measure,
+  MsSymbol,
   MsType,
+  MultipleStaves,
+  MusicScore,
   MusicScoreRef,
-  SingleStaff,
-  MultipleStaves, MsSymbol
+  ReserveMsSymbolMapType,
+  SingleStaff
 } from "./types.d.ts";
 import MeasureContainer from "@/applications/ChuangKeApplication/components/musicScore/components/measureContainer.vue";
 
 import MsSymbolContainer
   from "@/applications/ChuangKeApplication/components/musicScore/components/msSymbolContainer.vue";
 
-import SpanSymbolVue
-  from "@/applications/ChuangKeApplication/components/musicScore/components/spanSymbol.vue";
+import SpanSymbolVue from "@/applications/ChuangKeApplication/components/musicScore/components/spanSymbol.vue";
 import {
-  getTarget,
   mapGenerate,
-  msSymbolComputedData, setMultipleStavesIndex, traverseMeasure
+  setMultipleStavesIndex
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {
+  ChronaxieEnum,
   MsMode,
-  MsSymbolContainerTypeEnum, PreliminaryMsSymbolType,
-
+  MsSymbolContainerTypeEnum,
+  MsSymbolTypeEnum,
+  ReserveMsSymbolType,
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {
   eventConstant,
   handleMouseMoveSelected,
-  handleMouseUpSelected,
-  measureMouseDown, msSymbolMouseDown, msSymbolMouseUp,
+  measureMouseDown,
+  msSymbolMouseDown,
+  msSymbolMouseUp,
   multipleStavesMouseDown,
   singleStaffMouseDown
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
 import VirtualSymbolContainer
   from "@/applications/ChuangKeApplication/components/musicScore/components/virtualSymbolContainer.vue";
+import {msSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 
 
 const props = defineProps({
@@ -175,22 +175,31 @@ const props = defineProps({
 
 const mode = ref(MsMode.edit)
 // 预备符号
-const preliminaryMsSymbolMap = ref<Map<PreliminaryMsSymbolType, MsType>>(new Map());
+const reserveMsSymbolMap = ref(new Map()) as Ref<ReserveMsSymbolMapType>;
+// spanSymbol快速索引对象
+const msDataMap = ref(new Map<number, MsType>())
+// 当前选择对象
+const currentSelected = ref<MsType | null>(null)
 
-function setPreliminary(key: PreliminaryMsSymbolType, msData: MsType) {
-  preliminaryMsSymbolMap.value.set(key, msData);
+
+function initReserveMsSymbolMap() {
+  const note = msSymbolTemplate({type: MsSymbolTypeEnum.noteHead, chronaxie: ChronaxieEnum.quarter})
+  reserveMsSymbolMap.value.set(ReserveMsSymbolType.note, note);
+
 }
 
-function getPreliminary(key: PreliminaryMsSymbolType): MsType | null {
-  if (preliminaryMsSymbolMap.value.has(key)) {
-    return preliminaryMsSymbolMap.value.get(key)!;
+function setReserveMsSymbol(key: ReserveMsSymbolType, msData: MsType) {
+  reserveMsSymbolMap.value.set(key, msData);
+}
+
+function getReserveMsSymbol(key: ReserveMsSymbolType): MsType | null {
+  if (reserveMsSymbolMap.value.has(key)) {
+    return reserveMsSymbolMap.value.get(key)!;
   }
   return null
 }
 
-const msDataMap = ref(new Map<number, MsType>())
-// 当前选择对象
-const currentSelected = ref<MsType | null>(null)
+
 // 变宽符号容器
 const variableContainerArray = computed(() => {
   return (measure: Measure) => {
@@ -245,7 +254,8 @@ function beforeMount() {
   msDataMap.value = mapGenerate(props.musicScore)
   // 索引生成
   setMultipleStavesIndex(props.musicScore)
-
+  // 初始化预备音符
+  initReserveMsSymbolMap()
   window.musicScore = props.musicScore
 }
 
@@ -265,18 +275,20 @@ function handleMouseUp(e: MouseEvent) {
   eventConstant.startX = 0
   eventConstant.startY = 0
   downLock.value = false
-  handleMouseUpSelected(e, currentSelected, props.musicScore)
-  // currentSelected.value = null
-
-
 }
 
 function handleMouseMove(e: MouseEvent) {
   if (downLock.value) {
-    handleMouseMoveSelected(e, props.musicScore?.measureHeight, currentSelected.value)
+    handleMouseMoveSelected(e, props.musicScore?.measureHeight, currentSelected, props.musicScore)
   }
 }
 
+function cancelSelect() {
+  if (currentSelected.value) {
+    currentSelected.value.options.hightlight = false
+  }
+  currentSelected.value = null
+}
 
 onMounted(() => {
   //遍历所有订阅者，执行操作
@@ -290,10 +302,20 @@ onUnmounted(() => {
 provide('msState', {
   mode,
   currentSelected,
-  msDataMap
+  msDataMap,
+  reserveMsSymbolMap
 })
 // TODO 这个应该设置为已读，不知道能不能实现
-defineExpose<MusicScoreRef>({changeMode, root: musicScoreRef, mode, currentSelected, setPreliminary, getPreliminary})
+defineExpose<MusicScoreRef>({
+  changeMode,
+  root: musicScoreRef,
+  mode,
+  currentSelected,
+  setReserveMsSymbol,
+  getReserveMsSymbol,
+  reserveMsSymbolMap,
+  cancelSelect
+})
 </script>
 <style scoped lang="scss" comment="布局">
 .stack {

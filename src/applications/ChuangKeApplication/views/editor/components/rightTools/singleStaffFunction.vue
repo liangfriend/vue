@@ -9,13 +9,14 @@ import {
   Measure,
   MsType,
   MusicScore,
-  MusicScoreRef
+  MusicScoreRef,
+  SingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 
 
 const props = defineProps({
-  measure: {
-    type: Object as PropType<Measure>,
+  singleStaff: {
+    type: Object as PropType<SingleStaff>,
     required: true
   },
   musicScore: {
@@ -24,19 +25,20 @@ const props = defineProps({
   },
   msRef: {
     type: Object as PropType<UnwrapRef<MusicScoreRef>>,
+    required: true
   },
 })
 
-function handleRightToolsBtn(key: String, measure: Measure, musicScore: MusicScore) {
+function handleRightToolsBtn(key: String, singleStaff: SingleStaff, musicScore: MusicScore) {
   switch (key) {
     case 'insertBefore':
-      insertMeasure(measure, musicScore, 'before')
+      insertSingleStaff(singleStaff, musicScore, 'before')
       break
     case 'insertAfter':
-      insertMeasure(measure, musicScore, 'after')
+      insertSingleStaff(singleStaff, musicScore, 'after')
       break
     case 'delete':
-      deleteMeasure(measure, musicScore)
+      deleteSingleStaff(singleStaff, musicScore)
       break;
 
   }
@@ -47,17 +49,17 @@ function handleRightToolsBtn(key: String, measure: Measure, musicScore: MusicSco
 
 <template>
   <div>
-    <el-button @click="handleRightToolsBtn('insertBefore',measure,musicScore)"
+    <el-button @click="handleRightToolsBtn('insertBefore',singleStaff,musicScore)"
     >
-      向前插入小节
+      向前插入单谱表
     </el-button>
-    <el-button @click="handleRightToolsBtn('insertAfter',measure,musicScore)"
+    <el-button @click="handleRightToolsBtn('insertAfter',singleStaff,musicScore)"
     >
-      向后插入小节
+      向后插入单谱表
     </el-button>
-    <el-button @click="handleRightToolsBtn('delete',measure,musicScore)"
+    <el-button @click="handleRightToolsBtn('delete',singleStaff,musicScore)"
     >
-      删除小节
+      删除单谱表
     </el-button>
   </div>
 </template>

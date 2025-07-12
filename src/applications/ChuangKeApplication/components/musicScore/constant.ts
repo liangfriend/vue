@@ -1,6 +1,6 @@
 // 宽度占比常数。与MsSymbolTypeEnum组合使用
 import {
-    BarlineTypeEnum,
+    BarlineTypeEnum, ChronaxieEnum,
     KeySignatureEnum, MsSymbolCategoryEnum, MsSymbolContainerTypeEnum,
     MsSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
@@ -27,29 +27,24 @@ export const KeySignatureTonicSemitones: Record<KeySignatureEnum, number> = {
 
 type FixedWidthSymbolInfo = { // 定宽符号没有宽度占比系数
     containerType: MsSymbolContainerTypeEnum.rearFixed | MsSymbolContainerTypeEnum.frontFixed
-    aspectRatio: number
+    aspectRatio: number | Record<string, number>// 特殊的定宽容器，宽高比有多个，取决于具体情况
     category: MsSymbolCategoryEnum.singleMeasure
     heightMultiplier: number    // 相对小节的高度倍数，用于计算高度
-} | { // 特殊的定宽容器，宽高比有多个，取决于具体情况
-    containerType: MsSymbolContainerTypeEnum.rearFixed | MsSymbolContainerTypeEnum.frontFixed
-    aspectRatio: Record<string, number>
-    category: MsSymbolCategoryEnum.singleMeasure
-    heightMultiplier: number
 }
 
 
 type VariableWidthSymbolInfo = {
     containerType: MsSymbolContainerTypeEnum.variable
-    aspectRatio: number
+    aspectRatio: number | Record<string, number>
     widthRatioConstant: number // 可为任意正数
     category: MsSymbolCategoryEnum.singleMeasure
     heightMultiplier: number
 }
 type pureFollowSymbolInfo = { // 纯粹的符号跟随类型  没有容器类型属性
-    aspectRatio: number
+    aspectRatio: number | Record<string, number>
     category: MsSymbolCategoryEnum
     widthRatioConstant: number
-    heightMultiplier: number
+    heightMultiplier: number // 相对小节的高度倍数，用于计算高度
 }
 
 type MultipleMeasureSymbolInfo = {
@@ -70,16 +65,20 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
         heightMultiplier: 0.25,
     },
     [MsSymbolTypeEnum.noteBar]: {  // 有些纯粹的符号跟随类型是没有符号容器类型的
-        aspectRatio: 0.08,
+        aspectRatio: 0.04,
         category: MsSymbolCategoryEnum.singleMeasure,
         widthRatioConstant: 0,
-        heightMultiplier: 0.6,
+        heightMultiplier: 0.75,
     },
     [MsSymbolTypeEnum.noteTail]: {
-        aspectRatio: 1,
+        aspectRatio: {
+            [ChronaxieEnum.eighth]: 0.5,   // 7 flats
+            [ChronaxieEnum.sixteenth]: 0.5,   // 6 flats
+
+        },
         category: MsSymbolCategoryEnum.singleMeasure,
         widthRatioConstant: 0,
-        heightMultiplier: 0.4,
+        heightMultiplier: 0.5,
     },
     [MsSymbolTypeEnum.rest]: {// 休止符：不如音符重要，但需占位
         containerType: MsSymbolContainerTypeEnum.variable,

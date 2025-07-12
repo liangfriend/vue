@@ -18,6 +18,7 @@ import {
 export function msSymbolTemplate(options: {
     type?: MsSymbolTypeEnum,
     region?: MusicScoreRegionEnum,
+    chronaxie?: ChronaxieEnum,
     barLineType?: BarlineTypeEnum
 }): MsSymbol {
     const baseMsSymbol: BaseMsSymbol = {
@@ -35,12 +36,29 @@ export function msSymbolTemplate(options: {
     }
     switch (options.type) {
         case MsSymbolTypeEnum.noteHead: {
-            return {
+            console.log('chicken', options.chronaxie)
+            // chronaxie不存在默认为四分音符，添加符杠
+            if (!options.chronaxie || ![ChronaxieEnum.whole].includes(options.chronaxie)) {
+                const noteBar = msSymbolTemplate({
+                    type: MsSymbolTypeEnum.noteBar
+                })
+                baseMsSymbol.msSymbolArray.push(noteBar)
 
+            }
+            // 如果不为全，二分，四分音符，添加符尾
+            if (options.chronaxie && ![ChronaxieEnum.whole, ChronaxieEnum.half, ChronaxieEnum.quarter].includes(options.chronaxie)) {
+
+                const noteTail = msSymbolTemplate({
+                    type: MsSymbolTypeEnum.noteTail,
+                    chronaxie: options.chronaxie || ChronaxieEnum.quarter
+                })
+                baseMsSymbol.msSymbolArray.push(noteTail)
+            }
+            return {
                 ...baseMsSymbol,
                 type: MsSymbolTypeEnum.noteHead,
                 region: options.region || MusicScoreRegionEnum.space_3,
-                chronaxie: ChronaxieEnum.eighth,
+                chronaxie: options.chronaxie || ChronaxieEnum.quarter,
                 computed: {},
             }
         }
@@ -51,12 +69,25 @@ export function msSymbolTemplate(options: {
                 barlineType: options.barLineType ?? BarlineTypeEnum.single
             }
         }
+        case MsSymbolTypeEnum.noteBar: {
+            return {
+                ...baseMsSymbol,
+                type: MsSymbolTypeEnum.noteBar,
+            }
+        }
+        case MsSymbolTypeEnum.noteTail: {
+            return {
+                ...baseMsSymbol,
+                type: MsSymbolTypeEnum.noteTail,
+                chronaxie: options.chronaxie || ChronaxieEnum.quarter,
+            }
+        }
         default: {
             return {
                 ...baseMsSymbol,
                 type: MsSymbolTypeEnum.noteHead,
                 region: options.region || MusicScoreRegionEnum.space_3,
-                chronaxie: ChronaxieEnum.eighth,
+                chronaxie: options.chronaxie || ChronaxieEnum.quarter,
                 computed: {},
             }
         }

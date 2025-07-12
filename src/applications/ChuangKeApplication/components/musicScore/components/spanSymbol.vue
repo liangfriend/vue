@@ -46,7 +46,7 @@ function voltaRect(volta: Extract<SpanSymbol, {
   }
   const startMeasure = getTarget(volta.startTargetId, msState.msDataMap.value)
   const endMeasure = getTarget(volta.endTargetId, msState.msDataMap.value)
-  if (!startMeasure || !endMeasure) return console.error('获取不到绑定元素')
+  if (!startMeasure || !endMeasure) return console.error('获取不到绑定元素', startMeasure, endMeasure)
   if (startMeasure.msTypeName !== MsTypeNameEnum.Measure || endMeasure.msTypeName !== MsTypeNameEnum.Measure) return console.error('volta绑定元素错误')
   // 反复符号绑定的两个小节必须在同一单谱表上
   if (startMeasure.index.multipleStavesIndex !== endMeasure.index.multipleStavesIndex) {
@@ -56,7 +56,7 @@ function voltaRect(volta: Extract<SpanSymbol, {
   rect.left = getMeasureLeftToMusicScore(startMeasure, musicScore, componentWidth)
   traverseMeasure(startMeasure.index, endMeasure.index, musicScore, (measure, singleStaff, multipleStaves) => {
     rect.width += getMeasureWidth(measure, singleStaff, musicScore, componentWidth)
-    rect.bottom = Math.max(rect.bottom, getMaxMsSymbolBottomInMeasure(measure, musicScore.measureHeight) + getMeasureBottomToMusicScore(measure, musicScore, componentHeight))
+    rect.bottom = Math.max(rect.bottom, getMaxMsSymbolBottomInMeasure(measure, musicScore) + getMeasureBottomToMusicScore(measure, musicScore, componentHeight))
   })
   volta.rect = rect
 

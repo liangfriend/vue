@@ -18,10 +18,12 @@ import msSymbolVue from "@/applications/ChuangKeApplication/components/musicScor
 
 import {MsSymbolInformationMap} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 import {
-  getMultipleAspectRatio
+  getMsSymbolAspectRatio,
+  getMultipleAspectRatio,
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {getMsSymbolHeight} from "@/applications/ChuangKeApplication/components/musicScore/utils/heightUtil.ts";
 import {getSlotBottomToMeasure} from "@/applications/ChuangKeApplication/components/musicScore/utils/bottomUtil.ts";
+import {getMsSymbolSlotWidth} from "@/applications/ChuangKeApplication/components/musicScore/utils/widthUtil.ts";
 
 const props = defineProps({
   msSymbol: {
@@ -92,22 +94,13 @@ const msSymbolSlotStyle = computed<CSSProperties>(() => {
 });
 
 const aspectRatio = computed<number>(() => {
-  if (!props.msSymbol?.type) return 1
-  // 单小节符号，赋值
-  const information = MsSymbolInformationMap[props.msSymbol.type]
-  if ('aspectRatio' in information && typeof information.aspectRatio === 'number') {
-    return information.aspectRatio
-  } else if ('aspectRatio' in information && typeof information.aspectRatio === 'object') {
-    return getMultipleAspectRatio(props.msSymbol)
-  }
-  return 1
+  return getMsSymbolAspectRatio(props.msSymbol)
 })
 const height = computed(() => {
-  return getMsSymbolHeight(props.msSymbol, props.measureHeight)
+  return getMsSymbolHeight(props.msSymbol, props.musicScore)
 })
 const slotWidth = computed(() => {
-
-  return height.value * aspectRatio.value
+  return getMsSymbolSlotWidth(props.msSymbol, props.musicScore)
 })
 const slotLeft = computed(() => {
   switch (props.msSymbol?.type) {
@@ -121,7 +114,7 @@ const slotLeft = computed(() => {
   return 0
 })
 const slotBottom = computed(() => {
-  return getSlotBottomToMeasure(props.msSymbol, props.measureHeight)
+  return getSlotBottomToMeasure(props.msSymbol, props.musicScore)
 })
 
 const emits = defineEmits(['msSymbolMouseDown', 'msSymbolMouseUp']);
@@ -134,6 +127,7 @@ const emits = defineEmits(['msSymbolMouseDown', 'msSymbolMouseUp']);
        :style="msSymbolSlotStyle">
     <msSymbolVue v-if="msSymbol" ref="mainMsSymbolRef" :measureHeight="measureHeight"
                  :slot-width="slotWidth"
+                 :slotBottom="slotBottom"
                  :containerWidth="containerWidth"
                  :isMain="true"
                  :componentWidth="componentWidth"
@@ -146,7 +140,9 @@ const emits = defineEmits(['msSymbolMouseDown', 'msSymbolMouseUp']);
       <msSymbolVue :measureHeight="measureHeight" v-for="item in msSymbol.msSymbolArray"
                    :containerWidth="containerWidth"
                    :isMain="false"
+                   :slotBottom="slotBottom"
                    :slot-width="slotWidth"
+                   :parent-ms-symbol="msSymbol"
                    :componentWidth="componentWidth"
                    @msSymbolMouseDown="(e:MouseEvent, msSymbol:MsSymbol)=>emits('msSymbolMouseDown',e,msSymbol)"
                    @msSymbolMouseUp="(e:MouseEvent, msSymbol:MsSymbol)=>emits('msSymbolMouseUp',e,msSymbol)"

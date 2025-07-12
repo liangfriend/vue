@@ -1,8 +1,10 @@
 import {
+    ChronaxieEnum,
     MsMode,
     MsSymbolTypeEnum,
     MsTypeNameEnum,
-    MusicScoreRegionEnum
+    MusicScoreRegionEnum,
+    ReserveMsSymbolType
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {
     Measure,
@@ -40,7 +42,6 @@ export function select(value: MsType, currentSelected: Ref<null | MsType>) {
     }
     value.options.hightlight = true
     currentSelected.value = value
-    console.log('chicken', value)
 
 }
 
@@ -52,22 +53,25 @@ export const eventConstant: { startX: number, startY: number, originRegion: Musi
 }
 
 // 处理选中元素mousemove事件
-export function handleMouseMoveSelected(e: MouseEvent, measureHeight: number, currentSelected: MsType | null) {
+export function handleMouseMoveSelected(e: MouseEvent, measureHeight: number, currentSelected: Ref<MsType | null>, musicScore: MusicScore) {
 
-    if (!currentSelected) return
-    switch (currentSelected.msTypeName) {
+    if (!currentSelected.value) return
+    switch (currentSelected.value.msTypeName) {
         case MsTypeNameEnum.MsSymbol: {
-            const msSymbol = currentSelected
+            const msSymbol = currentSelected.value
             if (msSymbol.type === MsSymbolTypeEnum.noteHead) {
                 const dx = e.clientX - eventConstant.startX;
                 const dy = e.clientY - eventConstant.startY;
                 if (Math.abs(dy) > measureHeight / 8 && msSymbol) {
                     const index = Math.floor(dy / measureHeight * 8);
-
                     const targetIndex = eventConstant.originRegion - index;
                     if (targetIndex in MusicScoreRegionEnum) {
                         msSymbol.region = targetIndex as MusicScoreRegionEnum;
-
+                        // 跨小节符号位置更新
+                        const singleStaff = getDataWithIndex(currentSelected.value.index, musicScore).singleStaff
+                        if (!singleStaff) return console.error("找不到单谱表，跨小节符号更新失败")
+                        const spanSymbolIdSet = getSpanSymbolIdSetInSingleStaff(singleStaff, musicScore)
+                        updateSpanSymbol(spanSymbolIdSet, musicScore)
                     }
                 }
             }
@@ -81,11 +85,7 @@ export function handleMouseUpSelected(e: MouseEvent, currentSelected: Ref<MsType
     if (!currentSelected.value) return
     switch (currentSelected.value.msTypeName) {
         case MsTypeNameEnum.MsSymbol: {
-            // 跨小节符号位置更新
-            const singleStaff = getDataWithIndex(currentSelected.value.index, musicScore).singleStaff
-            if (!singleStaff) return console.error("找不到单谱表，跨小节符号更新失败")
-            const spanSymbolIdSet = getSpanSymbolIdSetInSingleStaff(singleStaff, musicScore)
-            updateSpanSymbol(spanSymbolIdSet, musicScore)
+
 
             currentSelected.value.options.hightlight = false
             currentSelected.value = null
@@ -115,10 +115,15 @@ export function virtualSymbolMouseDown(
     },) {
     if (!params.msState.currentSelected.value) return
     if (params.msState.mode.value !== MsMode.edit || params.msState.currentSelected.value.msTypeName !== MsTypeNameEnum.Measure) return
-
+    let chronaxie = null
+    const reserveNote = params.msState.reserveMsSymbolMap.value.get(ReserveMsSymbolType.note)
+    if (reserveNote && 'chronaxie' in reserveNote) {
+        chronaxie = reserveNote.chronaxie
+    }
     const newNoteHead = msSymbolTemplate({
         type: MsSymbolTypeEnum.noteHead,
-        region: params.msSymbolInformation.region
+        region: params.msSymbolInformation.region,
+        chronaxie: chronaxie || ChronaxieEnum.quarter
     }) as Extract<MsSymbol, { type: MsSymbolTypeEnum.noteHead }>
     const newMsSymbolContainer = msSymbolContainerTemplate({})
     // 给音符进行计算属性赋值及index赋值

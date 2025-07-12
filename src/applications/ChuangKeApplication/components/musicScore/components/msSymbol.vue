@@ -15,11 +15,13 @@
   ></div>
 </template>
 <script setup lang="ts">
-import {computed, CSSProperties, inject, onMounted, PropType, ref} from "vue";
-import {MouseDownData, MsState, MsSymbol, MsType} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {computed, CSSProperties, onMounted, PropType, ref} from "vue";
+import {MsSymbol, type MusicScore, NoteHead} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
-  AccidentalEnum, BarlineTypeEnum, ChronaxieEnum, MsMode,
-  MsSymbolTypeEnum, MusicScoreRegionEnum, OrderTypeEnum
+  AccidentalEnum,
+  BarlineTypeEnum,
+  ChronaxieEnum,
+  MsSymbolTypeEnum, MusicScoreRegionEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 // 音符头
 import noteHeadWholeSvg from "../musicSymbols/noteHeadWhole.svg"
@@ -30,41 +32,44 @@ import noteBarSvg from '../musicSymbols/noteBar.svg'
 
 // 变音符号
 import sharpSvg from '../musicSymbols/sharp.svg'
-import flatSvg from '../musicSymbols/flat.svg'
-import natureSvg from '../musicSymbols/nature.svg'
 import doubleSharpSvg from '../musicSymbols/sharp.svg'
+import flatSvg from '../musicSymbols/flat.svg'
 import doubleFlatpSvg from '../musicSymbols/flat.svg'
+import natureSvg from '../musicSymbols/nature.svg'
 // 小节线
 import barlineSingleSvg from '../musicSymbols/barlineSingle.svg'
 import barlineFinalSvg from '../musicSymbols/barlineFinal.svg'
 import barlineReverseFinalSvg from '../musicSymbols/barlineReverseFinal.svg'
 import barlineStartRepeatSignSvg from '../musicSymbols/barlineStartRepeatSign.svg'
 import barlineEndRepeatSignSvg from '../musicSymbols/barlineEndRepeatSign.svg'
-
-
-import {MsSymbolInformationMap} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 import Clef from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/clef.vue";
 import KeySignature from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/keySignature.vue";
 import TimeSignature from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/timeSignature.vue";
+import noteTailOneUpSvg from "../musicSymbols/noteTailOneUp.svg"
+import noteTailTwoUpSvg from "../musicSymbols/noteTailTwoUp.svg"
+import noteTailOneDownSvg from "../musicSymbols/noteTailOneDown.svg"
+import noteTailTwoDownSvg from "../musicSymbols/noteTailTwoDown.svg"
 import {
-  getMultipleAspectRatio
+  getDataWithIndex,
+  getMsSymbolAspectRatio
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {getMsSymbolHeight} from "@/applications/ChuangKeApplication/components/musicScore/utils/heightUtil.ts";
 import {
   getMsSymbolBottomToSlot,
   getSlotBottomToMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/bottomUtil.ts";
-import {MOUSE} from "three";
-import {
-  measureMouseDown,
-  msSymbolMouseDown,
-  select
-} from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
+import {msSymbolMouseDown} from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
+import {getMsSymbolLeftToSlot} from "@/applications/ChuangKeApplication/components/musicScore/utils/leftUtil.ts";
+import {getMsSymbolWidth} from "@/applications/ChuangKeApplication/components/musicScore/utils/widthUtil.ts";
 
 const props = defineProps({
   msSymbol: {
     type: Object as PropType<MsSymbol>,
     required: true
+  },
+  musicScore: {
+    type: Object as PropType<MusicScore>,
+    default: {}
   },
   containerWidth: {
     type: Number,
@@ -79,10 +84,17 @@ const props = defineProps({
     type: Number,
     default: 60
   },
+  parentMsSymbol: {
+    type: Object as PropType<MsSymbol>,
+  },
   // 符号槽位宽度（父级符号宽度）
   slotWidth: {
     type: Number,
     default: 60
+  },
+  slotBottom: {
+    type: Number,
+    default: 0
   },
   componentWidth: {
     type: Number,
@@ -115,6 +127,39 @@ const svgHref = computed(() => {
     }
     case MsSymbolTypeEnum.noteBar: {
       return noteBarSvg
+    }
+    case MsSymbolTypeEnum.noteTail: {
+      const noteHead = getDataWithIndex(props.msSymbol.index, props.musicScore)
+          .msSymbol as NoteHead
+      if (noteHead && 'region' in noteHead
+          && noteHead.region <= MusicScoreRegionEnum.space_2) {
+        switch (props.msSymbol.chronaxie) {
+          case ChronaxieEnum.eighth: {
+            return noteTailOneUpSvg
+
+          }
+          case ChronaxieEnum.sixteenth: {
+            return noteTailTwoUpSvg
+          }
+          default: {
+            return ''
+          }
+        }
+      } else {
+        switch (props.msSymbol.chronaxie) {
+          case ChronaxieEnum.eighth: {
+            return noteTailOneDownSvg
+
+          }
+          case ChronaxieEnum.sixteenth: {
+            return noteTailTwoDownSvg
+          }
+          default: {
+            return ''
+          }
+        }
+      }
+
     }
     case MsSymbolTypeEnum.clef: {
       return ''
@@ -202,42 +247,24 @@ const svgHref = computed(() => {
 const msSymbolRef = ref(null!)
 
 const aspectRatio = computed<number>(() => {
-  if (!props.msSymbol?.type) return 1
-  // 单小节符号，赋值
-  const information = MsSymbolInformationMap[props.msSymbol.type]
-  if ('aspectRatio' in information && (typeof information.aspectRatio === 'number')) {
-    return information.aspectRatio
-  } else if ('aspectRatio' in information && (typeof information.aspectRatio === 'object')) {
-    return getMultipleAspectRatio(props.msSymbol)
-  }
-  return 1
+  return getMsSymbolAspectRatio(props.msSymbol)
 })
 
 
 const height = computed(() => {
-  return getMsSymbolHeight(props.msSymbol, props.measureHeight)
+  return getMsSymbolHeight(props.msSymbol, props.musicScore)
 })
 // 符号宽度
 const width = computed(() => {
-  return height.value * aspectRatio.value
+  return getMsSymbolWidth(props.msSymbol, props.musicScore)
 })
 const msSymbolLeft = computed(() => {
-  switch (props.msSymbol?.type) {
-    case MsSymbolTypeEnum.noteHead: { // 音符头居中
-      return
-    }
-    case MsSymbolTypeEnum.noteBar: { // 音符头居中
-      return props.slotWidth - width.value
-    }
-    case MsSymbolTypeEnum.accidental: { // 音符头居中
-      return -width.value
-    }
-  }
-  return 0
+  return getMsSymbolLeftToSlot(props.msSymbol, props.musicScore)
 })
 
 const msSymbolBottom = computed(() => {
-  return getMsSymbolBottomToSlot(props.msSymbol, props.measureHeight)
+  return getMsSymbolBottomToSlot(props.msSymbol, props.musicScore)
+
 })
 const msSymbolStyle = computed<CSSProperties>(() => {
   let bgColor = 'black'

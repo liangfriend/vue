@@ -11,33 +11,26 @@ import {msPlayUtils} from "@/applications/ChuangKeApplication/utils/ms-playUtils
 import {MusicMapKey} from "@/applications/ChuangKeApplication/views/editor/constant.ts";
 import {useRouter} from "vue-router";
 import {
-  BarlineTypeEnum,
   MsMode,
+  MsSymbolTypeEnum,
   MsTypeNameEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import RightTools from "@/applications/ChuangKeApplication/views/editor/components/rightTools/rightTools.vue";
 import {MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
-import {addMeasure} from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
-import {measureTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
-import {
-  getDataWithIndex,
-  getSpanSymbolIdSetInSingleStaff, setMeasureArrayIndex, updateSpanSymbol
-} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
-import {
-  handleRightToolsBtn,
-  insertMeasureAfter,
-  insertMeasureBefore, measureFunctionList, multipleStavesFunctionList, singleStaffFunctionList
-} from "@/applications/ChuangKeApplication/views/editor/rightToolsFunction.ts";
-import {FunctionListItem} from "@/applications/ChuangKeApplication/views/editor/type";
-import {measureFunctionEnum} from "@/applications/ChuangKeApplication/views/editor/enum.ts";
+import MeasureFunction from "@/applications/ChuangKeApplication/views/editor/components/rightTools/measureFunction.vue";
+import BasicFunction from "@/applications/ChuangKeApplication/views/editor/components/rightTools/basicFunction.vue";
+import SingleStaffFunction
+  from "@/applications/ChuangKeApplication/views/editor/components/rightTools/singleStaffFunction.vue";
+import MultipleStavesFunction
+  from "@/applications/ChuangKeApplication/views/editor/components/rightTools/MultipleStavesFunction.vue";
 
 const router = useRouter()
 type addedWb = {
   getMsRef: () => UnwrapRef<MusicScoreRef>
 }
 const wbRef = ref(null!) as Ref<addedWb>
-const msRef = computed(() => {
-  if (!wbRef.value) return
+const msRef = computed((): UnwrapRef<MusicScoreRef> | null => {
+  if (!wbRef.value) return null
   return wbRef.value.getMsRef()
 })
 const curModeText = ref("教学模式")
@@ -100,10 +93,8 @@ watch(musicScoreData, (newVal) => {
   })
 }, {deep: true})
 const currentSelected = computed(() => {
-  return msRef.value?.currentSelected
+  return msRef.value?.currentSelected || null
 })
-
-
 
 onMounted(() => {
   //TEST
@@ -128,31 +119,30 @@ onMounted(() => {
       <div class="rightTools">
         <right-tools>
           <template v-slot:function>
-            <template v-if="currentSelected?.msTypeName === MsTypeNameEnum.Measure">
-              <div class="rightToolsFunction">
-                <el-button @click="handleRightToolsBtn(item,currentSelected,musicScoreData)"
-                           v-for="(item) in measureFunctionList">
-                  {{ item.name }}
-                </el-button>
+            <div class="rightToolsFunction">
+              <div>
+                <el-button @click="msRef?.cancelSelect()">取消选中</el-button>
               </div>
-            </template>
-            <template v-if="currentSelected?.msTypeName === MsTypeNameEnum.SingleStaff">
-              <div class="rightToolsFunction">
-                <el-button @click="handleRightToolsBtn(item,currentSelected,musicScoreData)"
-                           v-for="(item) in singleStaffFunctionList">
-                  {{ item.name }}
-                </el-button>
+              <measure-function v-if="currentSelected?.msTypeName === MsTypeNameEnum.Measure"
+                                :msRef="msRef"
+                                :measure="currentSelected" :music-score="musicScoreData"></measure-function>
+              <single-staff-function v-if="currentSelected?.msTypeName === MsTypeNameEnum.SingleStaff"
+                                     :singleStaff="currentSelected"
+                                     :msRef="msRef"
+                                     :music-score="musicScoreData"></single-staff-function>
+              <multiple-staves-function v-if="currentSelected?.msTypeName === MsTypeNameEnum.MultipStaves"
+                                        :multipleStaves="currentSelected"
+                                        :msRef="msRef"
+                                        :music-score="musicScoreData"></multiple-staves-function>
+              <!--                <note-head-function-->
+              <!--                    v-if="currentSelected?.msTypeName === MsTypeNameEnum.MsSymbol-->
+              <!--                    && currentSelected.type === MsSymbolTypeEnum.noteHead"-->
+              <!--                    :noteHead="currentSelected"-->
+              <!--                    :music-score="musicScoreData"></note-head-function>-->
+              <basic-function v-if="!currentSelected?.msTypeName"
+                              :msRef="msRef"
+                              :music-score="musicScoreData"></basic-function>
               </div>
-            </template>
-            <template v-if="currentSelected?.msTypeName === MsTypeNameEnum.MultipStaves">
-              <div class="rightToolsFunction">
-                <el-button @click="handleRightToolsBtn(item,currentSelected,musicScoreData)"
-                           v-for="(item) in multipleStavesFunctionList">
-                  {{ item.name }}
-                </el-button>
-              </div>
-            </template>
-
           </template>
         </right-tools>
       </div>

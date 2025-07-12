@@ -9,7 +9,7 @@ import {
     AccidentalEnum,
     MusicScoreRegionEnum,
     BarlineTypeEnum,
-    SpanSymbolFollowingCategoryEnum, SpanSymbolTypeEnum, MsTypeNameEnum, OrderTypeEnum, MsMode
+    SpanSymbolFollowingCategoryEnum, SpanSymbolTypeEnum, MsTypeNameEnum, OrderTypeEnum, MsMode, ReserveMsSymbolType
 } from "./musicScoreEnum.ts";
 import {Ref} from "vue";
 
@@ -33,7 +33,7 @@ export declare interface Rect {
     bottom?: number;
 }
 
-export declare type musicScoreIndex = {
+export declare type MusicScoreIndex = {
     multipleStavesIndex?: number,
     singleStaffIndex?: number,
     measureIndex?: number,
@@ -41,13 +41,13 @@ export declare type musicScoreIndex = {
     msSymbolIndex?: number,
 }
 export declare type BaseMsSymbol = {
-    msSymbolArray?: Array<MsSymbol>
+    msSymbolArray: Array<MsSymbol>
     options: MusicScoreOptions
     id: number,
     msTypeName: MsTypeNameEnum.MsSymbol,
     bindingStartId: Array<number>,
     bindingEndId: Array<number>,
-    index: musicScoreIndex
+    index: MusicScoreIndex
 }
 export declare type NoteHead = ({
     type: MsSymbolTypeEnum.noteHead,
@@ -83,11 +83,14 @@ export declare type MsSymbol = NoteHead | ({
     type: MsSymbolTypeEnum.accidental,
     accidental: AccidentalEnum,
 } & BaseMsSymbol) | ({
+    type: MsSymbolTypeEnum.noteTail,
+    chronaxie: ChronaxieEnum,
+} & BaseMsSymbol) | ({
     type: MsSymbolTypeEnum.barline | MsSymbolTypeEnum.barline_f,
     barlineType: BarlineTypeEnum,
 } & BaseMsSymbol) | Barline | ({
     type: Exclude<MsSymbolTypeEnum, MsSymbolTypeEnum.noteHead | MsSymbolTypeEnum.clef |
-        MsSymbolTypeEnum.timeSignature | MsSymbolTypeEnum.keySignature | MsSymbolTypeEnum.accidental | MsSymbolTypeEnum.barline | MsSymbolTypeEnum.barline_f>,
+        MsSymbolTypeEnum.timeSignature | MsSymbolTypeEnum.noteTail | MsSymbolTypeEnum.keySignature | MsSymbolTypeEnum.accidental | MsSymbolTypeEnum.barline | MsSymbolTypeEnum.barline_f>,
 } & BaseMsSymbol)
 
 export declare type BaseSpanSymbol = {
@@ -108,7 +111,7 @@ export declare type MsSymbolContainer = {
     id: number,
     msSymbolArray: Array<MsSymbol>
     type: MsSymbolContainerTypeEnum,
-    index: Omit<musicScoreIndex, 'msSymbolIndex'>
+    index: Omit<MusicScoreIndex, 'msSymbolIndex'>
     options: MusicScoreOptions
     msTypeName: MsTypeNameEnum.MsSymbolContainer,
 }
@@ -119,7 +122,7 @@ export declare interface Measure {
     bindingStartId: Array<number>,
     bindingEndId: Array<number>,
     msTypeName: MsTypeNameEnum.Measure,
-    index: Omit<musicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex'>,
+    index: Omit<MusicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex'>,
     options: MusicScoreOptions,
 }
 
@@ -132,7 +135,7 @@ export declare interface SingleStaff {
     bindingStartId: Array<number>,
     bindingEndId: Array<number>,
     msTypeName: MsTypeNameEnum.SingleStaff,
-    index: Omit<musicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex' | 'measureIndex'>,
+    index: Omit<MusicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex' | 'measureIndex'>,
     options: MusicScoreOptions
 
 }
@@ -144,7 +147,7 @@ export declare interface MultipleStaves { //复谱表
     multipleStavesPaddingBottom: number,
     multipleStavesMarginBottom: number,
     msTypeName: MsTypeNameEnum.MultipStaves,
-    index: Omit<musicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex' | 'measureIndex' | 'singleStaffIndex'>,
+    index: Omit<MusicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex' | 'measureIndex' | 'singleStaffIndex'>,
     options: MusicScoreOptions
 
 }
@@ -181,13 +184,16 @@ declare interface MouseDownData {
     orderType: OrderTypeEnum
 }
 
-
+declare type ReserveMsSymbolMapType = Map<ReserveMsSymbolType, MsType>
 declare interface MusicScoreRef {
     changeMode: (mode: MsMode) => void,
     root: Ref<HTMLElement>,
     mode: Ref<MsMode>,
     currentSelected: Ref<MsType | null>,
-
+    setReserveMsSymbol: (key: ReserveMsSymbolType, msData: MsType) => void,
+    getReserveMsSymbol: (key: ReserveMsSymbolType) => MsType | null,
+    cancelSelect: () => void,
+    reserveMsSymbolMap: Ref<ReserveMsSymbolMapType>,
 }
 
 // 点击事件处理
@@ -203,7 +209,8 @@ declare interface MouseDownInject {
 declare interface MsState {
     mode: Ref<MsMode>,
     currentSelected: Ref<MsType | null>,
-    msDataMap: Ref<Map<number, MsType>>
+    msDataMap: Ref<Map<number, MsType>>,
+    reserveMsSymbolMap: Ref<ReserveMsSymbolMapType>,
 }
 
 // 虚拟符号容器类型

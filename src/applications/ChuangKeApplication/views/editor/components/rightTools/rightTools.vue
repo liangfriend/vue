@@ -3,11 +3,6 @@ import {ref} from "vue";
 
 
 const active = ref('function')
-
-
-
-
-
 </script>
 
 <template>
@@ -15,9 +10,7 @@ const active = ref('function')
     <el-tabs class="tabs" v-model="active" type="border-card">
       <el-tab-pane label="功能" name="function">
         <slot name="function">
-
         </slot>
-
       </el-tab-pane>
       <el-tab-pane label="属性" name="properties">
         <slot name="properties"></slot>

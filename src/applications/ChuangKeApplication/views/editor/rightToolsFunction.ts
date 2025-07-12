@@ -1,11 +1,9 @@
 import {
-    measureTemplate, multipleStavesTemplate,
+    measureTemplate,
+    multipleStavesTemplate,
     singleStaffTemplate
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
-import {
-    BarlineTypeEnum,
-    MsTypeNameEnum
-} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import {MsTypeNameEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {
     addMeasure,
     addMultipleStaves,
@@ -18,9 +16,13 @@ import {
     removeSingleStaffRelatedSpanSymbol
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 import {
-    getDataWithIndex, getSpanSymbolIdSetInMeasure, getSpanSymbolIdSetInMultipleStaves, getSpanSymbolIdSetInMusicScore,
+    getDataWithIndex,
+    getSpanSymbolIdSetInMultipleStaves,
+    getSpanSymbolIdSetInMusicScore,
     getSpanSymbolIdSetInSingleStaff,
-    setMeasureArrayIndex, setMultipleStavesIndex, setSingleStaffArrayIndex,
+    setMeasureArrayIndex,
+    setMultipleStavesIndex,
+    setSingleStaffArrayIndex,
     updateSpanSymbol
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {
@@ -31,12 +33,7 @@ import {
     SingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {ref} from "vue";
-import {
-    measureFunctionEnum,
-    multipleStavesFunctionEnum,
-    singleStaffFunctionEnum
-} from "@/applications/ChuangKeApplication/views/editor/enum.ts";
-import {FunctionListItem} from "@/applications/ChuangKeApplication/views/editor/type";
+
 
 // 关联数据更新
 function updateMeasureRelatedData(measure: Measure, musicScoreData: MusicScore) {
@@ -61,6 +58,10 @@ function updateMultipleStavesRelatedData(multipleStaves: MultipleStaves, musicSc
     const spanSymbolSet = getSpanSymbolIdSetInMusicScore(musicScoreData)
     updateSpanSymbol(spanSymbolSet, musicScoreData)
 }
+
+
+// 基本功能
+
 
 // 小节功能
 export function insertMeasure(measure: Measure, musicScoreData: MusicScore, position: 'after' | 'before' = 'after') {
@@ -112,85 +113,4 @@ export function deleteMultipleStaves(multipleStaves: MultipleStaves, musicScoreD
     removeMultipleStaves(multipleStaves, musicScoreData)
     removeMultipleStavesRelatedSpanSymbol(multipleStaves, musicScoreData)
     updateMultipleStavesRelatedData(multipleStaves, musicScoreData)
-}
-
-
-export const measureFunctionList = ref<Array<FunctionListItem>>([{
-    name: "向前插入小节",
-    key: measureFunctionEnum.insertMeasureBefore
-}, {
-    name: "向后插入小节",
-    key: measureFunctionEnum.insertMeasureAfter
-}, {
-    name: "删除小节",
-    key: measureFunctionEnum.deleteMesure
-}])
-export const singleStaffFunctionList = ref<Array<FunctionListItem>>([{
-    name: "向前插入单谱表",
-    key: singleStaffFunctionEnum.insertSingleStaffBefore
-}, {
-    name: "向后插入单谱表",
-    key: singleStaffFunctionEnum.insertSingleStaffAfter
-}, {
-    name: "删除单谱表",
-    key: singleStaffFunctionEnum.deleteSingleStaff
-}])
-export const multipleStavesFunctionList = ref<Array<FunctionListItem>>([{
-    name: "向前插入复谱表",
-    key: multipleStavesFunctionEnum.insertmultipleStavesBefore
-}, {
-    name: "向后插入复谱表",
-    key: multipleStavesFunctionEnum.insertmultipleStavesAfter
-}, {
-    name: "删除复谱表",
-    key: multipleStavesFunctionEnum.deletemultipleStaves
-}])
-export function handleRightToolsBtn(item: FunctionListItem, currentSelected: MsType | null, musicScoreData: MusicScore) {
-    switch (currentSelected?.msTypeName) {
-        case MsTypeNameEnum.Measure: {
-            switch (item.key) {
-                case measureFunctionEnum.insertMeasureBefore:
-                    insertMeasure(currentSelected, musicScoreData, 'before')
-                    break
-                case measureFunctionEnum.insertMeasureAfter:
-                    insertMeasure(currentSelected, musicScoreData, 'after')
-                    break
-                case measureFunctionEnum.deleteMesure:
-                    deleteMeasure(currentSelected, musicScoreData)
-                    break;
-
-            }
-            break
-        }
-        case MsTypeNameEnum.SingleStaff: {
-            switch (item.key) {
-                case singleStaffFunctionEnum.insertSingleStaffBefore:
-                    insertSingleStaff(currentSelected, musicScoreData, 'before')
-                    break
-                case singleStaffFunctionEnum.insertSingleStaffAfter:
-                    insertSingleStaff(currentSelected, musicScoreData, 'after')
-                    break;
-                case singleStaffFunctionEnum.deleteSingleStaff:
-                    deleteSingleStaff(currentSelected, musicScoreData)
-                    break
-            }
-            break
-        }
-        case MsTypeNameEnum.MultipStaves: {
-            switch (item.key) {
-                case singleStaffFunctionEnum.insertSingleStaffBefore:
-                    insertMultipleStaves(currentSelected, musicScoreData, 'before')
-                    break
-                case singleStaffFunctionEnum.insertSingleStaffAfter:
-                    insertMultipleStaves(currentSelected, musicScoreData, 'after')
-                    break;
-                case singleStaffFunctionEnum.deleteSingleStaff:
-                    deleteMultipleStaves(currentSelected, musicScoreData)
-                    break
-            }
-            break
-        }
-    }
-
-
 }
