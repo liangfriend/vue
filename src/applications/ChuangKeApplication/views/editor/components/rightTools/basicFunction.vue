@@ -78,7 +78,6 @@ const curReserveNoteChronaxie = computed(() => {
          v-for="(item,index) in noteList">
       {{ item.text }}
     </div>
-
   </div>
 </template>
 

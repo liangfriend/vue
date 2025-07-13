@@ -23,6 +23,8 @@ import SingleStaffFunction
   from "@/applications/ChuangKeApplication/views/editor/components/rightTools/singleStaffFunction.vue";
 import MultipleStavesFunction
   from "@/applications/ChuangKeApplication/views/editor/components/rightTools/MultipleStavesFunction.vue";
+import NoteHeadFunction
+  from "@/applications/ChuangKeApplication/views/editor/components/rightTools/noteHeadFunction.vue";
 
 const router = useRouter()
 type addedWb = {
@@ -134,11 +136,12 @@ onMounted(() => {
                                         :multipleStaves="currentSelected"
                                         :msRef="msRef"
                                         :music-score="musicScoreData"></multiple-staves-function>
-              <!--                <note-head-function-->
-              <!--                    v-if="currentSelected?.msTypeName === MsTypeNameEnum.MsSymbol-->
-              <!--                    && currentSelected.type === MsSymbolTypeEnum.noteHead"-->
-              <!--                    :noteHead="currentSelected"-->
-              <!--                    :music-score="musicScoreData"></note-head-function>-->
+              <note-head-function
+                  v-if="currentSelected?.msTypeName === MsTypeNameEnum.MsSymbol
+                                  && currentSelected.type === MsSymbolTypeEnum.noteHead"
+                  :noteHead="currentSelected"
+                  :msRef="msRef"
+                  :music-score="musicScoreData"></note-head-function>
               <basic-function v-if="!currentSelected?.msTypeName"
                               :msRef="msRef"
                               :music-score="musicScoreData"></basic-function>

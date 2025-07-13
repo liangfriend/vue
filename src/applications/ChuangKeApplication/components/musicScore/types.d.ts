@@ -59,6 +59,29 @@ export declare type NoteHead = ({
         musicalAlphabet?: MusicalAlphabetEnum; // 音名
     }
 } & BaseMsSymbol)
+export declare type TimeSignatureMsSymbol = ({
+    type: MsSymbolTypeEnum.timeSignature,
+    timeSignature: TimeSignature
+} & BaseMsSymbol)
+export declare type KeySignatureMsSymbol = ({
+    type: MsSymbolTypeEnum.keySignature,
+    keySignature: KeySignatureEnum,
+    computed: {
+        clef?: ClefEnum;  // 谱号
+    }
+} & BaseMsSymbol)
+export declare type AccidentalMsSymbol = ({
+    type: MsSymbolTypeEnum.accidental,
+    accidental: AccidentalEnum,
+} & BaseMsSymbol)
+export declare type NoteTail = ({
+    type: MsSymbolTypeEnum.noteTail,
+    chronaxie: ChronaxieEnum,
+} & BaseMsSymbol)
+export declare type ClefMsSymbol = ({
+    type: MsSymbolTypeEnum.clef | MsSymbolTypeEnum.clef_f,
+    clef: ClefEnum
+} & BaseMsSymbol)
 export declare type Barline = ({
     type: MsSymbolTypeEnum.barline | MsSymbolTypeEnum.barline_f,
     barlineType: Exclude<BarlineTypeEnum, BarlineTypeEnum.endRepeatSign | BarlineTypeEnum.startRepeatSign>,
@@ -67,30 +90,20 @@ export declare type Barline = ({
     barlineType: BarlineTypeEnum.endRepeatSign | BarlineTypeEnum.startRepeatSign,
     loopCount: number
 } & BaseMsSymbol)
-export declare type MsSymbol = NoteHead | ({
-    type: MsSymbolTypeEnum.clef | MsSymbolTypeEnum.clef_f,
-    clef: ClefEnum
-} & BaseMsSymbol) | ({
-    type: MsSymbolTypeEnum.timeSignature,
-    timeSignature: TimeSignature
-} & BaseMsSymbol) | ({
-    type: MsSymbolTypeEnum.keySignature,
-    keySignature: KeySignatureEnum,
-    computed: {
-        clef?: ClefEnum;  // 谱号
-    }
-} & BaseMsSymbol) | ({
-    type: MsSymbolTypeEnum.accidental,
-    accidental: AccidentalEnum,
-} & BaseMsSymbol) | ({
-    type: MsSymbolTypeEnum.noteTail,
+export declare type Rest = ({
+    type: MsSymbolTypeEnum.rest,
     chronaxie: ChronaxieEnum,
-} & BaseMsSymbol) | ({
-    type: MsSymbolTypeEnum.barline | MsSymbolTypeEnum.barline_f,
-    barlineType: BarlineTypeEnum,
-} & BaseMsSymbol) | Barline | ({
+} & BaseMsSymbol)
+export declare type MsSymbol = NoteHead | ClefMsSymbol
+    | TimeSignatureMsSymbol | KeySignatureMsSymbol
+    | AccidentalMsSymbol | NoteTail | Barline | Rest | ({
     type: Exclude<MsSymbolTypeEnum, MsSymbolTypeEnum.noteHead | MsSymbolTypeEnum.clef |
-        MsSymbolTypeEnum.timeSignature | MsSymbolTypeEnum.noteTail | MsSymbolTypeEnum.keySignature | MsSymbolTypeEnum.accidental | MsSymbolTypeEnum.barline | MsSymbolTypeEnum.barline_f>,
+        MsSymbolTypeEnum.timeSignature
+        | MsSymbolTypeEnum.noteTail | MsSymbolTypeEnum.keySignature
+        | MsSymbolTypeEnum.accidental | MsSymbolTypeEnum.barline
+        | MsSymbolTypeEnum.barline_f | MsSymbolTypeEnum.rest>,
+
+
 } & BaseMsSymbol)
 
 export declare type BaseSpanSymbol = {

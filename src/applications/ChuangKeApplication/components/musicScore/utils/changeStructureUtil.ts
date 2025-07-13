@@ -1,4 +1,8 @@
-import {MsTypeNameEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import {
+    ChronaxieEnum,
+    MsSymbolTypeEnum,
+    MsTypeNameEnum
+} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 import {
     Measure, MsSymbol,
@@ -248,5 +252,27 @@ export function removeMultipleStaves(
         array.splice(index, 1);
     } else {
         console.error("找不到目标复谱表")
+    }
+}
+
+// 更换音符或休止符时值
+export function noteChronaxie(note: MsSymbol, newChronaxie: ChronaxieEnum, musicScore: MusicScore) {
+    if (note.type !== MsSymbolTypeEnum.noteHead && note.type !== MsSymbolTypeEnum.rest) {
+        return console.error("符号类型有误，时值更改失败。请传入音符或休止符");
+    }
+    if (note.chronaxie === newChronaxie) {
+        return
+    }
+    // 更换时值
+    note.chronaxie = newChronaxie
+    const noteBar = note.msSymbolArray.find((item) => {
+        return item.type === MsSymbolTypeEnum.noteBar
+    })
+    const noteTail = note.msSymbolArray.find((item) => {
+        return item.type === MsSymbolTypeEnum.noteTail
+    })
+    // 全音符且noteBar存在，去掉noteBar
+    if ([ChronaxieEnum.whole].includes(newChronaxie) && noteBar) {
+
     }
 }
