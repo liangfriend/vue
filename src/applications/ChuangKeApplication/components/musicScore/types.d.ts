@@ -175,6 +175,7 @@ export declare interface MusicScore {
     showMode: MusicScoreShowModeEnum
     spanSymbolArray: Array<SpanSymbol>,
     widthDynamicRatio: number, //动态宽度部分占比
+    map: Record<number, MsType>
 }
 
 
@@ -222,7 +223,6 @@ declare interface MouseDownInject {
 declare interface MsState {
     mode: Ref<MsMode>,
     currentSelected: Ref<MsType | null>,
-    msDataMap: Ref<Map<number, MsType>>,
     reserveMsSymbolMap: Ref<ReserveMsSymbolMapType>,
 }
 

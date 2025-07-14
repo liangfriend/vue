@@ -179,7 +179,6 @@ const mode = ref(MsMode.edit)
 // 预备符号
 const reserveMsSymbolMap = ref(new Map()) as Ref<ReserveMsSymbolMapType>;
 // spanSymbol快速索引对象
-const msDataMap = ref(new Map<number, MsType>())
 // 当前选择对象
 const currentSelected = ref<MsType | null>(null)
 
@@ -260,8 +259,8 @@ const musicScoreStyle = computed(() => {
 });
 
 function beforeMount() {
-  // 遍历生成hashMap方便快速查找
-  msDataMap.value = mapGenerate(props.musicScore)
+  // 遍历生成hashMap方便快速查找,TODO,这个后续应该不需要，每次加新的类型都会单独去更新map
+  mapGenerate(props.musicScore)
   // 索引生成
   setMultipleStavesIndex(props.musicScore)
   // 初始化预备音符
@@ -312,7 +311,6 @@ onUnmounted(() => {
 provide('msState', {
   mode,
   currentSelected,
-  msDataMap,
   reserveMsSymbolMap
 })
 // TODO 这个应该设置为已读，不知道能不能实现

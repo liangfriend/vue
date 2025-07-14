@@ -558,37 +558,40 @@ export function getMultipleAspectRatio(msSymbol: MsSymbol): number {
 }
 
 // 生成hsahMap()
-export function mapGenerate(musicScore: MusicScore): Map<number, MsType> {
-    const map = new Map()
-
+export function mapGenerate(musicScore: MusicScore): void {
+    const msDataMap = musicScore.map;
 
     for (let i = 0; i < musicScore.multipleStavesArray.length; i++) {
-        const muptipleStaves = musicScore.multipleStavesArray[i]
-        map.set(muptipleStaves.id, muptipleStaves)
+        const muptipleStaves = musicScore.multipleStavesArray[i];
+        msDataMap[muptipleStaves.id] = muptipleStaves;
+
         for (let j = 0; j < muptipleStaves.singleStaffArray.length; j++) {
-            const singleStaff = muptipleStaves.singleStaffArray[j]
-            map.set(singleStaff.id, singleStaff)
+            const singleStaff = muptipleStaves.singleStaffArray[j];
+            msDataMap[singleStaff.id] = singleStaff;
+
             for (let k = 0; k < singleStaff.measureArray.length; k++) {
-                const measure = singleStaff.measureArray[k]
-                map.set(measure.id, measure)
+                const measure = singleStaff.measureArray[k];
+                msDataMap[measure.id] = measure;
+
                 for (let l = 0; l < measure.msSymbolContainerArray.length; l++) {
-                    const msSymbolContainer = measure.msSymbolContainerArray[l]
-                    map.set(msSymbolContainer.id, msSymbolContainer)
+                    const msSymbolContainer = measure.msSymbolContainerArray[l];
+                    msDataMap[msSymbolContainer.id] = msSymbolContainer;
+
                     for (let t = 0; t < msSymbolContainer.msSymbolArray.length; t++) {
-                        const msSymbol = msSymbolContainer.msSymbolArray[t]
-                        map.set(msSymbol.id, msSymbol)
+                        const msSymbol = msSymbolContainer.msSymbolArray[t];
+                        msDataMap[msSymbol.id] = msSymbol;
                     }
                 }
             }
         }
     }
-    return map
+
 }
 
 // 查询内容
-export function getTarget(id: number, msDataMap: Map<number, MsType>): MsType | undefined {
+export function getTarget(id: number, msDataMap: Record<number, MsType>): MsType | undefined {
 
-    const target = msDataMap.get(id)
+    const target = msDataMap[id]
     if (target) {
         return target
     } else {

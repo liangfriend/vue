@@ -44,8 +44,8 @@ function voltaRect(volta: Extract<SpanSymbol, {
     left: 0,
     bottom: 0
   }
-  const startMeasure = getTarget(volta.startTargetId, msState.msDataMap.value)
-  const endMeasure = getTarget(volta.endTargetId, msState.msDataMap.value)
+  const startMeasure = getTarget(volta.startTargetId, musicScore.map)
+  const endMeasure = getTarget(volta.endTargetId, musicScore.map)
   if (!startMeasure || !endMeasure) return console.error('获取不到绑定元素', startMeasure, endMeasure)
   if (startMeasure.msTypeName !== MsTypeNameEnum.Measure || endMeasure.msTypeName !== MsTypeNameEnum.Measure) return console.error('volta绑定元素错误')
   // 反复符号绑定的两个小节必须在同一单谱表上

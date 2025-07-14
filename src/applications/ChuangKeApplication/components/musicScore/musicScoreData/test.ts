@@ -12,6 +12,7 @@ import {
 
 const data: MusicScore = {
     "showMode": 1,
+    "map": {},
     "measureHeight": 50,
     "widthDynamicRatio": 0.4,
     "spanSymbolArray": [
