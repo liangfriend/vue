@@ -125,24 +125,24 @@ onMounted(() => {
               <div>
                 <el-button @click="msRef?.cancelSelect()">取消选中</el-button>
               </div>
-              <measure-function v-if="currentSelected?.msTypeName === MsTypeNameEnum.Measure"
+              <measure-function v-if="msRef && currentSelected?.msTypeName === MsTypeNameEnum.Measure"
                                 :msRef="msRef"
                                 :measure="currentSelected" :music-score="musicScoreData"></measure-function>
-              <single-staff-function v-if="currentSelected?.msTypeName === MsTypeNameEnum.SingleStaff"
+              <single-staff-function v-if="msRef && currentSelected?.msTypeName === MsTypeNameEnum.SingleStaff"
                                      :singleStaff="currentSelected"
                                      :msRef="msRef"
                                      :music-score="musicScoreData"></single-staff-function>
-              <multiple-staves-function v-if="currentSelected?.msTypeName === MsTypeNameEnum.MultipStaves"
+              <multiple-staves-function v-if="msRef && currentSelected?.msTypeName === MsTypeNameEnum.MultipStaves"
                                         :multipleStaves="currentSelected"
                                         :msRef="msRef"
                                         :music-score="musicScoreData"></multiple-staves-function>
               <note-head-function
-                  v-if="currentSelected?.msTypeName === MsTypeNameEnum.MsSymbol
+                  v-if="msRef && currentSelected?.msTypeName === MsTypeNameEnum.MsSymbol
                                   && currentSelected.type === MsSymbolTypeEnum.noteHead"
                   :noteHead="currentSelected"
                   :msRef="msRef"
                   :music-score="musicScoreData"></note-head-function>
-              <basic-function v-if="!currentSelected?.msTypeName"
+              <basic-function v-if="msRef && !currentSelected?.msTypeName"
                               :msRef="msRef"
                               :music-score="musicScoreData"></basic-function>
               </div>

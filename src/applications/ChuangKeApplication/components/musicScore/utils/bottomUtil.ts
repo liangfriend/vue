@@ -45,7 +45,8 @@ export function getMsSymbolBottomToSlot(msSymbol: MsSymbol, musicScore: MusicSco
                 && parentMsSymbol.region <= MusicScoreRegionEnum.space_2) {
                 return Math.max(noteBarHeight - height + noteBarOffset, Math.abs(slotBottom))
             } else {
-                return -Math.max(noteBarHeight - noteBarOffset, Math.abs(slotBottom) - height)
+                return -Math.max(noteBarHeight - noteBarOffset, Math.abs(slotBottom) - height
+                )
             }
         }
         default: {
@@ -59,7 +60,7 @@ export function getSlotBottomToMeasure(msSymbol: MsSymbol, musicScore: MusicScor
     if (!msSymbol) return 0
     const measureHeight = musicScore.measureHeight
     // 未防止传入跟随符号，需要经过下面一行转换
-    const targetMsSymbol = getDataWithIndex(msSymbol.index, musicScore).msSymbol as MsSymbol
+    const targetMsSymbol = getDataWithIndex(msSymbol.index, musicScore)?.msSymbol as MsSymbol
     switch (targetMsSymbol.type) {
         case MsSymbolTypeEnum.noteHead: {
             if (!targetMsSymbol) return 0

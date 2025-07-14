@@ -5,17 +5,35 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 import {
-    Measure, MsSymbol,
+    Measure,
+    MsSymbol,
     MsSymbolContainer,
-    MsType, MultipleStaves, MusicScore,
+    MsType,
+    MultipleStaves,
+    MusicScore, NoteTail,
     SingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
-import {measureTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
+import {msSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
-    getDataWithIndex,
-    setMeasureArrayIndex, setMultipleStavesIndex, setSingleStaffArrayIndex
+    getDataWithIndex, setChildMsSymbolArrayIndex,
+    setMeasureArrayIndex, setMsSymbolArrayIndex, setMsSymbolContainerArrayIndex,
+    setMultipleStavesIndex,
+    setSingleStaffArrayIndex
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
-import Single from "echarts/types/src/coord/single/Single";
+
+
+export function addChildMsSymbol(childMsSymbol: MsSymbol, msSymbol: MsSymbol) {
+    msSymbol.msSymbolArray.push(childMsSymbol);
+    setChildMsSymbolArrayIndex(msSymbol)
+}
+
+export function removeChildMsSymbol(childMsSymbol: MsSymbol, msSymbol: MsSymbol) {
+    const index = msSymbol.msSymbolArray.indexOf(childMsSymbol)
+    if (index === -1) {
+        return console.error('符号内找不到目标跟随符号，跟随符号删除失败')
+    }
+    msSymbol.msSymbolArray.splice(index, 1)
+}
 
 // 添加符号
 export function addMsSymbol(musicScore: MusicScore, newMsSymbol: MsSymbol, currSelected: MsType, position: 'after' | 'before' = 'after') {
@@ -31,12 +49,13 @@ export function addMsSymbol(musicScore: MusicScore, newMsSymbol: MsSymbol, currS
         } else {
             array.splice(targetIndex + 1, 0, newMsSymbol);
         }
+        setMsSymbolArrayIndex(msSymbolContainer)
     } else if (currSelected.msTypeName === MsTypeNameEnum.MsSymbolContainer) {
         const msSymbolContainer = currSelected
         if (!msSymbolContainer) return console.error("小节不存在，符号容器添加失败")
         const array = msSymbolContainer.msSymbolArray;
         array.push(newMsSymbol)
-        console.log('chicken', array)
+        setMsSymbolArrayIndex(msSymbolContainer)
     }
 }
 
@@ -55,6 +74,7 @@ export function removeMsSymbol(
     } else {
         console.error("找不到目标符号")
     }
+    setMsSymbolArrayIndex(msSymbolContainer)
 }
 // 添加符号容器
 export function addMsSymbolContainer(musicScore: MusicScore, newMsSymbolContainer: MsSymbolContainer, currSelected: MsType, position: 'after' | 'before' = 'after') {
@@ -71,11 +91,13 @@ export function addMsSymbolContainer(musicScore: MusicScore, newMsSymbolContaine
         } else {
             array.splice(targetIndex + 1, 0, newMsSymbolContainer);
         }
+        setMsSymbolContainerArrayIndex(measure)
     } else if (currSelected.msTypeName === MsTypeNameEnum.Measure) {
         const measure = currSelected
         if (!measure) return console.error("小节不存在，符号容器添加失败")
         const array = measure.msSymbolContainerArray;
         array.push(newMsSymbolContainer)
+        setMsSymbolContainerArrayIndex(measure)
     }
 }
 
@@ -94,6 +116,7 @@ export function removeMsSymbolContainer(
     } else {
         console.error("找不到目标符号容器")
     }
+    setMsSymbolContainerArrayIndex(measure)
 }
 
 
@@ -139,6 +162,7 @@ export function removeMeasure(
     } else {
         console.error("找不到目标小节")
     }
+    setMeasureArrayIndex(singleStaff)
 }
 // 删除小节相关联的跨小节符号
 export function removeMeasureRelatedSpanSymbol(measure: Measure, musicScore: MusicScore) {
@@ -223,6 +247,8 @@ export function removeSingleStaff(
     } else {
         console.error("找不到目标单谱表")
     }
+    // 计算index
+    setSingleStaffArrayIndex(multipleStaves)
 }
 
 // 添加复谱表
@@ -253,8 +279,14 @@ export function removeMultipleStaves(
     } else {
         console.error("找不到目标复谱表")
     }
+    // 计算index
+    setMultipleStavesIndex(musicScore)
 }
 
+// 更新符号属性
+export function updateMsSymbol(oldMsSymbol: MsSymbol, newProperties: Partial<MsSymbol>) {
+    return Object.assign(oldMsSymbol, newProperties);
+}
 // 更换音符或休止符时值
 export function noteChronaxie(note: MsSymbol, newChronaxie: ChronaxieEnum, musicScore: MusicScore) {
     if (note.type !== MsSymbolTypeEnum.noteHead && note.type !== MsSymbolTypeEnum.rest) {
@@ -270,9 +302,33 @@ export function noteChronaxie(note: MsSymbol, newChronaxie: ChronaxieEnum, music
     })
     const noteTail = note.msSymbolArray.find((item) => {
         return item.type === MsSymbolTypeEnum.noteTail
-    })
+    }) as (NoteTail | null)
     // 全音符且noteBar存在，去掉noteBar
     if ([ChronaxieEnum.whole].includes(newChronaxie) && noteBar) {
-
+        removeChildMsSymbol(noteBar, note)
+    }
+    // 非全音符且noteBar不存在，新增noteBar
+    if (![ChronaxieEnum.whole].includes(newChronaxie) && !noteBar) {
+        const newNoteBar = msSymbolTemplate({type: MsSymbolTypeEnum.noteBar})
+        addChildMsSymbol(newNoteBar, note)
+    }
+    // 全,二分，四分音符且noteTail存在，去掉noteTail
+    if ([ChronaxieEnum.whole, ChronaxieEnum.half, ChronaxieEnum.quarter
+    ].includes(newChronaxie) && noteTail) {
+        removeChildMsSymbol(noteTail, note)
+    }
+    // 非全,二分，四分音符且noteTail存在，更新noteTail
+    if (![ChronaxieEnum.whole, ChronaxieEnum.half, ChronaxieEnum.quarter
+    ].includes(newChronaxie) && noteTail) {
+        updateMsSymbol(noteTail, {chronaxie: newChronaxie})
+    }
+    // 非全,二分，四分音符且noteTail不存在，添加noteTail
+    if (![ChronaxieEnum.whole, ChronaxieEnum.half, ChronaxieEnum.quarter
+    ].includes(newChronaxie) && !noteTail) {
+        const newNoteTail = msSymbolTemplate({
+            type: MsSymbolTypeEnum.noteTail,
+            chronaxie: newChronaxie
+        })
+        addChildMsSymbol(newNoteTail, note)
     }
 }

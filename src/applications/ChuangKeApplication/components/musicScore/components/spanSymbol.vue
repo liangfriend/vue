@@ -71,6 +71,18 @@ function getSpanSymbolRect(spanSymbol: SpanSymbol, musicScore: MusicScore, compo
   }
 }
 
+const emits = defineEmits(['spanSymbolMouseDown', 'spanSymbolMouseUp']);
+
+function handleMouseDown(e: MouseEvent) {
+  emits('spanSymbolMouseDown', e, props.spanSymbol)
+
+}
+
+function handleMouseUp(e: MouseEvent) {
+  emits('spanSymbolMouseUp', e, props.spanSymbol)
+}
+
+
 onBeforeMount(() => {
   getSpanSymbolRect(props.spanSymbol, props.musicScore, props.componentWidth, props.componentHeight)
 
@@ -78,7 +90,8 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <volta v-if="spanSymbol && spanSymbol.type === SpanSymbolTypeEnum.volta" :spanSymbol="spanSymbol"></volta>
+  <volta v-if="spanSymbol && spanSymbol.type === SpanSymbolTypeEnum.volta" :spanSymbol="spanSymbol"
+         @mousedown.self="handleMouseDown" @mouseup.self="handleMouseUp"></volta>
 </template>
 
 <style scoped>

@@ -7,6 +7,7 @@ import {
   ReserveMsSymbolType
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {msSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
+import {noteChronaxie} from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 
 
 const props = defineProps({
@@ -52,7 +53,7 @@ const noteType = ref(false)
 
 // 改变预备音符
 function changeNoteHeadChronaxie(chronaxie: ChronaxieEnum) {
-
+  noteChronaxie(props.noteHead, chronaxie, props.musicScore)
 }
 
 

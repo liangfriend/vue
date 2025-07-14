@@ -63,11 +63,22 @@ export function msSymbolTemplate(options: {
             }
         }
         case MsSymbolTypeEnum.barline: {
-            return {
-                ...baseMsSymbol,
-                type: MsSymbolTypeEnum.barline,
-                barlineType: options.barLineType ?? BarlineTypeEnum.single
+            const barLineType = options.barLineType ?? BarlineTypeEnum.single
+            if (BarlineTypeEnum.endRepeatSign === barLineType || BarlineTypeEnum.startRepeatSign === barLineType) {
+                return {
+                    ...baseMsSymbol,
+                    type: MsSymbolTypeEnum.barline,
+                    barlineType: barLineType,
+                    loopCount: 2
+                }
+            } else {
+                return {
+                    ...baseMsSymbol,
+                    type: MsSymbolTypeEnum.barline,
+                    barlineType: barLineType
+                }
             }
+
         }
         case MsSymbolTypeEnum.noteBar: {
             return {

@@ -487,15 +487,24 @@ export function setMsSymbolArrayIndex(container: MsSymbolContainer) {
             msSymbolIndex: t
         };
         curMsSymbol.index = index
-        setChildMsSymbolArrayIndex(curMsSymbol, index)
+        setChildMsSymbolArrayIndex(curMsSymbol)
     });
 }
 
-export function setChildMsSymbolArrayIndex(msSymbol: MsSymbol, index: MusicScoreIndex) {
-    msSymbol.msSymbolArray.forEach((curMsSymbol, t) => {
-        curMsSymbol.index = index
+// 传入第二个参数，可以让第一个参数传入跟随符号
+export function setChildMsSymbolArrayIndex(msSymbol: MsSymbol, musicScore?: MusicScore) {
+
+    let targetMsSymbol: MsSymbol = null! as MsSymbol
+    // 未防止传入跟随符号，需要经过下面一行转换, 如果不传可以加快速度，但是有报错风险
+    if (musicScore) {
+        targetMsSymbol = getDataWithIndex(msSymbol.index, musicScore)?.msSymbol as MsSymbol
+    } else {
+        targetMsSymbol = msSymbol
+    }
+    targetMsSymbol.msSymbolArray.forEach((curMsSymbol, t) => {
+        curMsSymbol.index = targetMsSymbol.index
         if (curMsSymbol.msSymbolArray.length > 0) {
-            setChildMsSymbolArrayIndex(curMsSymbol, index)
+            setChildMsSymbolArrayIndex(curMsSymbol, musicScore)
         }
     })
 }

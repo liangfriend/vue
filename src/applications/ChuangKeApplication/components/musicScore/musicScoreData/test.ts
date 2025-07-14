@@ -26,7 +26,7 @@ const data: MusicScore = {
             "options": {
                 "hightlight": false,
                 "hightlightColor": "red",
-                "color": "transparent"
+                "color": "black"
             },
             "vueKey": 1751899024999
         }

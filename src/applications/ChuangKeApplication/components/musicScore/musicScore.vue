@@ -28,6 +28,8 @@
                      v-for="(spanSymbol,spanSymbolIndex) in musicScore.spanSymbolArray"
                      :componentWidth="width"
                      :componentHeight="height"
+                     @span-symbol-mouse-down="handleSpanSymbolMouseDown"
+                     @spanSymbolMouseUp="handleSpanSymbolMouseUp"
                      :spanSymbol="spanSymbol"></span-symbol-vue>
     <measure-container :musicScoreData="musicScore" class="stackItem symbolLayer"
                        :style="{width:width+'px',height:height+'px', pointerEvents:'none'}"
@@ -119,7 +121,7 @@ import type {
   MusicScore,
   MusicScoreRef,
   ReserveMsSymbolMapType,
-  SingleStaff
+  SingleStaff, SpanSymbol
 } from "./types.d.ts";
 import MeasureContainer from "@/applications/ChuangKeApplication/components/musicScore/components/measureContainer.vue";
 
@@ -145,7 +147,7 @@ import {
   msSymbolMouseDown,
   msSymbolMouseUp,
   multipleStavesMouseDown,
-  singleStaffMouseDown
+  singleStaffMouseDown, spanSymbolMouseDown, spanSymbolMouseUp
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
 import VirtualSymbolContainer
   from "@/applications/ChuangKeApplication/components/musicScore/components/virtualSymbolContainer.vue";
@@ -208,9 +210,17 @@ const variableContainerArray = computed(() => {
     })
   }
 })
-const emits = defineEmits(['msSymbolMouseDown', 'measureMouseDown', 'singleStaffMouseDown', 'multipleStavesMouseDown', 'update:mode', 'msSymbolMouseUp'])
+const emits = defineEmits(['spanSymbolMouseDown', 'spanSymbolMouseUp', 'msSymbolMouseDown', 'measureMouseDown', 'singleStaffMouseDown', 'multipleStavesMouseDown', 'update:mode', 'msSymbolMouseUp'])
 
+function handleSpanSymbolMouseDown(e: MouseEvent, spanSymbol: SpanSymbol) {
+  spanSymbolMouseDown(e, mode, currentSelected, spanSymbol);
+  emits('spanSymbolMouseDown')
+}
 
+function handlepanSymbolMouseUp(e: MouseEvent, spanSymbol: SpanSymbol) {
+  spanSymbolMouseUp(e, mode, currentSelected, spanSymbol);
+  emits('spanSymbolMouseUp')
+}
 function handleMsSymbolMouseDown(e: MouseEvent, msSymbol: MsSymbol) {
   msSymbolMouseDown(e, mode, currentSelected, msSymbol);
   emits('msSymbolMouseDown')

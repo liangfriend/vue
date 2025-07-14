@@ -14,7 +14,7 @@ import {
     MsType,
     MultipleStaves,
     MusicScore,
-    SingleStaff,
+    SingleStaff, SpanSymbol,
     VirtualSymbolContainerType
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 
@@ -165,7 +165,17 @@ export function virtualSymbolMouseDown(
     updateSpanSymbol(spanSymbolIdSet, params.msData.musicScore)
 }
 
+export function spanSymbolMouseDown(e: MouseEvent, mode: Ref<MsMode>, currentSelected: Ref<MsType | null>, spanSymbol: SpanSymbol) {
 
+    if (mode.value === MsMode.edit) {
+        // 订阅
+        select(spanSymbol, currentSelected)
+    }
+}
+
+export function spanSymbolMouseUp(e: MouseEvent, mode: Ref<MsMode>, currentSelected: Ref<MsType | null>, spanSymbol: SpanSymbol) {
+
+}
 export function msSymbolMouseDown(e: MouseEvent, mode: Ref<MsMode>, currentSelected: Ref<MsType | null>, msSymbol: MsSymbol) {
     if (msSymbol.type === MsSymbolTypeEnum.noteHead) {  // 赋值region
         eventConstant.originRegion = msSymbol.region
