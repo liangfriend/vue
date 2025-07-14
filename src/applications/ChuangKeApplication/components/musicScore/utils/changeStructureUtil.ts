@@ -11,7 +11,7 @@ import {
     MsType,
     MultipleStaves,
     MusicScore, NoteTail,
-    SingleStaff
+    SingleStaff, SpanSymbol
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {msSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
@@ -35,6 +35,10 @@ export function removeChildMsSymbol(childMsSymbol: MsSymbol, msSymbol: MsSymbol)
     msSymbol.msSymbolArray.splice(index, 1)
 }
 
+// 添加跨小节符号
+export function addSpanSymbol(musicScore: MusicScore, newSpanSymbol: SpanSymbol) {
+    musicScore.spanSymbolArray.push(newSpanSymbol);
+}
 // 添加符号
 export function addMsSymbol(musicScore: MusicScore, newMsSymbol: MsSymbol, currSelected: MsType, position: 'after' | 'before' = 'after') {
     if (currSelected.msTypeName === MsTypeNameEnum.MsSymbol) {
@@ -330,5 +334,27 @@ export function noteChronaxie(note: MsSymbol, newChronaxie: ChronaxieEnum, music
             chronaxie: newChronaxie
         })
         addChildMsSymbol(newNoteTail, note)
+    }
+}
+
+export function addBindingStartId(msData: MsSymbol | Measure | SingleStaff, id: number) {
+    msData.bindingStartId.push(id)
+}
+
+export function removeBindingStartId(msData: MsSymbol | Measure | SingleStaff, id: number) {
+    const index = msData.bindingStartId.indexOf(id)
+    if (index !== -1) {
+        msData.bindingStartId.splice(index, 1)
+    }
+}
+
+export function addBindingEndId(msData: MsSymbol | Measure | SingleStaff, id: number) {
+    msData.bindingEndId.push(id)
+}
+
+export function removeBindingEndId(msData: MsSymbol | Measure | SingleStaff, id: number) {
+    const index = msData.bindingEndId.indexOf(id)
+    if (index !== -1) {
+        msData.bindingEndId.splice(index, 1)
     }
 }

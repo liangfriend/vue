@@ -4,7 +4,7 @@ import {
     MsSymbolContainerTypeEnum,
     MsSymbolTypeEnum,
     MsTypeNameEnum,
-    MusicScoreRegionEnum
+    MusicScoreRegionEnum, SpanSymbolFollowingCategoryEnum, SpanSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {
     BaseMsSymbol,
@@ -12,15 +12,42 @@ import {
     MsSymbol,
     MsSymbolContainer,
     MultipleStaves,
-    SingleStaff
+    SingleStaff, SpanSymbol
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
+
+export function spanSymbolTemplate(options: {
+    type?: SpanSymbolTypeEnum,
+    startTargetId: number,
+    endTargetId: number
+}): SpanSymbol | null {
+    switch (options?.type) {
+        case SpanSymbolTypeEnum.volta: {
+            return {
+                "type": SpanSymbolTypeEnum.volta,
+                "msTypeName": MsTypeNameEnum.SpanSymbol,
+                "spanSymbolFollowingCategoryEnum": SpanSymbolFollowingCategoryEnum.measure,
+                "startTargetId": options.startTargetId,
+                "endTargetId": options.endTargetId,
+                "id": Date.now(),
+                "rect": {},
+                "options": {
+                    "hightlight": false,
+                    "hightlightColor": "red",
+                    "color": "black"
+                },
+                "vueKey": Date.now()
+            }
+        }
+    }
+    return {}
+}
 
 export function msSymbolTemplate(options: {
     type?: MsSymbolTypeEnum,
     region?: MusicScoreRegionEnum,
     chronaxie?: ChronaxieEnum,
     barLineType?: BarlineTypeEnum
-}): MsSymbol {
+} = {}): MsSymbol {
     const baseMsSymbol: BaseMsSymbol = {
         id: Date.now(),
         msTypeName: MsTypeNameEnum.MsSymbol,
@@ -106,7 +133,7 @@ export function msSymbolTemplate(options: {
     }
 }
 
-export function msSymbolContainerTemplate(options: { type?: MsSymbolContainerTypeEnum }): MsSymbolContainer {
+export function msSymbolContainerTemplate(options: { type?: MsSymbolContainerTypeEnum } = {}): MsSymbolContainer {
     const msSymbolContainer: MsSymbolContainer = {
         id: Date.now(),
         msSymbolArray: [],
@@ -123,7 +150,7 @@ export function msSymbolContainerTemplate(options: { type?: MsSymbolContainerTyp
     return msSymbolContainer;
 }
 
-export function measureTemplate(options: { barLineType?: BarlineTypeEnum }): Measure {
+export function measureTemplate(options: { barLineType?: BarlineTypeEnum } = {}): Measure {
 
 
     const measure: Measure = {
@@ -153,7 +180,7 @@ export function measureTemplate(options: { barLineType?: BarlineTypeEnum }): Mea
 }
 
 // 会默认添加一个小节
-export function singleStaffTemplate(options: {}): SingleStaff {
+export function singleStaffTemplate(options: {} = {}): SingleStaff {
     const singleStaff: SingleStaff = {
         id: Date.now(),
         msTypeName: MsTypeNameEnum.SingleStaff,
@@ -178,7 +205,7 @@ export function singleStaffTemplate(options: {}): SingleStaff {
 }
 
 // 会默认添加一个带小节的单谱表
-export function multipleStavesTemplate(options: {}): MultipleStaves {
+export function multipleStavesTemplate(options: {} = {}): MultipleStaves {
     const multipleStaves: MultipleStaves = {
         id: Date.now(),
         msTypeName: MsTypeNameEnum.MultipStaves,

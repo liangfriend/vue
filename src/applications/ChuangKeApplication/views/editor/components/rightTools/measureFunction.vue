@@ -1,16 +1,15 @@
 <script setup lang="ts">
 
-import {
-  deleteMeasure, deleteMultipleStaves, deleteSingleStaff,
-  insertMeasure, insertMultipleStaves, insertSingleStaff
-} from "@/applications/ChuangKeApplication/views/editor/rightToolsFunction.ts";
+import {deleteMeasure, insertMeasure} from "@/applications/ChuangKeApplication/views/editor/rightToolsFunction.ts";
 import {PropType, UnwrapRef} from "vue";
+import {Measure, MusicScore, MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
-  Measure,
-  MsType,
-  MusicScore,
-  MusicScoreRef
-} from "@/applications/ChuangKeApplication/components/musicScore/types";
+  addBindingEndId,
+  addBindingStartId,
+  addSpanSymbol
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
+import {spanSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
+import {SpanSymbolTypeEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 
 const props = defineProps({
@@ -38,6 +37,20 @@ function handleRightToolsBtn(key: String, measure: Measure, musicScore: MusicSco
     case 'delete':
       deleteMeasure(measure, musicScore)
       break;
+    case 'addVolta':
+      const startTargetId = measure.id
+      const endTargetId = measure.id
+      const volta = spanSymbolTemplate({
+        type: SpanSymbolTypeEnum.volta
+        , endTargetId: endTargetId, startTargetId: startTargetId
+      })
+      if (!volta) return console.error('获取volta数据模版错误，spanSymbol添加失败')
+
+      measure.bindingStartId.push(volta.id)
+      addBindingStartId(measure, volta.id)
+      addBindingEndId(measure, volta.id)
+      addSpanSymbol(musicScore, volta)
+      break;
 
   }
 
@@ -58,6 +71,11 @@ function handleRightToolsBtn(key: String, measure: Measure, musicScore: MusicSco
     <el-button @click="handleRightToolsBtn('delete',measure,musicScore)"
     >
       删除小节
+    </el-button>
+    反复
+    <el-button @click="handleRightToolsBtn('addVolta',measure,musicScore)"
+    >
+      添加volta
     </el-button>
   </div>
 </template>

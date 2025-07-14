@@ -21,7 +21,7 @@ import {
 import {Ref} from 'vue';
 import {
     msSymbolContainerTemplate,
-    msSymbolTemplate
+    msSymbolTemplate, spanSymbolTemplate
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
     getDataWithIndex,
