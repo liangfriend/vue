@@ -1,10 +1,16 @@
 import {
-    measureTemplate,
+    measureTemplate, msSymbolContainerTemplate,
+    msSymbolTemplate,
     multipleStavesTemplate,
     singleStaffTemplate
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
-import {MsTypeNameEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {
+    ClefEnum,
+    MsSymbolContainerTypeEnum,
+    MsSymbolTypeEnum
+} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import {
+    addClefToMeasure,
     addMeasure,
     addMultipleStaves,
     addSingleStaff,
@@ -26,13 +32,12 @@ import {
     updateSpanSymbol
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {
+    ClefMsSymbol,
     Measure,
-    MsType,
     MultipleStaves,
     MusicScore,
     SingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
-import {ref} from "vue";
 
 
 // 关联数据更新
@@ -79,6 +84,26 @@ export function deleteMeasure(measure: Measure, musicScoreData: MusicScore) {
     removeMeasure(measure, musicScoreData)
     removeMeasureRelatedSpanSymbol(measure, musicScoreData)
     updateMeasureRelatedData(measure, musicScoreData)
+}
+
+export function insertClef(clef: ClefEnum, measure: Measure, musicScore: MusicScore) {
+    const index = measure.index
+    // 如果是单谱表内第一个小节
+    if (index.measureIndex === 0) {
+        const clefSymbol = measure.msSymbolContainerArray.find((msSymbolContainer) => {
+            return msSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.clef_f
+        })?.msSymbolArray[0] as (ClefMsSymbol | undefined)
+        if (clefSymbol) {
+            clefSymbol.clef = clef
+        } else { // clef不存在则添加clef
+            const newClef = msSymbolTemplate({type: MsSymbolTypeEnum.clef_f, clef})
+            const newMsSymbolContainer = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.frontFixed})
+            newMsSymbolContainer.msSymbolArray.push(newClef)
+            addClefToMeasure(newMsSymbolContainer, measure, musicScore)
+        }
+    } else { // 非第一个单谱表，要在前一个小节加上结尾谱号
+
+    }
 }
 
 // 单谱表功能

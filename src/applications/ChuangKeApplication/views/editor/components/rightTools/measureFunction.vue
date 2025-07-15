@@ -1,6 +1,10 @@
 <script setup lang="ts">
 
-import {deleteMeasure, insertMeasure} from "@/applications/ChuangKeApplication/views/editor/rightToolsFunction.ts";
+import {
+  deleteMeasure,
+  insertClef,
+  insertMeasure
+} from "@/applications/ChuangKeApplication/views/editor/rightToolsFunction.ts";
 import {PropType, ref, UnwrapRef} from "vue";
 import {Measure, MusicScore, MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
@@ -14,6 +18,7 @@ import {
   ClefEnum, KeySignatureEnum,
   SpanSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import Clef from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/clef.vue";
 
 
 const props = defineProps({
@@ -71,6 +76,10 @@ const clefList = ref([{
   clef: ClefEnum.bass,
   text: '低音谱号',
 }])
+
+function changeClef(clef: ClefEnum) {
+  insertClef(clef, props.measure, props.musicScore)
+}
 const currentKeySignature = ref(null)
 const keySignatureList = ref([{
   keySignature: KeySignatureEnum.C,
@@ -126,6 +135,7 @@ const barlineList = ref([{
     <div>谱号</div>
     <div class="noteBoxContainer">
       <div :class="{activeBox:currentClef === item.clef}"
+           @click="changeClef(item.clef)"
            class="noteBox"
            v-for="(item,index) in clefList">
         {{ item.text }}

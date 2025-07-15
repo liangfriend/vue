@@ -10,13 +10,18 @@ import {
     MsSymbolContainer,
     MsType,
     MultipleStaves,
-    MusicScore, NoteTail,
-    SingleStaff, SpanSymbol
+    MusicScore,
+    NoteTail,
+    SingleStaff,
+    SpanSymbol
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {msSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
-    getDataWithIndex, setChildMsSymbolArrayIndex,
-    setMeasureArrayIndex, setMsSymbolArrayIndex, setMsSymbolContainerArrayIndex,
+    getDataWithIndex,
+    setChildMsSymbolArrayIndex,
+    setMeasureArrayIndex,
+    setMsSymbolArrayIndex,
+    setMsSymbolContainerArrayIndex,
     setMultipleStavesIndex,
     setSingleStaffArrayIndex
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
@@ -395,4 +400,16 @@ export function removeSpanSymbol(spanSymbol: SpanSymbol, musicScore: MusicScore)
             bindingEndTarget.bindingEndId.splice(index, 1)
         }
     }
+}
+
+// 往小节上添加谱号, 因为定宽容器的位置特殊，所以要单独拿出一个方法去处理
+export function addClefToMeasure(clefSymbolContainer: MsSymbolContainer, measure: Measure, musicScore: MusicScore) {
+    const singleStaff = getDataWithIndex(measure.index, musicScore).singleStaff
+    if (clefSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.clef_f) {
+        measure.msSymbolContainerArray.unshift(clefSymbolContainer)
+    } else if (clefSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.clef) {
+        measure.msSymbolContainerArray.push(clefSymbolContainer)
+    }
+    if (!singleStaff) return console.error('单谱表查找出错，谱号添加失败')
+    setMeasureArrayIndex(singleStaff)
 }

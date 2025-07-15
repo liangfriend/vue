@@ -1,10 +1,13 @@
 import {
     BarlineTypeEnum,
     ChronaxieEnum,
+    ClefEnum,
     MsSymbolContainerTypeEnum,
     MsSymbolTypeEnum,
     MsTypeNameEnum,
-    MusicScoreRegionEnum, SpanSymbolFollowingCategoryEnum, SpanSymbolTypeEnum
+    MusicScoreRegionEnum,
+    SpanSymbolFollowingCategoryEnum,
+    SpanSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {
     BaseMsSymbol,
@@ -12,7 +15,8 @@ import {
     MsSymbol,
     MsSymbolContainer,
     MultipleStaves,
-    SingleStaff, SpanSymbol
+    SingleStaff,
+    SpanSymbol
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 
 export function spanSymbolTemplate(options: {
@@ -39,14 +43,29 @@ export function spanSymbolTemplate(options: {
             }
         }
     }
-    return {}
+    return {
+        "type": SpanSymbolTypeEnum.volta,
+        "msTypeName": MsTypeNameEnum.SpanSymbol,
+        "spanSymbolFollowingCategoryEnum": SpanSymbolFollowingCategoryEnum.measure,
+        "startTargetId": options.startTargetId,
+        "endTargetId": options.endTargetId,
+        "id": Date.now(),
+        "rect": {},
+        "options": {
+            "hightlight": false,
+            "hightlightColor": "red",
+            "color": "black"
+        },
+        "vueKey": Date.now()
+    }
 }
 
 export function msSymbolTemplate(options: {
     type?: MsSymbolTypeEnum,
     region?: MusicScoreRegionEnum,
     chronaxie?: ChronaxieEnum,
-    barLineType?: BarlineTypeEnum
+    barLineType?: BarlineTypeEnum,
+    clef?: ClefEnum,
 } = {}): MsSymbol {
     const baseMsSymbol: BaseMsSymbol = {
         id: Date.now(),
@@ -117,6 +136,20 @@ export function msSymbolTemplate(options: {
                 ...baseMsSymbol,
                 type: MsSymbolTypeEnum.noteTail,
                 chronaxie: options.chronaxie || ChronaxieEnum.quarter,
+            }
+        }
+        case MsSymbolTypeEnum.clef_f: {
+            return {
+                ...baseMsSymbol,
+                type: MsSymbolTypeEnum.clef_f,
+                clef: options.clef || ClefEnum.treble
+            }
+        }
+        case MsSymbolTypeEnum.clef: {
+            return {
+                ...baseMsSymbol,
+                type: MsSymbolTypeEnum.clef,
+                clef: options.clef || ClefEnum.treble
             }
         }
         default: {
