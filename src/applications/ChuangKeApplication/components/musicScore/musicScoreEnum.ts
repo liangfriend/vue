@@ -259,21 +259,21 @@ export enum ChronaxieEnum {
 
 // 符号类型
 export enum MsSymbolTypeEnum {
-    noteHead = 1, // 线谱指音符头， 简谱指音符
-    noteBar,
-    noteTail,
-    rest,
-    slur, // 圆滑线  不同音高
-    tie,  // 延音线  延音线只能连接两个音
-    durationDot, // 附点
-    accidental,
-    tuplet, // 连音符
-    clef,
-    clef_f, // 前置谱号
-    keySignature,  //
-    timeSignature,
-    barline, // 小节线
-    barline_f,
+    noteHead = 'noteHead', // 线谱指音符头， 简谱指音符
+    noteBar = 'noteBar',
+    noteTail = 'noteTail',
+    rest = 'rest',
+    slur = 'slur', // 圆滑线  不同音高
+    tie = 'tie',  // 延音线  延音线只能连接两个音
+    durationDot = 'durationDot', // 附点
+    accidental = 'accidental',
+    tuplet = 'tuplet', // 连音符
+    clef = 'clef',
+    clef_f = 'clef_f', // 前置谱号
+    keySignature = 'keySignature',  //
+    timeSignature = 'timeSignature',
+    barline = 'barline', // 小节线
+    barline_f = 'barline_f',
 }
 
 // 曲谱展示模式
@@ -309,7 +309,7 @@ export enum SpanSymbolFollowingCategoryEnum {
 export enum MsSymbolContainerTypeEnum {
     frontFixed = 1, // 前置定宽
     rearFixed, // 后置定宽
-    
+
     variable, // 变宽
     span, // 跨小节符号容器，不影响小节宽度
 }

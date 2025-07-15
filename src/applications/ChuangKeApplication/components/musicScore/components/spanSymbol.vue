@@ -36,6 +36,7 @@ const props = defineProps({
   },
 })
 const msState = inject('msState') as MsState
+
 function voltaRect(volta: Extract<SpanSymbol, {
   type: SpanSymbolTypeEnum.volta
 }>, musicScore: MusicScore, componentWidth: number, componentHeight: number) {
@@ -56,7 +57,9 @@ function voltaRect(volta: Extract<SpanSymbol, {
   rect.left = getMeasureLeftToMusicScore(startMeasure, musicScore, componentWidth)
   traverseMeasure(startMeasure.index, endMeasure.index, musicScore, (measure, singleStaff, multipleStaves) => {
     rect.width += getMeasureWidth(measure, singleStaff, musicScore, componentWidth)
-    rect.bottom = Math.max(rect.bottom, getMaxMsSymbolBottomInMeasure(measure, musicScore) + getMeasureBottomToMusicScore(measure, musicScore, componentHeight))
+    const measureBottom = getMeasureBottomToMusicScore(measure, musicScore, componentHeight)
+    const maxBottomMsSymbol = getMaxMsSymbolBottomInMeasure(measure, musicScore)
+    rect.bottom = Math.max(musicScore.measureHeight + measureBottom, maxBottomMsSymbol + measureBottom)
   })
   volta.rect = rect
 

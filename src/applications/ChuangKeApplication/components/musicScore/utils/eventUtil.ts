@@ -131,18 +131,18 @@ export function virtualSymbolMouseDown(
     if (['front'].includes(params.virtualSymbolContainerType)) {
         newMsSymbolContainer.msSymbolArray.push(newNoteHead)
         if (params.msData.msSymbolContainer) {
-            addMsSymbolContainer(params.msData.musicScore, newMsSymbolContainer,
-                params.msData.msSymbolContainer, 'before')
+            addMsSymbolContainer(newMsSymbolContainer,
+                params.msData.msSymbolContainer, params.msData.musicScore, 'before')
         } else {
-            addMsSymbolContainer(params.msData.musicScore, newMsSymbolContainer,
-                params.msData.measure, 'before')
+            addMsSymbolContainer(newMsSymbolContainer,
+                params.msData.measure, params.msData.musicScore, 'before')
         }
 
     } else if (['end', 'middle'].includes(params.virtualSymbolContainerType)) {
         newMsSymbolContainer.msSymbolArray.push(newNoteHead)
         if (!params.msData.msSymbolContainer) return console.error("没有作为对照的符号容器，符号容器添加失败")
-        addMsSymbolContainer(params.msData.musicScore, newMsSymbolContainer,
-            params.msData.msSymbolContainer, 'after')
+        addMsSymbolContainer(newMsSymbolContainer,
+            params.msData.msSymbolContainer, params.msData.musicScore, 'after')
     } else if (['self'].includes(params.virtualSymbolContainerType)) {
         // TODO 需要判断同region是否已经存在音符
         if (!params.msData.msSymbolContainer) return console.error("没有作为对照的符号容器，符号添加失败")
@@ -153,8 +153,8 @@ export function virtualSymbolMouseDown(
         if (sameRegionNoteHead) {
             msSymbolMouseDown(e, params.msState.mode, params.msState.currentSelected, sameRegionNoteHead)
         } else {
-            addMsSymbol(params.msData.musicScore, newNoteHead,
-                params.msData.msSymbolContainer, 'after')
+            addMsSymbol(newNoteHead,
+                params.msData.msSymbolContainer, params.msData.musicScore, 'after')
         }
 
     }
@@ -176,6 +176,7 @@ export function spanSymbolMouseDown(e: MouseEvent, mode: Ref<MsMode>, currentSel
 export function spanSymbolMouseUp(e: MouseEvent, mode: Ref<MsMode>, currentSelected: Ref<MsType | null>, spanSymbol: SpanSymbol) {
 
 }
+
 export function msSymbolMouseDown(e: MouseEvent, mode: Ref<MsMode>, currentSelected: Ref<MsType | null>, msSymbol: MsSymbol) {
     if (msSymbol.type === MsSymbolTypeEnum.noteHead) {  // 赋值region
         eventConstant.originRegion = msSymbol.region

@@ -67,9 +67,10 @@ function updateMultipleStavesRelatedData(multipleStaves: MultipleStaves, musicSc
 export function insertMeasure(measure: Measure, musicScoreData: MusicScore, position: 'after' | 'before' = 'after') {
     const newMeasure = measureTemplate({})
     if (!measure) return console.error("缺乏定位元素，小节添加失败")
-    addMeasure(musicScoreData, newMeasure, measure, position)
+    addMeasure(newMeasure, measure, musicScoreData, position)
     updateMeasureRelatedData(measure, musicScoreData)
 }
+
 export function deleteMeasure(measure: Measure, musicScoreData: MusicScore) {
     // 如果是单谱表内最后的小节，则不可以删除
     const singleStaff = getDataWithIndex(measure.index, musicScoreData).singleStaff
@@ -84,7 +85,7 @@ export function deleteMeasure(measure: Measure, musicScoreData: MusicScore) {
 export function insertSingleStaff(singleStaff: SingleStaff, musicScoreData: MusicScore, position: 'after' | 'before' = 'after') {
     const newSingleStaff = singleStaffTemplate({})
     if (!singleStaff) return console.error("缺乏定位元素，单谱表添加失败")
-    addSingleStaff(musicScoreData, newSingleStaff, singleStaff, position)
+    addSingleStaff(newSingleStaff, singleStaff, musicScoreData, position)
     updateSingleStaffRelatedData(singleStaff, musicScoreData)
 }
 
@@ -102,7 +103,7 @@ export function deleteSingleStaff(singleStaff: SingleStaff, musicScoreData: Musi
 export function insertMultipleStaves(multipleStaves: MultipleStaves, musicScoreData: MusicScore, position: 'after' | 'before' = 'after') {
     const newMultipleStaves = multipleStavesTemplate({})
     if (!multipleStaves) return console.error("缺乏定位元素，复谱表添加失败")
-    addMultipleStaves(musicScoreData, newMultipleStaves, multipleStaves, position)
+    addMultipleStaves(newMultipleStaves, multipleStaves, musicScoreData, position)
     updateMultipleStavesRelatedData(multipleStaves, musicScoreData)
 }
 

@@ -49,7 +49,7 @@ function handleRightToolsBtn(key: String, measure: Measure, musicScore: MusicSco
       measure.bindingStartId.push(volta.id)
       addBindingStartId(measure, volta.id)
       addBindingEndId(measure, volta.id)
-      addSpanSymbol(musicScore, volta)
+      addSpanSymbol(volta, musicScore)
       break;
 
   }

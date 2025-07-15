@@ -288,13 +288,13 @@ const msSymbolStyle = computed<CSSProperties>(() => {
   return style
 });
 const emits = defineEmits(['msSymbolMouseDown', 'msSymbolMouseUp']);
+
 function handleMouseDown(e: MouseEvent) {
   emits('msSymbolMouseDown', e, props.msSymbol)
 
 }
 
 function handleMouseUp(e: MouseEvent) {
-  console.log('chickenup',)
   emits('msSymbolMouseUp', e, props.msSymbol)
 }
 

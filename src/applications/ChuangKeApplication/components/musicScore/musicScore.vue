@@ -220,6 +220,7 @@ function handlepanSymbolMouseUp(e: MouseEvent, spanSymbol: SpanSymbol) {
   spanSymbolMouseUp(e, mode, currentSelected, spanSymbol);
   emits('spanSymbolMouseUp')
 }
+
 function handleMsSymbolMouseDown(e: MouseEvent, msSymbol: MsSymbol) {
   msSymbolMouseDown(e, mode, currentSelected, msSymbol);
   emits('msSymbolMouseDown')
@@ -259,12 +260,13 @@ const musicScoreStyle = computed(() => {
 });
 
 function beforeMount() {
-  // 遍历生成hashMap方便快速查找,TODO,这个后续应该不需要，每次加新的类型都会单独去更新map
-  mapGenerate(props.musicScore)
+
   // 索引生成
   setMultipleStavesIndex(props.musicScore)
   // 初始化预备音符
   initReserveMsSymbolMap()
+  // 遍历生成hashMap方便快速查找
+  mapGenerate(props.musicScore)
   window.musicScore = props.musicScore
 }
 

@@ -82,6 +82,7 @@ export function getMaxMsSymbolBottomInMsSymbolContainer(msSymbolContainer: MsSym
         const bottom = getSlotBottomToMeasure(msSymbol, musicScore)
         const height = getMsSymbolHeight(msSymbol, musicScore)
         const max = bottom + height
+
         if (plusHeight) {
             maxBottom = Math.max(max, maxBottom)
         } else {

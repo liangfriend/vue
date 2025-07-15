@@ -21,26 +21,36 @@ import {
     setSingleStaffArrayIndex
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 
-
-export function addChildMsSymbol(childMsSymbol: MsSymbol, msSymbol: MsSymbol) {
-    msSymbol.msSymbolArray.push(childMsSymbol);
-    setChildMsSymbolArrayIndex(msSymbol)
+export function musicScoreMapAdd(msData: MsType, musicScore: MusicScore) {
+    musicScore.map[msData.id] = msData
 }
 
-export function removeChildMsSymbol(childMsSymbol: MsSymbol, msSymbol: MsSymbol) {
+export function musicScoreMapRemove(id: number, musicScore: MusicScore) {
+    delete musicScore.map[id]
+}
+
+
+export function addChildMsSymbol(childMsSymbol: MsSymbol, msSymbol: MsSymbol, musicScore: MusicScore) {
+    msSymbol.msSymbolArray.push(childMsSymbol);
+    setChildMsSymbolArrayIndex(msSymbol)
+    musicScoreMapAdd(childMsSymbol, musicScore)
+}
+
+export function removeChildMsSymbol(childMsSymbol: MsSymbol, msSymbol: MsSymbol, musicScore: MusicScore) {
     const index = msSymbol.msSymbolArray.indexOf(childMsSymbol)
-    if (index === -1) {
-        return console.error('符号内找不到目标跟随符号，跟随符号删除失败')
-    }
+    if (index === -1) return console.error('符号内找不到目标跟随符号，跟随符号删除失败')
     msSymbol.msSymbolArray.splice(index, 1)
+    musicScoreMapRemove(childMsSymbol.id, musicScore)
 }
 
 // 添加跨小节符号
-export function addSpanSymbol(musicScore: MusicScore, newSpanSymbol: SpanSymbol) {
+export function addSpanSymbol(newSpanSymbol: SpanSymbol, musicScore: MusicScore) {
     musicScore.spanSymbolArray.push(newSpanSymbol);
+    musicScoreMapAdd(newSpanSymbol, musicScore)
 }
+
 // 添加符号
-export function addMsSymbol(musicScore: MusicScore, newMsSymbol: MsSymbol, currSelected: MsType, position: 'after' | 'before' = 'after') {
+export function addMsSymbol(newMsSymbol: MsSymbol, currSelected: MsType, musicScore: MusicScore, position: 'after' | 'before' = 'after') {
     if (currSelected.msTypeName === MsTypeNameEnum.MsSymbol) {
         const msSymbolContainer = getDataWithIndex(currSelected.index, musicScore).msSymbolContainer
         const msSymbol = getDataWithIndex(currSelected.index, musicScore).msSymbol
@@ -61,6 +71,7 @@ export function addMsSymbol(musicScore: MusicScore, newMsSymbol: MsSymbol, currS
         array.push(newMsSymbol)
         setMsSymbolArrayIndex(msSymbolContainer)
     }
+    musicScoreMapAdd(newMsSymbol, musicScore)
 }
 
 // 移除符号
@@ -73,15 +84,16 @@ export function removeMsSymbol(
     const array = msSymbolContainer.msSymbolArray;
     const index = array.findIndex(item => item === msSymbol);
 
-    if (index !== -1) {
-        array.splice(index, 1);
-    } else {
-        console.error("找不到目标符号")
-    }
+
+    if (index === -1) return console.error("找不到目标符号")
+    array.splice(index, 1);
     setMsSymbolArrayIndex(msSymbolContainer)
+    musicScoreMapRemove(msSymbolContainer.id, musicScore)
+
 }
+
 // 添加符号容器
-export function addMsSymbolContainer(musicScore: MusicScore, newMsSymbolContainer: MsSymbolContainer, currSelected: MsType, position: 'after' | 'before' = 'after') {
+export function addMsSymbolContainer(newMsSymbolContainer: MsSymbolContainer, currSelected: MsType, musicScore: MusicScore, position: 'after' | 'before' = 'after') {
 
     if (currSelected.msTypeName === MsTypeNameEnum.MsSymbolContainer) {
         const measure = getDataWithIndex(currSelected.index, musicScore).measure
@@ -103,6 +115,7 @@ export function addMsSymbolContainer(musicScore: MusicScore, newMsSymbolContaine
         array.push(newMsSymbolContainer)
         setMsSymbolContainerArrayIndex(measure)
     }
+    musicScoreMapAdd(newMsSymbolContainer, musicScore)
 }
 
 // 移除符号容器
@@ -115,17 +128,17 @@ export function removeMsSymbolContainer(
     const array = measure.msSymbolContainerArray;
     const index = array.findIndex(item => item === msSymbolContainer);
 
-    if (index !== -1) {
-        array.splice(index, 1);
-    } else {
-        console.error("找不到目标符号容器")
-    }
+    if (index === -1) return console.error("找不到目标符号容器")
+    array.splice(index, 1);
+    musicScoreMapRemove(msSymbolContainer.id, musicScore)
     setMsSymbolContainerArrayIndex(measure)
+
+
 }
 
 
 // 添加小节
-export function addMeasure(musicScore: MusicScore, newMeasure: Measure, currSelected: MsType, position: 'after' | 'before' = 'after') {
+export function addMeasure(newMeasure: Measure, currSelected: MsType, musicScore: MusicScore, position: 'after' | 'before' = 'after') {
 
     if (currSelected.msTypeName === MsTypeNameEnum.Measure) {
         const singleStaff = getDataWithIndex(currSelected.index, musicScore).singleStaff
@@ -149,7 +162,7 @@ export function addMeasure(musicScore: MusicScore, newMeasure: Measure, currSele
         // 计算index
         setMeasureArrayIndex(currSelected)
     }
-
+    musicScoreMapAdd(newMeasure, musicScore)
 }
 
 // 删除小节
@@ -161,13 +174,13 @@ export function removeMeasure(
     if (!singleStaff) return console.error("单谱表不存在，小节移除失败")
     const array = singleStaff.measureArray;
     const index = array.findIndex(item => item === measure);
-    if (index !== -1) {
-        array.splice(index, 1);
-    } else {
-        console.error("找不到目标小节")
-    }
+    if (index === -1) return console.error("找不到目标小节")
+    array.splice(index, 1);
+    musicScoreMapRemove(measure.id, musicScore)
     setMeasureArrayIndex(singleStaff)
+
 }
+
 // 删除小节相关联的跨小节符号
 export function removeMeasureRelatedSpanSymbol(measure: Measure, musicScore: MusicScore) {
     for (let i = 0; i < musicScore.spanSymbolArray.length; i++) {
@@ -175,6 +188,8 @@ export function removeMeasureRelatedSpanSymbol(measure: Measure, musicScore: Mus
         if (measure.bindingStartId.includes(spanSymbol.id) || measure.bindingEndId.includes(spanSymbol.id)) {
             // 删除关联的跨小节符号
             musicScore.spanSymbolArray.splice(i, 1);
+            musicScoreMapRemove(spanSymbol.id, musicScore)
+
         }
     }
 }
@@ -187,6 +202,7 @@ export function removeSingleStaffRelatedSpanSymbol(singleStaff: SingleStaff, mus
             if (measure.bindingStartId.includes(spanSymbol.id) || measure.bindingEndId.includes(spanSymbol.id)) {
                 // 删除关联的跨小节符号
                 musicScore.spanSymbolArray.splice(i, 1);
+                musicScoreMapRemove(spanSymbol.id, musicScore)
             }
         })
 
@@ -202,6 +218,7 @@ export function removeMultipleStavesRelatedSpanSymbol(multipleStaves: MultipleSt
                 if (measure.bindingStartId.includes(spanSymbol.id) || measure.bindingEndId.includes(spanSymbol.id)) {
                     // 删除关联的跨小节符号
                     musicScore.spanSymbolArray.splice(i, 1);
+                    musicScoreMapRemove(spanSymbol.id, musicScore)
                 }
             })
         })
@@ -209,14 +226,13 @@ export function removeMultipleStavesRelatedSpanSymbol(multipleStaves: MultipleSt
 }
 
 // 添加单谱表
-export function addSingleStaff(musicScore: MusicScore, newSingleStaff: SingleStaff, currSelected: MsType, position: 'after' | 'before' = 'after') {
+export function addSingleStaff(newSingleStaff: SingleStaff, currSelected: MsType, musicScore: MusicScore, position: 'after' | 'before' = 'after') {
 
     if (currSelected.msTypeName === MsTypeNameEnum.SingleStaff) {
         const multipleStaves = getDataWithIndex(currSelected.index, musicScore).multipleStaves
         if (!multipleStaves) return console.error("复谱表表不存在，单谱表插入失败");
         const array = multipleStaves.singleStaffArray;
         const targetIndex = array.findIndex(item => item === currSelected);
-        console.log('chicken', position)
         if (position === 'before') {
             array.splice(targetIndex, 0, newSingleStaff);
         } else {
@@ -234,7 +250,7 @@ export function addSingleStaff(musicScore: MusicScore, newSingleStaff: SingleSta
         // 计算index
         setSingleStaffArrayIndex(currSelected)
     }
-
+    musicScoreMapAdd(newSingleStaff, musicScore)
 }
 
 // 删除单谱表
@@ -246,17 +262,14 @@ export function removeSingleStaff(
     if (!multipleStaves) return console.error("复谱表表不存在，单谱表移除失败")
     const array = multipleStaves.singleStaffArray;
     const index = array.findIndex(item => item === singleStaff);
-    if (index !== -1) {
-        array.splice(index, 1);
-    } else {
-        console.error("找不到目标单谱表")
-    }
-    // 计算index
+    if (index === -1) return console.error("找不到目标单谱表")
+    array.splice(index, 1);
+    musicScoreMapRemove(singleStaff.id, musicScore)
     setSingleStaffArrayIndex(multipleStaves)
 }
 
 // 添加复谱表
-export function addMultipleStaves(musicScore: MusicScore, newMultipleStaves: MultipleStaves, currSelected: MsType, position: 'after' | 'before' = 'after') {
+export function addMultipleStaves(newMultipleStaves: MultipleStaves, currSelected: MsType, musicScore: MusicScore, position: 'after' | 'before' = 'after') {
     if (currSelected.msTypeName === MsTypeNameEnum.MultipStaves) {
         const array = musicScore.multipleStavesArray;
         const targetIndex = array.findIndex(item => item === currSelected);
@@ -268,7 +281,7 @@ export function addMultipleStaves(musicScore: MusicScore, newMultipleStaves: Mul
         // 计算index
         setMultipleStavesIndex(musicScore)
     }
-
+    musicScoreMapAdd(newMultipleStaves, musicScore)
 }
 
 // 删除复谱表
@@ -278,19 +291,18 @@ export function removeMultipleStaves(
 ) {
     const array = musicScore.multipleStavesArray
     const index = array.findIndex(item => item === multipleStaves);
-    if (index !== -1) {
-        array.splice(index, 1);
-    } else {
-        console.error("找不到目标复谱表")
-    }
-    // 计算index
+    if (index === -1) return console.error("找不到目标复谱表")
+    array.splice(index, 1);
+    musicScoreMapRemove(multipleStaves.id, musicScore)
     setMultipleStavesIndex(musicScore)
+
 }
 
 // 更新符号属性
 export function updateMsSymbol(oldMsSymbol: MsSymbol, newProperties: Partial<MsSymbol>) {
     return Object.assign(oldMsSymbol, newProperties);
 }
+
 // 更换音符或休止符时值
 export function noteChronaxie(note: MsSymbol, newChronaxie: ChronaxieEnum, musicScore: MusicScore) {
     if (note.type !== MsSymbolTypeEnum.noteHead && note.type !== MsSymbolTypeEnum.rest) {
@@ -309,17 +321,17 @@ export function noteChronaxie(note: MsSymbol, newChronaxie: ChronaxieEnum, music
     }) as (NoteTail | null)
     // 全音符且noteBar存在，去掉noteBar
     if ([ChronaxieEnum.whole].includes(newChronaxie) && noteBar) {
-        removeChildMsSymbol(noteBar, note)
+        removeChildMsSymbol(noteBar, note, musicScore)
     }
     // 非全音符且noteBar不存在，新增noteBar
     if (![ChronaxieEnum.whole].includes(newChronaxie) && !noteBar) {
         const newNoteBar = msSymbolTemplate({type: MsSymbolTypeEnum.noteBar})
-        addChildMsSymbol(newNoteBar, note)
+        addChildMsSymbol(newNoteBar, note, musicScore)
     }
     // 全,二分，四分音符且noteTail存在，去掉noteTail
     if ([ChronaxieEnum.whole, ChronaxieEnum.half, ChronaxieEnum.quarter
     ].includes(newChronaxie) && noteTail) {
-        removeChildMsSymbol(noteTail, note)
+        removeChildMsSymbol(noteTail, note, musicScore)
     }
     // 非全,二分，四分音符且noteTail存在，更新noteTail
     if (![ChronaxieEnum.whole, ChronaxieEnum.half, ChronaxieEnum.quarter
@@ -333,7 +345,7 @@ export function noteChronaxie(note: MsSymbol, newChronaxie: ChronaxieEnum, music
             type: MsSymbolTypeEnum.noteTail,
             chronaxie: newChronaxie
         })
-        addChildMsSymbol(newNoteTail, note)
+        addChildMsSymbol(newNoteTail, note, musicScore)
     }
 }
 

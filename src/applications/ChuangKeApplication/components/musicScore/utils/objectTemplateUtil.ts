@@ -63,7 +63,6 @@ export function msSymbolTemplate(options: {
     }
     switch (options.type) {
         case MsSymbolTypeEnum.noteHead: {
-            console.log('chicken', options.chronaxie)
             // chronaxie不存在默认为四分音符，添加符杠
             if (!options.chronaxie || ![ChronaxieEnum.whole].includes(options.chronaxie)) {
                 const noteBar = msSymbolTemplate({

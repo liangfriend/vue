@@ -465,12 +465,14 @@ export function setMsSymbolContainerArrayIndex(measure: Measure) {
         return console.error("数据有误，符号容器索引生成失败")
     }
     measure.msSymbolContainerArray.forEach((container, l) => {
+
         container.index = {multipleStavesIndex, singleStaffIndex, measureIndex, msSymbolContainerIndex: l};
         setMsSymbolArrayIndex(container);
     });
 }
 
 export function setMsSymbolArrayIndex(container: MsSymbolContainer) {
+
     const singleStaffIndex = container.index.singleStaffIndex
     const multipleStavesIndex = container.index.multipleStavesIndex
     const measureIndex = container.index.measureIndex
@@ -478,6 +480,7 @@ export function setMsSymbolArrayIndex(container: MsSymbolContainer) {
     if (multipleStavesIndex == null || singleStaffIndex == null || measureIndex == null || msSymbolContainerIndex == null) {
         return console.error("数据有误，符号索引生成失败")
     }
+
     container.msSymbolArray.forEach((curMsSymbol, t) => {
         const index = {
             multipleStavesIndex,
@@ -637,6 +640,12 @@ export function getDataWithIndex(index: MusicScoreIndex, musicScore: MusicScore)
 // 获取小节绑定spanSymbolId
 export function getSpanSymbolIdSetInMeasure(measure: Measure, musicScore: MusicScore): Set<number> {
     const spanSymbolIdList = new Set<number>();
+    measure.bindingEndId.forEach((spanSymbolId) => {
+        spanSymbolIdList.add(spanSymbolId);
+    })
+    measure.bindingStartId.forEach((spanSymbolId) => {
+        spanSymbolIdList.add(spanSymbolId);
+    })
     measure.msSymbolContainerArray.forEach((msSymbolContainer, index) => {
         msSymbolContainer.msSymbolArray.forEach((msSymbol, index) => {
             msSymbol.bindingEndId.forEach((spanSymbolId) => {
