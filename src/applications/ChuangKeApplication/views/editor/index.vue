@@ -1,5 +1,3 @@
-
-
 <script setup lang="ts">
 import prefabWb from '../../views/prefabWhiteBoard/addedMusicScore.vue';
 import {computed, onMounted, ref, Ref, UnwrapRef, watch} from 'vue';
@@ -25,6 +23,8 @@ import MultipleStavesFunction
   from "@/applications/ChuangKeApplication/views/editor/components/rightTools/MultipleStavesFunction.vue";
 import NoteHeadFunction
   from "@/applications/ChuangKeApplication/views/editor/components/rightTools/noteHeadFunction.vue";
+import SpanSymbolFunction
+  from "@/applications/ChuangKeApplication/views/editor/components/rightTools/spanSymbolFunction.vue";
 
 const router = useRouter()
 type addedWb = {
@@ -39,6 +39,7 @@ const curModeText = ref("教学模式")
 const msMode = computed(() => {
   return msRef.value?.mode
 })
+
 function switchMode() {
   if (!msRef.value) return
   if (msMode.value === MsMode.edit) {
@@ -145,7 +146,11 @@ onMounted(() => {
               <basic-function v-if="msRef && !currentSelected?.msTypeName"
                               :msRef="msRef"
                               :music-score="musicScoreData"></basic-function>
-              </div>
+              <span-symbol-function v-if="msRef && currentSelected?.msTypeName === MsTypeNameEnum.SpanSymbol"
+                                    :msRef="msRef"
+                                    :music-score="musicScoreData"
+                                    :span-symbol="currentSelected"></span-symbol-function>
+            </div>
           </template>
         </right-tools>
       </div>
@@ -176,12 +181,14 @@ onMounted(() => {
 .toolsLayer {
   pointer-events: none;
 }
+
 .rightTools {
   position: absolute;
   right: 0;
   height: 100%;
   pointer-events: auto;
 }
+
 .back {
   cursor: pointer;
   position: fixed;

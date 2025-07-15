@@ -166,7 +166,6 @@ export function virtualSymbolMouseDown(
 }
 
 export function spanSymbolMouseDown(e: MouseEvent, mode: Ref<MsMode>, currentSelected: Ref<MsType | null>, spanSymbol: SpanSymbol) {
-
     if (mode.value === MsMode.edit) {
         // 订阅
         select(spanSymbol, currentSelected)

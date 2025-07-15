@@ -77,6 +77,8 @@ function getSpanSymbolRect(spanSymbol: SpanSymbol, musicScore: MusicScore, compo
 const emits = defineEmits(['spanSymbolMouseDown', 'spanSymbolMouseUp']);
 
 function handleMouseDown(e: MouseEvent) {
+  console.log('chicken',)
+
   emits('spanSymbolMouseDown', e, props.spanSymbol)
 
 }

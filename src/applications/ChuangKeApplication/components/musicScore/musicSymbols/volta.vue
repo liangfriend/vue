@@ -45,5 +45,9 @@ const voltaStyle = computed(() => {
   border-top: 1px solid black;
   pointer-events: auto;
   user-select: none;
+
+  > * {
+    pointer-events: none;
+  }
 }
 </style>

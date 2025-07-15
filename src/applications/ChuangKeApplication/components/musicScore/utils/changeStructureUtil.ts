@@ -370,3 +370,29 @@ export function removeBindingEndId(msData: MsSymbol | Measure | SingleStaff, id:
         msData.bindingEndId.splice(index, 1)
     }
 }
+
+// 移除跨小节符号
+export function removeSpanSymbol(spanSymbol: SpanSymbol, musicScore: MusicScore) {
+    const index = musicScore.spanSymbolArray.indexOf(spanSymbol)
+    const bindingStartId = spanSymbol.startTargetId
+    const bindingEndId = spanSymbol.endTargetId
+    if (index !== -1) {
+        musicScore.spanSymbolArray.splice(index, 1)
+    }
+    // 删除相关联对象中的绑定id
+    const id = spanSymbol.id
+    const bindingStartTarget = musicScore.map[bindingStartId]
+    if (bindingStartTarget && 'bindingStartId' in bindingStartTarget) {
+        const bindingStartIdIndex = bindingStartTarget.bindingStartId.indexOf(id)
+        if (bindingStartIdIndex !== -1) {
+            bindingStartTarget.bindingStartId.splice(index, 1)
+        }
+    }
+    const bindingEndTarget = musicScore.map[bindingEndId]
+    if (bindingEndTarget && 'bindingEndId' in bindingEndTarget) {
+        const bindingEndIdIndex = bindingEndTarget.bindingEndId.indexOf(id)
+        if (bindingEndIdIndex !== -1) {
+            bindingEndTarget.bindingEndId.splice(index, 1)
+        }
+    }
+}

@@ -318,7 +318,7 @@ export enum MsSymbolContainerTypeEnum {
 export enum BarlineTypeEnum {
     single = 1,
     final,
-    reverseFinal,
+    reverseFinal, // 前置结束小节线
     startRepeatSign,
     endRepeatSign,
 }

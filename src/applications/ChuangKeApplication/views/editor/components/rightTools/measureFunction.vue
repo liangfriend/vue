@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {deleteMeasure, insertMeasure} from "@/applications/ChuangKeApplication/views/editor/rightToolsFunction.ts";
-import {PropType, UnwrapRef} from "vue";
+import {PropType, ref, UnwrapRef} from "vue";
 import {Measure, MusicScore, MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
   addBindingEndId,
@@ -9,7 +9,11 @@ import {
   addSpanSymbol
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 import {spanSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
-import {SpanSymbolTypeEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import {
+  BarlineTypeEnum,
+  ClefEnum, KeySignatureEnum,
+  SpanSymbolTypeEnum
+} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 
 const props = defineProps({
@@ -37,7 +41,7 @@ function handleRightToolsBtn(key: String, measure: Measure, musicScore: MusicSco
     case 'delete':
       deleteMeasure(measure, musicScore)
       break;
-    case 'addVolta':
+    case 'addVolta': {
       const startTargetId = measure.id
       const endTargetId = measure.id
       const volta = spanSymbolTemplate({
@@ -51,11 +55,52 @@ function handleRightToolsBtn(key: String, measure: Measure, musicScore: MusicSco
       addBindingEndId(measure, volta.id)
       addSpanSymbol(volta, musicScore)
       break;
+    }
+
 
   }
 
 
 }
+
+const currentClef = ref(null)
+const clefList = ref([{
+  clef: ClefEnum.alto,
+  text: '高音谱号',
+}, {
+  clef: ClefEnum.bass,
+  text: '低音谱号',
+}])
+const currentKeySignature = ref(null)
+const keySignatureList = ref([{
+  keySignature: KeySignatureEnum.C,
+  text: 'C大调',
+}, {
+  clef: KeySignatureEnum.D,
+  text: 'D大调',
+}])
+const currentTimeSignature = ref({
+  beat: 1,
+  chronaxie: 4
+})
+
+const currentBarLineType = ref(null)
+const barlineList = ref([{
+  barlineType: BarlineTypeEnum.single,
+  text: '单小节线',
+}, {
+  barlineType: BarlineTypeEnum.final,
+  text: '结束小节线',
+}, {
+  barlineType: BarlineTypeEnum.reverseFinal,
+  text: '前置结束小节线',
+}, {
+  barlineType: BarlineTypeEnum.endRepeatSign,
+  text: '反复小节线',
+}, {
+  barlineType: BarlineTypeEnum.startRepeatSign,
+  text: '前置反复小节线',
+}])
 </script>
 
 <template>
@@ -72,14 +117,61 @@ function handleRightToolsBtn(key: String, measure: Measure, musicScore: MusicSco
     >
       删除小节
     </el-button>
-    反复
+    <div>反复</div>
     <el-button @click="handleRightToolsBtn('addVolta',measure,musicScore)"
     >
       添加volta
     </el-button>
+
+    <div>谱号</div>
+    <div class="noteBoxContainer">
+      <div :class="{activeBox:currentClef === item.clef}"
+           class="noteBox"
+           v-for="(item,index) in clefList">
+        {{ item.text }}
+      </div>
+    </div>
+    <div>调号</div>
+    <div class="noteBoxContainer">
+      <div :class="{activeBox:currentKeySignature === item.keySignature}"
+           class="noteBox"
+           v-for="(item,index) in keySignatureList">
+        {{ item.text }}
+      </div>
+    </div>
+    <div>拍号</div>
+    <div>
+      <div><input type="number" v-model="currentTimeSignature.beat"></div>
+      <div><input type="number" v-model="currentTimeSignature.chronaxie"></div>
+    </div>
+    <div>小节线</div>
+    <div class="noteBoxContainer">
+      <div :class="{activeBox:currentBarLineType === item.barlineType}"
+           class="noteBox"
+           v-for="(item,index) in barlineList">
+        {{ item.text }}
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.noteBoxContainer {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 10px;
+  row-gap: 10px;
+}
 
+.noteBox {
+  width: 50px;
+  height: 50px;
+  border: 1px solid black;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.activeBox {
+  background-color: #FF7882;
+}
 </style>
