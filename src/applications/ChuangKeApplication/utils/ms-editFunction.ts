@@ -5,15 +5,15 @@ import {
     singleStaffTemplate
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
-    ClefEnum,
+    ClefEnum, KeySignatureEnum,
     MsSymbolContainerTypeEnum,
     MsSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {
-    addClefToMeasure,
+    addClefToMeasure, addKeySignatureToMeasure,
     addMeasure,
     addMultipleStaves,
-    addSingleStaff,
+    addSingleStaff, changeClef, changeKeySignature,
     removeMeasure,
     removeMeasureRelatedSpanSymbol,
     removeMultipleStaves,
@@ -23,46 +23,27 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 import {
     getDataWithIndex,
-    getSpanSymbolIdSetInMultipleStaves,
-    getSpanSymbolIdSetInMusicScore,
-    getSpanSymbolIdSetInSingleStaff,
+    getMultipleStavesRelatedSpanSymbolList,
+    getMusicScoreRelatedSpanSymbolList,
+    getSingleStaffRelatedSpanSymbolList,
     setMeasureArrayIndex,
     setMultipleStavesIndex,
     setSingleStaffArrayIndex,
-    updateSpanSymbol
+    updateSpanSymbolView
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {
-    ClefMsSymbol,
+    ClefMsSymbol, KeySignatureMsSymbol,
     Measure,
     MultipleStaves,
     MusicScore,
     SingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
+import KeySignature from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/keySignature.vue";
 
 
 // 关联数据更新
-function updateMeasureRelatedData(measure: Measure, musicScoreData: MusicScore) {
-    const singleStaff = getDataWithIndex(measure.index, musicScoreData).singleStaff
-    if (!singleStaff) return console.error("找不到单谱表")
-    setMeasureArrayIndex(singleStaff)
-    const spanSymbolSet = getSpanSymbolIdSetInSingleStaff(singleStaff, musicScoreData)
-    updateSpanSymbol(spanSymbolSet, musicScoreData)
-}
 
-function updateSingleStaffRelatedData(singleStaff: SingleStaff, musicScoreData: MusicScore) {
-    const multipleStaves = getDataWithIndex(singleStaff.index, musicScoreData).multipleStaves
-    if (!multipleStaves) return console.error("找不到复谱表")
-    setSingleStaffArrayIndex(multipleStaves)
-    const spanSymbolSet = getSpanSymbolIdSetInMultipleStaves(multipleStaves, musicScoreData)
-    updateSpanSymbol(spanSymbolSet, musicScoreData)
-}
 
-function updateMultipleStavesRelatedData(multipleStaves: MultipleStaves, musicScoreData: MusicScore) {
-
-    setMultipleStavesIndex(musicScoreData)
-    const spanSymbolSet = getSpanSymbolIdSetInMusicScore(musicScoreData)
-    updateSpanSymbol(spanSymbolSet, musicScoreData)
-}
 
 
 // 基本功能
@@ -73,19 +54,15 @@ export function insertMeasure(measure: Measure, musicScoreData: MusicScore, posi
     const newMeasure = measureTemplate({})
     if (!measure) return console.error("缺乏定位元素，小节添加失败")
     addMeasure(newMeasure, measure, musicScoreData, position)
-    updateMeasureRelatedData(measure, musicScoreData)
+
 }
 
 export function deleteMeasure(measure: Measure, musicScoreData: MusicScore) {
     // 如果是单谱表内最后的小节，则不可以删除
     const singleStaff = getDataWithIndex(measure.index, musicScoreData).singleStaff
     if (singleStaff && singleStaff.measureArray.length <= 1) return console.error("")
-
     removeMeasure(measure, musicScoreData)
-    removeMeasureRelatedSpanSymbol(measure, musicScoreData)
-    updateMeasureRelatedData(measure, musicScoreData)
 }
-
 export function insertClef(clef: ClefEnum, measure: Measure, musicScore: MusicScore) {
     const index = measure.index
     // 如果是单谱表内第一个小节
@@ -94,7 +71,7 @@ export function insertClef(clef: ClefEnum, measure: Measure, musicScore: MusicSc
             return msSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.clef_f
         })?.msSymbolArray[0] as (ClefMsSymbol | undefined)
         if (clefSymbol) {
-            clefSymbol.clef = clef
+            changeClef(clefSymbol, clef, musicScore)
         } else { // clef不存在则添加clef
             const newClef = msSymbolTemplate({type: MsSymbolTypeEnum.clef_f, clef})
             const newMsSymbolContainer = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.frontFixed})
@@ -102,16 +79,45 @@ export function insertClef(clef: ClefEnum, measure: Measure, musicScore: MusicSc
             addClefToMeasure(newMsSymbolContainer, measure, musicScore)
         }
     } else { // 非第一个单谱表，要在前一个小节加上结尾谱号
-
+        const index = JSON.parse(JSON.stringify(measure.index))
+        index.measureIndex -= 1
+        const preMeasure = getDataWithIndex(index, musicScore).measure
+        if (!preMeasure) return console.error("找不到当前小节的前一个小节，谱号添加失败")
+        const clefSymbol = preMeasure.msSymbolContainerArray.find((msSymbolContainer) => {
+            return msSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.clef
+        })?.msSymbolArray[0] as (ClefMsSymbol | undefined)
+        if (clefSymbol) {
+            changeClef(clefSymbol, clef, musicScore)
+        } else { // clef不存在则添加clef
+            const newClef = msSymbolTemplate({type: MsSymbolTypeEnum.clef, clef})
+            const newMsSymbolContainer = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.rearFixed})
+            newMsSymbolContainer.msSymbolArray.push(newClef)
+            addClefToMeasure(newMsSymbolContainer, preMeasure, musicScore)
+        }
     }
 }
+
+export function insertKeySignature(keySignature: KeySignatureEnum, measure: Measure, musicScore: MusicScore) {
+    const keySignatureSymbol = measure.msSymbolContainerArray.find((msSymbolContainer) => {
+        return msSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.keySignature
+    })?.msSymbolArray[0] as (KeySignatureMsSymbol | undefined)
+    if (keySignatureSymbol) {
+        changeKeySignature(keySignatureSymbol, keySignature, musicScore)
+    } else { // keySignature不存在则添加keySignature
+        const newKeySignature = msSymbolTemplate({type: MsSymbolTypeEnum.keySignature, keySignature})
+        const newMsSymbolContainer = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.frontFixed})
+        newMsSymbolContainer.msSymbolArray.push(newKeySignature)
+        addKeySignatureToMeasure(newMsSymbolContainer, measure, musicScore)
+    }
+
+}
+
 
 // 单谱表功能
 export function insertSingleStaff(singleStaff: SingleStaff, musicScoreData: MusicScore, position: 'after' | 'before' = 'after') {
     const newSingleStaff = singleStaffTemplate({})
     if (!singleStaff) return console.error("缺乏定位元素，单谱表添加失败")
     addSingleStaff(newSingleStaff, singleStaff, musicScoreData, position)
-    updateSingleStaffRelatedData(singleStaff, musicScoreData)
 }
 
 export function deleteSingleStaff(singleStaff: SingleStaff, musicScoreData: MusicScore) {
@@ -120,8 +126,6 @@ export function deleteSingleStaff(singleStaff: SingleStaff, musicScoreData: Musi
     if (multipleStaves && multipleStaves.singleStaffArray.length <= 1) return console.error("")
 
     removeSingleStaff(singleStaff, musicScoreData)
-    removeSingleStaffRelatedSpanSymbol(singleStaff, musicScoreData)
-    updateSingleStaffRelatedData(singleStaff, musicScoreData)
 }
 
 // 复谱表功能
@@ -129,7 +133,6 @@ export function insertMultipleStaves(multipleStaves: MultipleStaves, musicScoreD
     const newMultipleStaves = multipleStavesTemplate({})
     if (!multipleStaves) return console.error("缺乏定位元素，复谱表添加失败")
     addMultipleStaves(newMultipleStaves, multipleStaves, musicScoreData, position)
-    updateMultipleStavesRelatedData(multipleStaves, musicScoreData)
 }
 
 
@@ -137,6 +140,4 @@ export function deleteMultipleStaves(multipleStaves: MultipleStaves, musicScoreD
     // 如果是谱表内最后的复谱表，则不可以删除
     if (musicScoreData.multipleStavesArray.length <= 1) return console.error("")
     removeMultipleStaves(multipleStaves, musicScoreData)
-    removeMultipleStavesRelatedSpanSymbol(multipleStaves, musicScoreData)
-    updateMultipleStavesRelatedData(multipleStaves, musicScoreData)
 }

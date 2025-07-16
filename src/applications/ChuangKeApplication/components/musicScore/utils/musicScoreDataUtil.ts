@@ -20,6 +20,7 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {MsSymbolInformationMap,} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 import {measureTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
+import Single from "echarts/types/src/coord/single/Single";
 
 const semitoneMap: { [key: string]: number } = {
     C: 0, 'C#': 1, Db: 1, D: 2, 'D#': 3, Eb: 3,
@@ -638,7 +639,7 @@ export function getDataWithIndex(index: MusicScoreIndex, musicScore: MusicScore)
 }
 
 // 获取小节绑定spanSymbolId
-export function getSpanSymbolIdSetInMeasure(measure: Measure, musicScore: MusicScore): Set<number> {
+export function getMeasureRelatedSpanSymbolList(measure: Measure, musicScore: MusicScore): Set<number> {
     const spanSymbolIdList = new Set<number>();
     measure.bindingEndId.forEach((spanSymbolId) => {
         spanSymbolIdList.add(spanSymbolId);
@@ -660,27 +661,27 @@ export function getSpanSymbolIdSetInMeasure(measure: Measure, musicScore: MusicS
 }
 
 // 获取单谱表绑定spanSymbolId
-export function getSpanSymbolIdSetInSingleStaff(singleStaff: SingleStaff, musicScore: MusicScore): Set<number> {
+export function getSingleStaffRelatedSpanSymbolList(singleStaff: SingleStaff, musicScore: MusicScore): Set<number> {
     let spanSymbolIdList = new Set<number>();
     singleStaff.measureArray.forEach((measure) => {
-        const measureSpanIds = getSpanSymbolIdSetInMeasure(measure, musicScore);
+        const measureSpanIds = getMeasureRelatedSpanSymbolList(measure, musicScore);
         spanSymbolIdList = new Set([...spanSymbolIdList, ...measureSpanIds]);
     })
     return spanSymbolIdList
 }
 
 // 获取复谱表绑定spanSymbolId
-export function getSpanSymbolIdSetInMultipleStaves(multipleStaves: MultipleStaves, musicScore: MusicScore): Set<number> {
+export function getMultipleStavesRelatedSpanSymbolList(multipleStaves: MultipleStaves, musicScore: MusicScore): Set<number> {
     let spanSymbolIdList = new Set<number>();
     multipleStaves.singleStaffArray.forEach((singleStaff) => {
-        const measureSpanIds = getSpanSymbolIdSetInSingleStaff(singleStaff, musicScore);
+        const measureSpanIds = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore);
         spanSymbolIdList = new Set([...spanSymbolIdList, ...measureSpanIds]);
     })
     return spanSymbolIdList
 }
 
 // 获取谱表所有spanSymbolId
-export function getSpanSymbolIdSetInMusicScore(musicScore: MusicScore): Set<number> {
+export function getMusicScoreRelatedSpanSymbolList(musicScore: MusicScore): Set<number> {
     let spanSymbolIdList = new Set<number>();
     musicScore.spanSymbolArray.forEach((spanSymbol) => {
         spanSymbolIdList.add(spanSymbol.id)
@@ -690,13 +691,14 @@ export function getSpanSymbolIdSetInMusicScore(musicScore: MusicScore): Set<numb
 }
 
 // 更新spanSymbol视图
-export function updateSpanSymbol(spanSymbolIdList: Set<number>, musicScore: MusicScore) {
+export function updateSpanSymbolView(spanSymbolIdList: Set<number>, musicScore: MusicScore) {
     musicScore.spanSymbolArray.forEach((spanSymbol) => {
         if (spanSymbolIdList.has(spanSymbol.id)) {
             spanSymbol.vueKey = Date.now()
         }
     })
 }
+
 
 // 获取音符aspectRatio
 export function getMsSymbolAspectRatio(msSymbol: MsSymbol) {

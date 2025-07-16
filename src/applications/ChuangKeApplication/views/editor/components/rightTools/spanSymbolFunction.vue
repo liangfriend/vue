@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {deleteMeasure, insertMeasure} from "@/applications/ChuangKeApplication/views/editor/rightToolsFunction.ts";
+import {deleteMeasure, insertMeasure} from "@/applications/ChuangKeApplication/utils/ms-editFunction.ts";
 import {PropType, ref, UnwrapRef} from "vue";
 import {
   Measure,

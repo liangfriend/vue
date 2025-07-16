@@ -2,6 +2,7 @@ import {
     BarlineTypeEnum,
     ChronaxieEnum,
     ClefEnum,
+    KeySignatureEnum,
     MsSymbolContainerTypeEnum,
     MsSymbolTypeEnum,
     MsTypeNameEnum,
@@ -66,6 +67,7 @@ export function msSymbolTemplate(options: {
     chronaxie?: ChronaxieEnum,
     barLineType?: BarlineTypeEnum,
     clef?: ClefEnum,
+    keySignature?: KeySignatureEnum,
 } = {}): MsSymbol {
     const baseMsSymbol: BaseMsSymbol = {
         id: Date.now(),
@@ -150,6 +152,13 @@ export function msSymbolTemplate(options: {
                 ...baseMsSymbol,
                 type: MsSymbolTypeEnum.clef,
                 clef: options.clef || ClefEnum.treble
+            }
+        }
+        case MsSymbolTypeEnum.keySignature: {
+            return {
+                ...baseMsSymbol,
+                type: MsSymbolTypeEnum.keySignature,
+                keySignature: options.keySignature || KeySignatureEnum.C
             }
         }
         default: {

@@ -25,9 +25,9 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
     getDataWithIndex,
-    getSpanSymbolIdSetInSingleStaff,
+    getSingleStaffRelatedSpanSymbolList,
     setMeasureArrayIndex,
-    updateSpanSymbol
+    updateSpanSymbolView
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {
     addMsSymbol,
@@ -70,8 +70,8 @@ export function handleMouseMoveSelected(e: MouseEvent, measureHeight: number, cu
                         // 跨小节符号位置更新
                         const singleStaff = getDataWithIndex(currentSelected.value.index, musicScore).singleStaff
                         if (!singleStaff) return console.error("找不到单谱表，跨小节符号更新失败")
-                        const spanSymbolIdSet = getSpanSymbolIdSetInSingleStaff(singleStaff, musicScore)
-                        updateSpanSymbol(spanSymbolIdSet, musicScore)
+                        const spanSymbolIdSet = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
+                        updateSpanSymbolView(spanSymbolIdSet, musicScore)
                     }
                 }
             }
@@ -158,11 +158,7 @@ export function virtualSymbolMouseDown(
         }
 
     }
-    // 索引生成
-    setMeasureArrayIndex(params.msData.singleStaff)
-    // 跨小节符号位置更新
-    const spanSymbolIdSet = getSpanSymbolIdSetInSingleStaff(params.msData.singleStaff, params.msData.musicScore)
-    updateSpanSymbol(spanSymbolIdSet, params.msData.musicScore)
+
 }
 
 export function spanSymbolMouseDown(e: MouseEvent, mode: Ref<MsMode>, currentSelected: Ref<MsType | null>, spanSymbol: SpanSymbol) {

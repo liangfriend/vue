@@ -1,10 +1,11 @@
 import {
-    ChronaxieEnum,
+    ChronaxieEnum, ClefEnum, KeySignatureEnum,
     MsSymbolTypeEnum,
     MsTypeNameEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 import {
+    ClefMsSymbol, KeySignatureMsSymbol,
     Measure,
     MsSymbol,
     MsSymbolContainer,
@@ -18,12 +19,16 @@ import {
 import {msSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
     getDataWithIndex,
+    getMultipleStavesRelatedSpanSymbolList,
+    getMusicScoreRelatedSpanSymbolList,
+    getSingleStaffRelatedSpanSymbolList,
     setChildMsSymbolArrayIndex,
     setMeasureArrayIndex,
     setMsSymbolArrayIndex,
     setMsSymbolContainerArrayIndex,
     setMultipleStavesIndex,
-    setSingleStaffArrayIndex
+    setSingleStaffArrayIndex,
+    updateSpanSymbolView
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 
 export function musicScoreMapAdd(msData: MsType, musicScore: MusicScore) {
@@ -77,6 +82,14 @@ export function addMsSymbol(newMsSymbol: MsSymbol, currSelected: MsType, musicSc
         setMsSymbolArrayIndex(msSymbolContainer)
     }
     musicScoreMapAdd(newMsSymbol, musicScore)
+    if (!('index' in currSelected)) return console.error("当前选中对象缺少index,符号添加失败")
+    const singleStaff = getDataWithIndex(currSelected.index, musicScore).singleStaff
+    if (!singleStaff) return console.error("单谱表查找出错，符号添加失败")
+    // 索引生成
+    setMeasureArrayIndex(singleStaff)
+    // 跨小节符号位置更新
+    const spanSymbolIdSet = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
+    updateSpanSymbolView(spanSymbolIdSet, musicScore)
 }
 
 // 移除符号
@@ -140,8 +153,6 @@ export function removeMsSymbolContainer(
 
 
 }
-
-
 // 添加小节
 export function addMeasure(newMeasure: Measure, currSelected: MsType, musicScore: MusicScore, position: 'after' | 'before' = 'after') {
 
@@ -157,6 +168,9 @@ export function addMeasure(newMeasure: Measure, currSelected: MsType, musicScore
         }
         // 计算index
         setMeasureArrayIndex(singleStaff)
+        // 更新跨小节符号
+        const spanSymbolSet = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
+        updateSpanSymbolView(spanSymbolSet, musicScore)
     } else if (currSelected.msTypeName === MsTypeNameEnum.SingleStaff) {
         const array = currSelected.measureArray
         if (position === 'before') {
@@ -166,6 +180,9 @@ export function addMeasure(newMeasure: Measure, currSelected: MsType, musicScore
         }
         // 计算index
         setMeasureArrayIndex(currSelected)
+        // 更新跨小节符号
+        const spanSymbolSet = getSingleStaffRelatedSpanSymbolList(currSelected, musicScore)
+        updateSpanSymbolView(spanSymbolSet, musicScore)
     }
     musicScoreMapAdd(newMeasure, musicScore)
 }
@@ -181,8 +198,18 @@ export function removeMeasure(
     const index = array.findIndex(item => item === measure);
     if (index === -1) return console.error("找不到目标小节")
     array.splice(index, 1);
+    // 更新map
     musicScoreMapRemove(measure.id, musicScore)
+
+    // 计算index
     setMeasureArrayIndex(singleStaff)
+    // 更新跨小节符号
+    const spanSymbolSet = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
+    // 更新跨小节符号视图
+    updateSpanSymbolView(spanSymbolSet, musicScore)
+    // 移除小节相关联跨小节符号
+    removeMeasureRelatedSpanSymbol(measure, musicScore)
+
 
 }
 
@@ -245,6 +272,9 @@ export function addSingleStaff(newSingleStaff: SingleStaff, currSelected: MsType
         }
         // 计算index
         setSingleStaffArrayIndex(multipleStaves)
+        // 更新跨小节符号
+        const spanSymbolSet = getMultipleStavesRelatedSpanSymbolList(multipleStaves, musicScore)
+        updateSpanSymbolView(spanSymbolSet, musicScore)
     } else if (currSelected.msTypeName === MsTypeNameEnum.MultipStaves) {
         const array = currSelected.singleStaffArray
         if (position === 'before') {
@@ -254,7 +284,11 @@ export function addSingleStaff(newSingleStaff: SingleStaff, currSelected: MsType
         }
         // 计算index
         setSingleStaffArrayIndex(currSelected)
+        // 更新跨小节符号
+        const spanSymbolSet = getMultipleStavesRelatedSpanSymbolList(currSelected, musicScore)
+        updateSpanSymbolView(spanSymbolSet, musicScore)
     }
+    // 更新map
     musicScoreMapAdd(newSingleStaff, musicScore)
 }
 
@@ -269,8 +303,12 @@ export function removeSingleStaff(
     const index = array.findIndex(item => item === singleStaff);
     if (index === -1) return console.error("找不到目标单谱表")
     array.splice(index, 1);
+    // 更新map
     musicScoreMapRemove(singleStaff.id, musicScore)
+    // 更新index
     setSingleStaffArrayIndex(multipleStaves)
+    // 删除相关联的跨小节符号
+    removeSingleStaffRelatedSpanSymbol(singleStaff, musicScore)
 }
 
 // 添加复谱表
@@ -283,9 +321,14 @@ export function addMultipleStaves(newMultipleStaves: MultipleStaves, currSelecte
         } else {
             array.splice(targetIndex + 1, 0, newMultipleStaves);
         }
-        // 计算index
+        // 更新index
         setMultipleStavesIndex(musicScore)
+        // 更新跨小节符号
+        const spanSymbolSet = getMultipleStavesRelatedSpanSymbolList(currSelected, musicScore)
+        // 更新跨小节符号视图
+        updateSpanSymbolView(spanSymbolSet, musicScore)
     }
+    // 更新map
     musicScoreMapAdd(newMultipleStaves, musicScore)
 }
 
@@ -298,8 +341,16 @@ export function removeMultipleStaves(
     const index = array.findIndex(item => item === multipleStaves);
     if (index === -1) return console.error("找不到目标复谱表")
     array.splice(index, 1);
+    // 更新map
     musicScoreMapRemove(multipleStaves.id, musicScore)
+    // 更新index
     setMultipleStavesIndex(musicScore)
+    // 更新跨小节符号
+    const spanSymbolSet = getMusicScoreRelatedSpanSymbolList(musicScore)
+    // 更新跨小节符号视图
+    updateSpanSymbolView(spanSymbolSet, musicScore)
+    // 删除相关联的跨小节符号
+    removeMultipleStavesRelatedSpanSymbol(multipleStaves, musicScore)
 
 }
 
@@ -406,10 +457,46 @@ export function removeSpanSymbol(spanSymbol: SpanSymbol, musicScore: MusicScore)
 export function addClefToMeasure(clefSymbolContainer: MsSymbolContainer, measure: Measure, musicScore: MusicScore) {
     const singleStaff = getDataWithIndex(measure.index, musicScore).singleStaff
     if (clefSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.clef_f) {
+        // TODO 避开前置小节线
         measure.msSymbolContainerArray.unshift(clefSymbolContainer)
     } else if (clefSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.clef) {
+        // TODO 避开小节线
         measure.msSymbolContainerArray.push(clefSymbolContainer)
     }
     if (!singleStaff) return console.error('单谱表查找出错，谱号添加失败')
+    // 更新索引
     setMeasureArrayIndex(singleStaff)
+    // 更新跨小节符号视图
+    const spanSymbolList = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
+    updateSpanSymbolView(spanSymbolList, musicScore)
+}
+
+// 往小节上添加调号
+export function addKeySignatureToMeasure(keySignatureSymbolContainer: MsSymbolContainer, measure: Measure, musicScore: MusicScore) {
+    const singleStaff = getDataWithIndex(measure.index, musicScore).singleStaff
+    if (keySignatureSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.keySignature) {
+        // TODO 避开前置小节线和前置谱号
+        measure.msSymbolContainerArray.unshift(keySignatureSymbolContainer)
+    }
+    if (!singleStaff) return console.error('单谱表查找出错，谱号添加失败')
+    // 更新索引
+    setMeasureArrayIndex(singleStaff)
+    // 更新跨小节符号视图
+    const spanSymbolList = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
+    updateSpanSymbolView(spanSymbolList, musicScore)
+}
+
+// 更改谱号
+export function changeClef(clefMsSymbol: ClefMsSymbol, clef: ClefEnum, musicScore: MusicScore) {
+    clefMsSymbol.clef = clef
+}
+
+// 更改调号
+export function changeKeySignature(keySignatureMsSymbol: KeySignatureMsSymbol, keySignature: KeySignatureEnum, musicScore: MusicScore) {
+    keySignatureMsSymbol.keySignature = keySignature
+    const singleStaff = getDataWithIndex(keySignatureMsSymbol.index, musicScore).singleStaff
+    if (!singleStaff) return console.error('单谱表查找失败，调号更改失败')
+    // 更新跨小节符号视图
+    const spanSymbolList = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
+    updateSpanSymbolView(spanSymbolList, musicScore)
 }

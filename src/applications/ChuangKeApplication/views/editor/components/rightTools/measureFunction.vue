@@ -2,9 +2,9 @@
 
 import {
   deleteMeasure,
-  insertClef,
+  insertClef, insertKeySignature,
   insertMeasure
-} from "@/applications/ChuangKeApplication/views/editor/rightToolsFunction.ts";
+} from "@/applications/ChuangKeApplication/utils/ms-editFunction.ts";
 import {PropType, ref, UnwrapRef} from "vue";
 import {Measure, MusicScore, MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
@@ -85,9 +85,13 @@ const keySignatureList = ref([{
   keySignature: KeySignatureEnum.C,
   text: 'C大调',
 }, {
-  clef: KeySignatureEnum.D,
+  keySignature: KeySignatureEnum.D,
   text: 'D大调',
 }])
+
+function changeKeySignature(keySignature: KeySignatureEnum) {
+  insertKeySignature(keySignature, props.measure, props.musicScore)
+}
 const currentTimeSignature = ref({
   beat: 1,
   chronaxie: 4
@@ -144,6 +148,7 @@ const barlineList = ref([{
     <div>调号</div>
     <div class="noteBoxContainer">
       <div :class="{activeBox:currentKeySignature === item.keySignature}"
+           @click="changeKeySignature(item.keySignature)"
            class="noteBox"
            v-for="(item,index) in keySignatureList">
         {{ item.text }}

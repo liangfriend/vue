@@ -66,9 +66,6 @@ export declare type TimeSignatureMsSymbol = ({
 export declare type KeySignatureMsSymbol = ({
     type: MsSymbolTypeEnum.keySignature,
     keySignature: KeySignatureEnum,
-    computed: {
-        clef?: ClefEnum;  // 谱号
-    }
 } & BaseMsSymbol)
 export declare type AccidentalMsSymbol = ({
     type: MsSymbolTypeEnum.accidental,

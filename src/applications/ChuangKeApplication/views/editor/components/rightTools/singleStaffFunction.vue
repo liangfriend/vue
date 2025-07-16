@@ -3,7 +3,7 @@
 import {
   deleteMeasure, deleteMultipleStaves, deleteSingleStaff,
   insertMeasure, insertMultipleStaves, insertSingleStaff
-} from "@/applications/ChuangKeApplication/views/editor/rightToolsFunction.ts";
+} from "@/applications/ChuangKeApplication/utils/ms-editFunction.ts";
 import {PropType, UnwrapRef} from "vue";
 import {
   Measure,
