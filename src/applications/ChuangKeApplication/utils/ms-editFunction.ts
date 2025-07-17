@@ -1,3 +1,6 @@
+/*
+* 对changeStructure更改高级的封装，用于用户自定义编辑模式
+* */
 import {
     measureTemplate, msSymbolContainerTemplate,
     msSymbolTemplate,

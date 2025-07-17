@@ -2,12 +2,14 @@
   <clef
       v-if="msSymbol?.type === MsSymbolTypeEnum.clef || msSymbol?.type === MsSymbolTypeEnum.clef_f && 'clef' in msSymbol"
       :clef="msSymbol?.clef"
+      :musicScore="musicScore"
       :style="msSymbolStyle"></clef>
-  <key-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.keySignature && msSymbol.computed?.clef"
-                 :style="msSymbolStyle"
+  <key-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.keySignature"
                  :measure-height="measureHeight"
                  :slotWidth="slotWidth"
-                 :msSymbol="msSymbol" :clef="msSymbol.computed.clef"></key-signature>
+                 :musicScore="musicScore"
+                 :style="msSymbolStyle"
+                 :msSymbol="msSymbol"></key-signature>
   <time-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.timeSignature" :style="msSymbolStyle"
                   :msSymbol="msSymbol" :measure-height="measureHeight"></time-signature>
   <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle" @mouseup.self="handleMouseUp"
@@ -267,19 +269,17 @@ const msSymbolBottom = computed(() => {
 
 })
 const msSymbolStyle = computed<CSSProperties>(() => {
-  let bgColor = 'black'
-  if (props.msSymbol?.type && [MsSymbolTypeEnum.keySignature, MsSymbolTypeEnum.timeSignature].includes(props.msSymbol.type)) {
-    bgColor = 'unset'
-  }
+
   const style: CSSProperties = {
     width: `${width.value}px`,
     height: `${height.value}px`,
-    backgroundColor: bgColor,
     position: 'absolute',
     left: msSymbolLeft.value + 'px',
     bottom: msSymbolBottom.value + 'px',
     background: props.msSymbol.options.hightlight ? props.msSymbol.options.hightlightColor : props.msSymbol.options.color,
-
+  }
+  if (props.msSymbol?.type && [MsSymbolTypeEnum.keySignature, MsSymbolTypeEnum.timeSignature].includes(props.msSymbol.type)) {
+    style.background = 'unset'
   }
   if (svgHref.value) {
     style.mask = `url(${svgHref.value}) center center / cover no-repeat`

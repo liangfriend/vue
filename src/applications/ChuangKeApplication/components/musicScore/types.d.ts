@@ -95,7 +95,7 @@ export declare type MsSymbol = NoteHead | ClefMsSymbol
     | TimeSignatureMsSymbol | KeySignatureMsSymbol
     | AccidentalMsSymbol | NoteTail | Barline | Rest | ({
     type: Exclude<MsSymbolTypeEnum, MsSymbolTypeEnum.noteHead | MsSymbolTypeEnum.clef |
-        MsSymbolTypeEnum.timeSignature
+        MsSymbolTypeEnum.timeSignature | MsSymbolTypeEnum.clef_f
         | MsSymbolTypeEnum.noteTail | MsSymbolTypeEnum.keySignature
         | MsSymbolTypeEnum.accidental | MsSymbolTypeEnum.barline
         | MsSymbolTypeEnum.barline_f | MsSymbolTypeEnum.rest>,

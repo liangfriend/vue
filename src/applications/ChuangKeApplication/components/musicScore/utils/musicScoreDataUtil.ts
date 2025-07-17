@@ -544,6 +544,29 @@ export function msSymbolComputedData(musicScore: MusicScore) {
     })
 }
 
+// 获取某一符号所应用的谱号
+export function getMsSymbolClef(msSymbol: MsSymbol, musicScore: MusicScore): ClefEnum {
+    const msData = getDataWithIndex(msSymbol.index, musicScore)
+    const msSymbolContainer = msData.msSymbolContainer
+    const msSymbolContainerIndex = msSymbolContainer?.index.msSymbolContainerIndex
+    const measure = msData.measure
+    const singleStaff = msData.singleStaff
+    if (!msSymbolContainer || !measure || !singleStaff || !msSymbolContainerIndex) return console.error("索引数据查找出错，获取符号的谱号失败")
+    for (let i = (singleStaff.measureArray.length - 1); i >= 0; i--) {
+        const curMeasure = singleStaff.measureArray[i];
+        for (let j = msSymbolContainerIndex; j >= 0; j--) {
+            const curMsSymbolContainer = curMeasure.msSymbolContainerArray[j]
+            const curMsSymbol = curMsSymbolContainer.msSymbolArray[0]
+            if (MsSymbolTypeEnum.clef === curMsSymbol.type || MsSymbolTypeEnum.clef_f === curMsSymbol.type) {
+                return curMsSymbol.clef
+            }
+        }
+
+    }
+    return ClefEnum.treble
+}
+
+
 // 复合性aspectRatiao获取
 export function getMultipleAspectRatio(msSymbol: MsSymbol): number {
     const information = MsSymbolInformationMap[msSymbol.type]

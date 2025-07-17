@@ -1,6 +1,6 @@
 /*
-* musicScore的播放扩展
-* tone.js
+* musicScore的播放功能实现
+* 基于 tone.js
 * TODO 二期把音频播放改成webAudio实现，或者放弃url这一类型，音频播放使用整体audioUtils
 * */
 import * as Tone from "tone";

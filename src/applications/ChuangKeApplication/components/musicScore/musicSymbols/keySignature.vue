@@ -2,7 +2,6 @@
   <div
       class="keySignature"
       v-if="msSymbol && msSymbol.type === MsSymbolTypeEnum.keySignature"
-      :style="{ height: measureHeight + 'px', width: width + 'px' }"
   >
     <img
         v-for="(yOffset, i) in verticalOffsets"
@@ -17,7 +16,7 @@
 
 <script setup lang="ts">
 import {computed, CSSProperties, PropType} from "vue";
-import {MsSymbol} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {MsSymbol, type MusicScore} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
   MsSymbolTypeEnum,
   ClefEnum,
@@ -25,6 +24,7 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import sharpSvg from './sharp.svg';
 import flatSvg from './flat.svg';
+import {getMsSymbolClef} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 
 const props = defineProps({
   msSymbol: {
@@ -39,12 +39,15 @@ const props = defineProps({
     type: Number,
     default: 60,
   },
-  clef: {
-    type: String as PropType<ClefEnum>,
-    default: ClefEnum.treble
-  }
-});
+  musicScore: {
+    type: Object as PropType<MusicScore>,
+    default: {}
+  },
 
+});
+const clef = computed((): ClefEnum => {
+  return getMsSymbolClef(props.msSymbol, props.musicScore)
+})
 const keySignatureInfo = computed(() => {
   const map: Record<KeySignatureEnum, { type: 'flat' | 'sharp' | 'none', count: number }> = {
     'Cb': {type: 'flat', count: 7},
@@ -94,13 +97,13 @@ const flatPositionsMap = {
 
 const verticalOffsets = computed(() => {
   if (keySignatureInfo.value.type === 'sharp') {
-    const positions = sharpPositionsMap[props.clef] || sharpPositionsMap[ClefEnum.treble];
+    const positions = sharpPositionsMap[clef.value] || sharpPositionsMap[ClefEnum.treble];
     return positions
         .slice(0, keySignatureInfo.value.count)
         .map(p => p * spacing.value);
   }
   if (keySignatureInfo.value.type === 'flat') {
-    const positions = flatPositionsMap[props.clef] || flatPositionsMap[ClefEnum.treble];
+    const positions = flatPositionsMap[clef.value] || flatPositionsMap[ClefEnum.treble];
     return positions
         .slice(0, keySignatureInfo.value.count)
         .map(p => p * spacing.value);
