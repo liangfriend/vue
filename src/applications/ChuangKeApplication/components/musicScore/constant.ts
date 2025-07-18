@@ -1,6 +1,6 @@
 // 宽度占比常数。与MsSymbolTypeEnum组合使用
 import {
-    BarlineTypeEnum, ChronaxieEnum,
+    BarLineTypeEnum, ChronaxieEnum,
     KeySignatureEnum, MsSymbolCategoryEnum, MsSymbolContainerTypeEnum,
     MsSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
@@ -149,26 +149,26 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
         category: MsSymbolCategoryEnum.singleMeasure,
         heightMultiplier: 1,
     },
-    [MsSymbolTypeEnum.barline]: {
+    [MsSymbolTypeEnum.barLine]: {
         containerType: MsSymbolContainerTypeEnum.rearFixed,
         aspectRatio: {
-            [BarlineTypeEnum.single]: 1 / 50,   // 7 flats
-            [BarlineTypeEnum.final]: 2 / 5,   // 7 flats
-            [BarlineTypeEnum.reverseFinal]: 2 / 5,   // 7 flats
-            [BarlineTypeEnum.startRepeatSign]: 3 / 5,   // 7 flats
-            [BarlineTypeEnum.endRepeatSign]: 3 / 5,   // 7 flats
+            [BarLineTypeEnum.single]: 1 / 50,   // 7 flats
+            [BarLineTypeEnum.final]: 2 / 5,   // 7 flats
+            [BarLineTypeEnum.reverseFinal]: 2 / 5,   // 7 flats
+            [BarLineTypeEnum.startRepeatSign]: 3 / 5,   // 7 flats
+            [BarLineTypeEnum.endRepeatSign]: 3 / 5,   // 7 flats
         },
         category: MsSymbolCategoryEnum.singleMeasure,
         heightMultiplier: 1,
     },
-    [MsSymbolTypeEnum.barline_f]: {
+    [MsSymbolTypeEnum.barLine_f]: {
         containerType: MsSymbolContainerTypeEnum.frontFixed,
         aspectRatio: {
-            [BarlineTypeEnum.single]: 1 / 400,   // 7 flats
-            [BarlineTypeEnum.final]: 2 / 5,   // 7 flats
-            [BarlineTypeEnum.reverseFinal]: 2 / 5,   // 7 flats
-            [BarlineTypeEnum.startRepeatSign]: 3 / 5,   // 7 flats
-            [BarlineTypeEnum.endRepeatSign]: 3 / 5,   // 7 flats
+            [BarLineTypeEnum.single]: 1 / 400,   // 7 flats
+            [BarLineTypeEnum.final]: 2 / 5,   // 7 flats
+            [BarLineTypeEnum.reverseFinal]: 2 / 5,   // 7 flats
+            [BarLineTypeEnum.startRepeatSign]: 3 / 5,   // 7 flats
+            [BarLineTypeEnum.endRepeatSign]: 3 / 5,   // 7 flats
         },
         category: MsSymbolCategoryEnum.singleMeasure,
         heightMultiplier: 1,

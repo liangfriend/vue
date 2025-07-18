@@ -272,8 +272,8 @@ export enum MsSymbolTypeEnum {
     clef_f = 'clef_f', // 前置谱号
     keySignature = 'keySignature',  //
     timeSignature = 'timeSignature',
-    barline = 'barline', // 小节线
-    barline_f = 'barline_f',
+    barLine = 'barLine', // 小节线
+    barLine_f = 'barLine_f',
 }
 
 // 曲谱展示模式
@@ -315,7 +315,7 @@ export enum MsSymbolContainerTypeEnum {
 }
 
 // 小节线类型
-export enum BarlineTypeEnum {
+export enum BarLineTypeEnum {
     single = 1,
     final,
     reverseFinal, // 前置结束小节线

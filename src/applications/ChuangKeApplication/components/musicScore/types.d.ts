@@ -8,7 +8,7 @@ import {
     MsSymbolContainerTypeEnum,
     AccidentalEnum,
     MusicScoreRegionEnum,
-    BarlineTypeEnum,
+    BarLineTypeEnum,
     SpanSymbolFollowingCategoryEnum, SpanSymbolTypeEnum, MsTypeNameEnum, OrderTypeEnum, MsMode, ReserveMsSymbolType
 } from "./musicScoreEnum.ts";
 import {Ref} from "vue";
@@ -79,12 +79,12 @@ export declare type ClefMsSymbol = ({
     type: MsSymbolTypeEnum.clef | MsSymbolTypeEnum.clef_f,
     clef: ClefEnum
 } & BaseMsSymbol)
-export declare type Barline = ({
-    type: MsSymbolTypeEnum.barline | MsSymbolTypeEnum.barline_f,
-    barlineType: Exclude<BarlineTypeEnum, BarlineTypeEnum.endRepeatSign | BarlineTypeEnum.startRepeatSign>,
+export declare type BarLine = ({
+    type: MsSymbolTypeEnum.barLine | MsSymbolTypeEnum.barLine_f,
+    barLineType: Exclude<BarLineTypeEnum, BarLineTypeEnum.endRepeatSign | BarLineTypeEnum.startRepeatSign>,
 } & BaseMsSymbol) | ({
-    type: MsSymbolTypeEnum.barline | MsSymbolTypeEnum.barline_f,
-    barlineType: BarlineTypeEnum.endRepeatSign | BarlineTypeEnum.startRepeatSign,
+    type: MsSymbolTypeEnum.barLine | MsSymbolTypeEnum.barLine_f,
+    barLineType: BarLineTypeEnum.endRepeatSign | BarLineTypeEnum.startRepeatSign,
     loopCount: number
 } & BaseMsSymbol)
 export declare type Rest = ({
@@ -93,12 +93,12 @@ export declare type Rest = ({
 } & BaseMsSymbol)
 export declare type MsSymbol = NoteHead | ClefMsSymbol
     | TimeSignatureMsSymbol | KeySignatureMsSymbol
-    | AccidentalMsSymbol | NoteTail | Barline | Rest | ({
+    | AccidentalMsSymbol | NoteTail | BarLine | Rest | ({
     type: Exclude<MsSymbolTypeEnum, MsSymbolTypeEnum.noteHead | MsSymbolTypeEnum.clef |
         MsSymbolTypeEnum.timeSignature | MsSymbolTypeEnum.clef_f
         | MsSymbolTypeEnum.noteTail | MsSymbolTypeEnum.keySignature
-        | MsSymbolTypeEnum.accidental | MsSymbolTypeEnum.barline
-        | MsSymbolTypeEnum.barline_f | MsSymbolTypeEnum.rest>,
+        | MsSymbolTypeEnum.accidental | MsSymbolTypeEnum.barLine
+        | MsSymbolTypeEnum.barLine_f | MsSymbolTypeEnum.rest>,
 
 
 } & BaseMsSymbol)
@@ -196,6 +196,7 @@ declare interface MouseDownData {
 }
 
 declare type ReserveMsSymbolMapType = Map<ReserveMsSymbolType, MsType>
+
 declare interface MusicScoreRef {
     changeMode: (mode: MsMode) => void,
     root: Ref<HTMLElement>,

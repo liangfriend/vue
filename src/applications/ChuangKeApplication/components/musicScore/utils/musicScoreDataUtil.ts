@@ -573,8 +573,8 @@ export function getMultipleAspectRatio(msSymbol: MsSymbol): number {
     if ('aspectRatio' in information && typeof information.aspectRatio === 'object') {
         if (msSymbol.type === MsSymbolTypeEnum.keySignature) {
             return information.aspectRatio[msSymbol.keySignature]
-        } else if (msSymbol.type === MsSymbolTypeEnum.barline || msSymbol.type === MsSymbolTypeEnum.barline_f) {
-            return information.aspectRatio[msSymbol.barlineType]
+        } else if (msSymbol.type === MsSymbolTypeEnum.barLine || msSymbol.type === MsSymbolTypeEnum.barLine_f) {
+            return information.aspectRatio[msSymbol.barLineType]
         } else if (msSymbol.type === MsSymbolTypeEnum.noteTail) {
             return information.aspectRatio[msSymbol.chronaxie]
         }

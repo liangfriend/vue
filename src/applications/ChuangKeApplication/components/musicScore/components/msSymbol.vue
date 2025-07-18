@@ -21,7 +21,7 @@ import {computed, CSSProperties, onMounted, PropType, ref} from "vue";
 import {MsSymbol, type MusicScore, NoteHead} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
   AccidentalEnum,
-  BarlineTypeEnum,
+  BarLineTypeEnum,
   ChronaxieEnum,
   MsSymbolTypeEnum, MusicScoreRegionEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
@@ -39,11 +39,11 @@ import flatSvg from '../musicSymbols/flat.svg'
 import doubleFlatpSvg from '../musicSymbols/flat.svg'
 import natureSvg from '../musicSymbols/nature.svg'
 // 小节线
-import barlineSingleSvg from '../musicSymbols/barlineSingle.svg'
-import barlineFinalSvg from '../musicSymbols/barlineFinal.svg'
-import barlineReverseFinalSvg from '../musicSymbols/barlineReverseFinal.svg'
-import barlineStartRepeatSignSvg from '../musicSymbols/barlineStartRepeatSign.svg'
-import barlineEndRepeatSignSvg from '../musicSymbols/barlineEndRepeatSign.svg'
+import barLineSingleSvg from '../musicSymbols/barLineSingle.svg'
+import barLineFinalSvg from '../musicSymbols/barLineFinal.svg'
+import barLineReverseFinalSvg from '../musicSymbols/barLineReverseFinal.svg'
+import barLineStartRepeatSignSvg from '../musicSymbols/barLineStartRepeatSign.svg'
+import barLineEndRepeatSignSvg from '../musicSymbols/barLineEndRepeatSign.svg'
 import Clef from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/clef.vue";
 import KeySignature from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/keySignature.vue";
 import TimeSignature from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/timeSignature.vue";
@@ -169,44 +169,44 @@ const svgHref = computed(() => {
     case MsSymbolTypeEnum.clef_f: {
       return ''
     }
-    case MsSymbolTypeEnum.barline: {
-      switch (props.msSymbol?.barlineType) {
-        case BarlineTypeEnum.single: {
-          return barlineSingleSvg
+    case MsSymbolTypeEnum.barLine: {
+      switch (props.msSymbol?.barLineType) {
+        case BarLineTypeEnum.single: {
+          return barLineSingleSvg
         }
-        case BarlineTypeEnum.final: {
-          return barlineFinalSvg
+        case BarLineTypeEnum.final: {
+          return barLineFinalSvg
         }
-        case BarlineTypeEnum.reverseFinal: {
-          return barlineReverseFinalSvg
+        case BarLineTypeEnum.reverseFinal: {
+          return barLineReverseFinalSvg
         }
-        case BarlineTypeEnum.startRepeatSign: {
-          return barlineStartRepeatSignSvg
+        case BarLineTypeEnum.startRepeatSign: {
+          return barLineStartRepeatSignSvg
         }
-        case BarlineTypeEnum.endRepeatSign: {
-          return barlineEndRepeatSignSvg
+        case BarLineTypeEnum.endRepeatSign: {
+          return barLineEndRepeatSignSvg
         }
 
       }
 
       return ''
     }
-    case MsSymbolTypeEnum.barline_f: {
-      switch (props.msSymbol?.barlineType) {
-        case BarlineTypeEnum.single: {
-          return barlineSingleSvg
+    case MsSymbolTypeEnum.barLine_f: {
+      switch (props.msSymbol?.barLineType) {
+        case BarLineTypeEnum.single: {
+          return barLineSingleSvg
         }
-        case BarlineTypeEnum.final: {
-          return barlineFinalSvg
+        case BarLineTypeEnum.final: {
+          return barLineFinalSvg
         }
-        case BarlineTypeEnum.reverseFinal: {
-          return barlineReverseFinalSvg
+        case BarLineTypeEnum.reverseFinal: {
+          return barLineReverseFinalSvg
         }
-        case BarlineTypeEnum.startRepeatSign: {
-          return barlineStartRepeatSignSvg
+        case BarLineTypeEnum.startRepeatSign: {
+          return barLineStartRepeatSignSvg
         }
-        case BarlineTypeEnum.endRepeatSign: {
-          return barlineEndRepeatSignSvg
+        case BarLineTypeEnum.endRepeatSign: {
+          return barLineEndRepeatSignSvg
         }
       }
       console.error("未知的小节线类型", props.msSymbol)

@@ -1,10 +1,12 @@
 import {
+    BarLineTypeEnum,
     ChronaxieEnum, ClefEnum, KeySignatureEnum,
     MsSymbolTypeEnum,
     MsTypeNameEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 import {
+    BarLine,
     ClefMsSymbol, KeySignatureMsSymbol,
     Measure,
     MsSymbol,
@@ -153,6 +155,7 @@ export function removeMsSymbolContainer(
 
 
 }
+
 // 添加小节
 export function addMeasure(newMeasure: Measure, currSelected: MsType, musicScore: MusicScore, position: 'after' | 'before' = 'after') {
 
@@ -486,6 +489,23 @@ export function addKeySignatureToMeasure(keySignatureSymbolContainer: MsSymbolCo
     updateSpanSymbolView(spanSymbolList, musicScore)
 }
 
+// 往小节上添加小节线
+export function addBarLineToMeasure(barLineContainer: MsSymbolContainer, measure: Measure, musicScore: MusicScore) {
+    const singleStaff = getDataWithIndex(measure.index, musicScore).singleStaff
+    if (barLineContainer.msSymbolArray[0].type === MsSymbolTypeEnum.barLine_f) {
+
+        measure.msSymbolContainerArray.unshift(barLineContainer)
+    } else if (barLineContainer.msSymbolArray[0].type === MsSymbolTypeEnum.barLine) {
+        measure.msSymbolContainerArray.push(barLineContainer)
+    }
+    if (!singleStaff) return console.error('单谱表查找出错，谱号添加失败')
+    // 更新索引
+    setMeasureArrayIndex(singleStaff)
+    // 更新跨小节符号视图
+    const spanSymbolList = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
+    updateSpanSymbolView(spanSymbolList, musicScore)
+}
+
 // 更改谱号
 export function changeClef(clefMsSymbol: ClefMsSymbol, clef: ClefEnum, musicScore: MusicScore) {
     clefMsSymbol.clef = clef
@@ -495,6 +515,16 @@ export function changeClef(clefMsSymbol: ClefMsSymbol, clef: ClefEnum, musicScor
 export function changeKeySignature(keySignatureMsSymbol: KeySignatureMsSymbol, keySignature: KeySignatureEnum, musicScore: MusicScore) {
     keySignatureMsSymbol.keySignature = keySignature
     const singleStaff = getDataWithIndex(keySignatureMsSymbol.index, musicScore).singleStaff
+    if (!singleStaff) return console.error('单谱表查找失败，调号更改失败')
+    // 更新跨小节符号视图
+    const spanSymbolList = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
+    updateSpanSymbolView(spanSymbolList, musicScore)
+}
+
+// 更改小节线
+export function changeBarLine(barLineMsSymbol: BarLine, barLineType: BarLineTypeEnum, musicScore: MusicScore) {
+    barLineMsSymbol.barLineType = barLineType
+    const singleStaff = getDataWithIndex(barLineMsSymbol.index, musicScore).singleStaff
     if (!singleStaff) return console.error('单谱表查找失败，调号更改失败')
     // 更新跨小节符号视图
     const spanSymbolList = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)

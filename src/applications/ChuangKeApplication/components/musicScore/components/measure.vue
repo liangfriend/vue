@@ -6,7 +6,7 @@
 <script setup lang="ts">
 import {computed, CSSProperties, inject, PropType, ref} from 'vue';
 
-import bar from '../musicSymbols/barlineSingle.svg';
+import bar from '../musicSymbols/barLineSingle.svg';
 import barLine from '../musicSymbols/bar.svg';
 import {
   Measure,
@@ -73,6 +73,7 @@ const barLineStyle = computed((): CSSProperties => {
   };
 });
 const emits = defineEmits(['measureMouseDown']);
+
 function handleMouseDown(e: MouseEvent) {
   emits('measureMouseDown', e, props.measure)
 

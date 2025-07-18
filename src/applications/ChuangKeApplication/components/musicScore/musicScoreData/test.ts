@@ -1,6 +1,6 @@
 import {MusicScore, TimeSignature} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
-    AccidentalEnum, BarlineTypeEnum,
+    AccidentalEnum, BarLineTypeEnum,
     ChronaxieEnum,
     ClefEnum,
     KeySignatureEnum,

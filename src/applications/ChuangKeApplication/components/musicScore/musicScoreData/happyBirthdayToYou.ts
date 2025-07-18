@@ -1,6 +1,6 @@
 import {MusicScore, TimeSignature} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
-    AccidentalEnum, BarlineTypeEnum,
+    AccidentalEnum, BarLineTypeEnum,
     ChronaxieEnum,
     ClefEnum,
     KeySignatureEnum,
@@ -138,9 +138,9 @@ const data: MusicScore = {
                     msSymbolArray: [{
                         id: 1,
                         index: {},
-                        type: MsSymbolTypeEnum.barline,
+                        type: MsSymbolTypeEnum.barLine,
                         options: {},
-                        barlineType: BarlineTypeEnum.single,
+                        barLineType: BarLineTypeEnum.single,
                         bindingStartId: [],
                         bindingEndId: [],
 
@@ -227,9 +227,9 @@ const data: MusicScore = {
                     msSymbolArray: [{
                         id: 1,
                         index: {},
-                        type: MsSymbolTypeEnum.barline,
+                        type: MsSymbolTypeEnum.barLine,
                         options: {},
-                        barlineType: BarlineTypeEnum.endRepeatSign,
+                        barLineType: BarLineTypeEnum.endRepeatSign,
                         loopCount: 2,
                         bindingStartId: [],
                         bindingEndId: [],
@@ -316,9 +316,9 @@ const data: MusicScore = {
                     msSymbolArray: [{
                         id: 1,
                         index: {},
-                        type: MsSymbolTypeEnum.barline,
+                        type: MsSymbolTypeEnum.barLine,
                         options: {},
-                        barlineType: BarlineTypeEnum.single,
+                        barLineType: BarLineTypeEnum.single,
                         bindingStartId: [],
                         bindingEndId: [],
 
@@ -404,10 +404,10 @@ const data: MusicScore = {
                     index: {},
                     msSymbolArray: [{
                         id: 1,
-                        type: MsSymbolTypeEnum.barline,
+                        type: MsSymbolTypeEnum.barLine,
                         index: {},
                         options: {},
-                        barlineType: BarlineTypeEnum.single,
+                        barLineType: BarLineTypeEnum.single,
                         bindingStartId: [],
                         bindingEndId: [],
 
@@ -493,10 +493,10 @@ const data: MusicScore = {
                     index: {},
                     msSymbolArray: [{
                         id: 1,
-                        type: MsSymbolTypeEnum.barline,
+                        type: MsSymbolTypeEnum.barLine,
                         index: {},
                         options: {},
-                        barlineType: BarlineTypeEnum.single,
+                        barLineType: BarLineTypeEnum.single,
                         bindingStartId: [],
                         bindingEndId: [],
 
@@ -619,9 +619,9 @@ const data: MusicScore = {
                     msSymbolArray: [{
                         id: 1,
                         index: {},
-                        type: MsSymbolTypeEnum.barline,
+                        type: MsSymbolTypeEnum.barLine,
                         options: {},
-                        barlineType: BarlineTypeEnum.single,
+                        barLineType: BarLineTypeEnum.single,
                         bindingStartId: [],
                         bindingEndId: [],
 
@@ -730,10 +730,10 @@ const data: MusicScore = {
                     index: {},
                     msSymbolArray: [{
                         index: {},
-                        type: MsSymbolTypeEnum.barline,
+                        type: MsSymbolTypeEnum.barLine,
                         options: {},
                         id: 1,
-                        barlineType: BarlineTypeEnum.single,
+                        barLineType: BarLineTypeEnum.single,
                         bindingStartId: [],
                         bindingEndId: [],
 
@@ -820,11 +820,11 @@ const data: MusicScore = {
                     msSymbolArray: [{
                         id: 1,
                         index: {},
-                        type: MsSymbolTypeEnum.barline,
+                        type: MsSymbolTypeEnum.barLine,
                         options: {},
                         bindingStartId: [],
                         bindingEndId: [],
-                        barlineType: BarlineTypeEnum.single
+                        barLineType: BarLineTypeEnum.single
 
                     }]
                 }]
@@ -863,9 +863,9 @@ const data: MusicScore = {
                     msSymbolArray: [{
                         id: 1,
                         index: {},
-                        type: MsSymbolTypeEnum.barline,
+                        type: MsSymbolTypeEnum.barLine,
                         options: {},
-                        barlineType: BarlineTypeEnum.final,
+                        barLineType: BarLineTypeEnum.final,
                         bindingStartId: [],
                         bindingEndId: [],
                     }]

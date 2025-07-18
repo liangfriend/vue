@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {
-  deleteMeasure,
+  deleteMeasure, insertBarLine,
   insertClef, insertKeySignature,
   insertMeasure
 } from "@/applications/ChuangKeApplication/utils/ms-editFunction.ts";
@@ -14,7 +14,7 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 import {spanSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
-  BarlineTypeEnum,
+  BarLineTypeEnum,
   ClefEnum, KeySignatureEnum,
   SpanSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
@@ -80,6 +80,7 @@ const clefList = ref([{
 function changeClef(clef: ClefEnum) {
   insertClef(clef, props.measure, props.musicScore)
 }
+
 const currentKeySignature = ref(null)
 const keySignatureList = ref([{
   keySignature: KeySignatureEnum.C,
@@ -92,26 +93,31 @@ const keySignatureList = ref([{
 function changeKeySignature(keySignature: KeySignatureEnum) {
   insertKeySignature(keySignature, props.measure, props.musicScore)
 }
+
+function changeBarLine(barLineType: BarLineTypeEnum) {
+  insertBarLine(barLineType, props.measure, props.musicScore)
+}
+
 const currentTimeSignature = ref({
   beat: 1,
   chronaxie: 4
 })
 
 const currentBarLineType = ref(null)
-const barlineList = ref([{
-  barlineType: BarlineTypeEnum.single,
+const barLineList = ref([{
+  barLineType: BarLineTypeEnum.single,
   text: '单小节线',
 }, {
-  barlineType: BarlineTypeEnum.final,
+  barLineType: BarLineTypeEnum.final,
   text: '结束小节线',
 }, {
-  barlineType: BarlineTypeEnum.reverseFinal,
+  barLineType: BarLineTypeEnum.reverseFinal,
   text: '前置结束小节线',
 }, {
-  barlineType: BarlineTypeEnum.endRepeatSign,
+  barLineType: BarLineTypeEnum.endRepeatSign,
   text: '反复小节线',
 }, {
-  barlineType: BarlineTypeEnum.startRepeatSign,
+  barLineType: BarLineTypeEnum.startRepeatSign,
   text: '前置反复小节线',
 }])
 </script>
@@ -161,9 +167,10 @@ const barlineList = ref([{
     </div>
     <div>小节线</div>
     <div class="noteBoxContainer">
-      <div :class="{activeBox:currentBarLineType === item.barlineType}"
+      <div :class="{activeBox:currentBarLineType === item.barLineType}"
            class="noteBox"
-           v-for="(item,index) in barlineList">
+           @click="changeBarLine"
+           v-for="(item,index) in barLineList">
         {{ item.text }}
       </div>
     </div>

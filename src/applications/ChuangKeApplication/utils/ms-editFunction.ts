@@ -8,15 +8,17 @@ import {
     singleStaffTemplate
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
+    BarLineTypeEnum,
     ClefEnum, KeySignatureEnum,
     MsSymbolContainerTypeEnum,
     MsSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {
+    addBarLineToMeasure,
     addClefToMeasure, addKeySignatureToMeasure,
     addMeasure,
     addMultipleStaves,
-    addSingleStaff, changeClef, changeKeySignature,
+    addSingleStaff, changeBarLine, changeClef, changeKeySignature,
     removeMeasure,
     removeMeasureRelatedSpanSymbol,
     removeMultipleStaves,
@@ -35,6 +37,7 @@ import {
     updateSpanSymbolView
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {
+    BarLine,
     ClefMsSymbol, KeySignatureMsSymbol,
     Measure,
     MultipleStaves,
@@ -45,8 +48,6 @@ import KeySignature from "@/applications/ChuangKeApplication/components/musicSco
 
 
 // 关联数据更新
-
-
 
 
 // 基本功能
@@ -66,6 +67,7 @@ export function deleteMeasure(measure: Measure, musicScoreData: MusicScore) {
     if (singleStaff && singleStaff.measureArray.length <= 1) return console.error("")
     removeMeasure(measure, musicScoreData)
 }
+
 export function insertClef(clef: ClefEnum, measure: Measure, musicScore: MusicScore) {
     const index = measure.index
     // 如果是单谱表内第一个小节
@@ -112,9 +114,39 @@ export function insertKeySignature(keySignature: KeySignatureEnum, measure: Meas
         newMsSymbolContainer.msSymbolArray.push(newKeySignature)
         addKeySignatureToMeasure(newMsSymbolContainer, measure, musicScore)
     }
-
 }
 
+// 添加小节线
+export function insertBarLine(barLineType: BarLineTypeEnum, measure: Measure, musicScore: MusicScore) {
+    const isFront = [BarLineTypeEnum.reverseFinal, BarLineTypeEnum.startRepeatSign].includes(barLineType)
+    if (isFront) {
+        const barLineSymbol = measure.msSymbolContainerArray.find((msSymbolContainer) => {
+            return msSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.barLine_f
+        })?.msSymbolArray[0] as (BarLine | undefined)
+        if (barLineSymbol) {
+            changeBarLine(barLineSymbol, barLineType, musicScore)
+        } else { // keySignature不存在则添加keySignature
+            const newKeySignature = msSymbolTemplate({type: MsSymbolTypeEnum.keySignature, barLineType})
+            const newMsSymbolContainer = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.frontFixed})
+            newMsSymbolContainer.msSymbolArray.push(newKeySignature)
+            addBarLineToMeasure(newMsSymbolContainer, measure, musicScore)
+        }
+
+    } else {
+        const barLineSymbol = measure.msSymbolContainerArray.find((msSymbolContainer) => {
+            return msSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.barLine
+        })?.msSymbolArray[0] as (BarLine | undefined)
+        if (barLineSymbol) {
+            changeBarLine(barLineSymbol, barLineType, musicScore)
+        } else { // keySignature不存在则添加keySignature
+            const newKeySignature = msSymbolTemplate({type: MsSymbolTypeEnum.keySignature, barLineType})
+            const newMsSymbolContainer = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.rearFixed})
+            newMsSymbolContainer.msSymbolArray.push(newKeySignature)
+            addBarLineToMeasure(newMsSymbolContainer, measure, musicScore)
+        }
+    }
+
+}
 
 // 单谱表功能
 export function insertSingleStaff(singleStaff: SingleStaff, musicScoreData: MusicScore, position: 'after' | 'before' = 'after') {

@@ -1,5 +1,5 @@
 import {
-    BarlineTypeEnum,
+    BarLineTypeEnum,
     ChronaxieEnum,
     ClefEnum,
     KeySignatureEnum,
@@ -65,7 +65,7 @@ export function msSymbolTemplate(options: {
     type?: MsSymbolTypeEnum,
     region?: MusicScoreRegionEnum,
     chronaxie?: ChronaxieEnum,
-    barLineType?: BarlineTypeEnum,
+    barLineType?: BarLineTypeEnum,
     clef?: ClefEnum,
     keySignature?: KeySignatureEnum,
 } = {}): MsSymbol {
@@ -109,20 +109,20 @@ export function msSymbolTemplate(options: {
                 computed: {},
             }
         }
-        case MsSymbolTypeEnum.barline: {
-            const barLineType = options.barLineType ?? BarlineTypeEnum.single
-            if (BarlineTypeEnum.endRepeatSign === barLineType || BarlineTypeEnum.startRepeatSign === barLineType) {
+        case MsSymbolTypeEnum.barLine: {
+            const barLineType = options.barLineType ?? BarLineTypeEnum.single
+            if (BarLineTypeEnum.endRepeatSign === barLineType || BarLineTypeEnum.startRepeatSign === barLineType) {
                 return {
                     ...baseMsSymbol,
-                    type: MsSymbolTypeEnum.barline,
-                    barlineType: barLineType,
+                    type: MsSymbolTypeEnum.barLine,
+                    barLineType: barLineType,
                     loopCount: 2
                 }
             } else {
                 return {
                     ...baseMsSymbol,
-                    type: MsSymbolTypeEnum.barline,
-                    barlineType: barLineType
+                    type: MsSymbolTypeEnum.barLine,
+                    barLineType: barLineType
                 }
             }
 
@@ -191,7 +191,7 @@ export function msSymbolContainerTemplate(options: { type?: MsSymbolContainerTyp
     return msSymbolContainer;
 }
 
-export function measureTemplate(options: { barLineType?: BarlineTypeEnum } = {}): Measure {
+export function measureTemplate(options: { barLineType?: BarLineTypeEnum } = {}): Measure {
 
 
     const measure: Measure = {
@@ -209,8 +209,8 @@ export function measureTemplate(options: { barLineType?: BarlineTypeEnum } = {})
     }
     // 小节必须有结束小节线
     const barLine: MsSymbol = msSymbolTemplate({
-        type: MsSymbolTypeEnum.barline,
-        barLineType: options.barLineType || BarlineTypeEnum.single
+        type: MsSymbolTypeEnum.barLine,
+        barLineType: options.barLineType || BarLineTypeEnum.single
     });
     const container = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.rearFixed})
     container.msSymbolArray.push(barLine)

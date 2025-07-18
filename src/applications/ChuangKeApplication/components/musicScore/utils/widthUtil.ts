@@ -40,8 +40,8 @@ export function getWidthFixedContainerWidth(msSymbolContainer: MsSymbolContainer
         } else if ('aspectRatio' in information && (typeof information.aspectRatio === 'object')) { // 特殊情况处理
             if (curMsSymbol.type === MsSymbolTypeEnum.keySignature) {
                 curW += information.aspectRatio[curMsSymbol.keySignature] * measureHeight
-            } else if (curMsSymbol.type === MsSymbolTypeEnum.barline || curMsSymbol.type === MsSymbolTypeEnum.barline_f) {
-                curW += information.aspectRatio[curMsSymbol.barlineType] * measureHeight
+            } else if (curMsSymbol.type === MsSymbolTypeEnum.barLine || curMsSymbol.type === MsSymbolTypeEnum.barLine_f) {
+                curW += information.aspectRatio[curMsSymbol.barLineType] * measureHeight
             }
         } else {
             console.error('符号的svg宽高比不存在')
