@@ -126,7 +126,7 @@ export function insertBarLine(barLineType: BarLineTypeEnum, measure: Measure, mu
         if (barLineSymbol) {
             changeBarLine(barLineSymbol, barLineType, musicScore)
         } else { // keySignature不存在则添加keySignature
-            const newKeySignature = msSymbolTemplate({type: MsSymbolTypeEnum.keySignature, barLineType})
+            const newKeySignature = msSymbolTemplate({type: MsSymbolTypeEnum.barLine_f, barLineType})
             const newMsSymbolContainer = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.frontFixed})
             newMsSymbolContainer.msSymbolArray.push(newKeySignature)
             addBarLineToMeasure(newMsSymbolContainer, measure, musicScore)
@@ -139,7 +139,7 @@ export function insertBarLine(barLineType: BarLineTypeEnum, measure: Measure, mu
         if (barLineSymbol) {
             changeBarLine(barLineSymbol, barLineType, musicScore)
         } else { // keySignature不存在则添加keySignature
-            const newKeySignature = msSymbolTemplate({type: MsSymbolTypeEnum.keySignature, barLineType})
+            const newKeySignature = msSymbolTemplate({type: MsSymbolTypeEnum.barLine, barLineType})
             const newMsSymbolContainer = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.rearFixed})
             newMsSymbolContainer.msSymbolArray.push(newKeySignature)
             addBarLineToMeasure(newMsSymbolContainer, measure, musicScore)

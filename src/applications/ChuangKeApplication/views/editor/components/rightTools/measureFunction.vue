@@ -104,7 +104,10 @@ const currentTimeSignature = ref({
 })
 
 const currentBarLineType = ref(null)
-const barLineList = ref([{
+const barLineList = ref<Array<{
+  barLineType: BarLineTypeEnum,
+  text: String,
+}>>([{
   barLineType: BarLineTypeEnum.single,
   text: '单小节线',
 }, {
@@ -169,7 +172,8 @@ const barLineList = ref([{
     <div class="noteBoxContainer">
       <div :class="{activeBox:currentBarLineType === item.barLineType}"
            class="noteBox"
-           @click="changeBarLine"
+           :key="index"
+           @click="changeBarLine(item.barLineType)"
            v-for="(item,index) in barLineList">
         {{ item.text }}
       </div>
