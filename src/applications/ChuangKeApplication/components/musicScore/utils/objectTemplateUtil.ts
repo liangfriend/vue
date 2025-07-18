@@ -127,6 +127,25 @@ export function msSymbolTemplate(options: {
             }
 
         }
+
+        case MsSymbolTypeEnum.barLine_f: {
+            const barLineType = options.barLineType ?? BarLineTypeEnum.single
+            if (BarLineTypeEnum.endRepeatSign === barLineType || BarLineTypeEnum.startRepeatSign === barLineType) {
+                return {
+                    ...baseMsSymbol,
+                    type: MsSymbolTypeEnum.barLine_f,
+                    barLineType: barLineType,
+                    loopCount: 2
+                }
+            } else {
+                return {
+                    ...baseMsSymbol,
+                    type: MsSymbolTypeEnum.barLine_f,
+                    barLineType: barLineType
+                }
+            }
+
+        }
         case MsSymbolTypeEnum.noteBar: {
             return {
                 ...baseMsSymbol,
@@ -162,6 +181,7 @@ export function msSymbolTemplate(options: {
             }
         }
         default: {
+            console.error('type不被识别，符号模版返回noteHead')
             return {
                 ...baseMsSymbol,
                 type: MsSymbolTypeEnum.noteHead,

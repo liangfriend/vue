@@ -491,9 +491,10 @@ export function addKeySignatureToMeasure(keySignatureSymbolContainer: MsSymbolCo
 
 // 往小节上添加小节线
 export function addBarLineToMeasure(barLineContainer: MsSymbolContainer, measure: Measure, musicScore: MusicScore) {
+    console.log('chicken', barLineContainer.msSymbolArray[0].type)
     const singleStaff = getDataWithIndex(measure.index, musicScore).singleStaff
     if (barLineContainer.msSymbolArray[0].type === MsSymbolTypeEnum.barLine_f) {
-
+        console.log('chicken',)
         measure.msSymbolContainerArray.unshift(barLineContainer)
     } else if (barLineContainer.msSymbolArray[0].type === MsSymbolTypeEnum.barLine) {
         measure.msSymbolContainerArray.push(barLineContainer)

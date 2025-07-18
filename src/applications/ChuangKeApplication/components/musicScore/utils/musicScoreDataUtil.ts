@@ -551,7 +551,10 @@ export function getMsSymbolClef(msSymbol: MsSymbol, musicScore: MusicScore): Cle
     const msSymbolContainerIndex = msSymbolContainer?.index.msSymbolContainerIndex
     const measure = msData.measure
     const singleStaff = msData.singleStaff
-    if (!msSymbolContainer || !measure || !singleStaff || !msSymbolContainerIndex) return console.error("索引数据查找出错，获取符号的谱号失败")
+    if (!msSymbolContainer || !measure || !singleStaff || !msSymbolContainerIndex) {
+        console.error("索引数据查找出错，获取符号的谱号失败")
+        return ClefEnum.treble
+    }
     for (let i = (singleStaff.measureArray.length - 1); i >= 0; i--) {
         const curMeasure = singleStaff.measureArray[i];
         for (let j = msSymbolContainerIndex; j >= 0; j--) {
