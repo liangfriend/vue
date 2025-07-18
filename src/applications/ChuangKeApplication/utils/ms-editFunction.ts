@@ -18,7 +18,7 @@ import {
     addClefToMeasure, addKeySignatureToMeasure,
     addMeasure,
     addMultipleStaves,
-    addSingleStaff, changeBarLine, changeClef, changeKeySignature,
+    addSingleStaff, addTimeSignatureToMeasure, changeBarLine, changeClef, changeKeySignature, changeTimeSignature,
     removeMeasure,
     removeMeasureRelatedSpanSymbol,
     removeMultipleStaves,
@@ -42,7 +42,7 @@ import {
     Measure,
     MultipleStaves,
     MusicScore,
-    SingleStaff
+    SingleStaff, TimeSignature, TimeSignatureMsSymbol
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import KeySignature from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/keySignature.vue";
 
@@ -113,6 +113,21 @@ export function insertKeySignature(keySignature: KeySignatureEnum, measure: Meas
         const newMsSymbolContainer = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.frontFixed})
         newMsSymbolContainer.msSymbolArray.push(newKeySignature)
         addKeySignatureToMeasure(newMsSymbolContainer, measure, musicScore)
+    }
+}
+
+export function insertTimeSignature(timeSignature: TimeSignature, measure: Measure, musicScore: MusicScore) {
+    const timeSignatureSymbol = measure.msSymbolContainerArray.find((msSymbolContainer) => {
+        return msSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.timeSignature
+    })?.msSymbolArray[0] as (TimeSignatureMsSymbol | undefined)
+    if (timeSignatureSymbol) {
+        changeTimeSignature(timeSignatureSymbol, timeSignature, musicScore)
+    } else { // keySignature不存在则添加keySignature
+        const newKeySignature = msSymbolTemplate({type: MsSymbolTypeEnum.timeSignature, timeSignature})
+        const newMsSymbolContainer = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.frontFixed})
+        newMsSymbolContainer.msSymbolArray.push(newKeySignature)
+
+        addTimeSignatureToMeasure(newMsSymbolContainer, measure, musicScore)
     }
 }
 

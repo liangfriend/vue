@@ -16,7 +16,7 @@ import {
     MusicScore,
     NoteTail,
     SingleStaff,
-    SpanSymbol
+    SpanSymbol, TimeSignature, TimeSignatureMsSymbol
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {msSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
@@ -489,12 +489,28 @@ export function addKeySignatureToMeasure(keySignatureSymbolContainer: MsSymbolCo
     updateSpanSymbolView(spanSymbolList, musicScore)
 }
 
+// 往小节上添加拍号
+export function addTimeSignatureToMeasure(timeSignatureContainer: MsSymbolContainer, measure: Measure, musicScore: MusicScore) {
+    console.log('chicken', timeSignatureContainer)
+
+    const singleStaff = getDataWithIndex(measure.index, musicScore).singleStaff
+    if (timeSignatureContainer.msSymbolArray[0].type === MsSymbolTypeEnum.timeSignature) {
+
+        // TODO 避开前置小节线和前置谱号
+        measure.msSymbolContainerArray.unshift(timeSignatureContainer)
+    }
+    if (!singleStaff) return console.error('单谱表查找出错，谱号添加失败')
+    // 更新索引
+    setMeasureArrayIndex(singleStaff)
+    // 更新跨小节符号视图
+    const spanSymbolList = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
+    updateSpanSymbolView(spanSymbolList, musicScore)
+}
+
 // 往小节上添加小节线
 export function addBarLineToMeasure(barLineContainer: MsSymbolContainer, measure: Measure, musicScore: MusicScore) {
-    console.log('chicken', barLineContainer.msSymbolArray[0].type)
     const singleStaff = getDataWithIndex(measure.index, musicScore).singleStaff
     if (barLineContainer.msSymbolArray[0].type === MsSymbolTypeEnum.barLine_f) {
-        console.log('chicken',)
         measure.msSymbolContainerArray.unshift(barLineContainer)
     } else if (barLineContainer.msSymbolArray[0].type === MsSymbolTypeEnum.barLine) {
         measure.msSymbolContainerArray.push(barLineContainer)
@@ -521,6 +537,17 @@ export function changeKeySignature(keySignatureMsSymbol: KeySignatureMsSymbol, k
     const spanSymbolList = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
     updateSpanSymbolView(spanSymbolList, musicScore)
 }
+
+// 更改拍号
+export function changeTimeSignature(timeSignatureMsSymbol: TimeSignatureMsSymbol, timeSignature: TimeSignature, musicScore: MusicScore) {
+    timeSignatureMsSymbol.timeSignature = timeSignature
+    const singleStaff = getDataWithIndex(timeSignatureMsSymbol.index, musicScore).singleStaff
+    if (!singleStaff) return console.error('单谱表查找失败，调号更改失败')
+    // 更新跨小节符号视图
+    const spanSymbolList = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
+    updateSpanSymbolView(spanSymbolList, musicScore)
+}
+
 
 // 更改小节线
 export function changeBarLine(barLineMsSymbol: BarLine, barLineType: BarLineTypeEnum, musicScore: MusicScore) {

@@ -17,7 +17,7 @@ import {
     MsSymbolContainer,
     MultipleStaves,
     SingleStaff,
-    SpanSymbol
+    SpanSymbol, TimeSignature
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 
 export function spanSymbolTemplate(options: {
@@ -68,6 +68,7 @@ export function msSymbolTemplate(options: {
     barLineType?: BarLineTypeEnum,
     clef?: ClefEnum,
     keySignature?: KeySignatureEnum,
+    timeSignature?: TimeSignature,
 } = {}): MsSymbol {
     const baseMsSymbol: BaseMsSymbol = {
         id: Date.now(),
@@ -178,6 +179,16 @@ export function msSymbolTemplate(options: {
                 ...baseMsSymbol,
                 type: MsSymbolTypeEnum.keySignature,
                 keySignature: options.keySignature || KeySignatureEnum.C
+            }
+        }
+        case MsSymbolTypeEnum.timeSignature: {
+            return {
+                ...baseMsSymbol,
+                type: MsSymbolTypeEnum.timeSignature,
+                timeSignature: options.timeSignature || {
+                    beat: 1,
+                    chronaxie: 4
+                }
             }
         }
         default: {

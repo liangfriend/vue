@@ -3,10 +3,15 @@
 import {
   deleteMeasure, insertBarLine,
   insertClef, insertKeySignature,
-  insertMeasure
+  insertMeasure, insertTimeSignature
 } from "@/applications/ChuangKeApplication/utils/ms-editFunction.ts";
 import {PropType, ref, UnwrapRef} from "vue";
-import {Measure, MusicScore, MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {
+  Measure,
+  MusicScore,
+  MusicScoreRef,
+  TimeSignature
+} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
   addBindingEndId,
   addBindingStartId,
@@ -98,6 +103,14 @@ function changeBarLine(barLineType: BarLineTypeEnum) {
   insertBarLine(barLineType, props.measure, props.musicScore)
 }
 
+function changeTimeSignature() {
+  const timeSignature: TimeSignature = {
+    beat: currentTimeSignature.value.beat,
+    chronaxie: currentTimeSignature.value.chronaxie,
+  }
+  insertTimeSignature(timeSignature, props.measure, props.musicScore)
+}
+
 const currentTimeSignature = ref({
   beat: 1,
   chronaxie: 4
@@ -163,7 +176,9 @@ const barLineList = ref<Array<{
         {{ item.text }}
       </div>
     </div>
-    <div>拍号</div>
+    <div>拍号
+      <el-button @click="changeTimeSignature">确认</el-button>
+    </div>
     <div>
       <div><input type="number" v-model="currentTimeSignature.beat"></div>
       <div><input type="number" v-model="currentTimeSignature.chronaxie"></div>
