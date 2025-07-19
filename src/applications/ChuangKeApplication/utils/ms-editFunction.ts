@@ -62,9 +62,6 @@ export function insertMeasure(measure: Measure, musicScoreData: MusicScore, posi
 }
 
 export function deleteMeasure(measure: Measure, musicScoreData: MusicScore) {
-    // 如果是单谱表内最后的小节，则不可以删除
-    const singleStaff = getDataWithIndex(measure.index, musicScoreData).singleStaff
-    if (singleStaff && singleStaff.measureArray.length <= 1) return console.error("")
     removeMeasure(measure, musicScoreData)
 }
 
@@ -134,7 +131,7 @@ export function insertTimeSignature(timeSignature: TimeSignature, measure: Measu
 // 添加小节线
 export function insertBarLine(barLineType: BarLineTypeEnum, measure: Measure, musicScore: MusicScore) {
     const isFront = [BarLineTypeEnum.reverseFinal, BarLineTypeEnum.startRepeatSign].includes(barLineType)
-    if (isFront) {
+    if (isFront) { // 插入前置小节线逻辑
         const barLineSymbol = measure.msSymbolContainerArray.find((msSymbolContainer) => {
             return msSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.barLine_f
         })?.msSymbolArray[0] as (BarLine | undefined)
@@ -147,7 +144,7 @@ export function insertBarLine(barLineType: BarLineTypeEnum, measure: Measure, mu
             addBarLineToMeasure(newBarLineContainer, measure, musicScore)
         }
 
-    } else {
+    } else { // 插入后置小节线逻辑
         const barLineSymbol = measure.msSymbolContainerArray.find((msSymbolContainer) => {
             return msSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.barLine
         })?.msSymbolArray[0] as (BarLine | undefined)
@@ -171,10 +168,6 @@ export function insertSingleStaff(singleStaff: SingleStaff, musicScoreData: Musi
 }
 
 export function deleteSingleStaff(singleStaff: SingleStaff, musicScoreData: MusicScore) {
-    // 如果是复谱表内最后的单谱表，则不可以删除
-    const multipleStaves = getDataWithIndex(singleStaff.index, musicScoreData).multipleStaves
-    if (multipleStaves && multipleStaves.singleStaffArray.length <= 1) return console.error("")
-
     removeSingleStaff(singleStaff, musicScoreData)
 }
 
@@ -186,8 +179,6 @@ export function insertMultipleStaves(multipleStaves: MultipleStaves, musicScoreD
 }
 
 
-export function deleteMultipleStaves(multipleStaves: MultipleStaves, musicScoreData: MusicScore) {
-    // 如果是谱表内最后的复谱表，则不可以删除
-    if (musicScoreData.multipleStavesArray.length <= 1) return console.error("")
-    removeMultipleStaves(multipleStaves, musicScoreData)
+export function deleteMultipleStaves(multipleStaves: MultipleStaves, musicScore: MusicScore) {
+    removeMultipleStaves(multipleStaves, musicScore)
 }

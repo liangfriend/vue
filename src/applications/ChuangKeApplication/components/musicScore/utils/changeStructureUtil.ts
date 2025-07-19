@@ -195,8 +195,11 @@ export function removeMeasure(
     measure: Measure,
     musicScore: MusicScore,
 ) {
+
     const singleStaff = getDataWithIndex(measure.index, musicScore).singleStaff
     if (!singleStaff) return console.error("单谱表不存在，小节移除失败")
+    // 如果是单谱表内最后的小节，则不可以删除
+    if (singleStaff && singleStaff.measureArray.length <= 1) return console.error("弹幕表内至少保留一个小节")
     const array = singleStaff.measureArray;
     const index = array.findIndex(item => item === measure);
     if (index === -1) return console.error("找不到目标小节")
@@ -302,6 +305,8 @@ export function removeSingleStaff(
 ) {
     const multipleStaves = getDataWithIndex(singleStaff.index, musicScore).multipleStaves
     if (!multipleStaves) return console.error("复谱表表不存在，单谱表移除失败")
+    // 如果是复谱表内最后的单谱表，则不可以删除
+    if (multipleStaves && multipleStaves.singleStaffArray.length <= 1) return console.error("复谱表内至少保留一个单谱表")
     const array = multipleStaves.singleStaffArray;
     const index = array.findIndex(item => item === singleStaff);
     if (index === -1) return console.error("找不到目标单谱表")
@@ -340,6 +345,8 @@ export function removeMultipleStaves(
     multipleStaves: MultipleStaves,
     musicScore: MusicScore,
 ) {
+    // 如果是谱表内最后的复谱表，则不可以删除
+    if (musicScore.multipleStavesArray.length <= 1) return console.error("")
     const array = musicScore.multipleStavesArray
     const index = array.findIndex(item => item === multipleStaves);
     if (index === -1) return console.error("找不到目标复谱表")
@@ -460,11 +467,31 @@ export function removeSpanSymbol(spanSymbol: SpanSymbol, musicScore: MusicScore)
 export function addClefToMeasure(clefSymbolContainer: MsSymbolContainer, measure: Measure, musicScore: MusicScore) {
     const singleStaff = getDataWithIndex(measure.index, musicScore).singleStaff
     if (clefSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.clef_f) {
-        // TODO 避开前置小节线
-        measure.msSymbolContainerArray.unshift(clefSymbolContainer)
+        // 如果有前置小节线，谱号需要添加到前置小节线之后
+        const barLine_f = measure.msSymbolContainerArray.find((curMsSymbolContainer) => {
+            return curMsSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.barLine_f
+        })
+        if (barLine_f) { // 前置谱号存在
+            const index = barLine_f.index.msSymbolContainerIndex
+            if (index == null) return console.error("前置小节线索引异常，谱号添加失败")
+            measure.msSymbolContainerArray.splice(index + 1, 0, clefSymbolContainer)
+        } else { // 前置谱号不存在
+            measure.msSymbolContainerArray.splice(0, 0, clefSymbolContainer)
+
+        }
     } else if (clefSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.clef) {
-        // TODO 避开小节线
-        measure.msSymbolContainerArray.push(clefSymbolContainer)
+        // 如果有小节线，谱号需要添加到前置小节线之前
+        const barLine = measure.msSymbolContainerArray.find((curMsSymbolContainer) => {
+            return curMsSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.barLine
+        })
+        if (barLine) { // 小节线存在
+            const index = barLine.index.msSymbolContainerIndex
+            if (index == null) return console.error("小节线索引异常，谱号添加失败")
+            measure.msSymbolContainerArray.splice(index, 0, clefSymbolContainer)
+        } else { // 小节线不存在
+            measure.msSymbolContainerArray.push(clefSymbolContainer)
+        }
+
     }
     if (!singleStaff) return console.error('单谱表查找出错，谱号添加失败')
     // 更新索引
@@ -478,7 +505,25 @@ export function addClefToMeasure(clefSymbolContainer: MsSymbolContainer, measure
 export function addKeySignatureToMeasure(keySignatureSymbolContainer: MsSymbolContainer, measure: Measure, musicScore: MusicScore) {
     const singleStaff = getDataWithIndex(measure.index, musicScore).singleStaff
     if (keySignatureSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.keySignature) {
-        // TODO 避开前置小节线和前置谱号
+        // 如果有前置谱号，调号需要添加到前置谱号之后
+        const clef_f = measure.msSymbolContainerArray.find((curMsSymbolContainer) => {
+            return curMsSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.clef_f
+        })
+        // 如果有前置小节线，谱号需要添加到前置小节线之后
+        const barLine_f = measure.msSymbolContainerArray.find((curMsSymbolContainer) => {
+            return curMsSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.barLine_f
+        })
+        if (clef_f) { // 前置谱号存在
+            const index = clef_f.index.msSymbolContainerIndex
+            if (index == null) return console.error("前置谱号号索引异常，调号添加失败")
+            measure.msSymbolContainerArray.splice(index + 1, 0, keySignatureSymbolContainer)
+        } else if (barLine_f) { // 前置小节线存在
+            const index = barLine_f.index.msSymbolContainerIndex
+            if (index == null) return console.error("前置小节线索引异常，调号添加失败")
+            measure.msSymbolContainerArray.splice(index + 1, 0, keySignatureSymbolContainer)
+        } else {
+            measure.msSymbolContainerArray.splice(0, 0, keySignatureSymbolContainer)
+        }
         measure.msSymbolContainerArray.unshift(keySignatureSymbolContainer)
     }
     if (!singleStaff) return console.error('单谱表查找出错，谱号添加失败')
@@ -491,13 +536,36 @@ export function addKeySignatureToMeasure(keySignatureSymbolContainer: MsSymbolCo
 
 // 往小节上添加拍号
 export function addTimeSignatureToMeasure(timeSignatureContainer: MsSymbolContainer, measure: Measure, musicScore: MusicScore) {
-    console.log('chicken', timeSignatureContainer)
 
     const singleStaff = getDataWithIndex(measure.index, musicScore).singleStaff
     if (timeSignatureContainer.msSymbolArray[0].type === MsSymbolTypeEnum.timeSignature) {
-
-        // TODO 避开前置小节线和前置谱号
-        measure.msSymbolContainerArray.unshift(timeSignatureContainer)
+        // 如果有调号，拍号号需要添加到调号之后
+        const keySignature = measure.msSymbolContainerArray.find((curMsSymbolContainer) => {
+            return curMsSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.keySignature
+        })
+        // 如果有前置谱号，调号需要添加到前置谱号之后
+        const clef_f = measure.msSymbolContainerArray.find((curMsSymbolContainer) => {
+            return curMsSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.clef_f
+        })
+        // 如果有前置小节线，谱号需要添加到前置小节线之后
+        const barLine_f = measure.msSymbolContainerArray.find((curMsSymbolContainer) => {
+            return curMsSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.barLine_f
+        })
+        if (keySignature) { // 调号存在
+            const index = keySignature.index.msSymbolContainerIndex
+            if (index == null) return console.error("调号索引异常，调号添加失败")
+            measure.msSymbolContainerArray.splice(index + 1, 0, timeSignatureContainer)
+        } else if (clef_f) { // 前置谱号存在
+            const index = clef_f.index.msSymbolContainerIndex
+            if (index == null) return console.error("前置谱号索引异常，调号添加失败")
+            measure.msSymbolContainerArray.splice(index + 1, 0, timeSignatureContainer)
+        } else if (barLine_f) { // 前置小节线存在
+            const index = barLine_f.index.msSymbolContainerIndex
+            if (index == null) return console.error("前置小节线索引异常，调号添加失败")
+            measure.msSymbolContainerArray.splice(index + 1, 0, timeSignatureContainer)
+        } else {
+            measure.msSymbolContainerArray.splice(0, 0, timeSignatureContainer)
+        }
     }
     if (!singleStaff) return console.error('单谱表查找出错，谱号添加失败')
     // 更新索引
