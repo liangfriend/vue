@@ -548,22 +548,36 @@ export function msSymbolComputedData(musicScore: MusicScore) {
 export function getMsSymbolClef(msSymbol: MsSymbol, musicScore: MusicScore): ClefEnum {
     const msData = getDataWithIndex(msSymbol.index, musicScore)
     const msSymbolContainer = msData.msSymbolContainer
-    const msSymbolContainerIndex = msSymbolContainer?.index.msSymbolContainerIndex
     const measure = msData.measure
     const singleStaff = msData.singleStaff
-    if (!msSymbolContainer || !measure || !singleStaff || !msSymbolContainerIndex) {
+
+    const measureIndex = measure?.index.measureIndex
+    const msSymbolContainerIndex = msSymbolContainer?.index.msSymbolContainerIndex
+
+    if (!msSymbolContainer || !measure || !singleStaff || (msSymbolContainerIndex == null) || (measureIndex == null)) {
         console.error("索引数据查找出错，获取符号的谱号失败")
         return ClefEnum.treble
     }
-    for (let i = (singleStaff.measureArray.length - 1); i >= 0; i--) {
+    for (let i = (measureIndex); i >= 0; i--) {
         const curMeasure = singleStaff.measureArray[i];
-        for (let j = msSymbolContainerIndex; j >= 0; j--) {
-            const curMsSymbolContainer = curMeasure.msSymbolContainerArray[j]
-            const curMsSymbol = curMsSymbolContainer.msSymbolArray[0]
-            if (MsSymbolTypeEnum.clef === curMsSymbol.type || MsSymbolTypeEnum.clef_f === curMsSymbol.type) {
-                return curMsSymbol.clef
+        if (i === measureIndex) {
+            for (let j = msSymbolContainerIndex; j >= 0; j--) {
+                const curMsSymbolContainer = curMeasure.msSymbolContainerArray[j]
+                const curMsSymbol = curMsSymbolContainer.msSymbolArray[0]
+                if (MsSymbolTypeEnum.clef === curMsSymbol.type || MsSymbolTypeEnum.clef_f === curMsSymbol.type) {
+                    return curMsSymbol.clef
+                }
+            }
+        } else {
+            for (let j = curMeasure.msSymbolContainerArray.length - 1; j >= 0; j--) {
+                const curMsSymbolContainer = curMeasure.msSymbolContainerArray[j]
+                const curMsSymbol = curMsSymbolContainer.msSymbolArray[0]
+                if (MsSymbolTypeEnum.clef === curMsSymbol.type || MsSymbolTypeEnum.clef_f === curMsSymbol.type) {
+                    return curMsSymbol.clef
+                }
             }
         }
+
 
     }
     return ClefEnum.treble

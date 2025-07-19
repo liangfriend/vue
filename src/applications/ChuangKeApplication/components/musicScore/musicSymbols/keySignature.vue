@@ -18,9 +18,9 @@
 import {computed, CSSProperties, PropType} from "vue";
 import {MsSymbol, type MusicScore} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
-  MsSymbolTypeEnum,
   ClefEnum,
-  KeySignatureEnum
+  KeySignatureEnum,
+  MsSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import sharpSvg from './sharp.svg';
 import flatSvg from './flat.svg';
@@ -46,6 +46,7 @@ const props = defineProps({
 
 });
 const clef = computed((): ClefEnum => {
+  if (!props.msSymbol) return ClefEnum.treble
   return getMsSymbolClef(props.msSymbol, props.musicScore)
 })
 const keySignatureInfo = computed(() => {

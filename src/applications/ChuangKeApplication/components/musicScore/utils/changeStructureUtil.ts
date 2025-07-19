@@ -524,7 +524,6 @@ export function addKeySignatureToMeasure(keySignatureSymbolContainer: MsSymbolCo
         } else {
             measure.msSymbolContainerArray.splice(0, 0, keySignatureSymbolContainer)
         }
-        measure.msSymbolContainerArray.unshift(keySignatureSymbolContainer)
     }
     if (!singleStaff) return console.error('单谱表查找出错，谱号添加失败')
     // 更新索引
