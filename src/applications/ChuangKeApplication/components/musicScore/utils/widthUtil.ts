@@ -1,32 +1,27 @@
 import {
-    AccidentalEnum,
-    ClefEnum,
-    KeySignatureEnum,
     MsSymbolContainerTypeEnum,
-    MsSymbolTypeEnum,
-    MusicalAlphabetEnum,
-    MusicScoreRegionEnum
+    MsSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 import {
     Measure,
     MsSymbol,
-    MsSymbolContainer, type MultipleStaves,
+    MsSymbolContainer,
     MusicScore,
-    NoteHead,
-    SingleStaff,
-    WidthConstant
+    SingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {MsSymbolInformationMap,} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 import {
     getWidthConstantInMeasure,
-    getWidthConstantInMsSymbolContainer, getWidthConstantInSingleStaff
+    getWidthConstantInMsSymbolContainer,
+    getWidthConstantInSingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/widthConstantUtil.ts";
 import {
-    getDataWithIndex,
+    getMainMsSymbol,
     getMsSymbolAspectRatio
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {getMsSymbolHeight} from "@/applications/ChuangKeApplication/components/musicScore/utils/heightUtil.ts";
+import {getSlotLeftToMeasure} from "@/applications/ChuangKeApplication/components/musicScore/utils/leftUtil.ts";
 
 // 获取定宽容器的宽度
 export function getWidthFixedContainerWidth(msSymbolContainer: MsSymbolContainer, measureHeight: number): number {
@@ -55,7 +50,8 @@ export function getWidthFixedContainerWidth(msSymbolContainer: MsSymbolContainer
 }
 
 // 获取符号容器宽度
-export function getMsSymboLContainerWidth(msSymbolContainer: MsSymbolContainer, measure: Measure, singleStaff: SingleStaff, musicScoreData: MusicScore, measureHeight: number, componentWidth: number): number {
+export function getMsSymboLContainerWidth(msSymbolContainer: MsSymbolContainer, measure: Measure, singleStaff: SingleStaff, musicScore: MusicScore, componentWidth: number): number {
+    const measureHeight = musicScore.measureHeight
     if (!msSymbolContainer || !measure) {
         console.error("缺少必要的参数，坐标计算出错")
         return 0
@@ -68,7 +64,7 @@ export function getMsSymboLContainerWidth(msSymbolContainer: MsSymbolContainer, 
         const fixedSymbolContainerSum = getWidthFixedContainerWidthSumInMeasure(measure, measureHeight)
         const totalWidthConstantOfFixedContainerInMeasure = getWidthConstantInMeasure(measure)
         const curMsSymbolContainerWidthConstant = getWidthConstantInMsSymbolContainer(msSymbolContainer)
-        const measureWidth = getMeasureWidth(measure, singleStaff, musicScoreData, componentWidth)
+        const measureWidth = getMeasureWidth(measure, singleStaff, musicScore, componentWidth)
         width = (measureWidth - fixedSymbolContainerSum) / totalWidthConstantOfFixedContainerInMeasure * curMsSymbolContainerWidthConstant
     }
     return width
@@ -120,6 +116,22 @@ export function getWidthFixedContainerWidthSumInSingleStaff(singleStaff: SingleS
     return widthSum
 }
 
+// 符尾比较特殊所以单独出一个方法
+export function getNoteTailWidth(msSymbol: MsSymbol, msSymbolContainer: MsSymbolContainer,
+                                 nextContainer: MsSymbolContainer, measure: Measure,
+                                 singleStaff: SingleStaff, musicScore: MusicScore, slotWidth: number,
+                                 measureWidth: number,
+                                 componentWidth: number, isMain: boolean = false) {
+    const mainMsSymbol = isMain ? msSymbol : getMainMsSymbol(msSymbol, musicScore)
+    const nextMsSymbol = nextContainer?.msSymbolArray?.[0]
+    const nextSlotWidth = getMsSymbolSlotWidth(nextMsSymbol, musicScore)
+    const currentSlotLeftToMeasure = getSlotLeftToMeasure(mainMsSymbol, msSymbolContainer,
+        measure, singleStaff, musicScore, slotWidth, measureWidth, componentWidth, true)
+    const nextSlotLeftToMeasure = getSlotLeftToMeasure(nextMsSymbol, nextContainer,
+        measure, singleStaff, musicScore, nextSlotWidth, measureWidth, componentWidth)
+    return nextSlotLeftToMeasure - currentSlotLeftToMeasure
+}
+
 export function getMsSymbolWidth(msSymbol: MsSymbol, musicScore: MusicScore) {
     const measureHeight = musicScore.measureHeight
     const aspectRatio = getMsSymbolAspectRatio(msSymbol)
@@ -135,13 +147,9 @@ export function getMsSymbolWidth(msSymbol: MsSymbol, musicScore: MusicScore) {
     }
 }
 
-export function getMsSymbolSlotWidth(msSymbol: MsSymbol, musicScore: MusicScore) {
-    // symbolSlot在类型上没有单独分出来，其含义为非跟随性符号，为防止传入跟随性符号导致计算错误，这里用index进行获取
-    const parentMsSymbol = getDataWithIndex(msSymbol.index, musicScore).msSymbol
-    if (parentMsSymbol) {
-        const aspectRatio = getMsSymbolAspectRatio(parentMsSymbol)
-        const height = getMsSymbolHeight(parentMsSymbol, musicScore)
-        return height * aspectRatio
-    }
-    return 0
+export function getMsSymbolSlotWidth(msSymbol: MsSymbol, musicScore: MusicScore, isMain: boolean = false) {
+    const mainMsSymbol = isMain ? msSymbol : getMainMsSymbol(msSymbol, musicScore)
+    const aspectRatio = getMsSymbolAspectRatio(mainMsSymbol)
+    const height = getMsSymbolHeight(mainMsSymbol, musicScore)
+    return height * aspectRatio
 }

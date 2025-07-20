@@ -37,6 +37,10 @@
       <template #default="{ measure, measureIndex, singleStaff, multipleStaves, measureWidth }">
         <ms-symbol-container v-for="(msSymbolContainer,symbolIndex) in measure.msSymbolContainerArray"
                              :msSymbolContainer="msSymbolContainer"
+                             :nextContainer="measure.msSymbolContainerArray.length!==(symbolIndex+1)?
+                             measure.msSymbolContainerArray[symbolIndex+1]:null"
+                             :preContainer="measure.msSymbolContainerArray.length!==0?
+                             measure.msSymbolContainerArray[symbolIndex-1]:null"
                              :measure="measure"
                              :musicScore="musicScore"
                              :measureWidth="measureWidth"
@@ -174,7 +178,33 @@ const props = defineProps({
   },
 
 });
+// 是否与其它音连成组
+const isGroup = computed(() => {
+  return (measure: Measure): boolean[] => {
+    const arr: boolean[] = [];
 
+    measure.msSymbolContainerArray.forEach((container) => {
+      let grouped = false;
+
+      for (const symbol of container.msSymbolArray) {
+        if (symbol.type === MsSymbolTypeEnum.noteHead) {
+          // symbol 为 NoteHead 类型，有 chronaxie 属性
+          if (
+              symbol.chronaxie === ChronaxieEnum.eighth ||
+              symbol.chronaxie === ChronaxieEnum.sixteenth
+          ) {
+            grouped = true;
+            break; // 有一个就够，认为成组
+          }
+        }
+      }
+
+      arr.push(grouped); // 只要有符合的 noteHead 就是 true，否则 false
+    });
+
+    return arr;
+  };
+});
 const mode = ref(MsMode.edit)
 // 预备符号
 const reserveMsSymbolMap = ref(new Map()) as Ref<ReserveMsSymbolMapType>;
@@ -216,7 +246,7 @@ function handleSpanSymbolMouseDown(e: MouseEvent, spanSymbol: SpanSymbol) {
   emits('spanSymbolMouseDown')
 }
 
-function handlepanSymbolMouseUp(e: MouseEvent, spanSymbol: SpanSymbol) {
+function handleSpanSymbolMouseUp(e: MouseEvent, spanSymbol: SpanSymbol) {
   spanSymbolMouseUp(e, mode, currentSelected, spanSymbol);
   emits('spanSymbolMouseUp')
 }

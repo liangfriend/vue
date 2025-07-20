@@ -117,13 +117,13 @@ const containerLeft = computed(() => {
       - containerWidth.value / 2 // 加上音符的一半距离进行微观居中
   // 将虚拟音符偏移到正确位置，具体逻辑语言表述不清
   if (['middle'].includes(props.type)) {
-    left += getMsSymboLContainerWidth(props.msSymbolContainer, props.measure, props.singleStaff, props.musicScore, props.measureHeight, props.componentWidth)
+    left += getMsSymboLContainerWidth(props.msSymbolContainer, props.measure, props.singleStaff, props.musicScore, props.componentWidth)
   } else if (['end'].includes(props.type)) {
-    left += getMsSymboLContainerWidth(props.msSymbolContainer, props.measure, props.singleStaff, props.musicScore, props.measureHeight, props.componentWidth) * 3 / 4
+    left += getMsSymboLContainerWidth(props.msSymbolContainer, props.measure, props.singleStaff, props.musicScore, props.componentWidth) * 3 / 4
   } else if (['front'].includes(props.type)) {
-    left += getMsSymboLContainerWidth(props.msSymbolContainer, props.measure, props.singleStaff, props.musicScore, props.measureHeight, props.componentWidth) / 4
+    left += getMsSymboLContainerWidth(props.msSymbolContainer, props.measure, props.singleStaff, props.musicScore, props.componentWidth) / 4
   } else if (['self'].includes(props.type)) {
-    left += getMsSymboLContainerWidth(props.msSymbolContainer, props.measure, props.singleStaff, props.musicScore, props.measureHeight, props.componentWidth) * 2 / 4
+    left += getMsSymboLContainerWidth(props.msSymbolContainer, props.measure, props.singleStaff, props.musicScore, props.componentWidth) * 2 / 4
   }
 
   } else { // 没有符号容器传入的情况，就是空的小节

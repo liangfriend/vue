@@ -752,3 +752,13 @@ export function getMsSymbolAspectRatio(msSymbol: MsSymbol) {
     }
     return 1
 }
+
+// 获取主符号
+export function getMainMsSymbol(msSymbol: MsSymbol, musicScore: MusicScore): MsSymbol {
+    const mainMsSymbol = getDataWithIndex(msSymbol.index, musicScore).msSymbol
+    if (!mainMsSymbol) {
+        console.error("获取主符号失败")
+        return msSymbol
+    }
+    return mainMsSymbol
+}

@@ -18,7 +18,13 @@
 </template>
 <script setup lang="ts">
 import {computed, CSSProperties, onMounted, PropType, ref} from "vue";
-import {MsSymbol, type MusicScore, NoteHead} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {
+  type Measure,
+  MsSymbol,
+  type MsSymbolContainer,
+  type MusicScore,
+  NoteHead, type SingleStaff
+} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
   AccidentalEnum,
   BarLineTypeEnum,
@@ -61,21 +67,51 @@ import {
   getSlotBottomToMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/bottomUtil.ts";
 import {msSymbolMouseDown} from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
-import {getMsSymbolLeftToSlot} from "@/applications/ChuangKeApplication/components/musicScore/utils/leftUtil.ts";
-import {getMsSymbolWidth} from "@/applications/ChuangKeApplication/components/musicScore/utils/widthUtil.ts";
+import {
+  getMeasureLeftToMusicScore,
+  getMsSymbolLeftToSlot, getSlotLeftToMeasure
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/leftUtil.ts";
+import {
+  getMsSymbolSlotWidth,
+  getMsSymbolWidth, getNoteTailWidth
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/widthUtil.ts";
 
 const props = defineProps({
   msSymbol: {
     type: Object as PropType<MsSymbol>,
     required: true
   },
+  msSymbolContainer: {
+    type: Object as PropType<MsSymbolContainer>,
+    required: true,
+  },
+  preContainer: {
+    type: Object as PropType<MsSymbolContainer | null>,
+    required: true
+  },
+  nextContainer: {
+    type: Object as PropType<MsSymbolContainer | null>,
+    required: true
+  },
+  measure: {
+    type: Object as PropType<Measure>,
+    required: true
+  },
+  measureWidth: {
+    type: Number,
+    required: true
+  },
+  singleStaff: {
+    type: Object as PropType<SingleStaff>,
+    required: true
+  },
   musicScore: {
     type: Object as PropType<MusicScore>,
-    default: {}
+    required: true
   },
   containerWidth: {
     type: Number,
-    default: 200
+    required: true
   },
   isMain: {
     type: Boolean,
@@ -84,7 +120,7 @@ const props = defineProps({
   //小节高度， 此属性会控制音符，休止符，谱号，拍号等符号大小
   measureHeight: {
     type: Number,
-    default: 60
+    required: true
   },
   parentMsSymbol: {
     type: Object as PropType<MsSymbol>,
@@ -92,19 +128,19 @@ const props = defineProps({
   // 符号槽位宽度（父级符号宽度）
   slotWidth: {
     type: Number,
-    default: 60
+    required: true
   },
   slotBottom: {
     type: Number,
-    default: 0
+    required: true
   },
   componentWidth: {
     type: Number,
-    default: 1000,
+    required: true
   },
   componentHeight: {
     type: Number,
-    default: 800,
+    required: true
   },
 })
 
@@ -258,6 +294,12 @@ const height = computed(() => {
 })
 // 符号宽度
 const width = computed(() => {
+  // TODO 补全如果是成组的才这样做
+  if (props.msSymbol.type === MsSymbolTypeEnum.noteTail && props.nextContainer) {
+    return getNoteTailWidth(props.msSymbol, props.msSymbolContainer, props.nextContainer,
+        props.measure, props.singleStaff, props.musicScore, props.slotWidth,
+        props.measureWidth, props.componentWidth)
+  }
   return getMsSymbolWidth(props.msSymbol, props.musicScore)
 })
 const msSymbolLeft = computed(() => {
@@ -281,10 +323,15 @@ const msSymbolStyle = computed<CSSProperties>(() => {
   if (props.msSymbol?.type && [MsSymbolTypeEnum.keySignature, MsSymbolTypeEnum.timeSignature].includes(props.msSymbol.type)) {
     style.background = 'unset'
   }
+
   if (svgHref.value) {
     style.mask = `url(${svgHref.value}) center center / cover no-repeat`
   }
-
+  // TODO 迁移到leftUtil
+  if (props.msSymbol.type === MsSymbolTypeEnum.noteTail) {
+    style.background = 'red'
+    style.mask = 'unset'
+  }
   return style
 });
 const emits = defineEmits(['msSymbolMouseDown', 'msSymbolMouseUp']);

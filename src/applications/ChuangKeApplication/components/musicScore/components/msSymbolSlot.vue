@@ -24,6 +24,7 @@ import {
 import {getMsSymbolHeight} from "@/applications/ChuangKeApplication/components/musicScore/utils/heightUtil.ts";
 import {getSlotBottomToMeasure} from "@/applications/ChuangKeApplication/components/musicScore/utils/bottomUtil.ts";
 import {getMsSymbolSlotWidth} from "@/applications/ChuangKeApplication/components/musicScore/utils/widthUtil.ts";
+import {getSlotLeftToContainer} from "@/applications/ChuangKeApplication/components/musicScore/utils/leftUtil.ts";
 
 const props = defineProps({
   msSymbol: {
@@ -33,6 +34,14 @@ const props = defineProps({
   msSymbolContainer: {
     type: Object as PropType<MsSymbolContainer>,
     required: true,
+  },
+  preContainer: {
+    type: Object as PropType<MsSymbolContainer | null>,
+    required: true
+  },
+  nextContainer: {
+    type: Object as PropType<MsSymbolContainer | null>,
+    required: true
   },
   containerWidth: {
     type: Number,
@@ -103,15 +112,8 @@ const slotWidth = computed(() => {
   return getMsSymbolSlotWidth(props.msSymbol, props.musicScore)
 })
 const slotLeft = computed(() => {
-  switch (props.msSymbol?.type) {
-    case MsSymbolTypeEnum.noteHead: { // 音符头居中
-      return props.containerWidth / 2 - slotWidth.value / 2
-    }
-    case MsSymbolTypeEnum.noteBar: { // 音符头居中
-      return props.containerWidth / 2 + props.measureHeight / 8 - slotWidth.value
-    }
-  }
-  return 0
+  return getSlotLeftToContainer(props.msSymbol, props.msSymbolContainer, props.measure, props.singleStaff,
+      props.musicScore, slotWidth.value, props.componentWidth)
 })
 const slotBottom = computed(() => {
   return getSlotBottomToMeasure(props.msSymbol, props.musicScore)
@@ -126,21 +128,33 @@ const emits = defineEmits(['msSymbolMouseDown', 'msSymbolMouseUp']);
 
        :style="msSymbolSlotStyle">
     <msSymbolVue v-if="msSymbol" ref="mainMsSymbolRef" :measureHeight="measureHeight"
+                 :msSymbolContainer="props.msSymbolContainer"
+                 :preContainer="props.preContainer"
+                 :nextContainer="props.nextContainer"
                  :slot-width="slotWidth"
                  :slotBottom="slotBottom"
                  :containerWidth="containerWidth"
+                 :measure-width="measureWidth"
                  :isMain="true"
                  :componentWidth="componentWidth"
                  :componentHeight="componentHeight"
+                 :measure="measure"
+                 :single-staff="singleStaff"
                  :musicScore="props.musicScore"
                  @msSymbolMouseDown="(e:MouseEvent, msSymbol:MsSymbol)=>emits('msSymbolMouseDown',e,msSymbol)"
                  @msSymbolMouseUp="(e:MouseEvent, msSymbol:MsSymbol)=>emits('msSymbolMouseUp',e,msSymbol)"
                  :ms-symbol="msSymbol"></msSymbolVue>
     <template v-if="msSymbol?.msSymbolArray">
       <msSymbolVue :measureHeight="measureHeight" v-for="item in msSymbol.msSymbolArray"
+                   :msSymbolContainer="props.msSymbolContainer"
+                   :preContainer="props.preContainer"
+                   :nextContainer="props.nextContainer"
                    :containerWidth="containerWidth"
+                   :measure-width="measureWidth"
                    :isMain="false"
                    :slotBottom="slotBottom"
+                   :measure="measure"
+                   :single-staff="singleStaff"
                    :slot-width="slotWidth"
                    :parent-ms-symbol="msSymbol"
                    :componentWidth="componentWidth"

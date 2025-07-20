@@ -74,7 +74,6 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
         aspectRatio: {
             [ChronaxieEnum.eighth]: 0.5,   // 7 flats
             [ChronaxieEnum.sixteenth]: 0.5,   // 6 flats
-
         },
         category: MsSymbolCategoryEnum.singleMeasure,
         widthRatioConstant: 0,
