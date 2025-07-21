@@ -74,6 +74,7 @@ export declare type AccidentalMsSymbol = ({
 export declare type NoteTail = ({
     type: MsSymbolTypeEnum.noteTail,
     chronaxie: ChronaxieEnum,
+    group: 1,
 } & BaseMsSymbol)
 export declare type ClefMsSymbol = ({
     type: MsSymbolTypeEnum.clef | MsSymbolTypeEnum.clef_f,
