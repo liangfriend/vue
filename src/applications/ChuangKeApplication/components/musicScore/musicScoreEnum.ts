@@ -338,3 +338,8 @@ export enum MsMode {
 export enum ReserveMsSymbolType {
     note = 1 // 音符头
 }
+
+// 连音组类型
+export enum beamTypeEnum {
+    left = 1
+}

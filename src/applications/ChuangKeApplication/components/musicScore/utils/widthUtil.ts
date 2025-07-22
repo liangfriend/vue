@@ -117,19 +117,11 @@ export function getWidthFixedContainerWidthSumInSingleStaff(singleStaff: SingleS
 }
 
 // 符尾比较特殊所以单独出一个方法
-export function getNoteTailWidth(msSymbol: MsSymbol, msSymbolContainer: MsSymbolContainer,
-                                 nextContainer: MsSymbolContainer, measure: Measure,
-                                 singleStaff: SingleStaff, musicScore: MusicScore, slotWidth: number,
-                                 measureWidth: number,
-                                 componentWidth: number, isMain: boolean = false) {
-    const mainMsSymbol = isMain ? msSymbol : getMainMsSymbol(msSymbol, musicScore)
-    const nextMsSymbol = nextContainer?.msSymbolArray?.[0]
-    const nextSlotWidth = getMsSymbolSlotWidth(nextMsSymbol, musicScore)
-    const currentSlotLeftToMeasure = getSlotLeftToMeasure(mainMsSymbol, msSymbolContainer,
-        measure, singleStaff, musicScore, slotWidth, measureWidth, componentWidth, true)
-    const nextSlotLeftToMeasure = getSlotLeftToMeasure(nextMsSymbol, nextContainer,
-        measure, singleStaff, musicScore, nextSlotWidth, measureWidth, componentWidth)
-    return nextSlotLeftToMeasure - currentSlotLeftToMeasure
+export function getNoteTailWidth(msSymbolContainer: MsSymbolContainer,
+                                 measure: Measure,
+                                 singleStaff: SingleStaff, musicScore: MusicScore,
+                                 componentWidth: number) {
+    return getMsSymboLContainerWidth(msSymbolContainer, measure, singleStaff, musicScore, componentWidth)
 }
 
 export function getMsSymbolWidth(msSymbol: MsSymbol, musicScore: MusicScore) {

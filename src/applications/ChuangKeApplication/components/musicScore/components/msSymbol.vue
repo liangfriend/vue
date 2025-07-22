@@ -1,21 +1,3 @@
-<template>
-  <clef
-      v-if="msSymbol?.type === MsSymbolTypeEnum.clef || msSymbol?.type === MsSymbolTypeEnum.clef_f && 'clef' in msSymbol"
-      :clef="msSymbol?.clef"
-      :musicScore="musicScore"
-      :style="msSymbolStyle"></clef>
-  <key-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.keySignature"
-                 :measure-height="measureHeight"
-                 :slotWidth="slotWidth"
-                 :musicScore="musicScore"
-                 :style="msSymbolStyle"
-                 :msSymbol="msSymbol"></key-signature>
-  <time-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.timeSignature" :style="msSymbolStyle"
-                  :msSymbol="msSymbol" :measure-height="measureHeight"></time-signature>
-  <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle" @mouseup.self="handleMouseUp"
-       @mousedown.self="handleMouseDown"
-  ></div>
-</template>
 <script setup lang="ts">
 import {computed, CSSProperties, onMounted, PropType, ref} from "vue";
 import {
@@ -75,6 +57,7 @@ import {
   getMsSymbolSlotWidth,
   getMsSymbolWidth, getNoteTailWidth
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/widthUtil.ts";
+import NoteTail from "@/applications/ChuangKeApplication/components/musicScore/components/noteTail.vue";
 
 const props = defineProps({
   msSymbol: {
@@ -134,6 +117,10 @@ const props = defineProps({
     type: Number,
     required: true
   },
+  slotLeft: {
+    type: Number,
+    required: true
+  },
   componentWidth: {
     type: Number,
     required: true
@@ -167,37 +154,7 @@ const svgHref = computed(() => {
       return noteBarSvg
     }
     case MsSymbolTypeEnum.noteTail: {
-      const noteHead = getDataWithIndex(props.msSymbol.index, props.musicScore)
-          .msSymbol as NoteHead
-      if (noteHead && 'region' in noteHead
-          && noteHead.region <= MusicScoreRegionEnum.space_2) {
-        switch (props.msSymbol.chronaxie) {
-          case ChronaxieEnum.eighth: {
-            return noteTailOneUpSvg
-
-          }
-          case ChronaxieEnum.sixteenth: {
-            return noteTailTwoUpSvg
-          }
-          default: {
-            return ''
-          }
-        }
-      } else {
-        switch (props.msSymbol.chronaxie) {
-          case ChronaxieEnum.eighth: {
-            return noteTailOneDownSvg
-
-          }
-          case ChronaxieEnum.sixteenth: {
-            return noteTailTwoDownSvg
-          }
-          default: {
-            return ''
-          }
-        }
-      }
-
+      return ''
     }
     case MsSymbolTypeEnum.clef: {
       return ''
@@ -296,14 +253,14 @@ const height = computed(() => {
 const width = computed(() => {
   // TODO 补全如果是成组的才这样做
   if (props.msSymbol.type === MsSymbolTypeEnum.noteTail && props.nextContainer) {
-    return getNoteTailWidth(props.msSymbol, props.msSymbolContainer, props.nextContainer,
-        props.measure, props.singleStaff, props.musicScore, props.slotWidth,
-        props.measureWidth, props.componentWidth)
+    return getNoteTailWidth(props.msSymbolContainer,
+        props.measure, props.singleStaff, props.musicScore,
+        props.componentWidth)
   }
   return getMsSymbolWidth(props.msSymbol, props.musicScore)
 })
 const msSymbolLeft = computed(() => {
-  return getMsSymbolLeftToSlot(props.msSymbol, props.musicScore)
+  return getMsSymbolLeftToSlot(props.msSymbol, props.musicScore, props.slotLeft, props.measureWidth, props.componentWidth)
 })
 
 const msSymbolBottom = computed(() => {
@@ -320,17 +277,17 @@ const msSymbolStyle = computed<CSSProperties>(() => {
     bottom: msSymbolBottom.value + 'px',
     background: props.msSymbol.options.hightlight ? props.msSymbol.options.hightlightColor : props.msSymbol.options.color,
   }
-  if (props.msSymbol?.type && [MsSymbolTypeEnum.keySignature, MsSymbolTypeEnum.timeSignature].includes(props.msSymbol.type)) {
+  if (props.msSymbol?.type && [MsSymbolTypeEnum.keySignature, MsSymbolTypeEnum.timeSignature,
+    MsSymbolTypeEnum.noteTail].includes(props.msSymbol.type)) {
     style.background = 'unset'
   }
 
   if (svgHref.value) {
     style.mask = `url(${svgHref.value}) center center / cover no-repeat`
   }
-  // TODO 迁移到leftUtil
+  // TODO 测试代码
   if (props.msSymbol.type === MsSymbolTypeEnum.noteTail) {
     style.background = 'red'
-    style.mask = 'unset'
   }
   return style
 });
@@ -351,6 +308,26 @@ onMounted(() => {
 })
 defineExpose({aspectRatio})
 </script>
+<template>
+  <clef
+      v-if="msSymbol?.type === MsSymbolTypeEnum.clef || msSymbol?.type === MsSymbolTypeEnum.clef_f && 'clef' in msSymbol"
+      :clef="msSymbol?.clef"
+      :musicScore="musicScore"
+      :style="msSymbolStyle"></clef>
+  <key-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.keySignature"
+                 :measure-height="measureHeight"
+                 :slotWidth="slotWidth"
+                 :musicScore="musicScore"
+                 :style="msSymbolStyle"
+                 :msSymbol="msSymbol"></key-signature>
+  <time-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.timeSignature" :style="msSymbolStyle"
+                  :msSymbol="msSymbol" :measure-height="measureHeight"></time-signature>
+  <note-tail v-else-if="msSymbol?.type === MsSymbolTypeEnum.noteTail" :style="msSymbolStyle"
+             :msSymbol="msSymbol" :measure="measure" :musicScore="musicScore"></note-tail>
+  <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle" @mouseup.self="handleMouseUp"
+       @mousedown.self="handleMouseDown"
+  ></div>
+</template>
 <style scoped>
 .msSymbol {
   pointer-events: all;

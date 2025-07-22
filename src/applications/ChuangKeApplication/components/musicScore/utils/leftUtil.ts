@@ -1,10 +1,10 @@
 // 获取小节相对于musicScore组件的left
-import {
+import type {
     IndexData,
     Measure,
     MsSymbol,
     MsSymbolContainer,
-    MusicScore,
+    MusicScore, NoteHead, NoteTail,
     SingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
@@ -15,7 +15,7 @@ import {
     getMeasureWidth,
     getMsSymboLContainerWidth,
     getMsSymbolSlotWidth,
-    getMsSymbolWidth,
+    getMsSymbolWidth, getNoteTailWidth,
     getWidthFixedContainerWidthSumInMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/widthUtil.ts";
 import {
@@ -45,8 +45,17 @@ export function getMeasureLeftToMusicScore(measure: Measure, musicScore: MusicSc
 
 }
 
+export function getNoteTailLeftToSlot(noteTail: NoteTail, noteHead: NoteHead, msSymbolContainer: MsSymbolContainer
+    , measure: Measure, singleStaff: SingleStaff, musicScore: MusicScore, slotWidth: number,
+                                      measureWidth: number, componentWidth: number): number {
+    const slotLeft = getSlotLeftToContainer(noteHead, msSymbolContainer, measure, singleStaff, musicScore, slotWidth,
+        componentWidth, true)
+    return -slotLeft
 
-export function getMsSymbolLeftToSlot(msSymbol: MsSymbol, musicScore: MusicScore, isMain: boolean = false) {
+}
+
+export function getMsSymbolLeftToSlot(msSymbol: MsSymbol, musicScore: MusicScore, slotLeft: number, measureWidth: number,
+                                      componentWidth: number, isMain: boolean = false) {
     const mainMsSymbol = isMain ? msSymbol : getMainMsSymbol(msSymbol, musicScore)
     const slotWidth = getMsSymbolSlotWidth(msSymbol, musicScore,)
     const width = getMsSymbolWidth(msSymbol, musicScore)
@@ -65,23 +74,22 @@ export function getMsSymbolLeftToSlot(msSymbol: MsSymbol, musicScore: MusicScore
             }
         }
         case MsSymbolTypeEnum.noteTail: { // 音符头居中
-            if (mainMsSymbol &&
-                'region' in mainMsSymbol &&
-                mainMsSymbol.region <= MusicScoreRegionEnum.space_2) {
-                return slotWidth
-            } else {
-                const noteBarInformation = MsSymbolInformationMap[MsSymbolTypeEnum.noteBar]
-                if (!('aspectRatio' in noteBarInformation)) {
-                    console.error('notail的left计算出错')
-                    return slotWidth - width
-                }
-                if (typeof noteBarInformation.aspectRatio !== 'number') {
-                    console.error('notail的left计算出错')
-                    return slotWidth - width
-                }
-                const aspectRatio = noteBarInformation.aspectRatio
-                return slotWidth - width + musicScore.measureHeight * aspectRatio
+            if (mainMsSymbol.type !== MsSymbolTypeEnum.noteHead) {
+                console.error("找不到音符头，符尾left计算出错")
+                return 0
             }
+            const msData = getDataWithIndex(msSymbol.index, musicScore)
+            const msSymbolContainer = msData.msSymbolContainer
+            const measure = msData.measure
+            const singleStaff = msData.singleStaff
+            if (!msSymbolContainer || !measure || !singleStaff) {
+                console.error("数据索引有误，符尾left计算出错")
+                return 0
+            }
+            return getNoteTailLeftToSlot(msSymbol, mainMsSymbol, msSymbolContainer
+                , measure, singleStaff, musicScore, slotWidth,
+                measureWidth, componentWidth)
+
         }
         case MsSymbolTypeEnum.accidental: { // 音符头居中
             return -width
@@ -124,7 +132,6 @@ export function getContainerLeftToMeasure(msSymbolContainer: MsSymbolContainer, 
         const preWidthFixedContainerWidthSumInMeasure = getWidthFixedContainerWidthSumInMeasure(measure, measureHeight, 'front')
         left = (measureWidth - widthFixedContainerWidthSumInMeasure) / widthConstantInMeasure * preWidConstantInMeasure + preWidthFixedContainerWidthSumInMeasure
         if (left === 50) {
-            console.log('chicken', measureWidth)
 
         }
     }

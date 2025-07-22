@@ -74,7 +74,8 @@ export declare type AccidentalMsSymbol = ({
 export declare type NoteTail = ({
     type: MsSymbolTypeEnum.noteTail,
     chronaxie: ChronaxieEnum,
-    group: 1,
+    beamId: number, // 是否成连音组，连音组的话为唯一组号,-1为无
+    beamType: BeamTypeEnum,
 } & BaseMsSymbol)
 export declare type ClefMsSymbol = ({
     type: MsSymbolTypeEnum.clef | MsSymbolTypeEnum.clef_f,

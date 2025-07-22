@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import type {
   Measure,
@@ -133,6 +132,7 @@ const emits = defineEmits(['msSymbolMouseDown', 'msSymbolMouseUp']);
                  :nextContainer="props.nextContainer"
                  :slot-width="slotWidth"
                  :slotBottom="slotBottom"
+                 :slot-left="slotLeft"
                  :containerWidth="containerWidth"
                  :measure-width="measureWidth"
                  :isMain="true"
@@ -156,6 +156,7 @@ const emits = defineEmits(['msSymbolMouseDown', 'msSymbolMouseUp']);
                    :measure="measure"
                    :single-staff="singleStaff"
                    :slot-width="slotWidth"
+                   :slot-left="slotLeft"
                    :parent-ms-symbol="msSymbol"
                    :componentWidth="componentWidth"
                    @msSymbolMouseDown="(e:MouseEvent, msSymbol:MsSymbol)=>emits('msSymbolMouseDown',e,msSymbol)"
