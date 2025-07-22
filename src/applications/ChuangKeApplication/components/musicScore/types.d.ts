@@ -9,7 +9,13 @@ import {
     AccidentalEnum,
     MusicScoreRegionEnum,
     BarLineTypeEnum,
-    SpanSymbolFollowingCategoryEnum, SpanSymbolTypeEnum, MsTypeNameEnum, OrderTypeEnum, MsMode, ReserveMsSymbolType
+    SpanSymbolFollowingCategoryEnum,
+    SpanSymbolTypeEnum,
+    MsTypeNameEnum,
+    OrderTypeEnum,
+    MsMode,
+    ReserveMsSymbolType,
+    BeamTypeEnum
 } from "./musicScoreEnum.ts";
 import {Ref} from "vue";
 
@@ -229,3 +235,12 @@ declare interface MsState {
 // 虚拟符号容器类型
 declare type VirtualSymbolContainerType = 'front' | 'middle' | 'end' | 'self'
 
+// 连音组
+declare type BeamGroupItem = {
+    beamId: number,
+    noteHeadId: number,
+    noteTailId: number,
+    region: MusicScoreRegionEnum,
+    chronaxie: ChronaxieEnum
+}
+declare type BeamGroup = Array<BeamGroupItem>

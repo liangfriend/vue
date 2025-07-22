@@ -625,3 +625,4 @@ export function changeBarLine(barLineMsSymbol: BarLine, barLineType: BarLineType
     const spanSymbolList = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
     updateSpanSymbolView(spanSymbolList, musicScore)
 }
+

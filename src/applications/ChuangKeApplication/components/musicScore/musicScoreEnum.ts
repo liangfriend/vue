@@ -340,6 +340,6 @@ export enum ReserveMsSymbolType {
 }
 
 // 连音组类型
-export enum beamTypeEnum {
+export enum BeamTypeEnum {
     left = 1
 }

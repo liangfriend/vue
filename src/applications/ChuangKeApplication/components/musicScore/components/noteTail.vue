@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import {computed, CSSProperties, PropType} from "vue";
-import {getDataWithIndex} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {
+  getBeamGroup,
+  getDataWithIndex
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
+import {
+  BeamGroup,
   type Measure,
   MsSymbol,
   type MsSymbolContainer, type MusicScore,
-  NoteHead, type SingleStaff
+  NoteHead, NoteTail, type SingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
   ChronaxieEnum,
@@ -37,6 +41,9 @@ const props = defineProps({
     type: Object as PropType<MsSymbol>,
   },
 
+})
+const beamGroup = computed((): BeamGroup | null => {
+  return getBeamGroup(props.msSymbol.beamId, props.measure)
 })
 const mask = computed(() => {
   const noteHead = getDataWithIndex(props.msSymbol.index, props.musicScore)

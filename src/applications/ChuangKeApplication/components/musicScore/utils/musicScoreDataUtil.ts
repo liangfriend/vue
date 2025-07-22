@@ -2,25 +2,26 @@ import {
     AccidentalEnum,
     ClefEnum,
     KeySignatureEnum,
-    MsSymbolContainerTypeEnum,
     MsSymbolTypeEnum,
     MusicalAlphabetEnum,
     MusicScoreRegionEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 import {
+    BeamGroup,
+    BeamGroupItem,
     IndexData,
     Measure,
     MsSymbol,
-    MsSymbolContainer, MsType, MultipleStaves,
-    MusicScore, MusicScoreIndex,
+    MsSymbolContainer,
+    MsType,
+    MultipleStaves,
+    MusicScore,
+    MusicScoreIndex,
     NoteHead,
-    SingleStaff,
-    WidthConstant
+    SingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {MsSymbolInformationMap,} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
-import {measureTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
-import Single from "echarts/types/src/coord/single/Single";
 
 const semitoneMap: { [key: string]: number } = {
     C: 0, 'C#': 1, Db: 1, D: 2, 'D#': 3, Eb: 3,
@@ -761,4 +762,29 @@ export function getMainMsSymbol(msSymbol: MsSymbol, musicScore: MusicScore): MsS
         return msSymbol
     }
     return mainMsSymbol
+}
+
+// 获取连音组信息
+export function getBeamGroup(beamId: number, measure: Measure): BeamGroup | null {
+    const res: BeamGroup = []
+    if (beamId === -1) return null
+    measure.msSymbolContainerArray.forEach((msSymbolContainer) => {
+        msSymbolContainer.msSymbolArray.forEach((msSymbol) => {
+            if (msSymbol.type === MsSymbolTypeEnum.noteHead) {
+                msSymbol.msSymbolArray.forEach((childMSymbol) => {
+                    if (childMSymbol.type === MsSymbolTypeEnum.noteTail && childMSymbol.beamId === beamId) {
+                        const beamGroupItem: BeamGroupItem = {
+                            beamId: childMSymbol.beamId,
+                            noteHeadId: msSymbol.id,
+                            noteTailId: childMSymbol.id,
+                            region: msSymbol.region,
+                            chronaxie: msSymbol.chronaxie
+                        }
+                        res.push(beamGroupItem)
+                    }
+                })
+            }
+        })
+    })
+    return res
 }
