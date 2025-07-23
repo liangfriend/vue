@@ -18,7 +18,7 @@ export function getMsSymbolHeight(msSymbol: MsSymbol, musicScore: MusicScore): n
             }
             const slotBottom = getSlotBottomToMeasure(msSymbol, musicScore)
             const noteHead = getDataWithIndex(msSymbol.index, musicScore).msSymbol as NoteHead
-            if (noteHead.region <= MusicScoreRegionEnum.space_2) {
+            if (msSymbol.direction === 'up') {
                 return Math.max(min, Math.abs(slotBottom) + min - measureHeight * 3 / 8)
             } else {
                 return Math.max(min, Math.abs(slotBottom) - measureHeight + measureHeight * 5 / 8)

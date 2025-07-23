@@ -1,13 +1,21 @@
 <script setup lang="ts">
 
-import {computed, PropType, ref, UnwrapRef} from "vue";
-import {MusicScore, MusicScoreRef, NoteHead} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {computed, onMounted, PropType, ref, UnwrapRef, watch} from "vue";
+import {
+  MusicScore,
+  MusicScoreRef,
+  NoteHead,
+  NoteTail
+} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
   ChronaxieEnum, MsSymbolTypeEnum,
   ReserveMsSymbolType
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {msSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
-import {noteChronaxie} from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
+import {
+  changeBeamId,
+  noteChronaxie
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 
 
 const props = defineProps({
@@ -56,7 +64,33 @@ function changeNoteHeadChronaxie(chronaxie: ChronaxieEnum) {
   noteChronaxie(props.noteHead, chronaxie, props.musicScore)
 }
 
+function updateBeamId() {
+  if (noteTail.value && beamId.value && beamId.value !== -1) {
+    changeBeamId(beamId.value, props.noteHead, props.musicScore)
+  }
+}
 
+watch(() => props.noteHead, () => {
+  init()
+})
+
+function init() {
+  noteTail.value = props.noteHead?.msSymbolArray.find((item) => {
+    return item.type === MsSymbolTypeEnum.noteTail
+  }) as NoteTail | null
+
+  if (noteTail.value && noteTail.value.beamId !== -1) {
+    beamId.value = noteTail.value.beamId
+  } else {
+    beamId.value = null
+  }
+}
+
+const beamId = ref<number | null>(null)
+const noteTail = ref<NoteTail | null>(null)
+onMounted(() => {
+  init()
+})
 </script>
 
 <template>
@@ -68,7 +102,18 @@ function changeNoteHeadChronaxie(chronaxie: ChronaxieEnum) {
          v-for="(item,index) in noteList">
       {{ item.text }}
     </div>
+
+
   </div>
+  <template v-if="![ChronaxieEnum.whole,ChronaxieEnum.half,ChronaxieEnum.quarter]
+  .includes(noteHead.chronaxie)">
+    <div>
+      连音组号
+      <el-button @click="updateBeamId">更新</el-button>
+    </div>
+    <el-input v-model="beamId" type="number"></el-input>
+  </template>
+
 </template>
 
 <style scoped>

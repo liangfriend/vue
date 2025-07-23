@@ -1,22 +1,29 @@
 import {
     BarLineTypeEnum,
-    ChronaxieEnum, ClefEnum, KeySignatureEnum,
+    ChronaxieEnum,
+    ClefEnum,
+    KeySignatureEnum,
     MsSymbolTypeEnum,
-    MsTypeNameEnum
+    MsTypeNameEnum,
+    MusicScoreRegionEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 import {
     BarLine,
-    ClefMsSymbol, KeySignatureMsSymbol,
+    ClefMsSymbol,
+    KeySignatureMsSymbol,
     Measure,
     MsSymbol,
     MsSymbolContainer,
     MsType,
     MultipleStaves,
     MusicScore,
+    NoteBar,
     NoteTail,
     SingleStaff,
-    SpanSymbol, TimeSignature, TimeSignatureMsSymbol
+    SpanSymbol,
+    TimeSignature,
+    TimeSignatureMsSymbol
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {msSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
@@ -626,3 +633,52 @@ export function changeBarLine(barLineMsSymbol: BarLine, barLineType: BarLineType
     updateSpanSymbolView(spanSymbolList, musicScore)
 }
 
+// 更新bemId
+export function changeBeamId(newBeamId: number, noteTail: NoteTail, musicScore: MusicScore) {
+    noteTail.beamId = newBeamId
+}
+
+// 更新符杠方向
+export function changeNoteBarDirection(direction: 'up' | 'down', noteBar: NoteBar) {
+    console.log('chicken',)
+    noteBar.direction = direction
+    noteBar.vueKey = Date.now()
+}
+
+// 成组音符更新
+export function updateBeamGroupNote(beamId: number, measure: Measure, musicScore: MusicScore) {
+    const group: NoteBar[] = []
+    let direction: 'up' | 'down' = 'up'
+    let farthestRegion: MusicScoreRegionEnum = MusicScoreRegionEnum.line_3
+    let start = false
+    for (const i in measure.msSymbolContainerArray) {
+        const msSymbolContainer = measure.msSymbolContainerArray[i]
+        for (const j in msSymbolContainer.msSymbolArray) {
+            const mainSymbol = msSymbolContainer.msSymbolArray[j]
+            // 找到音符头存储(这里要考虑多声部，container中可能有多个音符头)
+            if (mainSymbol.type === MsSymbolTypeEnum.noteHead
+                && ![ChronaxieEnum.whole, ChronaxieEnum.half, ChronaxieEnum.quarter].includes(mainSymbol.chronaxie)) {
+                const distanceFromMiddle = Math.abs(mainSymbol.region - MusicScoreRegionEnum.line_3)
+                const currentFarthest = Math.abs(farthestRegion - MusicScoreRegionEnum.line_3)
+                if (distanceFromMiddle > currentFarthest) {
+                    farthestRegion = mainSymbol.region
+                }
+
+                const noteBar = mainSymbol.msSymbolArray.find(item => item.type === MsSymbolTypeEnum.noteBar) as NoteBar | null
+                const noteTail = mainSymbol.msSymbolArray.find(item => item.type === MsSymbolTypeEnum.noteTail) as NoteTail | null
+                if (noteTail && noteBar && noteTail.beamId === beamId) {
+                    group.push(noteBar)
+                    start = true
+                }
+            } else if (start) {
+                break
+            }
+        }
+    }
+    // 更新 direction
+    direction = farthestRegion >= MusicScoreRegionEnum.space_2 ? 'down' : 'up'
+    for (const i in group) {
+        const noteBar = group[i]
+        changeNoteBarDirection(direction, noteBar)
+    }
+}

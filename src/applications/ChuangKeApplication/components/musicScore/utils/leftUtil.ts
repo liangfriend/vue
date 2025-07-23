@@ -64,9 +64,7 @@ export function getMsSymbolLeftToSlot(msSymbol: MsSymbol, musicScore: MusicScore
             return
         }
         case MsSymbolTypeEnum.noteBar: { // 音符头居中
-            if (mainMsSymbol &&
-                'region' in mainMsSymbol &&
-                mainMsSymbol.region <= MusicScoreRegionEnum.space_2) {
+            if (msSymbol.direction === 'up') {
                 return slotWidth - width
             } else {
                 return 0

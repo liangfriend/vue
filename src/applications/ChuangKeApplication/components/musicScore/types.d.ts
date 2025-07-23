@@ -53,17 +53,19 @@ export declare type BaseMsSymbol = {
     msTypeName: MsTypeNameEnum.MsSymbol,
     bindingStartId: Array<number>,
     bindingEndId: Array<number>,
-    index: MusicScoreIndex
+    index: MusicScoreIndex,
+    vueKey: number,
 }
 export declare type NoteHead = ({
     type: MsSymbolTypeEnum.noteHead,
     region: MusicScoreRegionEnum   // 五线谱区域
     chronaxie: ChronaxieEnum; // 时值
-    computed: { // TODO 这里可能要废弃，只是播放用的话，不需要放在这
-        clef?: ClefEnum;  // 谱号
-        keySignature?: KeySignatureEnum; // 调号
-        musicalAlphabet?: MusicalAlphabetEnum; // 音名
-    }
+
+} & BaseMsSymbol)
+export declare type NoteBar = ({
+    type: MsSymbolTypeEnum.noteBar,
+    direction: 'up' | 'down',
+    beamId: number,
 } & BaseMsSymbol)
 export declare type TimeSignatureMsSymbol = ({
     type: MsSymbolTypeEnum.timeSignature,
@@ -101,12 +103,12 @@ export declare type Rest = ({
 } & BaseMsSymbol)
 export declare type MsSymbol = NoteHead | ClefMsSymbol
     | TimeSignatureMsSymbol | KeySignatureMsSymbol
-    | AccidentalMsSymbol | NoteTail | BarLine | Rest | ({
+    | AccidentalMsSymbol | NoteTail | BarLine | Rest | NoteBar | ({
     type: Exclude<MsSymbolTypeEnum, MsSymbolTypeEnum.noteHead | MsSymbolTypeEnum.clef |
         MsSymbolTypeEnum.timeSignature | MsSymbolTypeEnum.clef_f
         | MsSymbolTypeEnum.noteTail | MsSymbolTypeEnum.keySignature
         | MsSymbolTypeEnum.accidental | MsSymbolTypeEnum.barLine
-        | MsSymbolTypeEnum.barLine_f | MsSymbolTypeEnum.rest>,
+        | MsSymbolTypeEnum.barLine_f | MsSymbolTypeEnum.rest | MsSymbolTypeEnum.noteBar>,
 
 
 } & BaseMsSymbol)
@@ -115,6 +117,7 @@ export declare type BaseSpanSymbol = {
     id: number,
     msTypeName: MsTypeNameEnum.SpanSymbol,
     rect: Rect
+    vueKey: number,
 }
 // 跨小节符号.  目前只有小节跟随型和符号（音符头）跟随型
 export declare type SpanSymbol = (BaseSpanSymbol & {
@@ -123,7 +126,7 @@ export declare type SpanSymbol = (BaseSpanSymbol & {
     startTargetId: number,
     endTargetId: number,
     options: MusicScoreOptions,
-    vueKey: number,
+
 })
 export declare type MsSymbolContainer = {
     id: number,
@@ -132,6 +135,7 @@ export declare type MsSymbolContainer = {
     index: Omit<MusicScoreIndex, 'msSymbolIndex'>
     options: MusicScoreOptions
     msTypeName: MsTypeNameEnum.MsSymbolContainer,
+    vueKey: number,
 }
 
 export declare interface Measure {
@@ -142,6 +146,7 @@ export declare interface Measure {
     msTypeName: MsTypeNameEnum.Measure,
     index: Omit<MusicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex'>,
     options: MusicScoreOptions,
+    vueKey: number,
 }
 
 export declare interface SingleStaff {
@@ -154,7 +159,8 @@ export declare interface SingleStaff {
     bindingEndId: Array<number>,
     msTypeName: MsTypeNameEnum.SingleStaff,
     index: Omit<MusicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex' | 'measureIndex'>,
-    options: MusicScoreOptions
+    options: MusicScoreOptions,
+    vueKey: number,
 
 }
 
@@ -166,7 +172,8 @@ export declare interface MultipleStaves { //复谱表
     multipleStavesMarginBottom: number,
     msTypeName: MsTypeNameEnum.MultipStaves,
     index: Omit<MusicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex' | 'measureIndex' | 'singleStaffIndex'>,
-    options: MusicScoreOptions
+    options: MusicScoreOptions,
+    vueKey: number,
 
 }
 
@@ -180,7 +187,8 @@ export declare interface MusicScore {
     showMode: MusicScoreShowModeEnum
     spanSymbolArray: Array<SpanSymbol>,
     widthDynamicRatio: number, //动态宽度部分占比
-    map: Record<number, MsType>
+    map: Record<number, MsType>,
+    vueKey: number,
 }
 
 

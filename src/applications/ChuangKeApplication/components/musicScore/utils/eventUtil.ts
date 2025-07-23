@@ -13,7 +13,7 @@ import {
     MsSymbolContainer,
     MsType,
     MultipleStaves,
-    MusicScore,
+    MusicScore, NoteBar, NoteTail,
     SingleStaff, SpanSymbol,
     VirtualSymbolContainerType
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
@@ -31,7 +31,7 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {
     addMsSymbol,
-    addMsSymbolContainer
+    addMsSymbolContainer, changeNoteBarDirection, updateBeamGroupNote
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 
 
@@ -66,7 +66,24 @@ export function handleMouseMoveSelected(e: MouseEvent, measureHeight: number, cu
                     const index = Math.floor(dy / measureHeight * 8);
                     const targetIndex = eventConstant.originRegion - index;
                     if (targetIndex in MusicScoreRegionEnum) {
+                        const originRegion = msSymbol.region
                         msSymbol.region = targetIndex as MusicScoreRegionEnum;
+                        // 符杠更新
+                        const noteBar = msSymbol.msSymbolArray.find((item) => item.type === MsSymbolTypeEnum.noteBar) as NoteBar | null;
+                        const noteTail = msSymbol.msSymbolArray.find((item) => item.type === MsSymbolTypeEnum.noteTail) as NoteTail | null;
+                        if (!noteTail || (noteTail.beamId === -1)) { // 不成连音组
+                            if (noteBar && msSymbol.region >= MusicScoreRegionEnum.space_2 && originRegion < MusicScoreRegionEnum.space_2) {
+                                changeNoteBarDirection('down', noteBar)
+                            } else if (noteBar && msSymbol.region < MusicScoreRegionEnum.space_2 && originRegion >= MusicScoreRegionEnum.space_2) {
+                                changeNoteBarDirection('up', noteBar)
+                            }
+                        } else { // 成连音组
+                            const measure = getDataWithIndex(msSymbol.index, musicScore).measure
+                            if (measure) {
+                                updateBeamGroupNote(noteTail.beamId, measure, musicScore)
+                            }
+                        }
+
                         // 跨小节符号位置更新
                         const singleStaff = getDataWithIndex(currentSelected.value.index, musicScore).singleStaff
                         if (!singleStaff) return console.error("找不到单谱表，跨小节符号更新失败")
@@ -144,9 +161,7 @@ export function virtualSymbolMouseDown(
         addMsSymbolContainer(newMsSymbolContainer,
             params.msData.msSymbolContainer, params.msData.musicScore, 'after')
     } else if (['self'].includes(params.virtualSymbolContainerType)) {
-        // TODO 需要判断同region是否已经存在音符
         if (!params.msData.msSymbolContainer) return console.error("没有作为对照的符号容器，符号添加失败")
-
         const sameRegionNoteHead = params.msData.msSymbolContainer.msSymbolArray.find(m => {
             return m.type === MsSymbolTypeEnum.noteHead && m.region === newNoteHead.region
         })

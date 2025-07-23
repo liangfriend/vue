@@ -88,13 +88,13 @@ const bottomMenuData = ref([{
   callback: stop
 }]);
 const musicLoaded = ref(false)
-watch(musicScoreData, (newVal) => {
-  musicLoaded.value = false
-  // musicScore发生变化时，需要更新播放器生成tonejs序列
-  msPlayUtils.addMusicToMap(MusicMapKey.CMK, newVal, () => {
-    musicLoaded.value = true
-  })
-}, {deep: true})
+// watch(musicScoreData, (newVal) => {
+//   musicLoaded.value = false
+//   // musicScore发生变化时，需要更新播放器生成tonejs序列
+//   msPlayUtils.addMusicToMap(MusicMapKey.CMK, newVal, () => {
+//     musicLoaded.value = true
+//   })
+// }, {deep: true})
 const currentSelected = computed(() => {
   return msRef.value?.currentSelected || null
 })

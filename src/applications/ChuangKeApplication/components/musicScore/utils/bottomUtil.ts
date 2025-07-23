@@ -25,8 +25,7 @@ export function getMsSymbolBottomToSlot(msSymbol: MsSymbol, musicScore: MusicSco
     const measureHeight = musicScore.measureHeight
     switch (msSymbol?.type) {
         case MsSymbolTypeEnum.noteBar: {
-            if (parentMsSymbol && 'region' in parentMsSymbol
-                && parentMsSymbol.region <= MusicScoreRegionEnum.space_2) {
+            if (msSymbol.direction === 'up') {
                 return measureHeight / 8
 
             } else {

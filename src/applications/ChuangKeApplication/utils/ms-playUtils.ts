@@ -168,6 +168,7 @@ function durationToBeats(duration: string): number {
 }
 
 function musicScoreToToneSequence(musicData: MusicScore): ToneSequence[] {
+    console.trace('chicken',)
     const sequence: ToneSequence[] = [];
     let accumulatorTime = 0
     for (const multiStaff of musicData.multipleStavesArray) {

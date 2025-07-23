@@ -1,5 +1,6 @@
 import {
     BarLineTypeEnum,
+    BeamTypeEnum,
     ChronaxieEnum,
     ClefEnum,
     KeySignatureEnum,
@@ -17,7 +18,8 @@ import {
     MsSymbolContainer,
     MultipleStaves,
     SingleStaff,
-    SpanSymbol, TimeSignature
+    SpanSymbol,
+    TimeSignature
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 
 export function spanSymbolTemplate(options: {
@@ -81,14 +83,15 @@ export function msSymbolTemplate(options: {
         },
         bindingStartId: [],
         bindingEndId: [],
-        msSymbolArray: []
+        msSymbolArray: [],
+        vueKey: Date.now(),
     }
     switch (options.type) {
         case MsSymbolTypeEnum.noteHead: {
             // chronaxie不存在默认为四分音符，添加符杠
             if (!options.chronaxie || ![ChronaxieEnum.whole].includes(options.chronaxie)) {
                 const noteBar = msSymbolTemplate({
-                    type: MsSymbolTypeEnum.noteBar
+                    type: MsSymbolTypeEnum.noteBar,
                 })
                 baseMsSymbol.msSymbolArray.push(noteBar)
 
@@ -107,7 +110,6 @@ export function msSymbolTemplate(options: {
                 type: MsSymbolTypeEnum.noteHead,
                 region: options.region || MusicScoreRegionEnum.space_3,
                 chronaxie: options.chronaxie || ChronaxieEnum.quarter,
-                computed: {},
             }
         }
         case MsSymbolTypeEnum.barLine: {
@@ -150,6 +152,8 @@ export function msSymbolTemplate(options: {
         case MsSymbolTypeEnum.noteBar: {
             return {
                 ...baseMsSymbol,
+                direction: 'up',
+                beamId: -1,
                 type: MsSymbolTypeEnum.noteBar,
             }
         }
@@ -158,6 +162,8 @@ export function msSymbolTemplate(options: {
                 ...baseMsSymbol,
                 type: MsSymbolTypeEnum.noteTail,
                 chronaxie: options.chronaxie || ChronaxieEnum.quarter,
+                beamId: -1,
+                beamType: BeamTypeEnum.left
             }
         }
         case MsSymbolTypeEnum.clef_f: {
@@ -198,7 +204,6 @@ export function msSymbolTemplate(options: {
                 type: MsSymbolTypeEnum.noteHead,
                 region: options.region || MusicScoreRegionEnum.space_3,
                 chronaxie: options.chronaxie || ChronaxieEnum.quarter,
-                computed: {},
             }
         }
 
@@ -216,6 +221,7 @@ export function msSymbolContainerTemplate(options: { type?: MsSymbolContainerTyp
             hightlightColor: 'red',
             color: 'black',
         },
+        vueKey: Date.now(),
         msTypeName: MsTypeNameEnum.MsSymbolContainer,
     }
 
@@ -236,6 +242,7 @@ export function measureTemplate(options: { barLineType?: BarLineTypeEnum } = {})
             hightlightColor: 'red',
             color: 'black',
         },
+        vueKey: Date.now(),
         msSymbolContainerArray: []
     }
     // 小节必须有结束小节线
@@ -266,6 +273,7 @@ export function singleStaffTemplate(options: {} = {}): SingleStaff {
             hightlightColor: 'red',
             color: 'transparent',
         },
+        vueKey: Date.now(),
         singleStaffMarginBottom: 30,
         measureArray: []
     }
@@ -290,6 +298,7 @@ export function multipleStavesTemplate(options: {} = {}): MultipleStaves {
             hightlightColor: 'red',
             color: 'transparent',
         },
+        vueKey: Date.now(),
         singleStaffArray: []
     }
     const singleStaff = singleStaffTemplate({})

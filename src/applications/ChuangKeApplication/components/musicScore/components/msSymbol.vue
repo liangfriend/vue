@@ -286,9 +286,9 @@ const msSymbolStyle = computed<CSSProperties>(() => {
     style.mask = `url(${svgHref.value}) center center / cover no-repeat`
   }
   // TODO 测试代码
-  if (props.msSymbol.type === MsSymbolTypeEnum.noteTail) {
-    style.background = 'red'
-  }
+  // if (props.msSymbol.type === MsSymbolTypeEnum.noteTail) {
+  //   style.background = 'red'
+  // }
   return style
 });
 const emits = defineEmits(['msSymbolMouseDown', 'msSymbolMouseUp']);
