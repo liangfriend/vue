@@ -21,20 +21,19 @@ export function getMsSymbolHeight(msSymbol: MsSymbol, musicScore: MusicScore): n
             if ('heightMultiplier' in information) { // noteBar的最小高度
                 minHeight = measureHeight * information.heightMultiplier
             }
-            const NoteBarBottomToSlotUp = -measureHeight * 3 / 8
-            const NoteBarBottomToSlotBottom = measureHeight * 5 / 8
+            const NoteBarBottomToSlotUp = measureHeight * 1 / 8
+            const NoteBarBottomToSlotBottom = -measureHeight * 5 / 8
 
             if (noteHead.beamId === -1) {
 
                 const slotBottom = getSlotBottomToMeasure(msSymbol, musicScore)
 
                 if (msSymbol.direction === 'up') {
-                    return Math.max(minHeight, Math.abs(slotBottom) + minHeight + NoteBarBottomToSlotUp)
+                    return Math.max(minHeight, Math.abs(slotBottom) + minHeight - NoteBarBottomToSlotUp)
                 } else {
-                    return Math.max(minHeight, Math.abs(slotBottom) - measureHeight + NoteBarBottomToSlotBottom)
+                    return Math.max(minHeight, Math.abs(slotBottom) - measureHeight + minHeight + NoteBarBottomToSlotUp)
                 }
             } else { // 成组的情况
-
                 const measure = getDataWithIndex(noteHead.index, musicScore).measure
                 if (!measure) {
                     console.error("索引找不到measure,符杠height计算失败")
@@ -56,8 +55,20 @@ export function getMsSymbolHeight(msSymbol: MsSymbol, musicScore: MusicScore): n
                         return acc
                     }, beamGroup[0].noteHead)
                     const farthestSlotBottom = getSlotBottomToMeasure(farthestNoteHead, musicScore)
+                    let height = 0
+                    //至少一个超出
+                    if (farthestNoteHead.region > MusicScoreRegionEnum.line_1) {
+                        height = slotBottom + measureHeight / 8 - measureHeight + minHeight
+                        // 如果超出的是当前音符
+                        if (farthestNoteHead === noteHead) {
+                            return minHeight
+                        } else { // 如果超出的不是当前音符
+                            return -slotBottom + farthestSlotBottom + minHeight
+                        }
+                    } else { // 全部不超出
+                        return -slotBottom - NoteBarBottomToSlotUp + minHeight
+                    }
 
-                    return Math.max(minHeight, Math.abs(slotBottom + farthestSlotBottom) + minHeight - NoteBarBottomToSlotUp)
                 } else {
                     // 找到最靠下的音符头
                     const farthestNoteHead = beamGroup.reduce((acc, cur) => {
@@ -66,8 +77,21 @@ export function getMsSymbolHeight(msSymbol: MsSymbol, musicScore: MusicScore): n
                         }
                         return acc
                     }, beamGroup[0].noteHead)
+
                     const farthestSlotBottom = getSlotBottomToMeasure(farthestNoteHead, musicScore)
-                    return Math.max(minHeight, Math.abs(slotBottom + farthestSlotBottom) - measureHeight + NoteBarBottomToSlotBottom)
+                    let height = 0
+                    //至少一个超出
+                    if (farthestNoteHead.region < MusicScoreRegionEnum.line_5) {
+                        height = slotBottom + measureHeight / 8 - measureHeight + minHeight
+                        // 如果超出的是当前音符
+                        if (farthestNoteHead === noteHead) {
+                            return minHeight
+                        } else { // 如果超出的不是当前音符
+                            return slotBottom - farthestSlotBottom + minHeight
+                        }
+                    } else { // 全部不超出
+                        return slotBottom - measureHeight + NoteBarBottomToSlotUp + minHeight
+                    }
                 }
             }
 

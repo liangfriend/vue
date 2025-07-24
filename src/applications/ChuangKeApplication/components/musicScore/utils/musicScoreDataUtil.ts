@@ -770,7 +770,7 @@ export function getBeamGroup(beamId: number, measure: Measure): BeamGroup | null
     if (beamId === -1) return null
     measure.msSymbolContainerArray.forEach((msSymbolContainer) => {
         msSymbolContainer.msSymbolArray.forEach((msSymbol) => {
-            if (msSymbol.type === MsSymbolTypeEnum.noteHead) {
+            if (msSymbol.type === MsSymbolTypeEnum.noteHead && msSymbol.beamId === beamId) {
                 msSymbol.msSymbolArray.forEach((childMSymbol) => {
                     const beamGroupItem: BeamGroupItem = {
                         beamId: msSymbol.beamId,
