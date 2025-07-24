@@ -38,9 +38,9 @@ import {
 // 添加发布者
 export function select(value: MsType, currentSelected: Ref<null | MsType>) {
     if (currentSelected.value) {
-        currentSelected.value.options.hightlight = false
+        currentSelected.value.options.highlight = false
     }
-    value.options.hightlight = true
+    value.options.highlight = true
     currentSelected.value = value
 
 }
@@ -71,7 +71,7 @@ export function handleMouseMoveSelected(e: MouseEvent, measureHeight: number, cu
                         // 符杠更新
                         const noteBar = msSymbol.msSymbolArray.find((item) => item.type === MsSymbolTypeEnum.noteBar) as NoteBar | null;
                         const noteTail = msSymbol.msSymbolArray.find((item) => item.type === MsSymbolTypeEnum.noteTail) as NoteTail | null;
-                        if (!noteTail || (noteTail.beamId === -1)) { // 不成连音组
+                        if (!noteTail || (msSymbol.beamId === -1)) { // 不成连音组
                             if (noteBar && msSymbol.region >= MusicScoreRegionEnum.space_2 && originRegion < MusicScoreRegionEnum.space_2) {
                                 changeNoteBarDirection('down', noteBar)
                             } else if (noteBar && msSymbol.region < MusicScoreRegionEnum.space_2 && originRegion >= MusicScoreRegionEnum.space_2) {
@@ -80,7 +80,7 @@ export function handleMouseMoveSelected(e: MouseEvent, measureHeight: number, cu
                         } else { // 成连音组
                             const measure = getDataWithIndex(msSymbol.index, musicScore).measure
                             if (measure) {
-                                updateBeamGroupNote(noteTail.beamId, measure, musicScore)
+                                updateBeamGroupNote(msSymbol.beamId, measure, musicScore)
                             }
                         }
 
@@ -104,7 +104,7 @@ export function handleMouseUpSelected(e: MouseEvent, currentSelected: Ref<MsType
         case MsTypeNameEnum.MsSymbol: {
 
 
-            currentSelected.value.options.hightlight = false
+            currentSelected.value.options.highlight = false
             currentSelected.value = null
 
             break

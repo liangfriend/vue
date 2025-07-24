@@ -65,29 +65,26 @@ function changeNoteHeadChronaxie(chronaxie: ChronaxieEnum) {
 }
 
 function updateBeamId() {
-  if (noteTail.value && beamId.value && beamId.value !== -1) {
+  if (beamId.value && beamId.value !== -1) {
     changeBeamId(beamId.value, props.noteHead, props.musicScore)
   }
 }
 
 watch(() => props.noteHead, () => {
   init()
+}, {
+  deep: true
 })
 
 function init() {
-  noteTail.value = props.noteHead?.msSymbolArray.find((item) => {
-    return item.type === MsSymbolTypeEnum.noteTail
-  }) as NoteTail | null
-
-  if (noteTail.value && noteTail.value.beamId !== -1) {
-    beamId.value = noteTail.value.beamId
+  if (props.noteHead.beamId !== -1) {
+    beamId.value = props.noteHead.beamId
   } else {
     beamId.value = null
   }
 }
 
 const beamId = ref<number | null>(null)
-const noteTail = ref<NoteTail | null>(null)
 onMounted(() => {
   init()
 })

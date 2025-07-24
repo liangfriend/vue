@@ -29,8 +29,8 @@ const voltaStyle = computed(() => {
   style.width = props.spanSymbol.rect.width + 'px'
   style.left = props.spanSymbol.rect.left + 'px'
   style.bottom = props.spanSymbol.rect.bottom + 'px'
-  style.borderColor = props.spanSymbol.options.hightlight
-      ? props.spanSymbol.options.hightlightColor : props.spanSymbol.options.color
+  style.borderColor = props.spanSymbol.options.highlight
+      ? props.spanSymbol.options.highlightColor : props.spanSymbol.options.color
 
   return style
 })

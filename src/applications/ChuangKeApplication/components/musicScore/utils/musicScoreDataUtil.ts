@@ -772,16 +772,13 @@ export function getBeamGroup(beamId: number, measure: Measure): BeamGroup | null
         msSymbolContainer.msSymbolArray.forEach((msSymbol) => {
             if (msSymbol.type === MsSymbolTypeEnum.noteHead) {
                 msSymbol.msSymbolArray.forEach((childMSymbol) => {
-                    if (childMSymbol.type === MsSymbolTypeEnum.noteTail && childMSymbol.beamId === beamId) {
-                        const beamGroupItem: BeamGroupItem = {
-                            beamId: childMSymbol.beamId,
-                            noteHeadId: msSymbol.id,
-                            noteTailId: childMSymbol.id,
-                            region: msSymbol.region,
-                            chronaxie: msSymbol.chronaxie
-                        }
-                        res.push(beamGroupItem)
+                    const beamGroupItem: BeamGroupItem = {
+                        beamId: msSymbol.beamId,
+                        noteHead: msSymbol,
+                        region: msSymbol.region,
+                        chronaxie: msSymbol.chronaxie
                     }
+                    res.push(beamGroupItem)
                 })
             }
         })

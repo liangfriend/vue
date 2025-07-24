@@ -21,8 +21,8 @@ import {Ref} from "vue";
 
 
 export declare interface MusicScoreOptions {
-    hightlight: Boolean;
-    hightlightColor: string;
+    highlight: Boolean;
+    highlightColor: string;
     color: string;
 }
 
@@ -60,12 +60,16 @@ export declare type NoteHead = ({
     type: MsSymbolTypeEnum.noteHead,
     region: MusicScoreRegionEnum   // 五线谱区域
     chronaxie: ChronaxieEnum; // 时值
-
+    beamId: number, // 是否成连音组，连音组的话为唯一组号,-1为无
 } & BaseMsSymbol)
 export declare type NoteBar = ({
     type: MsSymbolTypeEnum.noteBar,
     direction: 'up' | 'down',
-    beamId: number,
+} & BaseMsSymbol)
+export declare type NoteTail = ({
+    type: MsSymbolTypeEnum.noteTail,
+    chronaxie: ChronaxieEnum,
+    beamType: BeamTypeEnum,
 } & BaseMsSymbol)
 export declare type TimeSignatureMsSymbol = ({
     type: MsSymbolTypeEnum.timeSignature,
@@ -79,12 +83,7 @@ export declare type AccidentalMsSymbol = ({
     type: MsSymbolTypeEnum.accidental,
     accidental: AccidentalEnum,
 } & BaseMsSymbol)
-export declare type NoteTail = ({
-    type: MsSymbolTypeEnum.noteTail,
-    chronaxie: ChronaxieEnum,
-    beamId: number, // 是否成连音组，连音组的话为唯一组号,-1为无
-    beamType: BeamTypeEnum,
-} & BaseMsSymbol)
+
 export declare type ClefMsSymbol = ({
     type: MsSymbolTypeEnum.clef | MsSymbolTypeEnum.clef_f,
     clef: ClefEnum
@@ -246,8 +245,7 @@ declare type VirtualSymbolContainerType = 'front' | 'middle' | 'end' | 'self'
 // 连音组
 declare type BeamGroupItem = {
     beamId: number,
-    noteHeadId: number,
-    noteTailId: number,
+    noteHead: NoteHead,
     region: MusicScoreRegionEnum,
     chronaxie: ChronaxieEnum
 }

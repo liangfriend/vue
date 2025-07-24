@@ -68,7 +68,7 @@ const barLineStyle = computed((): CSSProperties => {
     'background-color': 'black',
     mask: `url(${barLine}) no-repeat center`,
     'mask-size': '100% 100%',
-    background: props.measure.options.hightlight ? props.measure.options.hightlightColor : props.measure.options.color,
+    background: props.measure.options.highlight ? props.measure.options.highlightColor : props.measure.options.color,
     pointerEvents: 'none',
   };
 });

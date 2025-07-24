@@ -325,7 +325,7 @@ export enum BarLineTypeEnum {
 
 // ----------------------------------------- 非乐谱类型
 export enum OrderTypeEnum {
-    hightlight = 1
+    highlight = 1
 }
 
 // 编辑器模式

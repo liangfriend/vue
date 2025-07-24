@@ -38,8 +38,8 @@ export function spanSymbolTemplate(options: {
                 "id": Date.now(),
                 "rect": {},
                 "options": {
-                    "hightlight": false,
-                    "hightlightColor": "red",
+                    "highlight": false,
+                    "highlightColor": "red",
                     "color": "black"
                 },
                 "vueKey": Date.now()
@@ -55,8 +55,8 @@ export function spanSymbolTemplate(options: {
         "id": Date.now(),
         "rect": {},
         "options": {
-            "hightlight": false,
-            "hightlightColor": "red",
+            "highlight": false,
+            "highlightColor": "red",
             "color": "black"
         },
         "vueKey": Date.now()
@@ -77,8 +77,8 @@ export function msSymbolTemplate(options: {
         msTypeName: MsTypeNameEnum.MsSymbol,
         index: {},
         options: {
-            hightlight: false,
-            hightlightColor: 'red',
+            highlight: false,
+            highlightColor: 'red',
             color: 'black',
         },
         bindingStartId: [],
@@ -101,12 +101,13 @@ export function msSymbolTemplate(options: {
 
                 const noteTail = msSymbolTemplate({
                     type: MsSymbolTypeEnum.noteTail,
-                    chronaxie: options.chronaxie || ChronaxieEnum.quarter
+                    chronaxie: options.chronaxie || ChronaxieEnum.quarter,
                 })
                 baseMsSymbol.msSymbolArray.push(noteTail)
             }
             return {
                 ...baseMsSymbol,
+                beamId: -1,
                 type: MsSymbolTypeEnum.noteHead,
                 region: options.region || MusicScoreRegionEnum.space_3,
                 chronaxie: options.chronaxie || ChronaxieEnum.quarter,
@@ -153,7 +154,6 @@ export function msSymbolTemplate(options: {
             return {
                 ...baseMsSymbol,
                 direction: 'up',
-                beamId: -1,
                 type: MsSymbolTypeEnum.noteBar,
             }
         }
@@ -162,7 +162,6 @@ export function msSymbolTemplate(options: {
                 ...baseMsSymbol,
                 type: MsSymbolTypeEnum.noteTail,
                 chronaxie: options.chronaxie || ChronaxieEnum.quarter,
-                beamId: -1,
                 beamType: BeamTypeEnum.left
             }
         }
@@ -204,6 +203,7 @@ export function msSymbolTemplate(options: {
                 type: MsSymbolTypeEnum.noteHead,
                 region: options.region || MusicScoreRegionEnum.space_3,
                 chronaxie: options.chronaxie || ChronaxieEnum.quarter,
+                beamId: -1,
             }
         }
 
@@ -217,8 +217,8 @@ export function msSymbolContainerTemplate(options: { type?: MsSymbolContainerTyp
         type: options.type || MsSymbolContainerTypeEnum.variable,
         index: {},
         options: {
-            hightlight: false,
-            hightlightColor: 'red',
+            highlight: false,
+            highlightColor: 'red',
             color: 'black',
         },
         vueKey: Date.now(),
@@ -238,8 +238,8 @@ export function measureTemplate(options: { barLineType?: BarLineTypeEnum } = {})
         bindingStartId: [],
         bindingEndId: [],
         options: {
-            hightlight: false,
-            hightlightColor: 'red',
+            highlight: false,
+            highlightColor: 'red',
             color: 'black',
         },
         vueKey: Date.now(),
@@ -269,8 +269,8 @@ export function singleStaffTemplate(options: {} = {}): SingleStaff {
         singleStaffPaddingTop: 30,
         singleStaffPaddingBottom: 30,
         options: {
-            hightlight: false,
-            hightlightColor: 'red',
+            highlight: false,
+            highlightColor: 'red',
             color: 'transparent',
         },
         vueKey: Date.now(),
@@ -294,8 +294,8 @@ export function multipleStavesTemplate(options: {} = {}): MultipleStaves {
         multipleStavesPaddingBottom: 60,
         multipleStavesMarginBottom: 60,
         options: {
-            hightlight: false,
-            hightlightColor: 'red',
+            highlight: false,
+            highlightColor: 'red',
             color: 'transparent',
         },
         vueKey: Date.now(),

@@ -247,6 +247,7 @@ const aspectRatio = computed<number>(() => {
 
 
 const height = computed(() => {
+  // const parentMsSymbol = getDataWithIndex(props.msSymbol).msSymbol
   return getMsSymbolHeight(props.msSymbol, props.musicScore)
 })
 // 符号宽度
@@ -275,7 +276,7 @@ const msSymbolStyle = computed<CSSProperties>(() => {
     position: 'absolute',
     left: msSymbolLeft.value + 'px',
     bottom: msSymbolBottom.value + 'px',
-    background: props.msSymbol.options.hightlight ? props.msSymbol.options.hightlightColor : props.msSymbol.options.color,
+    background: props.msSymbol.options.highlight ? props.msSymbol.options.highlightColor : props.msSymbol.options.color,
   }
   if (props.msSymbol?.type && [MsSymbolTypeEnum.keySignature, MsSymbolTypeEnum.timeSignature,
     MsSymbolTypeEnum.noteTail].includes(props.msSymbol.type)) {

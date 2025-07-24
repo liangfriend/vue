@@ -76,7 +76,7 @@ const multipleStavesStyle = computed(() => (multipleStaves: MultipleStaves): CSS
     'padding-bottom': multipleStaves.multipleStavesPaddingBottom + 'px',
     'margin-bottom': multipleStaves.multipleStavesMarginBottom + 'px',
     'pointer-events': props.disabled ? 'none' : 'auto',
-    'outline': `1px solid ` + (multipleStaves.options.hightlight ? multipleStaves.options.hightlightColor : multipleStaves.options.color),
+    'outline': `1px solid ` + (multipleStaves.options.highlight ? multipleStaves.options.highlightColor : multipleStaves.options.color),
   };
 });
 const singleStaffStyle = computed(() => (singleStaff: SingleStaff, _multipleStaves: MultipleStaves): CSSProperties => {
@@ -86,7 +86,7 @@ const singleStaffStyle = computed(() => (singleStaff: SingleStaff, _multipleStav
     'padding-bottom': singleStaff.singleStaffPaddingBottom + 'px',
     'margin-bottom': singleStaff.singleStaffMarginBottom + 'px',
     'pointer-events': props.disabled ? 'none' : 'auto',
-    'outline': `1px solid ` + (singleStaff.options.hightlight ? singleStaff.options.hightlightColor : singleStaff.options.color),
+    'outline': `1px solid ` + (singleStaff.options.highlight ? singleStaff.options.highlightColor : singleStaff.options.color),
   };
 });
 const measureWidth = computed(() => (measure: Measure, singleStaff: SingleStaff, _multipleStaves: MultipleStaves) => {

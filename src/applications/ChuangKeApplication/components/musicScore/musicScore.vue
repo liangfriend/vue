@@ -326,7 +326,7 @@ function handleMouseMove(e: MouseEvent) {
 
 function cancelSelect() {
   if (currentSelected.value) {
-    currentSelected.value.options.hightlight = false
+    currentSelected.value.options.highlight = false
   }
   currentSelected.value = null
 }

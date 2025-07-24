@@ -18,7 +18,7 @@ import {
     MsType,
     MultipleStaves,
     MusicScore,
-    NoteBar,
+    NoteBar, NoteHead,
     NoteTail,
     SingleStaff,
     SpanSymbol,
@@ -634,13 +634,14 @@ export function changeBarLine(barLineMsSymbol: BarLine, barLineType: BarLineType
 }
 
 // 更新bemId
-export function changeBeamId(newBeamId: number, noteTail: NoteTail, musicScore: MusicScore) {
-    noteTail.beamId = newBeamId
+export function changeBeamId(newBeamId: number, noteHead: NoteHead, musicScore: MusicScore) {
+    noteHead.beamId = newBeamId
+    console.log('chicken', noteHead)
+
 }
 
 // 更新符杠方向
 export function changeNoteBarDirection(direction: 'up' | 'down', noteBar: NoteBar) {
-    console.log('chicken',)
     noteBar.direction = direction
     noteBar.vueKey = Date.now()
 }
@@ -666,7 +667,7 @@ export function updateBeamGroupNote(beamId: number, measure: Measure, musicScore
 
                 const noteBar = mainSymbol.msSymbolArray.find(item => item.type === MsSymbolTypeEnum.noteBar) as NoteBar | null
                 const noteTail = mainSymbol.msSymbolArray.find(item => item.type === MsSymbolTypeEnum.noteTail) as NoteTail | null
-                if (noteTail && noteBar && noteTail.beamId === beamId) {
+                if (noteTail && noteBar && mainSymbol.beamId === beamId) {
                     group.push(noteBar)
                     start = true
                 }
