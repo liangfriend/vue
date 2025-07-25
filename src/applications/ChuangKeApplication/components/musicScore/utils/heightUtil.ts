@@ -23,8 +23,13 @@ export function getMsSymbolHeight(msSymbol: MsSymbol, musicScore: MusicScore): n
             }
             const NoteBarBottomToSlotUp = measureHeight * 1 / 8
             const NoteBarBottomToSlotBottom = -measureHeight * 5 / 8
-
-            if (noteHead.beamId === -1) {
+            const measure = getDataWithIndex(noteHead.index, musicScore).measure
+            if (!measure) {
+                console.error("索引找不到measure,符杠height计算失败")
+                return 0
+            }
+            const beamGroup = getBeamGroup(noteHead.beamId, measure)
+            if (noteHead.beamId === -1 || !beamGroup || beamGroup.length === 0) {
 
                 const slotBottom = getSlotBottomToMeasure(msSymbol, musicScore)
 
@@ -34,16 +39,7 @@ export function getMsSymbolHeight(msSymbol: MsSymbol, musicScore: MusicScore): n
                     return Math.max(minHeight, Math.abs(slotBottom) - measureHeight + minHeight + NoteBarBottomToSlotUp)
                 }
             } else { // 成组的情况
-                const measure = getDataWithIndex(noteHead.index, musicScore).measure
-                if (!measure) {
-                    console.error("索引找不到measure,符杠height计算失败")
-                    return 0
-                }
-                const beamGroup = getBeamGroup(noteHead.beamId, measure)
-                if (!beamGroup) {
-                    console.error('连音组获取不到，符杠高度计算出错')
-                    return 0
-                }
+
                 const slotBottom = getSlotBottomToMeasure(msSymbol, musicScore)
 
                 if (msSymbol.direction === 'up') {
