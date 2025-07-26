@@ -636,7 +636,6 @@ export function changeBarLine(barLineMsSymbol: BarLine, barLineType: BarLineType
 // 更新bemId
 export function changeBeamId(newBeamId: number, noteHead: NoteHead, musicScore: MusicScore) {
     noteHead.beamId = newBeamId
-    console.log('chicken', noteHead)
 
 }
 

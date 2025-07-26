@@ -324,7 +324,8 @@ defineExpose({aspectRatio})
   <time-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.timeSignature" :style="msSymbolStyle"
                   :msSymbol="msSymbol" :measure-height="measureHeight"></time-signature>
   <note-tail v-else-if="msSymbol?.type === MsSymbolTypeEnum.noteTail" :style="msSymbolStyle"
-             :msSymbol="msSymbol" :measure="measure" :musicScore="musicScore"></note-tail>
+             :noteTail="msSymbol" :noteHead="parentMsSymbol as NoteHead" :measure="measure"
+             :musicScore="musicScore"></note-tail>
   <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle" @mouseup.self="handleMouseUp"
        @mousedown.self="handleMouseDown"
   ></div>

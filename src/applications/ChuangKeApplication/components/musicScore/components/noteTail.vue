@@ -23,11 +23,15 @@ import noteTailTwoDownSvg
   from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/noteTailTwoDown.svg";
 
 const props = defineProps({
-  msSymbol: {
+  noteTail: {
     type: Object as PropType<NoteTail>,
     required: true
   },
-
+  // 不知道这里是否有问题，外部使用了as进行了强转，定性了符杠的父符号只能是符头
+  noteHead: {
+    type: Object as PropType<NoteHead>,
+    required: true
+  },
   measure: {
     type: Object as PropType<Measure>,
     required: true
@@ -43,14 +47,14 @@ const props = defineProps({
 
 })
 const beamGroup = computed((): BeamGroup | null => {
-  return getBeamGroup(props.msSymbol.beamId, props.measure)
+  return getBeamGroup(props.noteHead.beamId, props.measure)
 })
 const mask = computed(() => {
-  const noteHead = getDataWithIndex(props.msSymbol.index, props.musicScore)
+  const noteHead = getDataWithIndex(props.noteTail.index, props.musicScore)
       .msSymbol as NoteHead
   if (noteHead && 'chronaxie' in noteHead
       && noteHead.region <= MusicScoreRegionEnum.space_2) {
-    switch (props.msSymbol.chronaxie) {
+    switch (props.noteTail.chronaxie) {
       case ChronaxieEnum.eighth: {
         return noteTailOneUpSvg
 
@@ -63,7 +67,7 @@ const mask = computed(() => {
       }
     }
   } else {
-    switch (props.msSymbol.chronaxie) {
+    switch (props.noteTail.chronaxie) {
       case ChronaxieEnum.eighth: {
         return noteTailOneDownSvg
 
@@ -79,7 +83,10 @@ const mask = computed(() => {
 })
 
 const noteTailStyle = computed((): CSSProperties => {
-  const style = {}
+  console.log('chicken', mask.value)
+  const style = {
+    mask: `url(${mask.value}) center center / cover no-repeat`
+  }
   return style
 })
 </script>

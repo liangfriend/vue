@@ -765,9 +765,9 @@ export function getMainMsSymbol(msSymbol: MsSymbol, musicScore: MusicScore): MsS
 }
 
 // 获取连音组信息
-export function getBeamGroup(beamId: number, measure: Measure): BeamGroup | null {
+export function getBeamGroup(beamId: number, measure: Measure): BeamGroup {
     const res: BeamGroup = []
-    if (beamId === -1) return null
+    if (beamId === -1) return []
     measure.msSymbolContainerArray.forEach((msSymbolContainer) => {
         msSymbolContainer.msSymbolArray.forEach((msSymbol) => {
             if (msSymbol.type === MsSymbolTypeEnum.noteHead && msSymbol.beamId === beamId) {

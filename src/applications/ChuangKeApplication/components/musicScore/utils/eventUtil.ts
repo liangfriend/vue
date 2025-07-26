@@ -24,6 +24,7 @@ import {
     msSymbolTemplate, spanSymbolTemplate
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
+    getBeamGroup,
     getDataWithIndex,
     getSingleStaffRelatedSpanSymbolList,
     setMeasureArrayIndex,
@@ -71,7 +72,14 @@ export function handleMouseMoveSelected(e: MouseEvent, measureHeight: number, cu
                         // 符杠更新
                         const noteBar = msSymbol.msSymbolArray.find((item) => item.type === MsSymbolTypeEnum.noteBar) as NoteBar | null;
                         const noteTail = msSymbol.msSymbolArray.find((item) => item.type === MsSymbolTypeEnum.noteTail) as NoteTail | null;
-                        if (!noteTail || (msSymbol.beamId === -1)) { // 不成连音组
+                        const measure = getDataWithIndex(msSymbol.index, musicScore).measure
+                        if (!measure) {
+                            console.error("measure不存在，音符移动事件出错")
+                            return
+                        }
+                        const beamGroup = getBeamGroup(msSymbol.beamId, measure)
+                        // 更新符杠方向
+                        if (!noteTail || beamGroup.length === 0) { // 不成连音组
                             if (noteBar && msSymbol.region >= MusicScoreRegionEnum.space_2 && originRegion < MusicScoreRegionEnum.space_2) {
                                 changeNoteBarDirection('down', noteBar)
                             } else if (noteBar && msSymbol.region < MusicScoreRegionEnum.space_2 && originRegion >= MusicScoreRegionEnum.space_2) {
