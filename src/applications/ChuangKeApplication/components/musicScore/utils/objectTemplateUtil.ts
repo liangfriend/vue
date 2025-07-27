@@ -162,7 +162,8 @@ export function msSymbolTemplate(options: {
                 ...baseMsSymbol,
                 type: MsSymbolTypeEnum.noteTail,
                 chronaxie: options.chronaxie || ChronaxieEnum.quarter,
-                beamType: BeamTypeEnum.left
+                beamType: BeamTypeEnum.left,
+                direction: 'up'
             }
         }
         case MsSymbolTypeEnum.clef_f: {

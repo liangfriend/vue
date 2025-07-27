@@ -7,7 +7,7 @@ import {
     Measure,
     MsSymbol,
     MsSymbolContainer,
-    MusicScore,
+    MusicScore, NoteHead, NoteTail,
     SingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {MsSymbolInformationMap,} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
@@ -17,11 +17,14 @@ import {
     getWidthConstantInSingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/widthConstantUtil.ts";
 import {
+    getBeamGroup,
+    getDataWithIndex, getHeightMultiplier,
     getMainMsSymbol,
     getMsSymbolAspectRatio
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {getMsSymbolHeight} from "@/applications/ChuangKeApplication/components/musicScore/utils/heightUtil.ts";
 import {getSlotLeftToMeasure} from "@/applications/ChuangKeApplication/components/musicScore/utils/leftUtil.ts";
+import {Note} from "tone/build/esm/core/type/NoteUnits";
 
 // 获取定宽容器的宽度
 export function getWidthFixedContainerWidth(msSymbolContainer: MsSymbolContainer, measureHeight: number): number {
@@ -117,20 +120,44 @@ export function getWidthFixedContainerWidthSumInSingleStaff(singleStaff: SingleS
 }
 
 // 符尾比较特殊所以单独出一个方法
-export function getNoteTailWidth(msSymbolContainer: MsSymbolContainer,
+export function getNoteTailWidth(noteTail: NoteTail, noteHead: NoteHead, msSymbolContainer: MsSymbolContainer,
                                  measure: Measure,
                                  singleStaff: SingleStaff, musicScore: MusicScore,
                                  componentWidth: number) {
-    return getMsSymboLContainerWidth(msSymbolContainer, measure, singleStaff, musicScore, componentWidth)
+
+    const aspectRatio = getMsSymbolAspectRatio(noteTail)
+
+    const height = getMsSymbolHeight(noteTail, musicScore)
+    const beamGroup = getBeamGroup(noteHead.beamId, measure)
+    if (beamGroup.length > 1) {
+        // 如果是连音组首尾处的音符，符尾只有一半的宽度
+        if (noteHead.id === beamGroup[0].noteHead.id || noteHead.id === beamGroup[beamGroup.length - 1].noteHead.id) {
+            return getMsSymboLContainerWidth(msSymbolContainer, measure, singleStaff, musicScore, componentWidth) / 2
+        }
+        return getMsSymboLContainerWidth(msSymbolContainer, measure, singleStaff, musicScore, componentWidth)
+    } else {
+        return height * aspectRatio
+    }
 }
 
-export function getMsSymbolWidth(msSymbol: MsSymbol, musicScore: MusicScore) {
+export function getMsSymbolWidth(msSymbol: MsSymbol, msSymbolContainer: MsSymbolContainer, measure: Measure, singleStaff: SingleStaff, musicScore: MusicScore, componentWidth: number) {
     const measureHeight = musicScore.measureHeight
     const aspectRatio = getMsSymbolAspectRatio(msSymbol)
+    const heightMultiplier = getHeightMultiplier(msSymbol)
     const height = getMsSymbolHeight(msSymbol, musicScore)
     switch (msSymbol?.type) {
         case MsSymbolTypeEnum.noteBar: {
-            return measureHeight * aspectRatio
+            // noteBar的高度是动态的，所以宽度不能按照真实宽度乘以宽高比，而是乘以最小高度
+            return measureHeight * heightMultiplier * aspectRatio
+        }
+        case MsSymbolTypeEnum.noteTail: {
+            const noteHead = getDataWithIndex(msSymbol.index, musicScore).msSymbol as NoteHead | null
+            if (!noteHead) {
+                console.error('音符头索引失败，符尾宽度计算失败')
+                return height * aspectRatio
+            }
+
+            return getNoteTailWidth(msSymbol, noteHead, msSymbolContainer, measure, singleStaff, musicScore, componentWidth)
         }
         default: {
             return height * aspectRatio

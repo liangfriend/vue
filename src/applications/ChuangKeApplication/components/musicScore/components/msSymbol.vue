@@ -258,10 +258,11 @@ const width = computed(() => {
         props.measure, props.singleStaff, props.musicScore,
         props.componentWidth)
   }
-  return getMsSymbolWidth(props.msSymbol, props.musicScore)
+  return getMsSymbolWidth(props.msSymbol, props.msSymbolContainer, props.measure,
+      props.singleStaff, props.musicScore, props.componentWidth)
 })
 const msSymbolLeft = computed(() => {
-  return getMsSymbolLeftToSlot(props.msSymbol, props.musicScore, props.slotLeft, props.measureWidth, props.componentWidth)
+  return getMsSymbolLeftToSlot(props.msSymbol, props.msSymbolContainer, props.measure, props.singleStaff, props.musicScore, props.slotLeft, props.measureWidth, props.componentWidth)
 })
 
 const msSymbolBottom = computed(() => {
@@ -323,7 +324,14 @@ defineExpose({aspectRatio})
                  :msSymbol="msSymbol"></key-signature>
   <time-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.timeSignature" :style="msSymbolStyle"
                   :msSymbol="msSymbol" :measure-height="measureHeight"></time-signature>
-  <note-tail v-else-if="msSymbol?.type === MsSymbolTypeEnum.noteTail" :style="msSymbolStyle"
+  <note-tail v-else-if="msSymbol?.type === MsSymbolTypeEnum.noteTail"
+             :ms-symbol-container="msSymbolContainer"
+             :pre-container="preContainer"
+             :next-container="nextContainer"
+             :measure-width="measureWidth"
+             :single-staff="singleStaff"
+             :slot-left="slotLeft"
+             :component-width="componentWidth"
              :noteTail="msSymbol" :noteHead="parentMsSymbol as NoteHead" :measure="measure"
              :musicScore="musicScore"></note-tail>
   <div v-else ref="msSymbolRef" class="msSymbol" :style="msSymbolStyle" @mouseup.self="handleMouseUp"

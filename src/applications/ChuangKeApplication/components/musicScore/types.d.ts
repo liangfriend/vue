@@ -70,6 +70,7 @@ export declare type NoteTail = ({
     type: MsSymbolTypeEnum.noteTail,
     chronaxie: ChronaxieEnum,
     beamType: BeamTypeEnum,
+    direction: 'up' | 'down',
 } & BaseMsSymbol)
 export declare type TimeSignatureMsSymbol = ({
     type: MsSymbolTypeEnum.timeSignature,

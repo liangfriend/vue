@@ -743,7 +743,10 @@ export function updateSpanSymbolView(spanSymbolIdList: Set<number>, musicScore: 
 
 // 获取音符aspectRatio
 export function getMsSymbolAspectRatio(msSymbol: MsSymbol) {
-    if (!msSymbol?.type) return 1
+    if (!msSymbol?.type) {
+        console.error("缺少符号传参，宽高比获取失败")
+        return 1
+    }
     // 单小节符号，赋值
     const information = MsSymbolInformationMap[msSymbol.type]
     if ('aspectRatio' in information && (typeof information.aspectRatio === 'number')) {
@@ -751,6 +754,22 @@ export function getMsSymbolAspectRatio(msSymbol: MsSymbol) {
     } else if ('aspectRatio' in information && (typeof information.aspectRatio === 'object')) {
         return getMultipleAspectRatio(msSymbol)
     }
+    console.error("未找到符号对应宽高比")
+    return 1
+}
+
+// 获取高度乘数
+export function getHeightMultiplier(msSymbol: MsSymbol) {
+    if (!msSymbol?.type) {
+        console.error("缺少符号传参，高度乘数获取失败")
+        return 1
+    }
+    // 单小节符号，赋值
+    const information = MsSymbolInformationMap[msSymbol.type]
+    if ('heightMultiplier' in information && (typeof information.aspectRatio === 'number')) {
+        return information.heightMultiplier
+    }
+
     return 1
 }
 
@@ -771,15 +790,14 @@ export function getBeamGroup(beamId: number, measure: Measure): BeamGroup {
     measure.msSymbolContainerArray.forEach((msSymbolContainer) => {
         msSymbolContainer.msSymbolArray.forEach((msSymbol) => {
             if (msSymbol.type === MsSymbolTypeEnum.noteHead && msSymbol.beamId === beamId) {
-                msSymbol.msSymbolArray.forEach((childMSymbol) => {
-                    const beamGroupItem: BeamGroupItem = {
-                        beamId: msSymbol.beamId,
-                        noteHead: msSymbol,
-                        region: msSymbol.region,
-                        chronaxie: msSymbol.chronaxie
-                    }
-                    res.push(beamGroupItem)
-                })
+
+                const beamGroupItem: BeamGroupItem = {
+                    beamId: msSymbol.beamId,
+                    noteHead: msSymbol,
+                    region: msSymbol.region,
+                    chronaxie: msSymbol.chronaxie
+                }
+                res.push(beamGroupItem)
             }
         })
     })

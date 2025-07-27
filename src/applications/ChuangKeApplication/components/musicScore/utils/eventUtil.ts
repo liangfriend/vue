@@ -32,7 +32,7 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {
     addMsSymbol,
-    addMsSymbolContainer, changeNoteBarDirection, updateBeamGroupNote
+    addMsSymbolContainer, changeNoteBarDirection, changeNoteTailDirection, updateBeamGroupNote
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 
 
@@ -78,12 +78,18 @@ export function handleMouseMoveSelected(e: MouseEvent, measureHeight: number, cu
                             return
                         }
                         const beamGroup = getBeamGroup(msSymbol.beamId, measure)
-                        // 更新符杠方向
-                        if (!noteTail || beamGroup.length === 0) { // 不成连音组
-                            if (noteBar && msSymbol.region >= MusicScoreRegionEnum.space_2 && originRegion < MusicScoreRegionEnum.space_2) {
+                        // 更新符杠和符尾方向
+                        if ([ChronaxieEnum.whole, ChronaxieEnum.half, ChronaxieEnum.quarter].includes(msSymbol.chronaxie)
+                            || beamGroup.length < 2) { // 不成连音组
+                            if (noteBar && msSymbol.region >= MusicScoreRegionEnum.line_3 && noteBar.direction !== 'down') {
                                 changeNoteBarDirection('down', noteBar)
-                            } else if (noteBar && msSymbol.region < MusicScoreRegionEnum.space_2 && originRegion >= MusicScoreRegionEnum.space_2) {
+                            } else if (noteBar && msSymbol.region < MusicScoreRegionEnum.line_3 && noteBar.direction !== 'up') {
                                 changeNoteBarDirection('up', noteBar)
+                            }
+                            if (noteTail && msSymbol.region >= MusicScoreRegionEnum.line_3 && noteTail.direction !== 'down') {
+                                changeNoteTailDirection('down', noteTail)
+                            } else if (noteTail && msSymbol.region < MusicScoreRegionEnum.line_3 && noteTail.direction !== 'up') {
+                                changeNoteTailDirection('up', noteTail)
                             }
                         } else { // 成连音组
                             const measure = getDataWithIndex(msSymbol.index, musicScore).measure

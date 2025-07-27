@@ -65,10 +65,10 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
         heightMultiplier: 0.25,
     },
     [MsSymbolTypeEnum.noteBar]: {  // 有些纯粹的符号跟随类型是没有符号容器类型的
-        aspectRatio: 0.04,
+        aspectRatio: 0.05,
         category: MsSymbolCategoryEnum.singleMeasure,
         widthRatioConstant: 0,
-        heightMultiplier: 0.75,
+        heightMultiplier: 0.75, // 符杠的height是动态的，这里只是最小高度
     },
     [MsSymbolTypeEnum.noteTail]: {
         aspectRatio: {

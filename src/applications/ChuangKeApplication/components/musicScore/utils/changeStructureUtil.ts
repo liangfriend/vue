@@ -39,6 +39,7 @@ import {
     setSingleStaffArrayIndex,
     updateSpanSymbolView
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
+import {Note} from "tone/build/esm/core/type/NoteUnits";
 
 export function musicScoreMapAdd(msData: MsType, musicScore: MusicScore) {
     musicScore.map[msData.id] = msData
@@ -645,9 +646,16 @@ export function changeNoteBarDirection(direction: 'up' | 'down', noteBar: NoteBa
     noteBar.vueKey = Date.now()
 }
 
+// 更新符尾方向
+export function changeNoteTailDirection(direction: 'up' | 'down', noteTail: NoteTail) {
+    noteTail.direction = direction
+    noteTail.vueKey = Date.now()
+}
+
+
 // 成组音符更新
 export function updateBeamGroupNote(beamId: number, measure: Measure, musicScore: MusicScore) {
-    const group: NoteBar[] = []
+    const group: { noteBar: NoteBar, noteTail: NoteTail }[] = []
     let direction: 'up' | 'down' = 'up'
     let farthestRegion: MusicScoreRegionEnum = MusicScoreRegionEnum.line_3
     let start = false
@@ -667,7 +675,7 @@ export function updateBeamGroupNote(beamId: number, measure: Measure, musicScore
                 const noteBar = mainSymbol.msSymbolArray.find(item => item.type === MsSymbolTypeEnum.noteBar) as NoteBar | null
                 const noteTail = mainSymbol.msSymbolArray.find(item => item.type === MsSymbolTypeEnum.noteTail) as NoteTail | null
                 if (noteTail && noteBar && mainSymbol.beamId === beamId) {
-                    group.push(noteBar)
+                    group.push({noteBar, noteTail})
                     start = true
                 }
             } else if (start) {
@@ -678,7 +686,9 @@ export function updateBeamGroupNote(beamId: number, measure: Measure, musicScore
     // 更新 direction
     direction = farthestRegion >= MusicScoreRegionEnum.space_2 ? 'down' : 'up'
     for (const i in group) {
-        const noteBar = group[i]
+        const noteBar = group[i].noteBar
+        const noteTail = group[i].noteTail
         changeNoteBarDirection(direction, noteBar)
+        changeNoteTailDirection(direction, noteTail)
     }
 }

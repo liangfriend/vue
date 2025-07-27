@@ -6,11 +6,12 @@ import {
 import {
     Measure,
     MsSymbol,
-    MsSymbolContainer, MusicScore, NoteHead,
+    MsSymbolContainer, MusicScore, NoteBar, NoteHead,
     SingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {getMsSymbolHeight} from "@/applications/ChuangKeApplication/components/musicScore/utils/heightUtil.ts";
 import {
+    getBeamGroup,
     getDataWithIndex,
     traverseMusicScore
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
@@ -34,18 +35,22 @@ export function getMsSymbolBottomToSlot(msSymbol: MsSymbol, musicScore: MusicSco
 
             }
         }
-        case MsSymbolTypeEnum.noteTail: {
+        case MsSymbolTypeEnum.noteTail: { // 符尾的
             const slotBottom = getSlotBottomToMeasure(msSymbol, musicScore)
-            const noteBarHeight = measureHeight * 6 / 8 // 符杠高度
+            const noteBar = parentMsSymbol?.msSymbolArray.find((item) => item.type === MsSymbolTypeEnum.noteBar) as NoteBar | null
+            if (!noteBar) {
+                console.error("找不到符杠，符尾bottom计算失败")
+                return 0
+            }
             const noteBarOffset = measureHeight * 1 / 8 // 符杠相对slot的偏差
             const height = getMsSymbolHeight(msSymbol, musicScore)
+            const noteBarHeight = getMsSymbolHeight(noteBar, musicScore)
+            console.log('chicken', msSymbol.direction)
 
-            if (parentMsSymbol && 'region' in parentMsSymbol
-                && parentMsSymbol.region <= MusicScoreRegionEnum.space_2) {
-                return Math.max(noteBarHeight - height + noteBarOffset, Math.abs(slotBottom))
+            if (msSymbol.direction === 'up') {
+                return noteBarHeight - height + noteBarOffset
             } else {
-                return -Math.max(noteBarHeight - noteBarOffset, Math.abs(slotBottom) - height
-                )
+                return -noteBarHeight + noteBarOffset
             }
         }
         default: {
