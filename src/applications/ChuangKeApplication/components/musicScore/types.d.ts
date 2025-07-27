@@ -119,15 +119,23 @@ export declare type BaseSpanSymbol = {
     rect: Rect
     vueKey: number,
 }
-// 跨小节符号.  目前只有小节跟随型和符号（音符头）跟随型
-export declare type SpanSymbol = (BaseSpanSymbol & {
-    type: SpanSymbolTypeEnum
+export declare type Volta = (BaseSpanSymbol & {
+    type: SpanSymbolTypeEnum.volta
     spanSymbolFollowingCategoryEnum: SpanSymbolFollowingCategoryEnum.measure,
     startTargetId: number,
     endTargetId: number,
     options: MusicScoreOptions,
-
 })
+export declare type Slur = (BaseSpanSymbol & {
+    type: SpanSymbolTypeEnum.slur
+    spanSymbolFollowingCategoryEnum: SpanSymbolFollowingCategoryEnum.measure,
+    startTargetId: number,
+    endTargetId: number,
+    options: MusicScoreOptions,
+})
+// 跨小节符号.  目前只有小节跟随型和符号（音符头）跟随型
+export declare type SpanSymbol = Volta | Slur
+
 export declare type MsSymbolContainer = {
     id: number,
     msSymbolArray: Array<MsSymbol>

@@ -114,10 +114,15 @@ const data: MusicScore = {
                                 "singleStaffIndex": 0,
                                 "measureIndex": 1
                             },
-                            "bindingStartId": [],
-                            "bindingEndId": [],
+                            "bindingStartId": [
+                                1753619397420,
+                                1753619397420
+                            ],
+                            "bindingEndId": [
+                                1753619397420
+                            ],
                             "options": {
-                                "highlight": false,
+                                "highlight": true,
                                 "highlightColor": "red",
                                 "color": "black"
                             },
@@ -586,10 +591,15 @@ const data: MusicScore = {
                         "singleStaffIndex": 0,
                         "measureIndex": 1
                     },
-                    "bindingStartId": [],
-                    "bindingEndId": [],
+                    "bindingStartId": [
+                        1753619397420,
+                        1753619397420
+                    ],
+                    "bindingEndId": [
+                        1753619397420
+                    ],
                     "options": {
-                        "highlight": false,
+                        "highlight": true,
                         "highlightColor": "red",
                         "color": "black"
                     },
@@ -1422,11 +1432,42 @@ const data: MusicScore = {
             "chronaxie": 16,
             "beamType": 1,
             "direction": "up"
+        },
+        "1753619397420": {
+            "type": 1,
+            "msTypeName": 4,
+            "spanSymbolFollowingCategoryEnum": 2,
+            "startTargetId": 1753588094889,
+            "endTargetId": 1753588094889,
+            "id": 1753619397420,
+            "rect": {},
+            "options": {
+                "highlight": false,
+                "highlightColor": "red",
+                "color": "black"
+            },
+            "vueKey": 1753619397420
         }
     },
     "measureHeight": 50,
     "widthDynamicRatio": 0.4,
-    "spanSymbolArray": [],
+    "spanSymbolArray": [
+        {
+            "type": 1,
+            "msTypeName": 4,
+            "spanSymbolFollowingCategoryEnum": 2,
+            "startTargetId": 1753588094889,
+            "endTargetId": 1753588094889,
+            "id": 1753619397420,
+            "rect": {},
+            "options": {
+                "highlight": false,
+                "highlightColor": "red",
+                "color": "black"
+            },
+            "vueKey": 1753619397420
+        }
+    ],
     "multipleStavesArray": [
         {
             "id": 1,
@@ -1529,10 +1570,15 @@ const data: MusicScore = {
                                 "singleStaffIndex": 0,
                                 "measureIndex": 1
                             },
-                            "bindingStartId": [],
-                            "bindingEndId": [],
+                            "bindingStartId": [
+                                1753619397420,
+                                1753619397420
+                            ],
+                            "bindingEndId": [
+                                1753619397420
+                            ],
                             "options": {
-                                "highlight": false,
+                                "highlight": true,
                                 "highlightColor": "red",
                                 "color": "black"
                             },

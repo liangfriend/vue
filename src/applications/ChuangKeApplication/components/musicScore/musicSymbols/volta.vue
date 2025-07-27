@@ -5,12 +5,12 @@
 </template>
 <script setup lang="ts">
 import {computed, CSSProperties, PropType} from "vue";
-import type {SpanSymbol} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {SpanSymbol, Volta} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {SpanSymbolTypeEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 const props = defineProps({
-  spanSymbol: {
-    type: Object as PropType<Extract<SpanSymbol, { type: SpanSymbolTypeEnum.volta }>>,
+  volta: {
+    type: Object as PropType<Volta>,
     required: true
   }
 })
@@ -22,15 +22,15 @@ const voltaStyle = computed(() => {
     bottom: 0,
   }
 
-  if (props.spanSymbol.rect.width == null || props.spanSymbol.rect.left == null || props.spanSymbol.rect.bottom == null) {
-    console.error("spanSymbol没有生成rect数据", props.spanSymbol.rect)
+  if (props.volta.rect.width == null || props.volta.rect.left == null || props.volta.rect.bottom == null) {
+    console.error("volta没有生成rect数据", props.volta.rect)
     return style
   }
-  style.width = props.spanSymbol.rect.width + 'px'
-  style.left = props.spanSymbol.rect.left + 'px'
-  style.bottom = props.spanSymbol.rect.bottom + 'px'
-  style.borderColor = props.spanSymbol.options.highlight
-      ? props.spanSymbol.options.highlightColor : props.spanSymbol.options.color
+  style.width = props.volta.rect.width + 'px'
+  style.left = props.volta.rect.left + 'px'
+  style.bottom = props.volta.rect.bottom + 'px'
+  style.borderColor = props.volta.options.highlight
+      ? props.volta.options.highlightColor : props.volta.options.color
 
   return style
 })

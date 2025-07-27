@@ -16,6 +16,7 @@ import {
   getMaxMsSymbolBottomInMeasure,
   getMeasureBottomToMusicScore
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/bottomUtil.ts";
+import RectDragShell from "@/applications/ChuangKeApplication/components/musicScore/components/rectDragShell.vue";
 
 const props = defineProps({
   spanSymbol: {
@@ -77,7 +78,6 @@ function getSpanSymbolRect(spanSymbol: SpanSymbol, musicScore: MusicScore, compo
 const emits = defineEmits(['spanSymbolMouseDown', 'spanSymbolMouseUp']);
 
 function handleMouseDown(e: MouseEvent) {
-  console.log('chicken',)
 
   emits('spanSymbolMouseDown', e, props.spanSymbol)
 
@@ -95,8 +95,21 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <volta v-if="spanSymbol && spanSymbol.type === SpanSymbolTypeEnum.volta" :spanSymbol="spanSymbol"
-         @mousedown.self="handleMouseDown" @mouseup.self="handleMouseUp"></volta>
+  <rect-drag-shell v-if="spanSymbol && spanSymbol.type === SpanSymbolTypeEnum.volta"
+                   :top-left="{x:0,y:0}" :top-right="{x:100,y:0}" :bottom-left="{x:0,y:100}"
+
+                   :bottom-right="{x:100,y:100}">
+    <volta :volta="spanSymbol"
+           @mousedown.self="handleMouseDown" @mouseup.self="handleMouseUp"
+    ></volta>
+  </rect-drag-shell>
+  <rect-drag-shell v-if="spanSymbol && spanSymbol.type === SpanSymbolTypeEnum.slur" :slur="spanSymbol"
+                   :top-left="{x:0,y:0}" :top-right="{x:100,y:0}" :bottom-left="{x:0,y:100}"
+                   :bottom-right="{x:100,y:100}">
+    <slur
+        @mousedown.self="handleMouseDown" @mouseup.self="handleMouseUp"></slur>
+  </rect-drag-shell>
+
 </template>
 
 <style scoped>

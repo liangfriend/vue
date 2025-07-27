@@ -45,6 +45,23 @@ export function spanSymbolTemplate(options: {
                 "vueKey": Date.now()
             }
         }
+        case SpanSymbolTypeEnum.slur: {
+            return {
+                "type": SpanSymbolTypeEnum.volta,
+                "msTypeName": MsTypeNameEnum.SpanSymbol,
+                "spanSymbolFollowingCategoryEnum": SpanSymbolFollowingCategoryEnum.measure,
+                "startTargetId": options.startTargetId,
+                "endTargetId": options.endTargetId,
+                "id": Date.now(),
+                "rect": {},
+                "options": {
+                    "highlight": false,
+                    "highlightColor": "red",
+                    "color": "black"
+                },
+                "vueKey": Date.now()
+            }
+        }
     }
     return {
         "type": SpanSymbolTypeEnum.volta,

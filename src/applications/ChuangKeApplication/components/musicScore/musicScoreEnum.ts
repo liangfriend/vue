@@ -294,7 +294,10 @@ export enum MsSymbolCategoryEnum {
 
 // 跨小节符号类型
 export enum SpanSymbolTypeEnum {
-    volta = 1
+    volta = 1,
+    slur,
+    tie,
+
 }
 
 // 跨小节符号跟随类型
