@@ -90,7 +90,7 @@ export function msSymbolTemplate(options: {
     timeSignature?: TimeSignature,
 } = {}): MsSymbol {
     const baseMsSymbol: BaseMsSymbol = {
-        id: Date.now(),
+        id: Date.now() + 1,
         msTypeName: MsTypeNameEnum.MsSymbol,
         index: {},
         options: {
@@ -230,7 +230,7 @@ export function msSymbolTemplate(options: {
 
 export function msSymbolContainerTemplate(options: { type?: MsSymbolContainerTypeEnum } = {}): MsSymbolContainer {
     const msSymbolContainer: MsSymbolContainer = {
-        id: Date.now(),
+        id: Date.now() + 2,
         msSymbolArray: [],
         type: options.type || MsSymbolContainerTypeEnum.variable,
         index: {},
@@ -250,7 +250,7 @@ export function measureTemplate(options: { barLineType?: BarLineTypeEnum } = {})
 
 
     const measure: Measure = {
-        id: Date.now(),
+        id: Date.now() + 3,
         msTypeName: MsTypeNameEnum.Measure,
         index: {},
         bindingStartId: [],
@@ -279,7 +279,7 @@ export function measureTemplate(options: { barLineType?: BarLineTypeEnum } = {})
 // 会默认添加一个小节
 export function singleStaffTemplate(options: {} = {}): SingleStaff {
     const singleStaff: SingleStaff = {
-        id: Date.now(),
+        id: Date.now() + 4,
         msTypeName: MsTypeNameEnum.SingleStaff,
         index: {},
         bindingStartId: [],
@@ -305,7 +305,7 @@ export function singleStaffTemplate(options: {} = {}): SingleStaff {
 // 会默认添加一个带小节的单谱表
 export function multipleStavesTemplate(options: {} = {}): MultipleStaves {
     const multipleStaves: MultipleStaves = {
-        id: Date.now(),
+        id: Date.now() + 5,
         msTypeName: MsTypeNameEnum.MultipStaves,
         index: {},
         multipleStavesPaddingTop: 60,

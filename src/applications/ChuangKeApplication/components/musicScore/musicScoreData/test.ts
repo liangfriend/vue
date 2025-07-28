@@ -12,1443 +12,7 @@ import {
 
 const data: MusicScore = {
     "showMode": 1,
-    "map": {
-        "1": {
-            "id": 1,
-            "msTypeName": 1,
-            "index": {
-                "multipleStavesIndex": 0
-            },
-            "multipleStavesPaddingTop": 60,
-            "multipleStavesPaddingBottom": 60,
-            "multipleStavesMarginBottom": 60,
-            "options": {
-                "highlight": false,
-                "highlightColor": "red",
-                "color": "transparent"
-            },
-            "singleStaffArray": [
-                {
-                    "id": 2,
-                    "msTypeName": 2,
-                    "index": {
-                        "multipleStavesIndex": 0,
-                        "singleStaffIndex": 0
-                    },
-                    "bindingStartId": [],
-                    "bindingEndId": [],
-                    "singleStaffPaddingTop": 30,
-                    "singleStaffPaddingBottom": 30,
-                    "options": {
-                        "highlight": false,
-                        "highlightColor": "red",
-                        "color": "transparent"
-                    },
-                    "singleStaffMarginBottom": 30,
-                    "measureArray": [
-                        {
-                            "id": 1753588106297,
-                            "msTypeName": 3,
-                            "index": {
-                                "multipleStavesIndex": 0,
-                                "singleStaffIndex": 0,
-                                "measureIndex": 0
-                            },
-                            "bindingStartId": [],
-                            "bindingEndId": [],
-                            "options": {
-                                "highlight": false,
-                                "highlightColor": "red",
-                                "color": "black"
-                            },
-                            "vueKey": 1753588106297,
-                            "msSymbolContainerArray": [
-                                {
-                                    "id": 1753588106297,
-                                    "msSymbolArray": [
-                                        {
-                                            "id": 1753588106297,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 0,
-                                                "msSymbolContainerIndex": 0,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [],
-                                            "vueKey": 1753588106297,
-                                            "type": "barLine",
-                                            "barLineType": 1
-                                        }
-                                    ],
-                                    "type": 2,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 0,
-                                        "msSymbolContainerIndex": 0
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "vueKey": 1753588106297,
-                                    "msTypeName": 5
-                                }
-                            ]
-                        },
-                        {
-                            "id": 1753588094889,
-                            "msTypeName": 3,
-                            "index": {
-                                "multipleStavesIndex": 0,
-                                "singleStaffIndex": 0,
-                                "measureIndex": 1
-                            },
-                            "bindingStartId": [
-                                1753619397420,
-                                1753619397420
-                            ],
-                            "bindingEndId": [
-                                1753619397420
-                            ],
-                            "options": {
-                                "highlight": true,
-                                "highlightColor": "red",
-                                "color": "black"
-                            },
-                            "vueKey": 1753588094889,
-                            "msSymbolContainerArray": [
-                                {
-                                    "id": 1753588094889,
-                                    "msSymbolArray": [
-                                        {
-                                            "id": 1753588094889,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 1,
-                                                "msSymbolContainerIndex": 0,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [],
-                                            "vueKey": 1753588094889,
-                                            "type": "barLine",
-                                            "barLineType": 1
-                                        }
-                                    ],
-                                    "type": 2,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 1,
-                                        "msSymbolContainerIndex": 0
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "vueKey": 1753588094889,
-                                    "msTypeName": 5
-                                },
-                                {
-                                    "id": 1753588108258,
-                                    "msSymbolArray": [
-                                        {
-                                            "id": 1753588108258,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 1,
-                                                "msSymbolContainerIndex": 1,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [
-                                                {
-                                                    "id": 1753588108258,
-                                                    "msTypeName": 6,
-                                                    "index": {
-                                                        "multipleStavesIndex": 0,
-                                                        "singleStaffIndex": 0,
-                                                        "measureIndex": 1,
-                                                        "msSymbolContainerIndex": 1,
-                                                        "msSymbolIndex": 0
-                                                    },
-                                                    "options": {
-                                                        "highlight": false,
-                                                        "highlightColor": "red",
-                                                        "color": "black"
-                                                    },
-                                                    "bindingStartId": [],
-                                                    "bindingEndId": [],
-                                                    "msSymbolArray": [],
-                                                    "vueKey": 1753595331693,
-                                                    "direction": "down",
-                                                    "type": "noteBar"
-                                                },
-                                                {
-                                                    "id": 1753588232388,
-                                                    "msTypeName": 6,
-                                                    "index": {
-                                                        "multipleStavesIndex": 0,
-                                                        "singleStaffIndex": 0,
-                                                        "measureIndex": 1,
-                                                        "msSymbolContainerIndex": 1,
-                                                        "msSymbolIndex": 0
-                                                    },
-                                                    "options": {
-                                                        "highlight": false,
-                                                        "highlightColor": "red",
-                                                        "color": "black"
-                                                    },
-                                                    "bindingStartId": [],
-                                                    "bindingEndId": [],
-                                                    "msSymbolArray": [],
-                                                    "vueKey": 1753595331693,
-                                                    "type": "noteTail",
-                                                    "chronaxie": 16,
-                                                    "beamType": 1,
-                                                    "direction": "down"
-                                                }
-                                            ],
-                                            "vueKey": 1753588108258,
-                                            "beamId": "2",
-                                            "type": "noteHead",
-                                            "region": 35,
-                                            "chronaxie": 16
-                                        }
-                                    ],
-                                    "type": 3,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 1,
-                                        "msSymbolContainerIndex": 1
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "vueKey": 1753588108258,
-                                    "msTypeName": 5
-                                },
-                                {
-                                    "id": 1753588118106,
-                                    "msSymbolArray": [
-                                        {
-                                            "id": 1753588118106,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 1,
-                                                "msSymbolContainerIndex": 2,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [
-                                                {
-                                                    "id": 1753588118106,
-                                                    "msTypeName": 6,
-                                                    "index": {
-                                                        "multipleStavesIndex": 0,
-                                                        "singleStaffIndex": 0,
-                                                        "measureIndex": 1,
-                                                        "msSymbolContainerIndex": 2,
-                                                        "msSymbolIndex": 0
-                                                    },
-                                                    "options": {
-                                                        "highlight": false,
-                                                        "highlightColor": "red",
-                                                        "color": "black"
-                                                    },
-                                                    "bindingStartId": [],
-                                                    "bindingEndId": [],
-                                                    "msSymbolArray": [],
-                                                    "vueKey": 1753595331693,
-                                                    "direction": "down",
-                                                    "type": "noteBar"
-                                                },
-                                                {
-                                                    "id": 1753588234532,
-                                                    "msTypeName": 6,
-                                                    "index": {
-                                                        "multipleStavesIndex": 0,
-                                                        "singleStaffIndex": 0,
-                                                        "measureIndex": 1,
-                                                        "msSymbolContainerIndex": 2,
-                                                        "msSymbolIndex": 0
-                                                    },
-                                                    "options": {
-                                                        "highlight": false,
-                                                        "highlightColor": "red",
-                                                        "color": "black"
-                                                    },
-                                                    "bindingStartId": [],
-                                                    "bindingEndId": [],
-                                                    "msSymbolArray": [],
-                                                    "vueKey": 1753595331693,
-                                                    "type": "noteTail",
-                                                    "chronaxie": 16,
-                                                    "beamType": 1,
-                                                    "direction": "down"
-                                                }
-                                            ],
-                                            "vueKey": 1753588118106,
-                                            "beamId": "2",
-                                            "type": "noteHead",
-                                            "region": 56,
-                                            "chronaxie": 16
-                                        }
-                                    ],
-                                    "type": 3,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 1,
-                                        "msSymbolContainerIndex": 2
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "vueKey": 1753588118106,
-                                    "msTypeName": 5
-                                },
-                                {
-                                    "id": 1753588109106,
-                                    "msSymbolArray": [
-                                        {
-                                            "id": 1753588109106,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 1,
-                                                "msSymbolContainerIndex": 3,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [
-                                                {
-                                                    "id": 1753588109106,
-                                                    "msTypeName": 6,
-                                                    "index": {
-                                                        "multipleStavesIndex": 0,
-                                                        "singleStaffIndex": 0,
-                                                        "measureIndex": 1,
-                                                        "msSymbolContainerIndex": 3,
-                                                        "msSymbolIndex": 0
-                                                    },
-                                                    "options": {
-                                                        "highlight": false,
-                                                        "highlightColor": "red",
-                                                        "color": "black"
-                                                    },
-                                                    "bindingStartId": [],
-                                                    "bindingEndId": [],
-                                                    "msSymbolArray": [],
-                                                    "vueKey": 1753591723039,
-                                                    "direction": "down",
-                                                    "type": "noteBar"
-                                                },
-                                                {
-                                                    "id": 1753588239380,
-                                                    "msTypeName": 6,
-                                                    "index": {
-                                                        "multipleStavesIndex": 0,
-                                                        "singleStaffIndex": 0,
-                                                        "measureIndex": 1,
-                                                        "msSymbolContainerIndex": 3,
-                                                        "msSymbolIndex": 0
-                                                    },
-                                                    "options": {
-                                                        "highlight": false,
-                                                        "highlightColor": "red",
-                                                        "color": "black"
-                                                    },
-                                                    "bindingStartId": [],
-                                                    "bindingEndId": [],
-                                                    "msSymbolArray": [],
-                                                    "vueKey": 1753591723039,
-                                                    "type": "noteTail",
-                                                    "chronaxie": 16,
-                                                    "beamType": 1,
-                                                    "direction": "down"
-                                                }
-                                            ],
-                                            "vueKey": 1753588109106,
-                                            "beamId": -1,
-                                            "type": "noteHead",
-                                            "region": 54,
-                                            "chronaxie": 16
-                                        }
-                                    ],
-                                    "type": 3,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 1,
-                                        "msSymbolContainerIndex": 3
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "vueKey": 1753588109106,
-                                    "msTypeName": 5
-                                }
-                            ]
-                        },
-                        {
-                            "id": 1753588105330,
-                            "msTypeName": 3,
-                            "index": {
-                                "multipleStavesIndex": 0,
-                                "singleStaffIndex": 0,
-                                "measureIndex": 2
-                            },
-                            "bindingStartId": [],
-                            "bindingEndId": [],
-                            "options": {
-                                "highlight": false,
-                                "highlightColor": "red",
-                                "color": "black"
-                            },
-                            "vueKey": 1753588105330,
-                            "msSymbolContainerArray": [
-                                {
-                                    "id": 1753588105330,
-                                    "msSymbolArray": [
-                                        {
-                                            "id": 1753588105330,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 2,
-                                                "msSymbolContainerIndex": 0,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [],
-                                            "vueKey": 1753588105330,
-                                            "type": "barLine",
-                                            "barLineType": 1
-                                        }
-                                    ],
-                                    "type": 2,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 2,
-                                        "msSymbolContainerIndex": 0
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "vueKey": 1753588105330,
-                                    "msTypeName": 5
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        "2": {
-            "id": 2,
-            "msTypeName": 2,
-            "index": {
-                "multipleStavesIndex": 0,
-                "singleStaffIndex": 0
-            },
-            "bindingStartId": [],
-            "bindingEndId": [],
-            "singleStaffPaddingTop": 30,
-            "singleStaffPaddingBottom": 30,
-            "options": {
-                "highlight": false,
-                "highlightColor": "red",
-                "color": "transparent"
-            },
-            "singleStaffMarginBottom": 30,
-            "measureArray": [
-                {
-                    "id": 1753588106297,
-                    "msTypeName": 3,
-                    "index": {
-                        "multipleStavesIndex": 0,
-                        "singleStaffIndex": 0,
-                        "measureIndex": 0
-                    },
-                    "bindingStartId": [],
-                    "bindingEndId": [],
-                    "options": {
-                        "highlight": false,
-                        "highlightColor": "red",
-                        "color": "black"
-                    },
-                    "vueKey": 1753588106297,
-                    "msSymbolContainerArray": [
-                        {
-                            "id": 1753588106297,
-                            "msSymbolArray": [
-                                {
-                                    "id": 1753588106297,
-                                    "msTypeName": 6,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 0,
-                                        "msSymbolContainerIndex": 0,
-                                        "msSymbolIndex": 0
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "bindingStartId": [],
-                                    "bindingEndId": [],
-                                    "msSymbolArray": [],
-                                    "vueKey": 1753588106297,
-                                    "type": "barLine",
-                                    "barLineType": 1
-                                }
-                            ],
-                            "type": 2,
-                            "index": {
-                                "multipleStavesIndex": 0,
-                                "singleStaffIndex": 0,
-                                "measureIndex": 0,
-                                "msSymbolContainerIndex": 0
-                            },
-                            "options": {
-                                "highlight": false,
-                                "highlightColor": "red",
-                                "color": "black"
-                            },
-                            "vueKey": 1753588106297,
-                            "msTypeName": 5
-                        }
-                    ]
-                },
-                {
-                    "id": 1753588094889,
-                    "msTypeName": 3,
-                    "index": {
-                        "multipleStavesIndex": 0,
-                        "singleStaffIndex": 0,
-                        "measureIndex": 1
-                    },
-                    "bindingStartId": [
-                        1753619397420,
-                        1753619397420
-                    ],
-                    "bindingEndId": [
-                        1753619397420
-                    ],
-                    "options": {
-                        "highlight": true,
-                        "highlightColor": "red",
-                        "color": "black"
-                    },
-                    "vueKey": 1753588094889,
-                    "msSymbolContainerArray": [
-                        {
-                            "id": 1753588094889,
-                            "msSymbolArray": [
-                                {
-                                    "id": 1753588094889,
-                                    "msTypeName": 6,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 1,
-                                        "msSymbolContainerIndex": 0,
-                                        "msSymbolIndex": 0
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "bindingStartId": [],
-                                    "bindingEndId": [],
-                                    "msSymbolArray": [],
-                                    "vueKey": 1753588094889,
-                                    "type": "barLine",
-                                    "barLineType": 1
-                                }
-                            ],
-                            "type": 2,
-                            "index": {
-                                "multipleStavesIndex": 0,
-                                "singleStaffIndex": 0,
-                                "measureIndex": 1,
-                                "msSymbolContainerIndex": 0
-                            },
-                            "options": {
-                                "highlight": false,
-                                "highlightColor": "red",
-                                "color": "black"
-                            },
-                            "vueKey": 1753588094889,
-                            "msTypeName": 5
-                        },
-                        {
-                            "id": 1753588108258,
-                            "msSymbolArray": [
-                                {
-                                    "id": 1753588108258,
-                                    "msTypeName": 6,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 1,
-                                        "msSymbolContainerIndex": 1,
-                                        "msSymbolIndex": 0
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "bindingStartId": [],
-                                    "bindingEndId": [],
-                                    "msSymbolArray": [
-                                        {
-                                            "id": 1753588108258,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 1,
-                                                "msSymbolContainerIndex": 1,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [],
-                                            "vueKey": 1753595331693,
-                                            "direction": "down",
-                                            "type": "noteBar"
-                                        },
-                                        {
-                                            "id": 1753588232388,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 1,
-                                                "msSymbolContainerIndex": 1,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [],
-                                            "vueKey": 1753595331693,
-                                            "type": "noteTail",
-                                            "chronaxie": 16,
-                                            "beamType": 1,
-                                            "direction": "down"
-                                        }
-                                    ],
-                                    "vueKey": 1753588108258,
-                                    "beamId": "2",
-                                    "type": "noteHead",
-                                    "region": 35,
-                                    "chronaxie": 16
-                                }
-                            ],
-                            "type": 3,
-                            "index": {
-                                "multipleStavesIndex": 0,
-                                "singleStaffIndex": 0,
-                                "measureIndex": 1,
-                                "msSymbolContainerIndex": 1
-                            },
-                            "options": {
-                                "highlight": false,
-                                "highlightColor": "red",
-                                "color": "black"
-                            },
-                            "vueKey": 1753588108258,
-                            "msTypeName": 5
-                        },
-                        {
-                            "id": 1753588118106,
-                            "msSymbolArray": [
-                                {
-                                    "id": 1753588118106,
-                                    "msTypeName": 6,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 1,
-                                        "msSymbolContainerIndex": 2,
-                                        "msSymbolIndex": 0
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "bindingStartId": [],
-                                    "bindingEndId": [],
-                                    "msSymbolArray": [
-                                        {
-                                            "id": 1753588118106,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 1,
-                                                "msSymbolContainerIndex": 2,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [],
-                                            "vueKey": 1753595331693,
-                                            "direction": "down",
-                                            "type": "noteBar"
-                                        },
-                                        {
-                                            "id": 1753588234532,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 1,
-                                                "msSymbolContainerIndex": 2,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [],
-                                            "vueKey": 1753595331693,
-                                            "type": "noteTail",
-                                            "chronaxie": 16,
-                                            "beamType": 1,
-                                            "direction": "down"
-                                        }
-                                    ],
-                                    "vueKey": 1753588118106,
-                                    "beamId": "2",
-                                    "type": "noteHead",
-                                    "region": 56,
-                                    "chronaxie": 16
-                                }
-                            ],
-                            "type": 3,
-                            "index": {
-                                "multipleStavesIndex": 0,
-                                "singleStaffIndex": 0,
-                                "measureIndex": 1,
-                                "msSymbolContainerIndex": 2
-                            },
-                            "options": {
-                                "highlight": false,
-                                "highlightColor": "red",
-                                "color": "black"
-                            },
-                            "vueKey": 1753588118106,
-                            "msTypeName": 5
-                        },
-                        {
-                            "id": 1753588109106,
-                            "msSymbolArray": [
-                                {
-                                    "id": 1753588109106,
-                                    "msTypeName": 6,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 1,
-                                        "msSymbolContainerIndex": 3,
-                                        "msSymbolIndex": 0
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "bindingStartId": [],
-                                    "bindingEndId": [],
-                                    "msSymbolArray": [
-                                        {
-                                            "id": 1753588109106,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 1,
-                                                "msSymbolContainerIndex": 3,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [],
-                                            "vueKey": 1753591723039,
-                                            "direction": "down",
-                                            "type": "noteBar"
-                                        },
-                                        {
-                                            "id": 1753588239380,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 1,
-                                                "msSymbolContainerIndex": 3,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [],
-                                            "vueKey": 1753591723039,
-                                            "type": "noteTail",
-                                            "chronaxie": 16,
-                                            "beamType": 1,
-                                            "direction": "down"
-                                        }
-                                    ],
-                                    "vueKey": 1753588109106,
-                                    "beamId": -1,
-                                    "type": "noteHead",
-                                    "region": 54,
-                                    "chronaxie": 16
-                                }
-                            ],
-                            "type": 3,
-                            "index": {
-                                "multipleStavesIndex": 0,
-                                "singleStaffIndex": 0,
-                                "measureIndex": 1,
-                                "msSymbolContainerIndex": 3
-                            },
-                            "options": {
-                                "highlight": false,
-                                "highlightColor": "red",
-                                "color": "black"
-                            },
-                            "vueKey": 1753588109106,
-                            "msTypeName": 5
-                        }
-                    ]
-                },
-                {
-                    "id": 1753588105330,
-                    "msTypeName": 3,
-                    "index": {
-                        "multipleStavesIndex": 0,
-                        "singleStaffIndex": 0,
-                        "measureIndex": 2
-                    },
-                    "bindingStartId": [],
-                    "bindingEndId": [],
-                    "options": {
-                        "highlight": false,
-                        "highlightColor": "red",
-                        "color": "black"
-                    },
-                    "vueKey": 1753588105330,
-                    "msSymbolContainerArray": [
-                        {
-                            "id": 1753588105330,
-                            "msSymbolArray": [
-                                {
-                                    "id": 1753588105330,
-                                    "msTypeName": 6,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 2,
-                                        "msSymbolContainerIndex": 0,
-                                        "msSymbolIndex": 0
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "bindingStartId": [],
-                                    "bindingEndId": [],
-                                    "msSymbolArray": [],
-                                    "vueKey": 1753588105330,
-                                    "type": "barLine",
-                                    "barLineType": 1
-                                }
-                            ],
-                            "type": 2,
-                            "index": {
-                                "multipleStavesIndex": 0,
-                                "singleStaffIndex": 0,
-                                "measureIndex": 2,
-                                "msSymbolContainerIndex": 0
-                            },
-                            "options": {
-                                "highlight": false,
-                                "highlightColor": "red",
-                                "color": "black"
-                            },
-                            "vueKey": 1753588105330,
-                            "msTypeName": 5
-                        }
-                    ]
-                }
-            ]
-        },
-        "1753588106297": {
-            "id": 1753588106297,
-            "msTypeName": 6,
-            "index": {
-                "multipleStavesIndex": 0,
-                "singleStaffIndex": 0,
-                "measureIndex": 0,
-                "msSymbolContainerIndex": 0,
-                "msSymbolIndex": 0
-            },
-            "options": {
-                "highlight": false,
-                "highlightColor": "red",
-                "color": "black"
-            },
-            "bindingStartId": [],
-            "bindingEndId": [],
-            "msSymbolArray": [],
-            "vueKey": 1753588106297,
-            "type": "barLine",
-            "barLineType": 1
-        },
-        "1753588094889": {
-            "id": 1753588094889,
-            "msTypeName": 6,
-            "index": {
-                "multipleStavesIndex": 0,
-                "singleStaffIndex": 0,
-                "measureIndex": 1,
-                "msSymbolContainerIndex": 0,
-                "msSymbolIndex": 0
-            },
-            "options": {
-                "highlight": false,
-                "highlightColor": "red",
-                "color": "black"
-            },
-            "bindingStartId": [],
-            "bindingEndId": [],
-            "msSymbolArray": [],
-            "vueKey": 1753588094889,
-            "type": "barLine",
-            "barLineType": 1
-        },
-        "1753588108258": {
-            "id": 1753588108258,
-            "msTypeName": 6,
-            "index": {
-                "multipleStavesIndex": 0,
-                "singleStaffIndex": 0,
-                "measureIndex": 1,
-                "msSymbolContainerIndex": 1,
-                "msSymbolIndex": 0
-            },
-            "options": {
-                "highlight": false,
-                "highlightColor": "red",
-                "color": "black"
-            },
-            "bindingStartId": [],
-            "bindingEndId": [],
-            "msSymbolArray": [
-                {
-                    "id": 1753588108258,
-                    "msTypeName": 6,
-                    "index": {
-                        "multipleStavesIndex": 0,
-                        "singleStaffIndex": 0,
-                        "measureIndex": 1,
-                        "msSymbolContainerIndex": 1,
-                        "msSymbolIndex": 0
-                    },
-                    "options": {
-                        "highlight": false,
-                        "highlightColor": "red",
-                        "color": "black"
-                    },
-                    "bindingStartId": [],
-                    "bindingEndId": [],
-                    "msSymbolArray": [],
-                    "vueKey": 1753595331693,
-                    "direction": "down",
-                    "type": "noteBar"
-                },
-                {
-                    "id": 1753588232388,
-                    "msTypeName": 6,
-                    "index": {
-                        "multipleStavesIndex": 0,
-                        "singleStaffIndex": 0,
-                        "measureIndex": 1,
-                        "msSymbolContainerIndex": 1,
-                        "msSymbolIndex": 0
-                    },
-                    "options": {
-                        "highlight": false,
-                        "highlightColor": "red",
-                        "color": "black"
-                    },
-                    "bindingStartId": [],
-                    "bindingEndId": [],
-                    "msSymbolArray": [],
-                    "vueKey": 1753595331693,
-                    "type": "noteTail",
-                    "chronaxie": 16,
-                    "beamType": 1,
-                    "direction": "down"
-                }
-            ],
-            "vueKey": 1753588108258,
-            "beamId": "2",
-            "type": "noteHead",
-            "region": 35,
-            "chronaxie": 16
-        },
-        "1753588118106": {
-            "id": 1753588118106,
-            "msTypeName": 6,
-            "index": {
-                "multipleStavesIndex": 0,
-                "singleStaffIndex": 0,
-                "measureIndex": 1,
-                "msSymbolContainerIndex": 2,
-                "msSymbolIndex": 0
-            },
-            "options": {
-                "highlight": false,
-                "highlightColor": "red",
-                "color": "black"
-            },
-            "bindingStartId": [],
-            "bindingEndId": [],
-            "msSymbolArray": [
-                {
-                    "id": 1753588118106,
-                    "msTypeName": 6,
-                    "index": {
-                        "multipleStavesIndex": 0,
-                        "singleStaffIndex": 0,
-                        "measureIndex": 1,
-                        "msSymbolContainerIndex": 2,
-                        "msSymbolIndex": 0
-                    },
-                    "options": {
-                        "highlight": false,
-                        "highlightColor": "red",
-                        "color": "black"
-                    },
-                    "bindingStartId": [],
-                    "bindingEndId": [],
-                    "msSymbolArray": [],
-                    "vueKey": 1753595331693,
-                    "direction": "down",
-                    "type": "noteBar"
-                },
-                {
-                    "id": 1753588234532,
-                    "msTypeName": 6,
-                    "index": {
-                        "multipleStavesIndex": 0,
-                        "singleStaffIndex": 0,
-                        "measureIndex": 1,
-                        "msSymbolContainerIndex": 2,
-                        "msSymbolIndex": 0
-                    },
-                    "options": {
-                        "highlight": false,
-                        "highlightColor": "red",
-                        "color": "black"
-                    },
-                    "bindingStartId": [],
-                    "bindingEndId": [],
-                    "msSymbolArray": [],
-                    "vueKey": 1753595331693,
-                    "type": "noteTail",
-                    "chronaxie": 16,
-                    "beamType": 1,
-                    "direction": "down"
-                }
-            ],
-            "vueKey": 1753588118106,
-            "beamId": "2",
-            "type": "noteHead",
-            "region": 56,
-            "chronaxie": 16
-        },
-        "1753588109106": {
-            "id": 1753588109106,
-            "msTypeName": 6,
-            "index": {
-                "multipleStavesIndex": 0,
-                "singleStaffIndex": 0,
-                "measureIndex": 1,
-                "msSymbolContainerIndex": 3,
-                "msSymbolIndex": 0
-            },
-            "options": {
-                "highlight": false,
-                "highlightColor": "red",
-                "color": "black"
-            },
-            "bindingStartId": [],
-            "bindingEndId": [],
-            "msSymbolArray": [
-                {
-                    "id": 1753588109106,
-                    "msTypeName": 6,
-                    "index": {
-                        "multipleStavesIndex": 0,
-                        "singleStaffIndex": 0,
-                        "measureIndex": 1,
-                        "msSymbolContainerIndex": 3,
-                        "msSymbolIndex": 0
-                    },
-                    "options": {
-                        "highlight": false,
-                        "highlightColor": "red",
-                        "color": "black"
-                    },
-                    "bindingStartId": [],
-                    "bindingEndId": [],
-                    "msSymbolArray": [],
-                    "vueKey": 1753591723039,
-                    "direction": "down",
-                    "type": "noteBar"
-                },
-                {
-                    "id": 1753588239380,
-                    "msTypeName": 6,
-                    "index": {
-                        "multipleStavesIndex": 0,
-                        "singleStaffIndex": 0,
-                        "measureIndex": 1,
-                        "msSymbolContainerIndex": 3,
-                        "msSymbolIndex": 0
-                    },
-                    "options": {
-                        "highlight": false,
-                        "highlightColor": "red",
-                        "color": "black"
-                    },
-                    "bindingStartId": [],
-                    "bindingEndId": [],
-                    "msSymbolArray": [],
-                    "vueKey": 1753591723039,
-                    "type": "noteTail",
-                    "chronaxie": 16,
-                    "beamType": 1,
-                    "direction": "down"
-                }
-            ],
-            "vueKey": 1753588109106,
-            "beamId": -1,
-            "type": "noteHead",
-            "region": 54,
-            "chronaxie": 16
-        },
-        "1753588105330": {
-            "id": 1753588105330,
-            "msTypeName": 6,
-            "index": {
-                "multipleStavesIndex": 0,
-                "singleStaffIndex": 0,
-                "measureIndex": 2,
-                "msSymbolContainerIndex": 0,
-                "msSymbolIndex": 0
-            },
-            "options": {
-                "highlight": false,
-                "highlightColor": "red",
-                "color": "black"
-            },
-            "bindingStartId": [],
-            "bindingEndId": [],
-            "msSymbolArray": [],
-            "vueKey": 1753588105330,
-            "type": "barLine",
-            "barLineType": 1
-        },
-        "1751898743265": {
-            "id": 1751898743265,
-            "msTypeName": 2,
-            "index": {
-                "multipleStavesIndex": 1,
-                "singleStaffIndex": 0
-            },
-            "bindingStartId": [],
-            "bindingEndId": [],
-            "singleStaffPaddingTop": 30,
-            "singleStaffPaddingBottom": 30,
-            "options": {
-                "highlight": false,
-                "highlightColor": "red",
-                "color": "transparent"
-            },
-            "singleStaffMarginBottom": 30,
-            "measureArray": [
-                {
-                    "id": 1753588102305,
-                    "msTypeName": 3,
-                    "index": {
-                        "multipleStavesIndex": 1,
-                        "singleStaffIndex": 0,
-                        "measureIndex": 0
-                    },
-                    "bindingStartId": [],
-                    "bindingEndId": [],
-                    "options": {
-                        "highlight": false,
-                        "highlightColor": "red",
-                        "color": "black"
-                    },
-                    "vueKey": 1753588102305,
-                    "msSymbolContainerArray": [
-                        {
-                            "id": 1753588102305,
-                            "msSymbolArray": [
-                                {
-                                    "id": 1753588102305,
-                                    "msTypeName": 6,
-                                    "index": {
-                                        "multipleStavesIndex": 1,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 0,
-                                        "msSymbolContainerIndex": 0,
-                                        "msSymbolIndex": 0
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "bindingStartId": [],
-                                    "bindingEndId": [],
-                                    "msSymbolArray": [],
-                                    "vueKey": 1753588102305,
-                                    "type": "barLine",
-                                    "barLineType": 1
-                                }
-                            ],
-                            "type": 2,
-                            "index": {
-                                "multipleStavesIndex": 1,
-                                "singleStaffIndex": 0,
-                                "measureIndex": 0,
-                                "msSymbolContainerIndex": 0
-                            },
-                            "options": {
-                                "highlight": false,
-                                "highlightColor": "red",
-                                "color": "black"
-                            },
-                            "vueKey": 1753588102305,
-                            "msTypeName": 5
-                        }
-                    ]
-                }
-            ]
-        },
-        "1753588102305": {
-            "id": 1753588102305,
-            "msTypeName": 6,
-            "index": {
-                "multipleStavesIndex": 1,
-                "singleStaffIndex": 0,
-                "measureIndex": 0,
-                "msSymbolContainerIndex": 0,
-                "msSymbolIndex": 0
-            },
-            "options": {
-                "highlight": false,
-                "highlightColor": "red",
-                "color": "black"
-            },
-            "bindingStartId": [],
-            "bindingEndId": [],
-            "msSymbolArray": [],
-            "vueKey": 1753588102305,
-            "type": "barLine",
-            "barLineType": 1
-        },
-        "1753588232388": {
-            "id": 1753588232388,
-            "msTypeName": 6,
-            "index": {
-                "multipleStavesIndex": 0,
-                "singleStaffIndex": 0,
-                "measureIndex": 1,
-                "msSymbolContainerIndex": 1,
-                "msSymbolIndex": 0
-            },
-            "options": {
-                "highlight": false,
-                "highlightColor": "red",
-                "color": "black"
-            },
-            "bindingStartId": [],
-            "bindingEndId": [],
-            "msSymbolArray": [],
-            "vueKey": 1753588232388,
-            "type": "noteTail",
-            "chronaxie": 16,
-            "beamType": 1,
-            "direction": "up"
-        },
-        "1753588234532": {
-            "id": 1753588234532,
-            "msTypeName": 6,
-            "index": {
-                "multipleStavesIndex": 0,
-                "singleStaffIndex": 0,
-                "measureIndex": 1,
-                "msSymbolContainerIndex": 2,
-                "msSymbolIndex": 0
-            },
-            "options": {
-                "highlight": false,
-                "highlightColor": "red",
-                "color": "black"
-            },
-            "bindingStartId": [],
-            "bindingEndId": [],
-            "msSymbolArray": [],
-            "vueKey": 1753588234532,
-            "type": "noteTail",
-            "chronaxie": 16,
-            "beamType": 1,
-            "direction": "up"
-        },
-        "1753588239380": {
-            "id": 1753588239380,
-            "msTypeName": 6,
-            "index": {
-                "multipleStavesIndex": 0,
-                "singleStaffIndex": 0,
-                "measureIndex": 1,
-                "msSymbolContainerIndex": 3,
-                "msSymbolIndex": 0
-            },
-            "options": {
-                "highlight": false,
-                "highlightColor": "red",
-                "color": "black"
-            },
-            "bindingStartId": [],
-            "bindingEndId": [],
-            "msSymbolArray": [],
-            "vueKey": 1753588239380,
-            "type": "noteTail",
-            "chronaxie": 16,
-            "beamType": 1,
-            "direction": "up"
-        },
-        "1753619397420": {
-            "type": 1,
-            "msTypeName": 4,
-            "spanSymbolFollowingCategoryEnum": 2,
-            "startTargetId": 1753588094889,
-            "endTargetId": 1753588094889,
-            "id": 1753619397420,
-            "rect": {},
-            "options": {
-                "highlight": false,
-                "highlightColor": "red",
-                "color": "black"
-            },
-            "vueKey": 1753619397420
-        }
-    },
+    "map": {},
     "measureHeight": 50,
     "widthDynamicRatio": 0.4,
     "spanSymbolArray": [
@@ -1456,516 +20,28 @@ const data: MusicScore = {
             "type": 1,
             "msTypeName": 4,
             "spanSymbolFollowingCategoryEnum": 2,
-            "startTargetId": 1753588094889,
-            "endTargetId": 1753588094889,
-            "id": 1753619397420,
-            "rect": {},
+            "startTargetId": 1753686264300,
+            "endTargetId": 1753686264300,
+            "id": 1753686271858,
+            "rect": {
+                "width": 399.79999999999995,
+                "left": 300.09999999999997,
+                "bottom": 710
+            },
             "options": {
                 "highlight": false,
                 "highlightColor": "red",
                 "color": "black"
             },
-            "vueKey": 1753619397420
+            "vueKey": 1753686271858
         }
     ],
     "multipleStavesArray": [
         {
-            "id": 1,
-            "msTypeName": 1,
-            "index": {
-                "multipleStavesIndex": 0
-            },
-            "multipleStavesPaddingTop": 60,
-            "multipleStavesPaddingBottom": 60,
-            "multipleStavesMarginBottom": 60,
-            "options": {
-                "highlight": false,
-                "highlightColor": "red",
-                "color": "transparent"
-            },
-            "singleStaffArray": [
-                {
-                    "id": 2,
-                    "msTypeName": 2,
-                    "index": {
-                        "multipleStavesIndex": 0,
-                        "singleStaffIndex": 0
-                    },
-                    "bindingStartId": [],
-                    "bindingEndId": [],
-                    "singleStaffPaddingTop": 30,
-                    "singleStaffPaddingBottom": 30,
-                    "options": {
-                        "highlight": false,
-                        "highlightColor": "red",
-                        "color": "transparent"
-                    },
-                    "singleStaffMarginBottom": 30,
-                    "measureArray": [
-                        {
-                            "id": 1753588106297,
-                            "msTypeName": 3,
-                            "index": {
-                                "multipleStavesIndex": 0,
-                                "singleStaffIndex": 0,
-                                "measureIndex": 0
-                            },
-                            "bindingStartId": [],
-                            "bindingEndId": [],
-                            "options": {
-                                "highlight": false,
-                                "highlightColor": "red",
-                                "color": "black"
-                            },
-                            "vueKey": 1753588106297,
-                            "msSymbolContainerArray": [
-                                {
-                                    "id": 1753588106297,
-                                    "msSymbolArray": [
-                                        {
-                                            "id": 1753588106297,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 0,
-                                                "msSymbolContainerIndex": 0,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [],
-                                            "vueKey": 1753588106297,
-                                            "type": "barLine",
-                                            "barLineType": 1
-                                        }
-                                    ],
-                                    "type": 2,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 0,
-                                        "msSymbolContainerIndex": 0
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "vueKey": 1753588106297,
-                                    "msTypeName": 5
-                                }
-                            ]
-                        },
-                        {
-                            "id": 1753588094889,
-                            "msTypeName": 3,
-                            "index": {
-                                "multipleStavesIndex": 0,
-                                "singleStaffIndex": 0,
-                                "measureIndex": 1
-                            },
-                            "bindingStartId": [
-                                1753619397420,
-                                1753619397420
-                            ],
-                            "bindingEndId": [
-                                1753619397420
-                            ],
-                            "options": {
-                                "highlight": true,
-                                "highlightColor": "red",
-                                "color": "black"
-                            },
-                            "vueKey": 1753588094889,
-                            "msSymbolContainerArray": [
-                                {
-                                    "id": 1753588094889,
-                                    "msSymbolArray": [
-                                        {
-                                            "id": 1753588094889,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 1,
-                                                "msSymbolContainerIndex": 0,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [],
-                                            "vueKey": 1753588094889,
-                                            "type": "barLine",
-                                            "barLineType": 1
-                                        }
-                                    ],
-                                    "type": 2,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 1,
-                                        "msSymbolContainerIndex": 0
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "vueKey": 1753588094889,
-                                    "msTypeName": 5
-                                },
-                                {
-                                    "id": 1753588108258,
-                                    "msSymbolArray": [
-                                        {
-                                            "id": 1753588108258,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 1,
-                                                "msSymbolContainerIndex": 1,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [
-                                                {
-                                                    "id": 1753588108258,
-                                                    "msTypeName": 6,
-                                                    "index": {
-                                                        "multipleStavesIndex": 0,
-                                                        "singleStaffIndex": 0,
-                                                        "measureIndex": 1,
-                                                        "msSymbolContainerIndex": 1,
-                                                        "msSymbolIndex": 0
-                                                    },
-                                                    "options": {
-                                                        "highlight": false,
-                                                        "highlightColor": "red",
-                                                        "color": "black"
-                                                    },
-                                                    "bindingStartId": [],
-                                                    "bindingEndId": [],
-                                                    "msSymbolArray": [],
-                                                    "vueKey": 1753595331693,
-                                                    "direction": "down",
-                                                    "type": "noteBar"
-                                                },
-                                                {
-                                                    "id": 1753588232388,
-                                                    "msTypeName": 6,
-                                                    "index": {
-                                                        "multipleStavesIndex": 0,
-                                                        "singleStaffIndex": 0,
-                                                        "measureIndex": 1,
-                                                        "msSymbolContainerIndex": 1,
-                                                        "msSymbolIndex": 0
-                                                    },
-                                                    "options": {
-                                                        "highlight": false,
-                                                        "highlightColor": "red",
-                                                        "color": "black"
-                                                    },
-                                                    "bindingStartId": [],
-                                                    "bindingEndId": [],
-                                                    "msSymbolArray": [],
-                                                    "vueKey": 1753595331693,
-                                                    "type": "noteTail",
-                                                    "chronaxie": 16,
-                                                    "beamType": 1,
-                                                    "direction": "down"
-                                                }
-                                            ],
-                                            "vueKey": 1753588108258,
-                                            "beamId": "2",
-                                            "type": "noteHead",
-                                            "region": 35,
-                                            "chronaxie": 16
-                                        }
-                                    ],
-                                    "type": 3,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 1,
-                                        "msSymbolContainerIndex": 1
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "vueKey": 1753588108258,
-                                    "msTypeName": 5
-                                },
-                                {
-                                    "id": 1753588118106,
-                                    "msSymbolArray": [
-                                        {
-                                            "id": 1753588118106,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 1,
-                                                "msSymbolContainerIndex": 2,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [
-                                                {
-                                                    "id": 1753588118106,
-                                                    "msTypeName": 6,
-                                                    "index": {
-                                                        "multipleStavesIndex": 0,
-                                                        "singleStaffIndex": 0,
-                                                        "measureIndex": 1,
-                                                        "msSymbolContainerIndex": 2,
-                                                        "msSymbolIndex": 0
-                                                    },
-                                                    "options": {
-                                                        "highlight": false,
-                                                        "highlightColor": "red",
-                                                        "color": "black"
-                                                    },
-                                                    "bindingStartId": [],
-                                                    "bindingEndId": [],
-                                                    "msSymbolArray": [],
-                                                    "vueKey": 1753595331693,
-                                                    "direction": "down",
-                                                    "type": "noteBar"
-                                                },
-                                                {
-                                                    "id": 1753588234532,
-                                                    "msTypeName": 6,
-                                                    "index": {
-                                                        "multipleStavesIndex": 0,
-                                                        "singleStaffIndex": 0,
-                                                        "measureIndex": 1,
-                                                        "msSymbolContainerIndex": 2,
-                                                        "msSymbolIndex": 0
-                                                    },
-                                                    "options": {
-                                                        "highlight": false,
-                                                        "highlightColor": "red",
-                                                        "color": "black"
-                                                    },
-                                                    "bindingStartId": [],
-                                                    "bindingEndId": [],
-                                                    "msSymbolArray": [],
-                                                    "vueKey": 1753595331693,
-                                                    "type": "noteTail",
-                                                    "chronaxie": 16,
-                                                    "beamType": 1,
-                                                    "direction": "down"
-                                                }
-                                            ],
-                                            "vueKey": 1753588118106,
-                                            "beamId": "2",
-                                            "type": "noteHead",
-                                            "region": 56,
-                                            "chronaxie": 16
-                                        }
-                                    ],
-                                    "type": 3,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 1,
-                                        "msSymbolContainerIndex": 2
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "vueKey": 1753588118106,
-                                    "msTypeName": 5
-                                },
-                                {
-                                    "id": 1753588109106,
-                                    "msSymbolArray": [
-                                        {
-                                            "id": 1753588109106,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 1,
-                                                "msSymbolContainerIndex": 3,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [
-                                                {
-                                                    "id": 1753588109106,
-                                                    "msTypeName": 6,
-                                                    "index": {
-                                                        "multipleStavesIndex": 0,
-                                                        "singleStaffIndex": 0,
-                                                        "measureIndex": 1,
-                                                        "msSymbolContainerIndex": 3,
-                                                        "msSymbolIndex": 0
-                                                    },
-                                                    "options": {
-                                                        "highlight": false,
-                                                        "highlightColor": "red",
-                                                        "color": "black"
-                                                    },
-                                                    "bindingStartId": [],
-                                                    "bindingEndId": [],
-                                                    "msSymbolArray": [],
-                                                    "vueKey": 1753591723039,
-                                                    "direction": "down",
-                                                    "type": "noteBar"
-                                                },
-                                                {
-                                                    "id": 1753588239380,
-                                                    "msTypeName": 6,
-                                                    "index": {
-                                                        "multipleStavesIndex": 0,
-                                                        "singleStaffIndex": 0,
-                                                        "measureIndex": 1,
-                                                        "msSymbolContainerIndex": 3,
-                                                        "msSymbolIndex": 0
-                                                    },
-                                                    "options": {
-                                                        "highlight": false,
-                                                        "highlightColor": "red",
-                                                        "color": "black"
-                                                    },
-                                                    "bindingStartId": [],
-                                                    "bindingEndId": [],
-                                                    "msSymbolArray": [],
-                                                    "vueKey": 1753591723039,
-                                                    "type": "noteTail",
-                                                    "chronaxie": 16,
-                                                    "beamType": 1,
-                                                    "direction": "down"
-                                                }
-                                            ],
-                                            "vueKey": 1753588109106,
-                                            "beamId": -1,
-                                            "type": "noteHead",
-                                            "region": 54,
-                                            "chronaxie": 16
-                                        }
-                                    ],
-                                    "type": 3,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 1,
-                                        "msSymbolContainerIndex": 3
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "vueKey": 1753588109106,
-                                    "msTypeName": 5
-                                }
-                            ]
-                        },
-                        {
-                            "id": 1753588105330,
-                            "msTypeName": 3,
-                            "index": {
-                                "multipleStavesIndex": 0,
-                                "singleStaffIndex": 0,
-                                "measureIndex": 2
-                            },
-                            "bindingStartId": [],
-                            "bindingEndId": [],
-                            "options": {
-                                "highlight": false,
-                                "highlightColor": "red",
-                                "color": "black"
-                            },
-                            "vueKey": 1753588105330,
-                            "msSymbolContainerArray": [
-                                {
-                                    "id": 1753588105330,
-                                    "msSymbolArray": [
-                                        {
-                                            "id": 1753588105330,
-                                            "msTypeName": 6,
-                                            "index": {
-                                                "multipleStavesIndex": 0,
-                                                "singleStaffIndex": 0,
-                                                "measureIndex": 2,
-                                                "msSymbolContainerIndex": 0,
-                                                "msSymbolIndex": 0
-                                            },
-                                            "options": {
-                                                "highlight": false,
-                                                "highlightColor": "red",
-                                                "color": "black"
-                                            },
-                                            "bindingStartId": [],
-                                            "bindingEndId": [],
-                                            "msSymbolArray": [],
-                                            "vueKey": 1753588105330,
-                                            "type": "barLine",
-                                            "barLineType": 1
-                                        }
-                                    ],
-                                    "type": 2,
-                                    "index": {
-                                        "multipleStavesIndex": 0,
-                                        "singleStaffIndex": 0,
-                                        "measureIndex": 2,
-                                        "msSymbolContainerIndex": 0
-                                    },
-                                    "options": {
-                                        "highlight": false,
-                                        "highlightColor": "red",
-                                        "color": "black"
-                                    },
-                                    "vueKey": 1753588105330,
-                                    "msTypeName": 5
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
             "id": 1751898743265,
             "msTypeName": 1,
             "index": {
-                "multipleStavesIndex": 1
+                "multipleStavesIndex": 0
             },
             "multipleStavesPaddingTop": 60,
             "multipleStavesPaddingBottom": 60,
@@ -1980,7 +56,7 @@ const data: MusicScore = {
                     "id": 1751898743265,
                     "msTypeName": 2,
                     "index": {
-                        "multipleStavesIndex": 1,
+                        "multipleStavesIndex": 0,
                         "singleStaffIndex": 0
                     },
                     "bindingStartId": [],
@@ -1995,12 +71,269 @@ const data: MusicScore = {
                     "singleStaffMarginBottom": 30,
                     "measureArray": [
                         {
+                            "id": 1753686263981,
+                            "msTypeName": 3,
+                            "index": {
+                                "multipleStavesIndex": 0,
+                                "singleStaffIndex": 0,
+                                "measureIndex": 0
+                            },
+                            "bindingStartId": [],
+                            "bindingEndId": [],
+                            "options": {
+                                "highlight": false,
+                                "highlightColor": "red",
+                                "color": "black"
+                            },
+                            "vueKey": 1753686263978,
+                            "msSymbolContainerArray": [
+                                {
+                                    "id": 1753686263981,
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 1753686263979,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 0,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 0,
+                                                "msSymbolContainerIndex": 0,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "options": {
+                                                "highlight": false,
+                                                "highlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "bindingStartId": [],
+                                            "bindingEndId": [],
+                                            "msSymbolArray": [],
+                                            "vueKey": 1753686263978,
+                                            "type": "barLine",
+                                            "barLineType": 1
+                                        }
+                                    ],
+                                    "type": 2,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 0,
+                                        "msSymbolContainerIndex": 0
+                                    },
+                                    "options": {
+                                        "highlight": false,
+                                        "highlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "vueKey": 1753686263979,
+                                    "msTypeName": 5
+                                }
+                            ]
+                        },
+                        {
+                            "id": 1753686264300,
+                            "msTypeName": 3,
+                            "index": {
+                                "multipleStavesIndex": 0,
+                                "singleStaffIndex": 0,
+                                "measureIndex": 1
+                            },
+                            "bindingStartId": [
+                                1753686271858,
+                                1753686271858
+                            ],
+                            "bindingEndId": [
+                                1753686271858
+                            ],
+                            "options": {
+                                "highlight": true,
+                                "highlightColor": "red",
+                                "color": "black"
+                            },
+                            "vueKey": 1753686264297,
+                            "msSymbolContainerArray": [
+                                {
+                                    "id": 1753686264299,
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 1753686264298,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 0,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 1,
+                                                "msSymbolContainerIndex": 0,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "options": {
+                                                "highlight": false,
+                                                "highlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "bindingStartId": [],
+                                            "bindingEndId": [],
+                                            "msSymbolArray": [],
+                                            "vueKey": 1753686264297,
+                                            "type": "barLine",
+                                            "barLineType": 1
+                                        }
+                                    ],
+                                    "type": 2,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 1,
+                                        "msSymbolContainerIndex": 0
+                                    },
+                                    "options": {
+                                        "highlight": false,
+                                        "highlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "vueKey": 1753686264297,
+                                    "msTypeName": 5
+                                },
+                                {
+                                    "id": 1753686266894,
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 1753686266893,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 0,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 1,
+                                                "msSymbolContainerIndex": 1,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "options": {
+                                                "highlight": false,
+                                                "highlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "bindingStartId": [],
+                                            "bindingEndId": [],
+                                            "msSymbolArray": [
+                                                {
+                                                    "id": 1753686266893,
+                                                    "msTypeName": 6,
+                                                    "index": {
+                                                        "multipleStavesIndex": 0,
+                                                        "singleStaffIndex": 0,
+                                                        "measureIndex": 1,
+                                                        "msSymbolContainerIndex": 1,
+                                                        "msSymbolIndex": 0
+                                                    },
+                                                    "options": {
+                                                        "highlight": false,
+                                                        "highlightColor": "red",
+                                                        "color": "black"
+                                                    },
+                                                    "bindingStartId": [],
+                                                    "bindingEndId": [],
+                                                    "msSymbolArray": [],
+                                                    "vueKey": 1753686266892,
+                                                    "direction": "up",
+                                                    "type": "noteBar"
+                                                }
+                                            ],
+                                            "vueKey": 1753686266892,
+                                            "beamId": -1,
+                                            "type": "noteHead",
+                                            "region": 38,
+                                            "chronaxie": 4
+                                        }
+                                    ],
+                                    "type": 3,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 1,
+                                        "msSymbolContainerIndex": 1
+                                    },
+                                    "options": {
+                                        "highlight": false,
+                                        "highlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "vueKey": 1753686266892,
+                                    "msTypeName": 5
+                                },
+                                {
+                                    "id": 1753686269662,
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 1753686269660,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 0,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 1,
+                                                "msSymbolContainerIndex": 2,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "options": {
+                                                "highlight": false,
+                                                "highlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "bindingStartId": [],
+                                            "bindingEndId": [],
+                                            "msSymbolArray": [
+                                                {
+                                                    "id": 1753686269661,
+                                                    "msTypeName": 6,
+                                                    "index": {
+                                                        "multipleStavesIndex": 0,
+                                                        "singleStaffIndex": 0,
+                                                        "measureIndex": 1,
+                                                        "msSymbolContainerIndex": 2,
+                                                        "msSymbolIndex": 0
+                                                    },
+                                                    "options": {
+                                                        "highlight": false,
+                                                        "highlightColor": "red",
+                                                        "color": "black"
+                                                    },
+                                                    "bindingStartId": [],
+                                                    "bindingEndId": [],
+                                                    "msSymbolArray": [],
+                                                    "vueKey": 1753686269660,
+                                                    "direction": "up",
+                                                    "type": "noteBar"
+                                                }
+                                            ],
+                                            "vueKey": 1753686269659,
+                                            "beamId": -1,
+                                            "type": "noteHead",
+                                            "region": 43,
+                                            "chronaxie": 4
+                                        }
+                                    ],
+                                    "type": 3,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 1,
+                                        "msSymbolContainerIndex": 2
+                                    },
+                                    "options": {
+                                        "highlight": false,
+                                        "highlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "vueKey": 1753686269660,
+                                    "msTypeName": 5
+                                }
+                            ]
+                        },
+                        {
                             "id": 1753588102305,
                             "msTypeName": 3,
                             "index": {
-                                "multipleStavesIndex": 1,
+                                "multipleStavesIndex": 0,
                                 "singleStaffIndex": 0,
-                                "measureIndex": 0
+                                "measureIndex": 2
                             },
                             "bindingStartId": [],
                             "bindingEndId": [],
@@ -2018,9 +351,9 @@ const data: MusicScore = {
                                             "id": 1753588102305,
                                             "msTypeName": 6,
                                             "index": {
-                                                "multipleStavesIndex": 1,
+                                                "multipleStavesIndex": 0,
                                                 "singleStaffIndex": 0,
-                                                "measureIndex": 0,
+                                                "measureIndex": 2,
                                                 "msSymbolContainerIndex": 0,
                                                 "msSymbolIndex": 0
                                             },
@@ -2039,9 +372,9 @@ const data: MusicScore = {
                                     ],
                                     "type": 2,
                                     "index": {
-                                        "multipleStavesIndex": 1,
+                                        "multipleStavesIndex": 0,
                                         "singleStaffIndex": 0,
-                                        "measureIndex": 0,
+                                        "measureIndex": 2,
                                         "msSymbolContainerIndex": 0
                                     },
                                     "options": {

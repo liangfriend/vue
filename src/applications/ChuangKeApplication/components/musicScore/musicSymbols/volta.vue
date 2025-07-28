@@ -27,8 +27,8 @@ const voltaStyle = computed(() => {
     return style
   }
   style.width = props.volta.rect.width + 'px'
-  style.left = props.volta.rect.left + 'px'
-  style.bottom = props.volta.rect.bottom + 'px'
+  style.left = '0px'
+  style.bottom = '0px'
   style.borderColor = props.volta.options.highlight
       ? props.volta.options.highlightColor : props.volta.options.color
 
