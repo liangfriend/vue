@@ -1,22 +1,22 @@
 <!--方型拖拽壳，第一版不做，后续要包裹spanSymbol-->
 <script setup lang="ts">
-import {ref, onMounted} from 'vue'
+import {ref, onMounted, PropType} from 'vue'
+import {Rect} from "@/applications/ChuangKeApplication/components/musicScore/types";
 
-type Point = { x: number; y: number }
 
-const props = defineProps<{
-  topLeft: Point
-  topRight: Point
-  bottomLeft: Point
-  bottomRight: Point
-}>()
+const props = defineProps({
+  rect: {
+    required: true,
+    type: Object as PropType<Rect>,
+  }
+})
 
 // 宽高位置状态
 const boxStyle = ref({
-  left: props.topLeft.x,
-  top: props.topLeft.y,
-  width: props.topRight.x - props.topLeft.x,
-  height: props.bottomLeft.y - props.topLeft.y,
+  left: props.rect.left,
+  top: props.rect.top,
+  width: props.rect.width,
+  height: props.rect.height,
 })
 
 const resizing = ref(false)

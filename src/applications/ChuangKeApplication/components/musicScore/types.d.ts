@@ -33,10 +33,10 @@ export declare interface TimeSignature {
 }
 
 export declare interface Rect {
-    width?: number;
-    height?: number;
-    left?: number;
-    bottom?: number;
+    width: number;
+    height: number;
+    left: number;
+    top: number;
 }
 
 export declare type MusicScoreIndex = {

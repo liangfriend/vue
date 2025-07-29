@@ -44,13 +44,12 @@ function voltaRect(volta: Extract<SpanSymbol, {
   const rect = {
     width: 0,
     left: 0,
-    bottom: 0,
+    top: 0,
     height: 0
   }
   const startMeasure = getTarget(volta.startTargetId, musicScore.map)
   const endMeasure = getTarget(volta.endTargetId, musicScore.map)
   if (!startMeasure || !endMeasure) return console.error('获取不到绑定元素', startMeasure, endMeasure)
-  console.log('chicken', startMeasure, endMeasure)
   if (startMeasure.msTypeName !== MsTypeNameEnum.Measure || endMeasure.msTypeName !== MsTypeNameEnum.Measure) return console.error('volta绑定元素错误')
   // 反复符号绑定的两个小节必须在同一单谱表上
   if (startMeasure.index.multipleStavesIndex !== endMeasure.index.multipleStavesIndex) {
@@ -62,11 +61,11 @@ function voltaRect(volta: Extract<SpanSymbol, {
     rect.width += getMeasureWidth(measure, singleStaff, musicScore, componentWidth)
     const measureBottom = getMeasureBottomToMusicScore(measure, musicScore, componentHeight)
     const maxBottomMsSymbol = getMaxMsSymbolBottomInMeasure(measure, musicScore)
-    rect.bottom = Math.max(musicScore.measureHeight + measureBottom, maxBottomMsSymbol + measureBottom)
+    const measureHeight = musicScore.measureHeight
+    rect.top = componentHeight - Math.max(musicScore.measureHeight + measureBottom, maxBottomMsSymbol + measureBottom + measureHeight)
   })
   rect.height = props.musicScore.measureHeight
   volta.rect = rect
-  console.log('chicken', volta.rect)
 }
 
 function getSpanSymbolRect(spanSymbol: SpanSymbol, musicScore: MusicScore, componentWidth: number, componentHeight: number) {
@@ -100,18 +99,13 @@ onBeforeMount(() => {
 
 <template>
   <rect-drag-shell v-if="spanSymbol && spanSymbol.type === SpanSymbolTypeEnum.volta"
-                   :top-left="{x:spanSymbol.rect.left,y:componentHeight -spanSymbol.rect.bottom - musicScore.measureHeight}"
-                   :top-right="{x:spanSymbol.rect.left + spanSymbol.rect.width,y:componentHeight - spanSymbol.rect.bottom- musicScore.measureHeight}"
-                   :bottom-left="{x:spanSymbol.rect.left,y:componentHeight -spanSymbol.rect.bottom + spanSymbol.rect.height- musicScore.measureHeight}"
-                   :bottom-right="{x:spanSymbol.rect.left + spanSymbol.rect.width,y:componentHeight - spanSymbol.rect.bottom+spanSymbol.rect.height- musicScore.measureHeight}">
+                   :rect="spanSymbol.rect">
     <volta :volta="spanSymbol"
            @mousedown.self="handleMouseDown" @mouseup.self="handleMouseUp"
     ></volta>
   </rect-drag-shell>
   <rect-drag-shell v-if="spanSymbol && spanSymbol.type === SpanSymbolTypeEnum.slur" :slur="spanSymbol"
-                   :top-left="{x:spanSymbol.rect.left,y:spanSymbol.rect.bottom}" :top-right="{x:100,y:0}"
-                   :bottom-left="{x:0,y:100}"
-                   :bottom-right="{x:100,y:100}">
+                   :rect="spanSymbol.rect">
     <slur
         @mousedown.self="handleMouseDown" @mouseup.self="handleMouseUp"></slur>
   </rect-drag-shell>

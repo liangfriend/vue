@@ -36,7 +36,12 @@ export function spanSymbolTemplate(options: {
                 "startTargetId": options.startTargetId,
                 "endTargetId": options.endTargetId,
                 "id": Date.now(),
-                "rect": {},
+                "rect": {
+                    top: 0,
+                    left: 0,
+                    width: 0,
+                    height: 0,
+                },
                 "options": {
                     "highlight": false,
                     "highlightColor": "red",
@@ -53,7 +58,12 @@ export function spanSymbolTemplate(options: {
                 "startTargetId": options.startTargetId,
                 "endTargetId": options.endTargetId,
                 "id": Date.now(),
-                "rect": {},
+                "rect": {
+                    top: 0,
+                    left: 0,
+                    width: 0,
+                    height: 0,
+                },
                 "options": {
                     "highlight": false,
                     "highlightColor": "red",
@@ -70,7 +80,12 @@ export function spanSymbolTemplate(options: {
         "startTargetId": options.startTargetId,
         "endTargetId": options.endTargetId,
         "id": Date.now(),
-        "rect": {},
+        "rect": {
+            top: 0,
+            left: 0,
+            width: 0,
+            height: 0,
+        },
         "options": {
             "highlight": false,
             "highlightColor": "red",
