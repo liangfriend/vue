@@ -9,10 +9,14 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
   ChronaxieEnum, MsSymbolTypeEnum,
-  ReserveMsSymbolType
+  ReserveMsSymbolType, SpanSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
-import {msSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
+  msSymbolTemplate,
+  spanSymbolTemplate
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
+import {
+  addSpanSymbol,
   changeBeamId,
   noteChronaxie
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
@@ -70,6 +74,16 @@ function updateBeamId() {
   }
 }
 
+function addSlur() {
+  const startTargetId = props.noteHead
+  const slur = spanSymbolTemplate({
+    type: SpanSymbolTypeEnum.slur
+    , endTargetId: endTargetId, startTargetId: startTargetId
+  })
+  if (!slur) return console.error('获取slur数据模版错误，spanSymbol添加失败')
+  addSpanSymbol(slur, props.musicScore)
+}
+
 watch(() => props.noteHead, () => {
   init()
 }, {
@@ -109,6 +123,10 @@ onMounted(() => {
       <el-button @click="updateBeamId">更新</el-button>
     </div>
     <el-input v-model="beamId" type="number"></el-input>
+    <div>
+      <el-button @click="addSlur">添加连音线</el-button>
+    </div>
+
   </template>
 
 </template>

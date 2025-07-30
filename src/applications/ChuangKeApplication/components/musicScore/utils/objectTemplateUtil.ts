@@ -107,7 +107,13 @@ export function msSymbolTemplate(options: {
     const baseMsSymbol: BaseMsSymbol = {
         id: Date.now() + 1,
         msTypeName: MsTypeNameEnum.MsSymbol,
-        index: {},
+        index: {
+            multipleStavesIndex: -1,
+            singleStaffIndex: -1,
+            measureIndex: -1,
+            msSymbolContainerIndex: -1,
+            msSymbolIndex: -1
+        },
         options: {
             highlight: false,
             highlightColor: 'red',
@@ -248,7 +254,13 @@ export function msSymbolContainerTemplate(options: { type?: MsSymbolContainerTyp
         id: Date.now() + 2,
         msSymbolArray: [],
         type: options.type || MsSymbolContainerTypeEnum.variable,
-        index: {},
+        index: {
+            multipleStavesIndex: -1,
+            singleStaffIndex: -1,
+            measureIndex: -1,
+            msSymbolContainerIndex: -1,
+            msSymbolIndex: -1
+        },
         options: {
             highlight: false,
             highlightColor: 'red',
@@ -267,7 +279,13 @@ export function measureTemplate(options: { barLineType?: BarLineTypeEnum } = {})
     const measure: Measure = {
         id: Date.now() + 3,
         msTypeName: MsTypeNameEnum.Measure,
-        index: {},
+        index: {
+            multipleStavesIndex: -1,
+            singleStaffIndex: -1,
+            measureIndex: -1,
+            msSymbolContainerIndex: -1,
+            msSymbolIndex: -1
+        },
         bindingStartId: [],
         bindingEndId: [],
         options: {
@@ -296,7 +314,13 @@ export function singleStaffTemplate(options: {} = {}): SingleStaff {
     const singleStaff: SingleStaff = {
         id: Date.now() + 4,
         msTypeName: MsTypeNameEnum.SingleStaff,
-        index: {},
+        index: {
+            multipleStavesIndex: -1,
+            singleStaffIndex: -1,
+            measureIndex: -1,
+            msSymbolContainerIndex: -1,
+            msSymbolIndex: -1
+        },
         bindingStartId: [],
         bindingEndId: [],
         singleStaffPaddingTop: 30,

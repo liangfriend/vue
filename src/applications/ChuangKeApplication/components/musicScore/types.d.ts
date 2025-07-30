@@ -40,11 +40,11 @@ export declare interface Rect {
 }
 
 export declare type MusicScoreIndex = {
-    multipleStavesIndex?: number,
-    singleStaffIndex?: number,
-    measureIndex?: number,
-    msSymbolContainerIndex?: number,
-    msSymbolIndex?: number,
+    multipleStavesIndex: number,
+    singleStaffIndex: number,
+    measureIndex: number,
+    msSymbolContainerIndex: number,
+    msSymbolIndex: number,
 }
 export declare type BaseMsSymbol = {
     msSymbolArray: Array<MsSymbol>
@@ -140,7 +140,7 @@ export declare type MsSymbolContainer = {
     id: number,
     msSymbolArray: Array<MsSymbol>
     type: MsSymbolContainerTypeEnum,
-    index: Omit<MusicScoreIndex, 'msSymbolIndex'>
+    index: MusicScoreIndex,
     options: MusicScoreOptions
     msTypeName: MsTypeNameEnum.MsSymbolContainer,
     vueKey: number,
@@ -152,7 +152,7 @@ export declare interface Measure {
     bindingStartId: Array<number>,
     bindingEndId: Array<number>,
     msTypeName: MsTypeNameEnum.Measure,
-    index: Omit<MusicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex'>,
+    index: MusicScoreIndex,
     options: MusicScoreOptions,
     vueKey: number,
 }
@@ -166,7 +166,7 @@ export declare interface SingleStaff {
     bindingStartId: Array<number>,
     bindingEndId: Array<number>,
     msTypeName: MsTypeNameEnum.SingleStaff,
-    index: Omit<MusicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex' | 'measureIndex'>,
+    index: MusicScoreIndex,
     options: MusicScoreOptions,
     vueKey: number,
 
@@ -179,7 +179,7 @@ export declare interface MultipleStaves { //复谱表
     multipleStavesPaddingBottom: number,
     multipleStavesMarginBottom: number,
     msTypeName: MsTypeNameEnum.MultipStaves,
-    index: Omit<MusicScoreIndex, 'msSymbolIndex' | 'msSymbolContainerIndex' | 'measureIndex' | 'singleStaffIndex'>,
+    index: MusicScoreIndex,
     options: MusicScoreOptions,
     vueKey: number,
 

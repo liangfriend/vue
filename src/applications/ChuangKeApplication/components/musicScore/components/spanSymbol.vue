@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import Volta from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/volta.vue";
 import {inject, onBeforeMount, onMounted, PropType} from "vue";
-import {MsState, type MusicScore, SpanSymbol} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import type {
+  MsState,
+  MusicScore,
+  Slur,
+  SpanSymbol
+} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
   MsTypeNameEnum,
   SpanSymbolTypeEnum
@@ -38,9 +43,35 @@ const props = defineProps({
 })
 const msState = inject('msState') as MsState
 
-function voltaRect(volta: Extract<SpanSymbol, {
-  type: SpanSymbolTypeEnum.volta
-}>, musicScore: MusicScore, componentWidth: number, componentHeight: number) {
+function voltaRect(volta: Volta, musicScore: MusicScore, componentWidth: number, componentHeight: number) {
+  const rect = {
+    width: 0,
+    left: 0,
+    top: 0,
+    height: 0
+  }
+  const startMeasure = getTarget(volta.startTargetId, musicScore.map)
+  const endMeasure = getTarget(volta.endTargetId, musicScore.map)
+  if (!startMeasure || !endMeasure) return console.error('获取不到绑定元素', startMeasure, endMeasure)
+  if (startMeasure.msTypeName !== MsTypeNameEnum.Measure || endMeasure.msTypeName !== MsTypeNameEnum.Measure) return console.error('volta绑定元素错误')
+  // 反复符号绑定的两个小节必须在同一单谱表上
+  if (startMeasure.index.multipleStavesIndex !== endMeasure.index.multipleStavesIndex) {
+    console.error("反复符号绑定小节有误")
+    return
+  }
+  rect.left = getMeasureLeftToMusicScore(startMeasure, musicScore, componentWidth)
+  traverseMeasure(startMeasure.index, endMeasure.index, musicScore, (measure, singleStaff, multipleStaves) => {
+    rect.width += getMeasureWidth(measure, singleStaff, musicScore, componentWidth)
+    const measureBottom = getMeasureBottomToMusicScore(measure, musicScore, componentHeight)
+    const maxBottomMsSymbol = getMaxMsSymbolBottomInMeasure(measure, musicScore)
+    const measureHeight = musicScore.measureHeight
+    rect.top = componentHeight - Math.max(musicScore.measureHeight + measureBottom, maxBottomMsSymbol + measureBottom + measureHeight)
+  })
+  rect.height = props.musicScore.measureHeight
+  volta.rect = rect
+}
+
+function slurRect(volta: Slur, musicScore: MusicScore, componentWidth: number, componentHeight: number) {
   const rect = {
     width: 0,
     left: 0,
@@ -72,6 +103,10 @@ function getSpanSymbolRect(spanSymbol: SpanSymbol, musicScore: MusicScore, compo
   switch (spanSymbol.type) {
     case SpanSymbolTypeEnum.volta: {
       voltaRect(spanSymbol, musicScore, componentWidth, componentHeight)
+      break
+    }
+    case SpanSymbolTypeEnum.slur: {
+      slurRect(spanSymbol, musicScore, componentWidth, componentHeight)
       break
     }
   }

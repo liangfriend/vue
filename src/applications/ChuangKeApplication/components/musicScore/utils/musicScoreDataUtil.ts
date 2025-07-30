@@ -2,7 +2,7 @@ import {
     AccidentalEnum,
     ClefEnum,
     KeySignatureEnum,
-    MsSymbolTypeEnum,
+    MsSymbolTypeEnum, MsTypeNameEnum,
     MusicalAlphabetEnum,
     MusicScoreRegionEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
@@ -19,7 +19,7 @@ import {
     MusicScore,
     MusicScoreIndex,
     NoteHead,
-    SingleStaff
+    SingleStaff, SpanSymbol
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {MsSymbolInformationMap,} from "@/applications/ChuangKeApplication/components/musicScore/constant.ts";
 
@@ -802,4 +802,22 @@ export function getBeamGroup(beamId: number, measure: Measure): BeamGroup {
         })
     })
     return res
+}
+
+// 获取next信息, nextCount，相对参数，表示获取target所在数组在target后nextCount位的数据
+export function getNext(target: Exclude<MsType, SpanSymbol>, musicScore: MusicScore, nextCount: number): Exclude<MsType, SpanSymbol> {
+    if (!nextCount) return target
+    // let index: MusicScoreIndex = {
+    //     multipleStavesIndex: -1,
+    //     singleStaffIndex: -1,
+    //     measureIndex: -1,
+    //     msSymbolContainerIndex: -1,
+    //     msSymbolIndex: -1,
+    // }
+
+
+    const data = getDataWithIndex(target.index, musicScore)
+    if (target.msTypeName === MsTypeNameEnum.MsSymbol) {
+
+    }
 }
