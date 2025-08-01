@@ -139,6 +139,8 @@ export declare type SpanSymbol = Volta | Slur
 export declare type MsSymbolContainer = {
     id: number,
     msSymbolArray: Array<MsSymbol>
+    bindingStartId: Array<number>,
+    bindingEndId: Array<number>,
     type: MsSymbolContainerTypeEnum,
     index: MusicScoreIndex,
     options: MusicScoreOptions
@@ -178,6 +180,8 @@ export declare interface MultipleStaves { //复谱表
     multipleStavesPaddingTop: number,
     multipleStavesPaddingBottom: number,
     multipleStavesMarginBottom: number,
+    bindingStartId: Array<number>,
+    bindingEndId: Array<number>,
     msTypeName: MsTypeNameEnum.MultipStaves,
     index: MusicScoreIndex,
     options: MusicScoreOptions,

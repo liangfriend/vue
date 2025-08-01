@@ -1,20 +1,15 @@
 
 
-<template>
-  <div class="timeSignature" v-if="msSymbol && msSymbol.type === MsSymbolTypeEnum.timeSignature"
-       :style="timeSignatureStyle">
-    <div>{{ msSymbol.timeSignature.beat }}</div>
-    <div>{{ msSymbol.timeSignature.chronaxie }}</div>
-  </div>
-</template>
+
 <script setup lang="ts">
-import {computed, PropType} from "vue";
-import {MsSymbol} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {computed, CSSProperties, PropType} from "vue";
+import {MsSymbol, TimeSignatureMsSymbol} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {MsSymbolTypeEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 const props = defineProps({
-  msSymbol: {
-    type: Object as PropType<MsSymbol>,
+  timeSignature: {
+    type: Object as PropType<TimeSignatureMsSymbol>,
+    required: true,
   },
   //小节高度， 此属性会控制音符，休止符，谱号，拍号等符号大小
   measureHeight: {
@@ -23,12 +18,21 @@ const props = defineProps({
   },
 })
 
-const timeSignatureStyle = computed(() => {
+const timeSignatureStyle = computed((): CSSProperties => {
   return {
     fontSize: props.measureHeight / 3 + 'px',
+    userSelect: 'none',
+    color: props.timeSignature.options.highlight ? props.timeSignature.options.highlightColor : props.timeSignature.options.color,
   }
 })
 </script>
+<template>
+  <div class="timeSignature" v-if="timeSignature && timeSignature.type === MsSymbolTypeEnum.timeSignature"
+       :style="timeSignatureStyle">
+    <div>{{ timeSignature.timeSignature.beat }}</div>
+    <div>{{ timeSignature.timeSignature.chronaxie }}</div>
+  </div>
+</template>
 <style scoped>
 .timeSignature {
   width: 100%;
@@ -38,5 +42,9 @@ const timeSignatureStyle = computed(() => {
   align-items: center;
   flex-direction: column;
   font-weight: bold;
+}
+
+.timeSignature > div {
+  pointer-events: none;
 }
 </style>

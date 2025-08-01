@@ -654,6 +654,7 @@ export function getDataWithIndex(index: MusicScoreIndex, musicScore: MusicScore)
         msSymbolContainer: null,
         msSymbol: null,
     }
+
     if (index.multipleStavesIndex != null) {
         const multipleStaves = musicScore.multipleStavesArray[index.multipleStavesIndex]
         res.multipleStaves = multipleStaves

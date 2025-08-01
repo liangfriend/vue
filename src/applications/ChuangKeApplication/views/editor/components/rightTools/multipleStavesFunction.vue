@@ -1,9 +1,5 @@
 <script setup lang="ts">
 
-import {
-  deleteMeasure, deleteMultipleStaves, deleteSingleStaff,
-  insertMeasure, insertMultipleStaves, insertSingleStaff
-} from "@/applications/ChuangKeApplication/utils/ms-editFunction.ts";
 import {PropType, UnwrapRef} from "vue";
 import {
   Measure,
@@ -11,6 +7,13 @@ import {
   MultipleStaves,
   MusicScore, MusicScoreRef
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {
+  multipleStavesTemplate
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
+import {
+  addMultipleStaves,
+  removeMultipleStaves
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 
 
 const props = defineProps({
@@ -30,14 +33,20 @@ const props = defineProps({
 
 function handleRightToolsBtn(key: String, multipleStaves: MultipleStaves, musicScore: MusicScore) {
   switch (key) {
-    case 'insertBefore':
-      insertMultipleStaves(multipleStaves, musicScore, 'before')
+    case 'insertBefore': {
+      const newMultipleStaves = multipleStavesTemplate({})
+      if (!multipleStaves) return console.error("缺乏定位元素，复谱表添加失败")
+      addMultipleStaves(newMultipleStaves, multipleStaves, musicScore, 'before')
       break
-    case 'insertAfter':
-      insertMultipleStaves(multipleStaves, musicScore, 'after')
+    }
+    case 'insertAfter': {
+      const newMultipleStaves = multipleStavesTemplate({})
+      if (!multipleStaves) return console.error("缺乏定位元素，复谱表添加失败")
+      addMultipleStaves(newMultipleStaves, multipleStaves, musicScore, 'after')
       break
+    }
     case 'delete':
-      deleteMultipleStaves(multipleStaves, musicScore)
+      removeMultipleStaves(multipleStaves, musicScore)
       break;
 
   }

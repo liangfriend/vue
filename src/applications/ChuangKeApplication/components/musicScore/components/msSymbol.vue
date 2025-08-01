@@ -275,6 +275,7 @@ const msSymbolStyle = computed<CSSProperties>(() => {
     width: `${width.value}px`,
     height: `${height.value}px`,
     position: 'absolute',
+    pointerEvents: 'auto',
     left: msSymbolLeft.value + 'px',
     bottom: msSymbolBottom.value + 'px',
     background: props.msSymbol.options.highlight ? props.msSymbol.options.highlightColor : props.msSymbol.options.color,
@@ -296,7 +297,6 @@ const msSymbolStyle = computed<CSSProperties>(() => {
 const emits = defineEmits(['msSymbolMouseDown', 'msSymbolMouseUp']);
 
 function handleMouseDown(e: MouseEvent) {
-  console.log('chicken',)
   emits('msSymbolMouseDown', e, props.msSymbol)
 
 }
@@ -330,7 +330,7 @@ defineExpose({aspectRatio})
   <time-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.timeSignature" :style="msSymbolStyle"
                   @mouseup.self="handleMouseUp"
                   @mousedown.self="handleMouseDown"
-                  :msSymbol="msSymbol" :measure-height="measureHeight"></time-signature>
+                  :time-signature="msSymbol" :measure-height="measureHeight"></time-signature>
   <note-tail v-else-if="msSymbol?.type === MsSymbolTypeEnum.noteTail"
              :ms-symbol-container="msSymbolContainer"
              :pre-container="preContainer"

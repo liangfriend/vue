@@ -1,19 +1,12 @@
-<template>
-  <div
-      class="keySignature"
-  >
-    <div
-        v-for="(yOffset, i) in verticalOffsets"
-        :key="i"
-        class="symbol"
-        :style="getSymbolStyle(i, yOffset)"
-    ></div>
-  </div>
-</template>
+
 
 <script setup lang="ts">
 import {computed, CSSProperties, PropType} from "vue";
-import {MsSymbol, type MusicScore} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {
+  KeySignatureMsSymbol,
+  MsSymbol,
+  type MusicScore
+} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
   ClefEnum,
   KeySignatureEnum,
@@ -117,6 +110,7 @@ const getSymbolStyle = computed(() => {
       width: symbolSize + 'px',
       height: symbolSize + 'px',
       position: 'absolute',
+      pointerEvents: 'none',
       left: `${index * horizontalGap}px`,
       top: `${props.measureHeight - yOffset - symbolSize / 2}px`,
       backgroundColor: props.keySignature.options.highlight ? props.keySignature.options.highlightColor : props.keySignature.options.color,
@@ -132,7 +126,18 @@ const getSymbolStyle = computed(() => {
   };
 });
 </script>
-
+<template>
+  <div
+      class="keySignature"
+  >
+    <div
+        v-for="(yOffset, i) in verticalOffsets"
+        :key="i"
+        class="symbol"
+        :style="getSymbolStyle(i, yOffset)"
+    ></div>
+  </div>
+</template>
 <style scoped>
 .keySignature {
   position: relative;

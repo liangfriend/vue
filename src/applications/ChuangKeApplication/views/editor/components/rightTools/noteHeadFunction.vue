@@ -20,7 +20,7 @@ import {
 import {
   addSpanSymbol, changeAccidental,
   changeBeamId,
-  changeNoteChronaxie
+  changeNoteChronaxie, removeMsSymbolContainer
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 import {
   getDataWithIndex,
@@ -127,6 +127,16 @@ function addSlur() {
   addSpanSymbol(slur, props.noteHead, nextMsSymbol, props.musicScore)
 }
 
+// 删除音符
+function deleteNote() {
+  const msSymbolContainer = getDataWithIndex(props.noteHead.index, props.musicScore).msSymbolContainer
+  if (!msSymbolContainer) {
+    console.error("索引数据出错，音符删除失败")
+    return
+  }
+  removeMsSymbolContainer(msSymbolContainer, props.musicScore)
+}
+
 watch(() => props.noteHead, () => {
   init()
 }, {
@@ -177,6 +187,9 @@ onMounted(() => {
   </template>
   <div>
     <el-button @click="addSlur">添加连音线</el-button>
+  </div>
+  <div>
+    <el-button @click="deleteNote">删除</el-button>
   </div>
 </template>
 

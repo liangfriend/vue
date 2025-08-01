@@ -3,7 +3,7 @@ import {
     BarLineTypeEnum,
     ChronaxieEnum,
     ClefEnum,
-    KeySignatureEnum,
+    KeySignatureEnum, MsSymbolContainerTypeEnum,
     MsSymbolTypeEnum,
     MsTypeNameEnum,
     MusicScoreRegionEnum, SpanSymbolTypeEnum
@@ -27,7 +27,10 @@ import {
     TimeSignature,
     TimeSignatureMsSymbol, Volta
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
-import {msSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
+import {
+    msSymbolContainerTemplate,
+    msSymbolTemplate
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
     getDataWithIndex,
     getMultipleStavesRelatedSpanSymbolList,
@@ -48,7 +51,9 @@ export function musicScoreMapAdd(msData: MsType, musicScore: MusicScore) {
 }
 
 export function musicScoreMapRemove(id: number, musicScore: MusicScore) {
-    delete musicScore.map[id]
+    if (musicScore.map[id]) {
+        delete musicScore.map[id]
+    }
 }
 
 
@@ -62,6 +67,7 @@ export function removeChildMsSymbol(childMsSymbol: MsSymbol, msSymbol: MsSymbol,
     const index = msSymbol.msSymbolArray.indexOf(childMsSymbol)
     if (index === -1) return console.error('符号内找不到目标跟随符号，跟随符号删除失败')
     msSymbol.msSymbolArray.splice(index, 1)
+    //
     musicScoreMapRemove(childMsSymbol.id, musicScore)
 }
 
@@ -136,7 +142,6 @@ export function addMsSymbol(newMsSymbol: MsSymbol, currSelected: MsType, musicSc
     const spanSymbolIdSet = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
     updateSpanSymbolView(spanSymbolIdSet, musicScore)
 }
-
 // 移除符号
 export function removeMsSymbol(
     msSymbol: MsSymbol,
@@ -186,8 +191,10 @@ export function removeMsSymbolContainer(
     msSymbolContainer: MsSymbolContainer,
     musicScore: MusicScore,
 ) {
-    const measure = getDataWithIndex(msSymbolContainer.index, musicScore).measure
-    if (!measure) return console.error("小节不存在，符号容器移除失败")
+    const msData = getDataWithIndex(msSymbolContainer.index, musicScore)
+    const measure = msData.measure
+    const singleStaff = msData.singleStaff
+    if (!measure || !singleStaff) return console.error("索引数据出错，符号容器移除失败")
     const array = measure.msSymbolContainerArray;
     const index = array.findIndex(item => item === msSymbolContainer);
 
@@ -195,6 +202,11 @@ export function removeMsSymbolContainer(
     array.splice(index, 1);
     musicScoreMapRemove(msSymbolContainer.id, musicScore)
     setMsSymbolContainerArrayIndex(measure)
+    // 移除符号容器相关联跨小节符号
+    removeMsSymbolContainerRelatedSpanSymbol(msSymbolContainer, musicScore)
+    // // 更新跨小节符号视图
+    const spanSymbolIdSet = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
+    updateSpanSymbolView(spanSymbolIdSet, musicScore)
 
 
 }
@@ -252,9 +264,8 @@ export function removeMeasure(
 
     // 计算index
     setMeasureArrayIndex(singleStaff)
-    // 更新跨小节符号
-    const spanSymbolSet = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
     // 更新跨小节符号视图
+    const spanSymbolSet = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
     updateSpanSymbolView(spanSymbolSet, musicScore)
     // 移除小节相关联跨小节符号
     removeMeasureRelatedSpanSymbol(measure, musicScore)
@@ -262,47 +273,84 @@ export function removeMeasure(
 
 }
 
+// 删除符号相关联的跨小节符号
+export function removeMsSymbolRelatedSpanSymbol(msSymbol: MsSymbol, musicScore: MusicScore) {
+    for (let i = musicScore.spanSymbolArray.length - 1; i >= 0; i--) {
+        const spanSymbol = musicScore.spanSymbolArray[i];
+        if (
+            msSymbol.bindingStartId.includes(spanSymbol.id) ||
+            msSymbol.bindingEndId.includes(spanSymbol.id)
+        ) {
+            musicScore.spanSymbolArray.splice(i, 1);
+            musicScoreMapRemove(spanSymbol.id, musicScore);
+        }
+    }
+}
+
+// 删除符号容器相关联的跨小节符号
+export function removeMsSymbolContainerRelatedSpanSymbol(msSymbolContainer: MsSymbolContainer, musicScore: MusicScore) {
+    msSymbolContainer.msSymbolArray.forEach((msSymbol) => {
+        removeMsSymbolRelatedSpanSymbol(msSymbol, musicScore)
+    })
+    for (let i = musicScore.spanSymbolArray.length - 1; i >= 0; i--) {
+        const spanSymbol = musicScore.spanSymbolArray[i];
+        if (
+            msSymbolContainer.bindingStartId.includes(spanSymbol.id) ||
+            msSymbolContainer.bindingEndId.includes(spanSymbol.id)
+        ) {
+            musicScore.spanSymbolArray.splice(i, 1);
+            musicScoreMapRemove(spanSymbol.id, musicScore);
+        }
+    }
+}
 // 删除小节相关联的跨小节符号
 export function removeMeasureRelatedSpanSymbol(measure: Measure, musicScore: MusicScore) {
-    for (let i = 0; i < musicScore.spanSymbolArray.length; i++) {
+    measure.msSymbolContainerArray.forEach((msSymbolContainer) => {
+        removeMsSymbolContainerRelatedSpanSymbol(msSymbolContainer, musicScore)
+    })
+    for (let i = musicScore.spanSymbolArray.length - 1; i >= 0; i--) {
         const spanSymbol = musicScore.spanSymbolArray[i];
-        if (measure.bindingStartId.includes(spanSymbol.id) || measure.bindingEndId.includes(spanSymbol.id)) {
-            // 删除关联的跨小节符号
+        if (
+            measure.bindingStartId.includes(spanSymbol.id) ||
+            measure.bindingEndId.includes(spanSymbol.id)
+        ) {
             musicScore.spanSymbolArray.splice(i, 1);
-            musicScoreMapRemove(spanSymbol.id, musicScore)
-
+            musicScoreMapRemove(spanSymbol.id, musicScore);
         }
     }
 }
 
 // 删除单谱表相关联的跨小节符号
 export function removeSingleStaffRelatedSpanSymbol(singleStaff: SingleStaff, musicScore: MusicScore) {
-    for (let i = 0; i < musicScore.spanSymbolArray.length; i++) {
+    singleStaff.measureArray.forEach((measure) => {
+        removeMeasureRelatedSpanSymbol(measure, musicScore)
+    })
+    for (let i = musicScore.spanSymbolArray.length - 1; i >= 0; i--) {
         const spanSymbol = musicScore.spanSymbolArray[i];
-        singleStaff.measureArray.forEach((measure) => {
-            if (measure.bindingStartId.includes(spanSymbol.id) || measure.bindingEndId.includes(spanSymbol.id)) {
-                // 删除关联的跨小节符号
-                musicScore.spanSymbolArray.splice(i, 1);
-                musicScoreMapRemove(spanSymbol.id, musicScore)
-            }
-        })
-
+        if (
+            singleStaff.bindingStartId.includes(spanSymbol.id) ||
+            singleStaff.bindingEndId.includes(spanSymbol.id)
+        ) {
+            musicScore.spanSymbolArray.splice(i, 1);
+            musicScoreMapRemove(spanSymbol.id, musicScore);
+        }
     }
 }
 
 // 删除复谱表相关联的跨小节符号
 export function removeMultipleStavesRelatedSpanSymbol(multipleStaves: MultipleStaves, musicScore: MusicScore) {
-    for (let i = 0; i < musicScore.spanSymbolArray.length; i++) {
+    multipleStaves.singleStaffArray.forEach((singleStaff) => {
+        removeSingleStaffRelatedSpanSymbol(singleStaff, musicScore)
+    })
+    for (let i = musicScore.spanSymbolArray.length - 1; i >= 0; i--) {
         const spanSymbol = musicScore.spanSymbolArray[i];
-        multipleStaves.singleStaffArray.forEach((singleStaff) => {
-            singleStaff.measureArray.forEach((measure) => {
-                if (measure.bindingStartId.includes(spanSymbol.id) || measure.bindingEndId.includes(spanSymbol.id)) {
-                    // 删除关联的跨小节符号
-                    musicScore.spanSymbolArray.splice(i, 1);
-                    musicScoreMapRemove(spanSymbol.id, musicScore)
-                }
-            })
-        })
+        if (
+            multipleStaves.bindingStartId.includes(spanSymbol.id) ||
+            multipleStaves.bindingEndId.includes(spanSymbol.id)
+        ) {
+            musicScore.spanSymbolArray.splice(i, 1);
+            musicScoreMapRemove(spanSymbol.id, musicScore);
+        }
     }
 }
 
@@ -512,17 +560,15 @@ export function addBindingStartId(msData: MsSymbol | Measure | SingleStaff, id: 
     msData.bindingStartId.push(id)
 }
 
+export function addBindingEndId(msData: MsSymbol | Measure | SingleStaff, id: number) {
+    msData.bindingEndId.push(id)
+}
 export function removeBindingStartId(msData: MsSymbol | Measure | SingleStaff, id: number) {
     const index = msData.bindingStartId.indexOf(id)
     if (index !== -1) {
         msData.bindingStartId.splice(index, 1)
     }
 }
-
-export function addBindingEndId(msData: MsSymbol | Measure | SingleStaff, id: number) {
-    msData.bindingEndId.push(id)
-}
-
 export function removeBindingEndId(msData: MsSymbol | Measure | SingleStaff, id: number) {
     const index = msData.bindingEndId.indexOf(id)
     if (index !== -1) {
@@ -683,41 +729,100 @@ export function addBarLineToMeasure(barLineContainer: MsSymbolContainer, measure
     updateSpanSymbolView(spanSymbolList, musicScore)
 }
 
-// 更改谱号
-export function changeClef(clefMsSymbol: ClefMsSymbol, clef: ClefEnum, musicScore: MusicScore) {
-    clefMsSymbol.clef = clef
+export function changeClef(clef: ClefEnum, measure: Measure, musicScore: MusicScore) {
+    const index = measure.index
+    // 如果是单谱表内第一个小节
+    if (index.measureIndex === 0) {
+        const clefSymbol = measure.msSymbolContainerArray.find((msSymbolContainer) => {
+            return msSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.clef_f
+        })?.msSymbolArray[0] as (ClefMsSymbol | undefined)
+        if (clefSymbol) {
+            updateMsSymbol(clefSymbol, {clef}, musicScore)
+        } else { // clef不存在则添加clef
+            const newClef = msSymbolTemplate({type: MsSymbolTypeEnum.clef_f, clef})
+            const newMsSymbolContainer = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.frontFixed})
+            newMsSymbolContainer.msSymbolArray.push(newClef)
+            addClefToMeasure(newMsSymbolContainer, measure, musicScore)
+        }
+    } else { // 非第一个单谱表，要在前一个小节加上结尾谱号
+        const index = JSON.parse(JSON.stringify(measure.index))
+        index.measureIndex -= 1
+        const preMeasure = getDataWithIndex(index, musicScore).measure
+        if (!preMeasure) return console.error("找不到当前小节的前一个小节，谱号添加失败")
+        const clefSymbol = preMeasure.msSymbolContainerArray.find((msSymbolContainer) => {
+            return msSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.clef
+        })?.msSymbolArray[0] as (ClefMsSymbol | undefined)
+        if (clefSymbol) {
+            updateMsSymbol(clefSymbol, {clef}, musicScore)
+        } else { // clef不存在则添加clef
+            const newClef = msSymbolTemplate({type: MsSymbolTypeEnum.clef, clef})
+            const newMsSymbolContainer = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.rearFixed})
+            newMsSymbolContainer.msSymbolArray.push(newClef)
+            addClefToMeasure(newMsSymbolContainer, preMeasure, musicScore)
+        }
+    }
 }
-
 // 更改调号
-export function changeKeySignature(keySignatureMsSymbol: KeySignatureMsSymbol, keySignature: KeySignatureEnum, musicScore: MusicScore) {
-    keySignatureMsSymbol.keySignature = keySignature
-    const singleStaff = getDataWithIndex(keySignatureMsSymbol.index, musicScore).singleStaff
-    if (!singleStaff) return console.error('单谱表查找失败，调号更改失败')
-    // 更新跨小节符号视图
-    const spanSymbolList = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
-    updateSpanSymbolView(spanSymbolList, musicScore)
+export function changeKeySignature(keySignature: KeySignatureEnum, measure: Measure, musicScore: MusicScore) {
+    const keySignatureSymbol = measure.msSymbolContainerArray.find((msSymbolContainer) => {
+        return msSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.keySignature
+    })?.msSymbolArray[0] as (KeySignatureMsSymbol | undefined)
+    if (keySignatureSymbol) {
+        updateMsSymbol(keySignatureSymbol, {keySignature}, musicScore)
+    } else { // keySignature不存在则添加keySignature
+        const newKeySignature = msSymbolTemplate({type: MsSymbolTypeEnum.keySignature, keySignature})
+        const newMsSymbolContainer = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.frontFixed})
+        newMsSymbolContainer.msSymbolArray.push(newKeySignature)
+        addKeySignatureToMeasure(newMsSymbolContainer, measure, musicScore)
+    }
 }
-
 // 更改拍号
-export function changeTimeSignature(timeSignatureMsSymbol: TimeSignatureMsSymbol, timeSignature: TimeSignature, musicScore: MusicScore) {
-    timeSignatureMsSymbol.timeSignature = timeSignature
-    const singleStaff = getDataWithIndex(timeSignatureMsSymbol.index, musicScore).singleStaff
-    if (!singleStaff) return console.error('单谱表查找失败，调号更改失败')
-    // 更新跨小节符号视图
-    const spanSymbolList = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
-    updateSpanSymbolView(spanSymbolList, musicScore)
+export function changeTimeSignature(timeSignature: TimeSignature, measure: Measure, musicScore: MusicScore) {
+    const timeSignatureSymbol = measure.msSymbolContainerArray.find((msSymbolContainer) => {
+        return msSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.timeSignature
+    })?.msSymbolArray[0] as (TimeSignatureMsSymbol | undefined)
+    if (timeSignatureSymbol) {
+        updateMsSymbol(timeSignatureSymbol, {timeSignature}, musicScore)
+    } else { // keySignature不存在则添加keySignature
+        const newKeySignature = msSymbolTemplate({type: MsSymbolTypeEnum.timeSignature, timeSignature})
+        const newMsSymbolContainer = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.frontFixed})
+        newMsSymbolContainer.msSymbolArray.push(newKeySignature)
+        addTimeSignatureToMeasure(newMsSymbolContainer, measure, musicScore)
+    }
 }
-
 
 // 更改小节线
-export function changeBarLine(barLineMsSymbol: BarLine, barLineType: BarLineTypeEnum, musicScore: MusicScore) {
-    barLineMsSymbol.barLineType = barLineType
-    const singleStaff = getDataWithIndex(barLineMsSymbol.index, musicScore).singleStaff
-    if (!singleStaff) return console.error('单谱表查找失败，调号更改失败')
-    // 更新跨小节符号视图
-    const spanSymbolList = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
-    updateSpanSymbolView(spanSymbolList, musicScore)
+export function changeBarLine(barLineType: BarLineTypeEnum, measure: Measure, musicScore: MusicScore) {
+    const isFront = [BarLineTypeEnum.reverseFinal, BarLineTypeEnum.startRepeatSign].includes(barLineType)
+    if (isFront) { // 插入前置小节线逻辑
+        const barLineSymbol = measure.msSymbolContainerArray.find((msSymbolContainer) => {
+            return msSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.barLine_f
+        })?.msSymbolArray[0] as (BarLine | undefined)
+        if (barLineSymbol) {
+            updateMsSymbol(barLineSymbol, {barLineType}, musicScore)
+        } else { // barLine_f不存在则添加keySignature
+            const newBarLine = msSymbolTemplate({type: MsSymbolTypeEnum.barLine_f, barLineType})
+            const newBarLineContainer = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.frontFixed})
+            newBarLineContainer.msSymbolArray.push(newBarLine)
+            addBarLineToMeasure(newBarLineContainer, measure, musicScore)
+        }
+
+    } else { // 插入后置小节线逻辑
+        const barLineSymbol = measure.msSymbolContainerArray.find((msSymbolContainer) => {
+            return msSymbolContainer.msSymbolArray[0].type === MsSymbolTypeEnum.barLine
+        })?.msSymbolArray[0] as (BarLine | undefined)
+        if (barLineSymbol) {
+            updateMsSymbol(barLineSymbol, {barLineType}, musicScore)
+        } else { // keySignature不存在则添加keySignature
+            const newKeySignature = msSymbolTemplate({type: MsSymbolTypeEnum.barLine, barLineType})
+            const newMsSymbolContainer = msSymbolContainerTemplate({type: MsSymbolContainerTypeEnum.rearFixed})
+            newMsSymbolContainer.msSymbolArray.push(newKeySignature)
+            addBarLineToMeasure(newMsSymbolContainer, measure, musicScore)
+        }
+    }
+
 }
+
 
 // 更新bemId
 export function changeBeamId(newBeamId: number, noteHead: NoteHead, musicScore: MusicScore) {

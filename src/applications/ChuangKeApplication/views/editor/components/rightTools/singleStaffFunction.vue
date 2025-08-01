@@ -1,9 +1,6 @@
 <script setup lang="ts">
 
-import {
-  deleteMeasure, deleteMultipleStaves, deleteSingleStaff,
-  insertMeasure, insertMultipleStaves, insertSingleStaff
-} from "@/applications/ChuangKeApplication/utils/ms-editFunction.ts";
+
 import {PropType, UnwrapRef} from "vue";
 import {
   Measure,
@@ -12,6 +9,13 @@ import {
   MusicScoreRef,
   SingleStaff
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {
+  singleStaffTemplate
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
+import {
+  addSingleStaff,
+  removeSingleStaff
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 
 
 const props = defineProps({
@@ -31,14 +35,20 @@ const props = defineProps({
 
 function handleRightToolsBtn(key: String, singleStaff: SingleStaff, musicScore: MusicScore) {
   switch (key) {
-    case 'insertBefore':
-      insertSingleStaff(singleStaff, musicScore, 'before')
+    case 'insertBefore': {
+      const newSingleStaff = singleStaffTemplate({})
+      if (!singleStaff) return console.error("缺乏定位元素，单谱表添加失败")
+      addSingleStaff(newSingleStaff, singleStaff, props.musicScore, 'before')
       break
-    case 'insertAfter':
-      insertSingleStaff(singleStaff, musicScore, 'after')
+    }
+    case 'insertAfter': {
+      const newSingleStaff = singleStaffTemplate({})
+      if (!singleStaff) return console.error("缺乏定位元素，单谱表添加失败")
+      addSingleStaff(newSingleStaff, singleStaff, props.musicScore, 'after')
       break
+    }
     case 'delete':
-      deleteSingleStaff(singleStaff, musicScore)
+      removeSingleStaff(singleStaff, props.musicScore)
       break;
 
   }

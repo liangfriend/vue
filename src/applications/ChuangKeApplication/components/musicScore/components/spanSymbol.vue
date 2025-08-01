@@ -96,7 +96,6 @@ function slurRect(slur: Slur, musicScore: MusicScore, componentWidth: number, co
     return
   }
   const measureHeight = musicScore.measureHeight
-
   // start信息
   const startMsData = getDataWithIndex(startNoteHead.index, musicScore)
   const startMsSymbolContainer = startMsData.msSymbolContainer
@@ -167,7 +166,6 @@ function handleMouseUp(e: MouseEvent) {
 
 
 onBeforeMount(() => {
-  console.log('chicken',)
   getSpanSymbolRect(props.spanSymbol, props.musicScore, props.componentWidth, props.componentHeight)
 
 })

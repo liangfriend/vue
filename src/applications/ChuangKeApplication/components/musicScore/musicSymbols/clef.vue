@@ -4,12 +4,16 @@ import {computed, PropType} from "vue";
 import trebleClefSvg from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/trebleClef.svg";
 import altoClefSvg from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/altoClef.svg";
 import bassClefSvg from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/bassClef.svg";
-import {ClefMsSymbol} from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {ClefMsSymbol, MusicScore} from "@/applications/ChuangKeApplication/components/musicScore/types";
 
 const props = defineProps({
   clef: {
     type: Object as PropType<ClefMsSymbol>,
     required: true
+  },
+  musicScore: {
+    required: true,
+    type: Object as PropType<MusicScore>,
   }
 })
 const mask = computed(() => {

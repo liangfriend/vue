@@ -270,6 +270,8 @@ export function msSymbolContainerTemplate(options: { type?: MsSymbolContainerTyp
             msSymbolContainerIndex: -1,
             msSymbolIndex: -1
         },
+        bindingStartId: [],
+        bindingEndId: [],
         options: {
             highlight: false,
             highlightColor: 'red',
@@ -362,6 +364,8 @@ export function multipleStavesTemplate(options: {} = {}): MultipleStaves {
             msSymbolContainerIndex: -1,
             msSymbolIndex: -1,
         },
+        bindingStartId: [],
+        bindingEndId: [],
         multipleStavesPaddingTop: 60,
         multipleStavesPaddingBottom: 60,
         multipleStavesMarginBottom: 60,

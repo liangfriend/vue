@@ -45,7 +45,6 @@ export function getMsSymbolBottomToSlot(msSymbol: MsSymbol, musicScore: MusicSco
             const noteBarOffset = measureHeight * 1 / 8 // 符杠相对slot的偏差
             const height = getMsSymbolHeight(msSymbol, musicScore)
             const noteBarHeight = getMsSymbolHeight(noteBar, musicScore)
-            console.log('chicken', msSymbol.direction)
 
             if (msSymbol.direction === 'up') {
                 return noteBarHeight - height + noteBarOffset

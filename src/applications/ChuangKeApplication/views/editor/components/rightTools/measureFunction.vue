@@ -1,12 +1,9 @@
 <script setup lang="ts">
 
-import {
-  deleteMeasure, insertBarLine,
-  insertClef, insertKeySignature,
-  insertMeasure, insertTimeSignature
-} from "@/applications/ChuangKeApplication/utils/ms-editFunction.ts";
+
 import {PropType, ref, UnwrapRef} from "vue";
 import {
+  ClefMsSymbol,
   Measure,
   MusicScore,
   MusicScoreRef,
@@ -14,16 +11,20 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
   addBindingEndId,
-  addBindingStartId,
-  addSpanSymbol, addVolta
+  addBindingStartId, addClefToMeasure, addMeasure,
+  addSpanSymbol, addVolta, changeBarLine, changeClef, changeKeySignature, changeTimeSignature, removeMeasure
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
-import {spanSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
+import {
+  measureTemplate, msSymbolContainerTemplate, msSymbolTemplate,
+  spanSymbolTemplate
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
   BarLineTypeEnum,
-  ClefEnum, KeySignatureEnum,
+  ClefEnum, KeySignatureEnum, MsSymbolContainerTypeEnum, MsSymbolTypeEnum,
   SpanSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import Clef from "@/applications/ChuangKeApplication/components/musicScore/musicSymbols/clef.vue";
+import {getDataWithIndex} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 
 
 const props = defineProps({
@@ -42,14 +43,20 @@ const props = defineProps({
 
 function handleRightToolsBtn(key: String, measure: Measure, musicScore: MusicScore) {
   switch (key) {
-    case 'insertBefore':
-      insertMeasure(measure, musicScore, 'before')
+    case 'insertBefore': {
+      const newMeasure = measureTemplate({})
+      if (!newMeasure) return console.error("缺乏定位元素，小节添加失败")
+      addMeasure(newMeasure, measure, props.musicScore, 'before')
       break
-    case 'insertAfter':
-      insertMeasure(measure, musicScore, 'after')
+    }
+    case 'insertAfter': {
+      const newMeasure = measureTemplate({})
+      if (!newMeasure) return console.error("缺乏定位元素，小节添加失败")
+      addMeasure(newMeasure, measure, props.musicScore, 'after')
       break
+    }
     case 'delete':
-      deleteMeasure(measure, musicScore)
+      removeMeasure(measure, musicScoreData)
       break;
     case 'addVolta': {
       const startTargetId = measure.id
@@ -78,8 +85,8 @@ const clefList = ref([{
   text: '低音谱号',
 }])
 
-function changeClef(clef: ClefEnum) {
-  insertClef(clef, props.measure, props.musicScore)
+function updateClef(clef: ClefEnum) {
+  changeClef(clef, props.measure, props.musicScore)
 }
 
 const currentKeySignature = ref(null)
@@ -91,20 +98,20 @@ const keySignatureList = ref([{
   text: 'D大调',
 }])
 
-function changeKeySignature(keySignature: KeySignatureEnum) {
-  insertKeySignature(keySignature, props.measure, props.musicScore)
+function updateKeySignature(keySignature: KeySignatureEnum) {
+  changeKeySignature(keySignature, props.measure, props.musicScore)
 }
 
-function changeBarLine(barLineType: BarLineTypeEnum) {
-  insertBarLine(barLineType, props.measure, props.musicScore)
+function updateBarLine(barLineType: BarLineTypeEnum) {
+  changeBarLine(barLineType, props.measure, props.musicScore)
 }
 
-function changeTimeSignature() {
+function updateTimeSignature() {
   const timeSignature: TimeSignature = {
     beat: currentTimeSignature.value.beat,
     chronaxie: currentTimeSignature.value.chronaxie,
   }
-  insertTimeSignature(timeSignature, props.measure, props.musicScore)
+  changeTimeSignature(timeSignature, props.measure, props.musicScore)
 }
 
 const currentTimeSignature = ref({
@@ -157,7 +164,7 @@ const barLineList = ref<Array<{
     <div>谱号</div>
     <div class="noteBoxContainer">
       <div :class="{activeBox:currentClef === item.clef}"
-           @click="changeClef(item.clef)"
+           @click="updateClef(item.clef)"
            class="noteBox"
            v-for="(item,index) in clefList">
         {{ item.text }}
@@ -166,14 +173,14 @@ const barLineList = ref<Array<{
     <div>调号</div>
     <div class="noteBoxContainer">
       <div :class="{activeBox:currentKeySignature === item.keySignature}"
-           @click="changeKeySignature(item.keySignature)"
+           @click="updateKeySignature(item.keySignature)"
            class="noteBox"
            v-for="(item,index) in keySignatureList">
         {{ item.text }}
       </div>
     </div>
     <div>拍号
-      <el-button @click="changeTimeSignature">确认</el-button>
+      <el-button @click="updateTimeSignature">确认</el-button>
     </div>
     <div>
       <div><input type="number" v-model="currentTimeSignature.beat"></div>
@@ -184,7 +191,7 @@ const barLineList = ref<Array<{
       <div :class="{activeBox:currentBarLineType === item.barLineType}"
            class="noteBox"
            :key="index"
-           @click="changeBarLine(item.barLineType)"
+           @click="updateBarLine(item.barLineType)"
            v-for="(item,index) in barLineList">
         {{ item.text }}
       </div>

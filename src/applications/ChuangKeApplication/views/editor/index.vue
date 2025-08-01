@@ -20,11 +20,17 @@ import BasicFunction from "@/applications/ChuangKeApplication/views/editor/compo
 import SingleStaffFunction
   from "@/applications/ChuangKeApplication/views/editor/components/rightTools/singleStaffFunction.vue";
 import MultipleStavesFunction
-  from "@/applications/ChuangKeApplication/views/editor/components/rightTools/MultipleStavesFunction.vue";
+  from "@/applications/ChuangKeApplication/views/editor/components/rightTools/multipleStavesFunction.vue";
 import NoteHeadFunction
   from "@/applications/ChuangKeApplication/views/editor/components/rightTools/noteHeadFunction.vue";
 import SpanSymbolFunction
   from "@/applications/ChuangKeApplication/views/editor/components/rightTools/spanSymbolFunction.vue";
+import ClefFunction from "@/applications/ChuangKeApplication/views/editor/components/rightTools/clefFunction.vue";
+import KeySignatureFunction
+  from "@/applications/ChuangKeApplication/views/editor/components/rightTools/keySignatureFunction.vue";
+import TimeSignatureFunction
+  from "@/applications/ChuangKeApplication/views/editor/components/rightTools/timeSignatureFunction.vue";
+import BarLineFunction from "@/applications/ChuangKeApplication/views/editor/components/rightTools/barLineFunction.vue";
 
 const router = useRouter()
 type addedWb = {
@@ -143,6 +149,30 @@ onMounted(() => {
                   :noteHead="currentSelected"
                   :msRef="msRef"
                   :music-score="musicScoreData"></note-head-function>
+              <clef-function
+                  v-if="msRef && currentSelected?.msTypeName === MsTypeNameEnum.MsSymbol
+                                  && (currentSelected.type === MsSymbolTypeEnum.clef || currentSelected.type === MsSymbolTypeEnum.clef_f)"
+                  :clef="currentSelected"
+                  :msRef="msRef"
+                  :music-score="musicScoreData"></clef-function>
+              <key-signature-function
+                  v-if="msRef && currentSelected?.msTypeName === MsTypeNameEnum.MsSymbol
+                                  && currentSelected.type === MsSymbolTypeEnum.keySignature"
+                  :keySignature="currentSelected"
+                  :msRef="msRef"
+                  :music-score="musicScoreData"></key-signature-function>
+              <time-signature-function
+                  v-if="msRef && currentSelected?.msTypeName === MsTypeNameEnum.MsSymbol
+                                  && currentSelected.type === MsSymbolTypeEnum.timeSignature"
+                  :timeSignature="currentSelected"
+                  :msRef="msRef"
+                  :music-score="musicScoreData"></time-signature-function>
+              <bar-line-function
+                  v-if="msRef && currentSelected?.msTypeName === MsTypeNameEnum.MsSymbol
+                                  && (currentSelected.type === MsSymbolTypeEnum.barLine || currentSelected.type === MsSymbolTypeEnum.barLine_f)"
+                  :barLine="currentSelected"
+                  :msRef="msRef"
+                  :music-score="musicScoreData"></bar-line-function>
               <basic-function v-if="msRef && !currentSelected?.msTypeName"
                               :msRef="msRef"
                               :music-score="musicScoreData"></basic-function>
@@ -150,6 +180,7 @@ onMounted(() => {
                                     :msRef="msRef"
                                     :music-score="musicScoreData"
                                     :span-symbol="currentSelected"></span-symbol-function>
+
             </div>
           </template>
         </right-tools>
