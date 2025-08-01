@@ -124,9 +124,7 @@ export function getNoteTailWidth(noteTail: NoteTail, noteHead: NoteHead, msSymbo
                                  measure: Measure,
                                  singleStaff: SingleStaff, musicScore: MusicScore,
                                  componentWidth: number) {
-
     const aspectRatio = getMsSymbolAspectRatio(noteTail)
-
     const height = getMsSymbolHeight(noteTail, musicScore)
     const beamGroup = getBeamGroup(noteHead.beamId, measure)
     if (beamGroup.length > 1) {

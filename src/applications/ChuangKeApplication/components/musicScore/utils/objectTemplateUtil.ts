@@ -1,4 +1,5 @@
 import {
+    AccidentalEnum,
     BarLineTypeEnum,
     BeamTypeEnum,
     ChronaxieEnum,
@@ -103,6 +104,7 @@ export function msSymbolTemplate(options: {
     clef?: ClefEnum,
     keySignature?: KeySignatureEnum,
     timeSignature?: TimeSignature,
+    accidental?: AccidentalEnum,
 } = {}): MsSymbol {
     const baseMsSymbol: BaseMsSymbol = {
         id: Date.now() + 1,
@@ -233,6 +235,13 @@ export function msSymbolTemplate(options: {
                     beat: 1,
                     chronaxie: 4
                 }
+            }
+        }
+        case MsSymbolTypeEnum.accidental: {
+            return {
+                ...baseMsSymbol,
+                type: MsSymbolTypeEnum.accidental,
+                accidental: options.accidental || AccidentalEnum.sharp
             }
         }
         default: {

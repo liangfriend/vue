@@ -1,4 +1,5 @@
 import {
+    AccidentalEnum,
     BarLineTypeEnum,
     ChronaxieEnum,
     ClefEnum,
@@ -9,6 +10,7 @@ import {
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 import {
+    AccidentalMsSymbol,
     BarLine,
     ClefMsSymbol,
     KeySignatureMsSymbol,
@@ -406,12 +408,62 @@ export function removeMultipleStaves(
 }
 
 // 更新符号属性
-export function updateMsSymbol(oldMsSymbol: MsSymbol, newProperties: Partial<MsSymbol>) {
-    return Object.assign(oldMsSymbol, newProperties);
+export function updateMsSymbol(oldMsSymbol: MsSymbol, newProperties: Partial<MsSymbol>, musicScore: MusicScore) {
+    Object.assign(oldMsSymbol, newProperties);
+    // 更新跨小节符号视图
+    const singleStaff = getDataWithIndex(oldMsSymbol.index, musicScore).singleStaff as SingleStaff || null;
+    if (!singleStaff) return
+    const spanSymbolList = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
+    updateSpanSymbolView(spanSymbolList, musicScore)
+}
+
+// 添加变音符号
+export function addAccidental(noteHead: NoteHead, accidental: AccidentalMsSymbol, musicScore: MusicScore) {
+    accidental.index = noteHead.index
+    noteHead.msSymbolArray.push(accidental)
+    // 更新跨小节符号视图
+    const singleStaff = getDataWithIndex(noteHead.index, musicScore).singleStaff as SingleStaff || null;
+    if (!singleStaff) return
+    const spanSymbolList = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
+    updateSpanSymbolView(spanSymbolList, musicScore)
+}
+
+// 删除变音符号
+export function removeAccidental(noteHead: NoteHead, musicScore: MusicScore) {
+    const index = noteHead.msSymbolArray.findIndex((item) => item.type === MsSymbolTypeEnum.accidental);
+    if (index !== -1) {
+        noteHead.msSymbolArray.splice(index, 1);
+    }
+
+    // 更新跨小节符号视图
+    const singleStaff = getDataWithIndex(noteHead.index, musicScore).singleStaff as SingleStaff || null;
+    if (!singleStaff) return
+    const spanSymbolList = getSingleStaffRelatedSpanSymbolList(singleStaff, musicScore)
+    updateSpanSymbolView(spanSymbolList, musicScore)
+}
+
+// 更换变音符号
+export function changeAccidental(noteHead: NoteHead, accidentalType: AccidentalEnum | null, musicScore: MusicScore) {
+    if (!accidentalType) { // 未选择变音符号视为删除
+        removeAccidental(noteHead, musicScore)
+        return
+    }
+    const accidentalIndex = noteHead.msSymbolArray.findIndex((item: MsSymbol) => item.type === MsSymbolTypeEnum.accidental);
+    if (accidentalIndex === -1) { // 不存在变音符号
+        const accidental = msSymbolTemplate({
+            type: MsSymbolTypeEnum.accidental,
+            accidental: accidentalType
+        }) as AccidentalMsSymbol;
+
+        addAccidental(noteHead, accidental, musicScore)
+    } else { // 变音符号已存在
+        const accidental = noteHead.msSymbolArray[accidentalIndex]
+        updateMsSymbol(accidental, {accidental: accidentalType}, musicScore)
+    }
 }
 
 // 更换音符或休止符时值
-export function noteChronaxie(note: MsSymbol, newChronaxie: ChronaxieEnum, musicScore: MusicScore) {
+export function changeNoteChronaxie(note: MsSymbol, newChronaxie: ChronaxieEnum, musicScore: MusicScore) {
     if (note.type !== MsSymbolTypeEnum.noteHead && note.type !== MsSymbolTypeEnum.rest) {
         return console.error("符号类型有误，时值更改失败。请传入音符或休止符");
     }
@@ -443,7 +495,7 @@ export function noteChronaxie(note: MsSymbol, newChronaxie: ChronaxieEnum, music
     // 非全,二分，四分音符且noteTail存在，更新noteTail
     if (![ChronaxieEnum.whole, ChronaxieEnum.half, ChronaxieEnum.quarter
     ].includes(newChronaxie) && noteTail) {
-        updateMsSymbol(noteTail, {chronaxie: newChronaxie})
+        updateMsSymbol(noteTail, {chronaxie: newChronaxie}, musicScore)
     }
     // 非全,二分，四分音符且noteTail不存在，添加noteTail
     if (![ChronaxieEnum.whole, ChronaxieEnum.half, ChronaxieEnum.quarter

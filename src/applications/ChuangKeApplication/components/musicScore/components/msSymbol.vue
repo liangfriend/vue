@@ -252,9 +252,9 @@ const height = computed(() => {
 })
 // 符号宽度
 const width = computed(() => {
-  // TODO 补全如果是成组的才这样做
-  if (props.msSymbol.type === MsSymbolTypeEnum.noteTail && props.nextContainer) {
-    return getNoteTailWidth(props.msSymbolContainer,
+  if (props.msSymbol.type === MsSymbolTypeEnum.noteTail && props.nextContainer && props.parentMsSymbol
+      && props.parentMsSymbol.type === MsSymbolTypeEnum.noteHead) {
+    return getNoteTailWidth(props.msSymbol, props.parentMsSymbol, props.msSymbolContainer,
         props.measure, props.singleStaff, props.musicScore,
         props.componentWidth)
   }
@@ -296,6 +296,7 @@ const msSymbolStyle = computed<CSSProperties>(() => {
 const emits = defineEmits(['msSymbolMouseDown', 'msSymbolMouseUp']);
 
 function handleMouseDown(e: MouseEvent) {
+  console.log('chicken',)
   emits('msSymbolMouseDown', e, props.msSymbol)
 
 }
@@ -313,16 +314,22 @@ defineExpose({aspectRatio})
 <template>
   <clef
       v-if="msSymbol?.type === MsSymbolTypeEnum.clef || msSymbol?.type === MsSymbolTypeEnum.clef_f && 'clef' in msSymbol"
-      :clef="msSymbol?.clef"
+      :clef="msSymbol"
+      @mouseup.self="handleMouseUp"
+      @mousedown.self="handleMouseDown"
       :musicScore="musicScore"
       :style="msSymbolStyle"></clef>
   <key-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.keySignature"
                  :measure-height="measureHeight"
                  :slotWidth="slotWidth"
+                 @mouseup.self="handleMouseUp"
+                 @mousedown.self="handleMouseDown"
                  :musicScore="musicScore"
                  :style="msSymbolStyle"
-                 :msSymbol="msSymbol"></key-signature>
+                 :keySignature="msSymbol"></key-signature>
   <time-signature v-else-if="msSymbol?.type === MsSymbolTypeEnum.timeSignature" :style="msSymbolStyle"
+                  @mouseup.self="handleMouseUp"
+                  @mousedown.self="handleMouseDown"
                   :msSymbol="msSymbol" :measure-height="measureHeight"></time-signature>
   <note-tail v-else-if="msSymbol?.type === MsSymbolTypeEnum.noteTail"
              :ms-symbol-container="msSymbolContainer"

@@ -182,8 +182,8 @@ onBeforeMount(() => {
   </rect-drag-shell>
   <rect-drag-shell v-if="spanSymbol && spanSymbol.type === SpanSymbolTypeEnum.slur" :slur="spanSymbol"
                    :rect="spanSymbol.rect">
-    <slurVue
-        @mousedown.self="handleMouseDown" @mouseup.self="handleMouseUp"></slurVue>
+    <slurVue :slur="spanSymbol"
+             @mousedown.self="handleMouseDown" @mouseup.self="handleMouseUp"></slurVue>
   </rect-drag-shell>
 
 </template>

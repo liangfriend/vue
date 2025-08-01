@@ -9,6 +9,7 @@ import {
   NoteTail
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
+  AccidentalEnum,
   ChronaxieEnum, MsSymbolTypeEnum,
   ReserveMsSymbolType, SpanSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
@@ -17,9 +18,9 @@ import {
   spanSymbolTemplate
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
-  addSpanSymbol,
+  addSpanSymbol, changeAccidental,
   changeBeamId,
-  noteChronaxie
+  changeNoteChronaxie
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 import {
   getDataWithIndex,
@@ -50,6 +51,25 @@ function handleRightToolsBtn(key: String, musicScore: MusicScore) {
   }
 }
 
+const accidentalList = ref([{
+  text: '无',
+  accidental: null,
+}, {
+  text: '重升',
+  accidental: AccidentalEnum.doubleSharp
+}, {
+  text: '升',
+  accidental: AccidentalEnum.sharp
+}, {
+  text: '还原',
+  accidental: AccidentalEnum.nature
+}, {
+  text: '降',
+  accidental: AccidentalEnum.flat
+}, {
+  text: '重降',
+  accidental: AccidentalEnum.doubleFlat
+},])
 const noteList = ref([{
   text: '全音符',
   chronaxie: ChronaxieEnum.whole,
@@ -70,7 +90,11 @@ const noteType = ref(false)
 
 // 改变预备音符
 function changeNoteHeadChronaxie(chronaxie: ChronaxieEnum) {
-  noteChronaxie(props.noteHead, chronaxie, props.musicScore)
+  changeNoteChronaxie(props.noteHead, chronaxie, props.musicScore)
+}
+
+function updateAccidental(accidental: AccidentalEnum | null) {
+  changeAccidental(props.noteHead, accidental, props.musicScore)
 }
 
 function updateBeamId() {
@@ -132,8 +156,14 @@ onMounted(() => {
          v-for="(item,index) in noteList">
       {{ item.text }}
     </div>
-
-
+  </div>
+  <div class="noteBoxContainer">
+    <div
+        class="noteBox"
+        @click="updateAccidental(item.accidental)"
+        v-for="(item,index) in accidentalList">
+      {{ item.text }}
+    </div>
   </div>
   <template v-if="![ChronaxieEnum.whole,ChronaxieEnum.half,ChronaxieEnum.quarter]
   .includes(noteHead.chronaxie)">

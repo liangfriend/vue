@@ -42,12 +42,138 @@ const data: MusicScore = {
                     "bindingStartId": [],
                     "bindingEndId": [],
                     "options": {
-                        "highlight": false,
+                        "highlight": true,
                         "highlightColor": "red",
                         "color": "black"
                     },
                     "vueKey": 1753686263978,
                     "msSymbolContainerArray": [
+                        {
+                            "id": 1754033022047,
+                            "msSymbolArray": [
+                                {
+                                    "id": 1754033022046,
+                                    "msTypeName": 6,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 0,
+                                        "msSymbolContainerIndex": 0,
+                                        "msSymbolIndex": 0
+                                    },
+                                    "options": {
+                                        "highlight": false,
+                                        "highlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "bindingStartId": [],
+                                    "bindingEndId": [],
+                                    "msSymbolArray": [],
+                                    "vueKey": 1754033022045,
+                                    "type": "clef_f",
+                                    "clef": 3
+                                }
+                            ],
+                            "type": 1,
+                            "index": {
+                                "multipleStavesIndex": 0,
+                                "singleStaffIndex": 0,
+                                "measureIndex": 0,
+                                "msSymbolContainerIndex": 0
+                            },
+                            "options": {
+                                "highlight": false,
+                                "highlightColor": "red",
+                                "color": "black"
+                            },
+                            "vueKey": 1754033022045,
+                            "msTypeName": 5
+                        },
+                        {
+                            "id": 1754033038522,
+                            "msSymbolArray": [
+                                {
+                                    "id": 1754033038521,
+                                    "msTypeName": 6,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 0,
+                                        "msSymbolContainerIndex": 1,
+                                        "msSymbolIndex": 0
+                                    },
+                                    "options": {
+                                        "highlight": false,
+                                        "highlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "bindingStartId": [],
+                                    "bindingEndId": [],
+                                    "msSymbolArray": [],
+                                    "vueKey": 1754033038520,
+                                    "type": "keySignature",
+                                    "keySignature": "D"
+                                }
+                            ],
+                            "type": 1,
+                            "index": {
+                                "multipleStavesIndex": 0,
+                                "singleStaffIndex": 0,
+                                "measureIndex": 0,
+                                "msSymbolContainerIndex": 1
+                            },
+                            "options": {
+                                "highlight": false,
+                                "highlightColor": "red",
+                                "color": "black"
+                            },
+                            "vueKey": 1754033038520,
+                            "msTypeName": 5
+                        },
+                        {
+                            "id": 1754033024568,
+                            "msSymbolArray": [
+                                {
+                                    "id": 1754033024567,
+                                    "msTypeName": 6,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 0,
+                                        "msSymbolContainerIndex": 2,
+                                        "msSymbolIndex": 0
+                                    },
+                                    "options": {
+                                        "highlight": false,
+                                        "highlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "bindingStartId": [],
+                                    "bindingEndId": [],
+                                    "msSymbolArray": [],
+                                    "vueKey": 1754033024566,
+                                    "type": "timeSignature",
+                                    "timeSignature": {
+                                        "beat": 1,
+                                        "chronaxie": 4
+                                    }
+                                }
+                            ],
+                            "type": 1,
+                            "index": {
+                                "multipleStavesIndex": 0,
+                                "singleStaffIndex": 0,
+                                "measureIndex": 0,
+                                "msSymbolContainerIndex": 2
+                            },
+                            "options": {
+                                "highlight": false,
+                                "highlightColor": "red",
+                                "color": "black"
+                            },
+                            "vueKey": 1754033024566,
+                            "msTypeName": 5
+                        },
                         {
                             "id": 1753686263981,
                             "msSymbolArray": [
@@ -58,7 +184,7 @@ const data: MusicScore = {
                                         "multipleStavesIndex": 0,
                                         "singleStaffIndex": 0,
                                         "measureIndex": 0,
-                                        "msSymbolContainerIndex": 0,
+                                        "msSymbolContainerIndex": 3,
                                         "msSymbolIndex": 0
                                     },
                                     "options": {
@@ -79,7 +205,7 @@ const data: MusicScore = {
                                 "multipleStavesIndex": 0,
                                 "singleStaffIndex": 0,
                                 "measureIndex": 0,
-                                "msSymbolContainerIndex": 0
+                                "msSymbolContainerIndex": 3
                             },
                             "options": {
                                 "highlight": false,
@@ -99,7 +225,7 @@ const data: MusicScore = {
                                         "multipleStavesIndex": 0,
                                         "singleStaffIndex": 0,
                                         "measureIndex": 0,
-                                        "msSymbolContainerIndex": 1,
+                                        "msSymbolContainerIndex": 4,
                                         "msSymbolIndex": 0
                                     },
                                     "options": {
@@ -119,7 +245,7 @@ const data: MusicScore = {
                                                 "multipleStavesIndex": 0,
                                                 "singleStaffIndex": 0,
                                                 "measureIndex": 0,
-                                                "msSymbolContainerIndex": 1,
+                                                "msSymbolContainerIndex": 4,
                                                 "msSymbolIndex": 0
                                             },
                                             "options": {
@@ -147,7 +273,7 @@ const data: MusicScore = {
                                 "multipleStavesIndex": 0,
                                 "singleStaffIndex": 0,
                                 "measureIndex": 0,
-                                "msSymbolContainerIndex": 1
+                                "msSymbolContainerIndex": 4
                             },
                             "options": {
                                 "highlight": false,
@@ -167,7 +293,7 @@ const data: MusicScore = {
                                         "multipleStavesIndex": 0,
                                         "singleStaffIndex": 0,
                                         "measureIndex": 0,
-                                        "msSymbolContainerIndex": 2,
+                                        "msSymbolContainerIndex": 5,
                                         "msSymbolIndex": 0
                                     },
                                     "options": {
@@ -187,7 +313,7 @@ const data: MusicScore = {
                                                 "multipleStavesIndex": 0,
                                                 "singleStaffIndex": 0,
                                                 "measureIndex": 0,
-                                                "msSymbolContainerIndex": 2,
+                                                "msSymbolContainerIndex": 5,
                                                 "msSymbolIndex": 0
                                             },
                                             "options": {
@@ -215,7 +341,7 @@ const data: MusicScore = {
                                 "multipleStavesIndex": 0,
                                 "singleStaffIndex": 0,
                                 "measureIndex": 0,
-                                "msSymbolContainerIndex": 2
+                                "msSymbolContainerIndex": 5
                             },
                             "options": {
                                 "highlight": false,
@@ -496,7 +622,7 @@ const data: MusicScore = {
                         "multipleStavesIndex": 0,
                         "singleStaffIndex": 0,
                         "measureIndex": 0,
-                        "msSymbolContainerIndex": 0,
+                        "msSymbolContainerIndex": 3,
                         "msSymbolIndex": 0
                     },
                     "options": {
@@ -517,7 +643,7 @@ const data: MusicScore = {
                 "multipleStavesIndex": 0,
                 "singleStaffIndex": 0,
                 "measureIndex": 0,
-                "msSymbolContainerIndex": 0
+                "msSymbolContainerIndex": 3
             },
             "options": {
                 "highlight": false,
@@ -534,7 +660,7 @@ const data: MusicScore = {
                 "multipleStavesIndex": 0,
                 "singleStaffIndex": 0,
                 "measureIndex": 0,
-                "msSymbolContainerIndex": 0,
+                "msSymbolContainerIndex": 3,
                 "msSymbolIndex": 0
             },
             "options": {
@@ -1067,7 +1193,7 @@ const data: MusicScore = {
                         "multipleStavesIndex": 0,
                         "singleStaffIndex": 0,
                         "measureIndex": 0,
-                        "msSymbolContainerIndex": 1,
+                        "msSymbolContainerIndex": 4,
                         "msSymbolIndex": 0
                     },
                     "options": {
@@ -1087,7 +1213,7 @@ const data: MusicScore = {
                                 "multipleStavesIndex": 0,
                                 "singleStaffIndex": 0,
                                 "measureIndex": 0,
-                                "msSymbolContainerIndex": 1,
+                                "msSymbolContainerIndex": 4,
                                 "msSymbolIndex": 0
                             },
                             "options": {
@@ -1115,7 +1241,7 @@ const data: MusicScore = {
                 "multipleStavesIndex": 0,
                 "singleStaffIndex": 0,
                 "measureIndex": 0,
-                "msSymbolContainerIndex": 1
+                "msSymbolContainerIndex": 4
             },
             "options": {
                 "highlight": false,
@@ -1135,7 +1261,7 @@ const data: MusicScore = {
                         "multipleStavesIndex": 0,
                         "singleStaffIndex": 0,
                         "measureIndex": 0,
-                        "msSymbolContainerIndex": 2,
+                        "msSymbolContainerIndex": 5,
                         "msSymbolIndex": 0
                     },
                     "options": {
@@ -1155,7 +1281,7 @@ const data: MusicScore = {
                                 "multipleStavesIndex": 0,
                                 "singleStaffIndex": 0,
                                 "measureIndex": 0,
-                                "msSymbolContainerIndex": 2,
+                                "msSymbolContainerIndex": 5,
                                 "msSymbolIndex": 0
                             },
                             "options": {
@@ -1183,7 +1309,7 @@ const data: MusicScore = {
                 "multipleStavesIndex": 0,
                 "singleStaffIndex": 0,
                 "measureIndex": 0,
-                "msSymbolContainerIndex": 2
+                "msSymbolContainerIndex": 5
             },
             "options": {
                 "highlight": false,
@@ -1200,7 +1326,7 @@ const data: MusicScore = {
                 "multipleStavesIndex": 0,
                 "singleStaffIndex": 0,
                 "measureIndex": 0,
-                "msSymbolContainerIndex": 1,
+                "msSymbolContainerIndex": 4,
                 "msSymbolIndex": 0
             },
             "options": {
@@ -1220,7 +1346,7 @@ const data: MusicScore = {
                         "multipleStavesIndex": 0,
                         "singleStaffIndex": 0,
                         "measureIndex": 0,
-                        "msSymbolContainerIndex": 1,
+                        "msSymbolContainerIndex": 4,
                         "msSymbolIndex": 0
                     },
                     "options": {
@@ -1249,7 +1375,7 @@ const data: MusicScore = {
                 "multipleStavesIndex": 0,
                 "singleStaffIndex": 0,
                 "measureIndex": 0,
-                "msSymbolContainerIndex": 2,
+                "msSymbolContainerIndex": 5,
                 "msSymbolIndex": 0
             },
             "options": {
@@ -1269,7 +1395,7 @@ const data: MusicScore = {
                         "multipleStavesIndex": 0,
                         "singleStaffIndex": 0,
                         "measureIndex": 0,
-                        "msSymbolContainerIndex": 2,
+                        "msSymbolContainerIndex": 5,
                         "msSymbolIndex": 0
                     },
                     "options": {
@@ -1323,8 +1449,8 @@ const data: MusicScore = {
             "endTargetId": 1753686264300,
             "id": 1753686271858,
             "rect": {
-                "width": 359.91999999999996,
-                "left": 359.91999999999996,
+                "width": 323.91999999999996,
+                "left": 423.91999999999996,
                 "top": 2.5,
                 "height": 50
             },
@@ -1333,7 +1459,7 @@ const data: MusicScore = {
                 "highlightColor": "red",
                 "color": "black"
             },
-            "vueKey": 1754018748562
+            "vueKey": 1754033039024
         },
         {
             "type": 2,
@@ -1343,8 +1469,8 @@ const data: MusicScore = {
             "endTargetId": 1754018742076,
             "id": 1754019493329,
             "rect": {
-                "width": 179.45999999999995,
-                "left": 89.72999999999999,
+                "width": 161.45999999999995,
+                "left": 180.73,
                 "top": 40,
                 "height": 50
             },
@@ -1353,7 +1479,7 @@ const data: MusicScore = {
                 "highlightColor": "red",
                 "color": "black"
             },
-            "vueKey": 1754019493329
+            "vueKey": 1754033039025
         }
     ],
     "multipleStavesArray": [
@@ -1401,12 +1527,138 @@ const data: MusicScore = {
                             "bindingStartId": [],
                             "bindingEndId": [],
                             "options": {
-                                "highlight": false,
+                                "highlight": true,
                                 "highlightColor": "red",
                                 "color": "black"
                             },
                             "vueKey": 1753686263978,
                             "msSymbolContainerArray": [
+                                {
+                                    "id": 1754033022047,
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 1754033022046,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 0,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 0,
+                                                "msSymbolContainerIndex": 0,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "options": {
+                                                "highlight": false,
+                                                "highlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "bindingStartId": [],
+                                            "bindingEndId": [],
+                                            "msSymbolArray": [],
+                                            "vueKey": 1754033022045,
+                                            "type": "clef_f",
+                                            "clef": 3
+                                        }
+                                    ],
+                                    "type": 1,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 0,
+                                        "msSymbolContainerIndex": 0
+                                    },
+                                    "options": {
+                                        "highlight": false,
+                                        "highlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "vueKey": 1754033022045,
+                                    "msTypeName": 5
+                                },
+                                {
+                                    "id": 1754033038522,
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 1754033038521,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 0,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 0,
+                                                "msSymbolContainerIndex": 1,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "options": {
+                                                "highlight": false,
+                                                "highlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "bindingStartId": [],
+                                            "bindingEndId": [],
+                                            "msSymbolArray": [],
+                                            "vueKey": 1754033038520,
+                                            "type": "keySignature",
+                                            "keySignature": "D"
+                                        }
+                                    ],
+                                    "type": 1,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 0,
+                                        "msSymbolContainerIndex": 1
+                                    },
+                                    "options": {
+                                        "highlight": false,
+                                        "highlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "vueKey": 1754033038520,
+                                    "msTypeName": 5
+                                },
+                                {
+                                    "id": 1754033024568,
+                                    "msSymbolArray": [
+                                        {
+                                            "id": 1754033024567,
+                                            "msTypeName": 6,
+                                            "index": {
+                                                "multipleStavesIndex": 0,
+                                                "singleStaffIndex": 0,
+                                                "measureIndex": 0,
+                                                "msSymbolContainerIndex": 2,
+                                                "msSymbolIndex": 0
+                                            },
+                                            "options": {
+                                                "highlight": false,
+                                                "highlightColor": "red",
+                                                "color": "black"
+                                            },
+                                            "bindingStartId": [],
+                                            "bindingEndId": [],
+                                            "msSymbolArray": [],
+                                            "vueKey": 1754033024566,
+                                            "type": "timeSignature",
+                                            "timeSignature": {
+                                                "beat": 1,
+                                                "chronaxie": 4
+                                            }
+                                        }
+                                    ],
+                                    "type": 1,
+                                    "index": {
+                                        "multipleStavesIndex": 0,
+                                        "singleStaffIndex": 0,
+                                        "measureIndex": 0,
+                                        "msSymbolContainerIndex": 2
+                                    },
+                                    "options": {
+                                        "highlight": false,
+                                        "highlightColor": "red",
+                                        "color": "black"
+                                    },
+                                    "vueKey": 1754033024566,
+                                    "msTypeName": 5
+                                },
                                 {
                                     "id": 1753686263981,
                                     "msSymbolArray": [
@@ -1417,7 +1669,7 @@ const data: MusicScore = {
                                                 "multipleStavesIndex": 0,
                                                 "singleStaffIndex": 0,
                                                 "measureIndex": 0,
-                                                "msSymbolContainerIndex": 0,
+                                                "msSymbolContainerIndex": 3,
                                                 "msSymbolIndex": 0
                                             },
                                             "options": {
@@ -1438,7 +1690,7 @@ const data: MusicScore = {
                                         "multipleStavesIndex": 0,
                                         "singleStaffIndex": 0,
                                         "measureIndex": 0,
-                                        "msSymbolContainerIndex": 0
+                                        "msSymbolContainerIndex": 3
                                     },
                                     "options": {
                                         "highlight": false,
@@ -1458,7 +1710,7 @@ const data: MusicScore = {
                                                 "multipleStavesIndex": 0,
                                                 "singleStaffIndex": 0,
                                                 "measureIndex": 0,
-                                                "msSymbolContainerIndex": 1,
+                                                "msSymbolContainerIndex": 4,
                                                 "msSymbolIndex": 0
                                             },
                                             "options": {
@@ -1478,7 +1730,7 @@ const data: MusicScore = {
                                                         "multipleStavesIndex": 0,
                                                         "singleStaffIndex": 0,
                                                         "measureIndex": 0,
-                                                        "msSymbolContainerIndex": 1,
+                                                        "msSymbolContainerIndex": 4,
                                                         "msSymbolIndex": 0
                                                     },
                                                     "options": {
@@ -1506,7 +1758,7 @@ const data: MusicScore = {
                                         "multipleStavesIndex": 0,
                                         "singleStaffIndex": 0,
                                         "measureIndex": 0,
-                                        "msSymbolContainerIndex": 1
+                                        "msSymbolContainerIndex": 4
                                     },
                                     "options": {
                                         "highlight": false,
@@ -1526,7 +1778,7 @@ const data: MusicScore = {
                                                 "multipleStavesIndex": 0,
                                                 "singleStaffIndex": 0,
                                                 "measureIndex": 0,
-                                                "msSymbolContainerIndex": 2,
+                                                "msSymbolContainerIndex": 5,
                                                 "msSymbolIndex": 0
                                             },
                                             "options": {
@@ -1546,7 +1798,7 @@ const data: MusicScore = {
                                                         "multipleStavesIndex": 0,
                                                         "singleStaffIndex": 0,
                                                         "measureIndex": 0,
-                                                        "msSymbolContainerIndex": 2,
+                                                        "msSymbolContainerIndex": 5,
                                                         "msSymbolIndex": 0
                                                     },
                                                     "options": {
@@ -1574,7 +1826,7 @@ const data: MusicScore = {
                                         "multipleStavesIndex": 0,
                                         "singleStaffIndex": 0,
                                         "measureIndex": 0,
-                                        "msSymbolContainerIndex": 2
+                                        "msSymbolContainerIndex": 5
                                     },
                                     "options": {
                                         "highlight": false,
