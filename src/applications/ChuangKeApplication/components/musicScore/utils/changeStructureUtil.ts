@@ -281,7 +281,7 @@ export function removeMsSymbolRelatedSpanSymbol(msSymbol: MsSymbol, musicScore: 
             msSymbol.bindingStartId.includes(spanSymbol.id) ||
             msSymbol.bindingEndId.includes(spanSymbol.id)
         ) {
-            musicScore.spanSymbolArray.splice(i, 1);
+            removeSpanSymbol(spanSymbol, musicScore)
             musicScoreMapRemove(spanSymbol.id, musicScore);
         }
     }
@@ -298,7 +298,7 @@ export function removeMsSymbolContainerRelatedSpanSymbol(msSymbolContainer: MsSy
             msSymbolContainer.bindingStartId.includes(spanSymbol.id) ||
             msSymbolContainer.bindingEndId.includes(spanSymbol.id)
         ) {
-            musicScore.spanSymbolArray.splice(i, 1);
+            removeSpanSymbol(spanSymbol, musicScore)
             musicScoreMapRemove(spanSymbol.id, musicScore);
         }
     }
@@ -314,7 +314,7 @@ export function removeMeasureRelatedSpanSymbol(measure: Measure, musicScore: Mus
             measure.bindingStartId.includes(spanSymbol.id) ||
             measure.bindingEndId.includes(spanSymbol.id)
         ) {
-            musicScore.spanSymbolArray.splice(i, 1);
+            removeSpanSymbol(spanSymbol, musicScore)
             musicScoreMapRemove(spanSymbol.id, musicScore);
         }
     }
@@ -331,7 +331,7 @@ export function removeSingleStaffRelatedSpanSymbol(singleStaff: SingleStaff, mus
             singleStaff.bindingStartId.includes(spanSymbol.id) ||
             singleStaff.bindingEndId.includes(spanSymbol.id)
         ) {
-            musicScore.spanSymbolArray.splice(i, 1);
+            removeSpanSymbol(spanSymbol, musicScore)
             musicScoreMapRemove(spanSymbol.id, musicScore);
         }
     }
@@ -348,7 +348,7 @@ export function removeMultipleStavesRelatedSpanSymbol(multipleStaves: MultipleSt
             multipleStaves.bindingStartId.includes(spanSymbol.id) ||
             multipleStaves.bindingEndId.includes(spanSymbol.id)
         ) {
-            musicScore.spanSymbolArray.splice(i, 1);
+            removeSpanSymbol(spanSymbol, musicScore)
             musicScoreMapRemove(spanSymbol.id, musicScore);
         }
     }
@@ -581,9 +581,8 @@ export function removeSpanSymbol(spanSymbol: SpanSymbol, musicScore: MusicScore)
     const index = musicScore.spanSymbolArray.indexOf(spanSymbol)
     const bindingStartId = spanSymbol.startTargetId
     const bindingEndId = spanSymbol.endTargetId
-    if (index !== -1) {
-        musicScore.spanSymbolArray.splice(index, 1)
-    }
+    
+    musicScore.spanSymbolArray.splice(index, 1)
     // 删除相关联对象中的绑定id
     const id = spanSymbol.id
     const bindingStartTarget = musicScore.map[bindingStartId]
