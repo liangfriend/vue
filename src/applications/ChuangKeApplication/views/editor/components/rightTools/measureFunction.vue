@@ -10,12 +10,12 @@ import {
   Measure,
   MusicScore,
   MusicScoreRef,
-  TimeSignature
+  TimeSignature, Volta
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
   addBindingEndId,
   addBindingStartId,
-  addSpanSymbol
+  addSpanSymbol, addVolta
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 import {spanSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
@@ -57,13 +57,9 @@ function handleRightToolsBtn(key: String, measure: Measure, musicScore: MusicSco
       const volta = spanSymbolTemplate({
         type: SpanSymbolTypeEnum.volta
         , endTargetId: endTargetId, startTargetId: startTargetId
-      })
+      }) as Volta
       if (!volta) return console.error('获取volta数据模版错误，spanSymbol添加失败')
-
-      measure.bindingStartId.push(volta.id)
-      addBindingStartId(measure, volta.id)
-      addBindingEndId(measure, volta.id)
-      addSpanSymbol(volta, musicScore)
+      addSpanSymbol(volta, measure, measure, musicScore)
       break;
     }
 

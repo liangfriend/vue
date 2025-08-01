@@ -5,7 +5,7 @@ import {
     KeySignatureEnum,
     MsSymbolTypeEnum,
     MsTypeNameEnum,
-    MusicScoreRegionEnum
+    MusicScoreRegionEnum, SpanSymbolTypeEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 
 import {
@@ -20,10 +20,10 @@ import {
     MusicScore,
     NoteBar, NoteHead,
     NoteTail,
-    SingleStaff,
+    SingleStaff, Slur,
     SpanSymbol,
     TimeSignature,
-    TimeSignatureMsSymbol
+    TimeSignatureMsSymbol, Volta
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {msSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
@@ -63,10 +63,43 @@ export function removeChildMsSymbol(childMsSymbol: MsSymbol, msSymbol: MsSymbol,
     musicScoreMapRemove(childMsSymbol.id, musicScore)
 }
 
+//
+export function addVolta(volta: Volta, startMeasure: Measure, endMeasure: Measure, musicScore: MusicScore) {
+    addBindingStartId(startMeasure, volta.id)
+    addBindingEndId(endMeasure, volta.id)
+    musicScore.spanSymbolArray.push(volta);
+    musicScoreMapAdd(volta, musicScore)
+}
+
+export function addSlur(slur: Slur, startNoteHead: NoteHead, endNoteHead: NoteHead, musicScore: MusicScore) {
+    addBindingStartId(startNoteHead, slur.id)
+    addBindingEndId(endNoteHead, slur.id)
+    musicScore.spanSymbolArray.push(slur);
+    musicScoreMapAdd(slur, musicScore)
+}
+
 // 添加跨小节符号
-export function addSpanSymbol(newSpanSymbol: SpanSymbol, musicScore: MusicScore) {
-    musicScore.spanSymbolArray.push(newSpanSymbol);
-    musicScoreMapAdd(newSpanSymbol, musicScore)
+export function addSpanSymbol(newSpanSymbol: SpanSymbol, startMsData: Exclude<MsType, SpanSymbol>, endMsData: Exclude<MsType, SpanSymbol>, musicScore: MusicScore) {
+    switch (newSpanSymbol.type) {
+        case SpanSymbolTypeEnum.volta: {
+            if (startMsData.msTypeName === MsTypeNameEnum.Measure && endMsData.msTypeName === MsTypeNameEnum.Measure) {
+                addVolta(newSpanSymbol, startMsData, endMsData, musicScore)
+            } else {
+                console.error("添加跨小节符号volta出错")
+            }
+            break
+        }
+        case SpanSymbolTypeEnum.slur: {
+            if (startMsData.msTypeName === MsTypeNameEnum.MsSymbol && endMsData.msTypeName === MsTypeNameEnum.MsSymbol
+                && startMsData.type === MsSymbolTypeEnum.noteHead && endMsData.type === MsSymbolTypeEnum.noteHead) {
+                addSlur(newSpanSymbol, startMsData, endMsData, musicScore)
+            } else {
+                console.error("添加跨小节符号slur出错")
+            }
+            break
+        }
+    }
+
 }
 
 // 添加符号

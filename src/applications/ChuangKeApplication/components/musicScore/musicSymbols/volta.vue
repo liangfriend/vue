@@ -17,20 +17,11 @@ const props = defineProps({
 const voltaStyle = computed(() => {
 
   const style: CSSProperties = {
-    width: 0,
-    left: 0,
-    bottom: 0,
+    width: '100%',
+    height: '100%'
+
   }
 
-  if (props.volta.rect.width == null || props.volta.rect.left == null || props.volta.rect.bottom == null) {
-    console.error("volta没有生成rect数据", props.volta.rect)
-    return style
-  }
-  style.width = props.volta.rect.width + 'px'
-  style.left = '0px'
-  style.bottom = '0px'
-  style.borderColor = props.volta.options.highlight
-      ? props.volta.options.highlightColor : props.volta.options.color
 
   return style
 })
@@ -39,8 +30,7 @@ const voltaStyle = computed(() => {
 
 <style scoped>
 .volta {
-  height: 40px;
-  position: absolute;
+
   border-left: 1px solid black;
   border-top: 1px solid black;
   pointer-events: auto;

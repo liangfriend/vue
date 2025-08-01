@@ -805,19 +805,78 @@ export function getBeamGroup(beamId: number, measure: Measure): BeamGroup {
 }
 
 // 获取next信息, nextCount，相对参数，表示获取target所在数组在target后nextCount位的数据
-export function getNext(target: Exclude<MsType, SpanSymbol>, musicScore: MusicScore, nextCount: number): Exclude<MsType, SpanSymbol> {
-    if (!nextCount) return target
-    // let index: MusicScoreIndex = {
-    //     multipleStavesIndex: -1,
-    //     singleStaffIndex: -1,
-    //     measureIndex: -1,
-    //     msSymbolContainerIndex: -1,
-    //     msSymbolIndex: -1,
-    // }
-
-
+export function getNext(target: Exclude<MsType, SpanSymbol>, musicScore: MusicScore, nextCount: number = 1): Exclude<MsType, SpanSymbol> {
+    if (!nextCount) {
+        console.error("nextCount未传值，获取next失败")
+    }
+    if (nextCount < 0) {
+        console.error("nextCount小于00，获取next失败")
+    }
+    if (nextCount === 0) return target
     const data = getDataWithIndex(target.index, musicScore)
-    if (target.msTypeName === MsTypeNameEnum.MsSymbol) {
+    const msSymbol = data.msSymbol
+    const msSymbolContainer = data.msSymbolContainer
+    const measure = data.measure
+    const singleStaff = data.singleStaff
+    const multipleStaves = data.multipleStaves
 
+    switch (target.msTypeName) {
+        case MsTypeNameEnum.MsSymbol:
+            if (!msSymbol || !msSymbolContainer) {
+                console.error('索引符号或符号容器不存在，获取next信息失败')
+                return target
+            }
+            if (msSymbolContainer.msSymbolArray.length < (target.index.msSymbolIndex + 1 + nextCount)) {
+                return msSymbol
+            } else {
+                return msSymbolContainer.msSymbolArray[target.index.msSymbolIndex + nextCount]!
+            }
+
+        case MsTypeNameEnum.MsSymbolContainer:
+            if (!msSymbolContainer || !measure) {
+                console.error('索引符号容器或小节不存在，获取next信息失败')
+                return target
+            }
+            if (measure.msSymbolContainerArray.length < (target.index.msSymbolContainerIndex + 1 + nextCount)) {
+                return msSymbolContainer
+            } else {
+                return measure.msSymbolContainerArray[target.index.msSymbolContainerIndex + nextCount]!
+            }
+
+        case MsTypeNameEnum.Measure:
+            if (!measure || !singleStaff) {
+                console.error('索引小节或单谱表不存在，获取next信息失败')
+                return target
+            }
+            if (singleStaff.measureArray.length < (target.index.measureIndex + 1 + nextCount)) {
+                return measure
+            } else {
+                return singleStaff.measureArray[target.index.measureIndex + nextCount]!
+            }
+
+        case MsTypeNameEnum.SingleStaff:
+            if (!singleStaff || !multipleStaves) {
+                console.error('索引单谱表或复谱表不存在，获取next信息失败')
+                return target
+            }
+            if (multipleStaves.singleStaffArray.length < (target.index.singleStaffIndex + 1 + nextCount)) {
+                return singleStaff
+            } else {
+                return multipleStaves.singleStaffArray[target.index.singleStaffIndex + nextCount]!
+            }
+
+        case MsTypeNameEnum.MultipStaves:
+            if (!multipleStaves || !musicScore.multipleStavesArray) {
+                console.error('索引复谱表或乐谱不存在，获取next信息失败')
+                return target
+            }
+            if (musicScore.multipleStavesArray.length < (target.index.multipleStavesIndex + 1 + nextCount)) {
+                return multipleStaves
+            } else {
+                return musicScore.multipleStavesArray[target.index.multipleStavesIndex + nextCount]!
+            }
+        default:
+            console.error("获取next异常，未知类型", target)
+            return target
     }
 }

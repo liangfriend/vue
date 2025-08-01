@@ -128,7 +128,7 @@ export declare type Volta = (BaseSpanSymbol & {
 })
 export declare type Slur = (BaseSpanSymbol & {
     type: SpanSymbolTypeEnum.slur
-    spanSymbolFollowingCategoryEnum: SpanSymbolFollowingCategoryEnum.measure,
+    spanSymbolFollowingCategoryEnum: SpanSymbolFollowingCategoryEnum.msSymbol,
     startTargetId: number,
     endTargetId: number,
     options: MusicScoreOptions,

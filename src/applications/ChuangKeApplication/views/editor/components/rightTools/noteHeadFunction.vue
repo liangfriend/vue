@@ -2,6 +2,7 @@
 
 import {computed, onMounted, PropType, ref, UnwrapRef, watch} from "vue";
 import {
+  MsSymbolContainer,
   MusicScore,
   MusicScoreRef,
   NoteHead,
@@ -20,6 +21,10 @@ import {
   changeBeamId,
   noteChronaxie
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
+import {
+  getDataWithIndex,
+  getNext
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 
 
 const props = defineProps({
@@ -75,13 +80,27 @@ function updateBeamId() {
 }
 
 function addSlur() {
-  const startTargetId = props.noteHead
+  const startTargetId = props.noteHead.id
+
+  const msSymbolContainer = getDataWithIndex(props.noteHead.index, props.musicScore).msSymbolContainer
+  if (!msSymbolContainer) {
+    console.error("索引数据出错，slur添加失败")
+    return
+  }
+  const next = getNext(msSymbolContainer, props.musicScore, 1) as MsSymbolContainer
+  // TODO 这里没有考虑多声部，暂时先写成0了
+  const nextMsSymbol = next.msSymbolArray[0]
+  if (next === msSymbolContainer || nextMsSymbol.type !== MsSymbolTypeEnum.noteHead) {
+    console.warn("当前音符已在小节末位，无法添加连音线")
+    return
+  }
+  const endTargetId = nextMsSymbol.id
   const slur = spanSymbolTemplate({
     type: SpanSymbolTypeEnum.slur
     , endTargetId: endTargetId, startTargetId: startTargetId
   })
   if (!slur) return console.error('获取slur数据模版错误，spanSymbol添加失败')
-  addSpanSymbol(slur, props.musicScore)
+  addSpanSymbol(slur, props.noteHead, nextMsSymbol, props.musicScore)
 }
 
 watch(() => props.noteHead, () => {
@@ -123,12 +142,12 @@ onMounted(() => {
       <el-button @click="updateBeamId">更新</el-button>
     </div>
     <el-input v-model="beamId" type="number"></el-input>
-    <div>
-      <el-button @click="addSlur">添加连音线</el-button>
-    </div>
+
 
   </template>
-
+  <div>
+    <el-button @click="addSlur">添加连音线</el-button>
+  </div>
 </template>
 
 <style scoped>

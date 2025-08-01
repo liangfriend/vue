@@ -1,52 +1,59 @@
 <template>
-  <div class="slur" :style="slurStyle">
+  <div class="slur">
+    <svg class="slur-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <path
+          class="slur-path"
+          :d="slurPath"
+      />
+    </svg>
   </div>
 </template>
+
 <script setup lang="ts">
-import {computed, CSSProperties, PropType} from "vue";
-import type {Slur, SpanSymbol} from "@/applications/ChuangKeApplication/components/musicScore/types";
-import {SpanSymbolTypeEnum} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import {computed, PropType} from "vue";
+import type {Slur} from "@/applications/ChuangKeApplication/components/musicScore/types";
 
 const props = defineProps({
   slur: {
     type: Object as PropType<Slur>,
     required: true
   }
-})
-const slurStyle = computed(() => {
+});
 
-  const style: CSSProperties = {
-    width: 0,
-    left: 0,
-    bottom: 0,
-  }
+const slurPath = computed(() => {
+  const leftX = 0, centerX = 50, rightX = 100
+  const middleY = 50
+  const topY = -30         // 顶点拉高（拱起更大）
+  const bottomY = 0       // 下弧控制点向下拉（厚度更厚）
 
-  if (props.slur.rect.width == null || props.slur.rect.left == null || props.slur.rect.bottom == null) {
-    console.error("spanSymbol没有生成rect数据", props.slur.rect)
-    return style
-  }
-  style.width = props.slur.rect.width + 'px'
-  style.left = props.slur.rect.left + 'px'
-  style.bottom = props.slur.rect.bottom + 'px'
-  style.borderColor = props.slur.options.highlight
-      ? props.slur.options.highlightColor : props.slur.options.color
-
-  return style
-})
+  return `
+    M ${leftX},${middleY}
+    Q ${centerX},${topY} ${rightX},${middleY}
+    Q ${centerX},${bottomY} ${leftX},${middleY}
+    Z
+  `.trim();
+});
 </script>
-
 
 <style scoped>
 .slur {
-  height: 40px;
-  position: absolute;
-  border-left: 1px solid black;
-  border-top: 1px solid black;
+  width: 100%;
+  height: 100%;
   pointer-events: auto;
   user-select: none;
+}
 
-  > * {
-    pointer-events: none;
-  }
+.slur > * {
+  pointer-events: none;
+}
+
+.slur-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.slur-path {
+  fill: black;
+  stroke: none;
 }
 </style>

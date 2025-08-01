@@ -52,9 +52,9 @@ export function spanSymbolTemplate(options: {
         }
         case SpanSymbolTypeEnum.slur: {
             return {
-                "type": SpanSymbolTypeEnum.volta,
+                "type": SpanSymbolTypeEnum.slur,
                 "msTypeName": MsTypeNameEnum.SpanSymbol,
-                "spanSymbolFollowingCategoryEnum": SpanSymbolFollowingCategoryEnum.measure,
+                "spanSymbolFollowingCategoryEnum": SpanSymbolFollowingCategoryEnum.msSymbol,
                 "startTargetId": options.startTargetId,
                 "endTargetId": options.endTargetId,
                 "id": Date.now(),
@@ -346,7 +346,13 @@ export function multipleStavesTemplate(options: {} = {}): MultipleStaves {
     const multipleStaves: MultipleStaves = {
         id: Date.now() + 5,
         msTypeName: MsTypeNameEnum.MultipStaves,
-        index: {},
+        index: {
+            multipleStavesIndex: -1,
+            singleStaffIndex: -1,
+            measureIndex: -1,
+            msSymbolContainerIndex: -1,
+            msSymbolIndex: -1,
+        },
         multipleStavesPaddingTop: 60,
         multipleStavesPaddingBottom: 60,
         multipleStavesMarginBottom: 60,

@@ -2,3 +2,9 @@
 + whiteboard从其他处按住鼠标拖到内部，拖动会出现问题
 + whiteBoard更新漫游状态会导致whiteBoard位置重置
 + 声部离得近的时候音符left要换
++ 连音线的位置更新
++ 连音线的端点计算
+
+## 优化
+
++ 连音线只需获取container中间位置即可，计算时却需要slotWidth,这个应该优化掉
