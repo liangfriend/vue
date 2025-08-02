@@ -5,7 +5,7 @@ import {computed, onMounted, ref, Ref, UnwrapRef, watch} from 'vue';
 // import mockData from "@/applications/ChuangKeApplication/components/musicScore/musicScoreData/happyBirthdayToYou.ts";
 import mockData from "@/applications/ChuangKeApplication/components/musicScore/musicScoreData/test.ts";
 import BottomMenu from "@/applications/ChuangKeApplication/views/editor/components/bottomMenu.vue";
-import {msPlayUtils} from "@/applications/ChuangKeApplication/utils/ms-playUtils.ts";
+import {msPlayUtils} from "@/applications/ChuangKeApplication/utils/msPlayUtils/ms-playUtils.ts";
 import {MusicMapKey} from "@/applications/ChuangKeApplication/views/editor/constant.ts";
 import {useRouter} from "vue-router";
 import {
@@ -70,6 +70,7 @@ function switchMode() {
 }
 
 const play = async () => {
+  console.log('chicken',)
 // 存储播放序列
   await msPlayUtils.addMusicToMap(MusicMapKey.CMK, musicScoreData.value)
   await msPlayUtils.play(MusicMapKey.CMK)
@@ -229,6 +230,10 @@ onMounted(() => {
 
 .toolsLayer {
   pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
 }
 
 .rightTools {

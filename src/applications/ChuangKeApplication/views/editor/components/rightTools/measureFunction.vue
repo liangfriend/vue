@@ -56,7 +56,7 @@ function handleRightToolsBtn(key: String, measure: Measure, musicScore: MusicSco
       break
     }
     case 'delete':
-      removeMeasure(measure, musicScoreData)
+      removeMeasure(measure, props.musicScore)
       break;
     case 'addVolta': {
       const startTargetId = measure.id

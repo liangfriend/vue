@@ -4,7 +4,7 @@ import MusicScoreVue from "@/applications/ChuangKeApplication/components/musicSc
 import {App, nextTick, onMounted, PropType, Ref, ref, watch} from "vue";
 import type {MusicScore, MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {MsMode} from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
-import {msPlayUtils} from "@/applications/ChuangKeApplication/utils/ms-playUtils.ts";
+import {msPlayUtils} from "@/applications/ChuangKeApplication/utils/msPlayUtils/ms-playUtils.ts";
 import {MusicMapKey} from "@/applications/ChuangKeApplication/views/editor/constant.ts";
 import {AddElementOptions, WBElement} from "@/applications/ChuangKeApplication/components/whiteBoard/types";
 import {whiteBoardState} from "@/applications/ChuangKeApplication/components/whiteBoard/enum.ts";

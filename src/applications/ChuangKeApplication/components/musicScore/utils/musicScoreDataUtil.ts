@@ -58,20 +58,11 @@ function findValidEnumName(semitoneNumber: number): MusicalAlphabetEnum {
 // 计算当前音符音名
 export function getNoteMusicalAlphabet(
     msSymbol: NoteHead,
+    musicScore: MusicScore
 ): MusicalAlphabetEnum {
     const region = msSymbol.region
-    let clef: ClefEnum = ClefEnum.treble;
-    if (msSymbol.computed.clef) {
-        clef = msSymbol.computed.clef
-    } else {
-        console.warn("音符缺少计算属性clef")
-    }
-    let keySignature: KeySignatureEnum = KeySignatureEnum.C
-    if (msSymbol.computed.keySignature) {
-        keySignature = msSymbol.computed.keySignature
-    } else {
-        console.warn("音符缺少计算属性keySignature")
-    }
+    const clef: ClefEnum = getMsSymbolClef(msSymbol, musicScore)
+    const keySignature: KeySignatureEnum = getMsSymbolKeySignature(msSymbol, musicScore)
 
     const accidental = getAccidental(msSymbol)
     const regionIndexMap: Record<MusicScoreRegionEnum, number> = {
@@ -430,7 +421,13 @@ export function traverseMeasure(startIndex: MusicScoreIndex, endIndex: MusicScor
 // index赋值
 export function setMultipleStavesIndex(musicScore: MusicScore) {
     musicScore.multipleStavesArray.forEach((multipleStaves, i) => {
-        multipleStaves.index = {multipleStavesIndex: i};
+        multipleStaves.index = {
+            multipleStavesIndex: i,
+            singleStaffIndex: -1,
+            measureIndex: -1,
+            msSymbolContainerIndex: -1,
+            msSymbolIndex: -1
+        };
         setSingleStaffArrayIndex(multipleStaves);
     });
 }
@@ -441,7 +438,13 @@ export function setSingleStaffArrayIndex(multipleStaves: MultipleStaves) {
         return console.error("数据有误，复谱表索引生成失败")
     }
     multipleStaves.singleStaffArray.forEach((singleStaff, j) => {
-        singleStaff.index = {multipleStavesIndex, singleStaffIndex: j};
+        singleStaff.index = {
+            multipleStavesIndex,
+            singleStaffIndex: j,
+            measureIndex: -1,
+            msSymbolContainerIndex: -1,
+            msSymbolIndex: -1
+        };
         setMeasureArrayIndex(singleStaff);
     });
 }
@@ -454,7 +457,13 @@ export function setMeasureArrayIndex(singleStaff: SingleStaff) {
         return console.error("数据有误，单谱表索引生成失败")
     }
     singleStaff.measureArray.forEach((measure, k) => {
-        measure.index = {multipleStavesIndex, singleStaffIndex, measureIndex: k};
+        measure.index = {
+            multipleStavesIndex,
+            singleStaffIndex,
+            measureIndex: k,
+            msSymbolContainerIndex: -1,
+            msSymbolIndex: -1
+        };
         setMsSymbolContainerArrayIndex(measure);
     });
 }
@@ -468,7 +477,13 @@ export function setMsSymbolContainerArrayIndex(measure: Measure) {
     }
     measure.msSymbolContainerArray.forEach((container, l) => {
 
-        container.index = {multipleStavesIndex, singleStaffIndex, measureIndex, msSymbolContainerIndex: l};
+        container.index = {
+            multipleStavesIndex,
+            singleStaffIndex,
+            measureIndex,
+            msSymbolContainerIndex: l,
+            msSymbolIndex: -1
+        };
         setMsSymbolArrayIndex(container);
     });
 }
@@ -513,38 +528,6 @@ export function setChildMsSymbolArrayIndex(msSymbol: MsSymbol, musicScore?: Musi
         }
     })
 }
-
-// 计算属性赋值， 在播放的时候生成一下
-export function msSymbolComputedData(musicScore: MusicScore) {
-    let clef: ClefEnum = ClefEnum.treble
-    let keySignature: KeySignatureEnum = KeySignatureEnum.C
-    traverseMusicScore(musicScore, {
-        level: 'symbol', order: 'asc', callback: ({msSymbol}) => {
-            if (!msSymbol) return true
-            // 整体赋值clef 初始化、数据更改时调用
-            if (msSymbol.type === MsSymbolTypeEnum.clef) {
-                clef = msSymbol.clef
-            }
-            if ([MsSymbolTypeEnum.noteHead, MsSymbolTypeEnum.keySignature].includes(msSymbol.type) && 'computed' in msSymbol) {
-                msSymbol.computed.clef = clef
-            }
-            // 整体赋值keySignature keySignature是小节上的符号
-            if (msSymbol.type === MsSymbolTypeEnum.keySignature) {
-                keySignature = msSymbol.keySignature
-            }
-            if (msSymbol.type === MsSymbolTypeEnum.noteHead && 'computed' in msSymbol) {
-                msSymbol.computed.keySignature = keySignature
-            }
-            // 整体赋值音名 需要先计算clef
-            if (msSymbol.type === MsSymbolTypeEnum.noteHead && 'computed' in msSymbol) {
-                msSymbol.computed.musicalAlphabet = getNoteMusicalAlphabet(msSymbol)
-            }
-
-            return false
-        }
-    })
-}
-
 // 获取某一符号所应用的谱号
 export function getMsSymbolClef(msSymbol: MsSymbol, musicScore: MusicScore): ClefEnum {
     const msData = getDataWithIndex(msSymbol.index, musicScore)
@@ -584,6 +567,44 @@ export function getMsSymbolClef(msSymbol: MsSymbol, musicScore: MusicScore): Cle
     return ClefEnum.treble
 }
 
+// 获取某一符号所应用的谱号
+export function getMsSymbolKeySignature(msSymbol: MsSymbol, musicScore: MusicScore): KeySignatureEnum {
+    const msData = getDataWithIndex(msSymbol.index, musicScore)
+    const msSymbolContainer = msData.msSymbolContainer
+    const measure = msData.measure
+    const singleStaff = msData.singleStaff
+
+    const measureIndex = measure?.index.measureIndex
+    const msSymbolContainerIndex = msSymbolContainer?.index.msSymbolContainerIndex
+
+    if (!msSymbolContainer || !measure || !singleStaff || (msSymbolContainerIndex == null) || (measureIndex == null)) {
+        console.error("索引数据查找出错，获取符号的谱号失败")
+        return KeySignatureEnum.C
+    }
+    for (let i = (measureIndex); i >= 0; i--) {
+        const curMeasure = singleStaff.measureArray[i];
+        if (i === measureIndex) {
+            for (let j = msSymbolContainerIndex; j >= 0; j--) {
+                const curMsSymbolContainer = curMeasure.msSymbolContainerArray[j]
+                const curMsSymbol = curMsSymbolContainer.msSymbolArray[0]
+                if (MsSymbolTypeEnum.keySignature === curMsSymbol.type) {
+                    return curMsSymbol.keySignature
+                }
+            }
+        } else {
+            for (let j = curMeasure.msSymbolContainerArray.length - 1; j >= 0; j--) {
+                const curMsSymbolContainer = curMeasure.msSymbolContainerArray[j]
+                const curMsSymbol = curMsSymbolContainer.msSymbolArray[0]
+                if (MsSymbolTypeEnum.keySignature === curMsSymbol.type) {
+                    return curMsSymbol.keySignature
+                }
+            }
+        }
+
+
+    }
+    return KeySignatureEnum.C
+}
 
 // 复合性aspectRatiao获取
 export function getMultipleAspectRatio(msSymbol: MsSymbol): number {
@@ -633,6 +654,15 @@ export function mapGenerate(musicScore: MusicScore): void {
 
 }
 
+// 判断direction
+export function judgeDirection(region: MusicScoreRegionEnum): 'up' | 'down' {
+    if (region <= MusicScoreRegionEnum.space_2) {
+        return 'up'
+    } else {
+        return 'down'
+    }
+}
+
 // 查询内容
 export function getTarget(id: number, msDataMap: Record<number, MsType>): MsType | undefined {
 
@@ -655,19 +685,21 @@ export function getDataWithIndex(index: MusicScoreIndex, musicScore: MusicScore)
         msSymbol: null,
     }
 
-    if (index.multipleStavesIndex != null) {
+    if (index.multipleStavesIndex !== -1) {
         const multipleStaves = musicScore.multipleStavesArray[index.multipleStavesIndex]
         res.multipleStaves = multipleStaves
-        if (index.singleStaffIndex != null) {
+        if (index.singleStaffIndex !== -1) {
             const singleStaff = multipleStaves.singleStaffArray[index.singleStaffIndex]
             res.singleStaff = singleStaff
-            if (index.measureIndex != null) {
+            if (index.measureIndex !== -1) {
                 const measure = singleStaff.measureArray[index.measureIndex]
                 res.measure = measure
-                if (index.msSymbolContainerIndex != null) {
+                if (index.msSymbolContainerIndex !== -1) {
+                    console.log('chicken',)
                     const msSymbolContainer = measure.msSymbolContainerArray[index.msSymbolContainerIndex]
                     res.msSymbolContainer = msSymbolContainer
-                    if (index.msSymbolIndex != null) {
+                    if (index.msSymbolIndex !== -1) {
+                        console.log('chicken', msSymbolContainer)
                         res.msSymbol = msSymbolContainer.msSymbolArray[index.msSymbolIndex]
                     }
 

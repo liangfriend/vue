@@ -9,6 +9,10 @@ import {
     ChronaxieEnum, MsSymbolTypeEnum,
     MusicalAlphabetEnum
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
+import {
+    getMsSymbolClef,
+    getNoteMusicalAlphabet
+} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 
 
 type ToneSequence = {
@@ -131,6 +135,8 @@ const chronaxieToDurationMap: Record<ChronaxieEnum, string> = {
     [ChronaxieEnum.quarter]: '4n',
     [ChronaxieEnum.eighth]: '8n',
     [ChronaxieEnum.sixteenth]: '16n',
+    [ChronaxieEnum.thirtySecond]: '32n',
+    [ChronaxieEnum.sixtyFourth]: '64n',
 };
 
 
@@ -167,10 +173,10 @@ function durationToBeats(duration: string): number {
     return beats + dotBonus;
 }
 
-function musicScoreToToneSequence(musicData: MusicScore): ToneSequence[] {
+function musicScoreToToneSequence(musicScore: MusicScore): ToneSequence[] {
     const sequence: ToneSequence[] = [];
     let accumulatorTime = 0
-    for (const multiStaff of musicData.multipleStavesArray) {
+    for (const multiStaff of musicScore.multipleStavesArray) {
         for (const singleStaff of multiStaff.singleStaffArray) {
             for (const measure of singleStaff.measureArray) {
                 for (const msSymbolContainer of measure.msSymbolContainerArray) {
@@ -178,7 +184,7 @@ function musicScoreToToneSequence(musicData: MusicScore): ToneSequence[] {
 
                         if (msSymbol.type === MsSymbolTypeEnum.noteHead) {
                             // 构造音名（暂不考虑变音符）
-                            let noteName: string = msSymbol.computed.musicalAlphabet || MusicalAlphabetEnum.C4;
+                            let noteName: string = getNoteMusicalAlphabet(msSymbol, musicScore)
 
                             // 时值转换
                             let duration = chronaxieToDurationMap[msSymbol.chronaxie as ChronaxieEnum] || '4n';

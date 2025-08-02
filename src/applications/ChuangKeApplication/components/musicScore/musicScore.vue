@@ -236,7 +236,7 @@ function getReserveMsSymbol(key: ReserveMsSymbolType): MsType | null {
   return null
 }
 
-const currentResevedType = ref(ReserveMsSymbolType.rest) // 当前预备符号类型
+const currentResevedType = ref(ReserveMsSymbolType.note) // 当前预备符号类型
 function setCurrentResevedType(value: ReserveMsSymbolType) {
   currentResevedType.value = value;
 }
@@ -342,7 +342,8 @@ function cancelSelect() {
 }
 
 onMounted(() => {
-  //遍历所有订阅者，执行操作
+  // 生成map
+
 })
 // onMounted(mounted);
 onUnmounted(() => {

@@ -22,6 +22,7 @@ import {
     SpanSymbol,
     TimeSignature
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
+import {judgeDirection} from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 
 export function spanSymbolTemplate(options: {
     type?: SpanSymbolTypeEnum,
@@ -105,6 +106,7 @@ export function msSymbolTemplate(options: {
     keySignature?: KeySignatureEnum,
     timeSignature?: TimeSignature,
     accidental?: AccidentalEnum,
+    direction?: 'up' | 'down'
 } = {}): MsSymbol {
     const baseMsSymbol: BaseMsSymbol = {
         id: Date.now() + 1,
@@ -128,10 +130,13 @@ export function msSymbolTemplate(options: {
     }
     switch (options.type) {
         case MsSymbolTypeEnum.noteHead: {
+
+            const region = options.region || MusicScoreRegionEnum.space_3
             // chronaxie不存在默认为四分音符，添加符杠
             if (!options.chronaxie || ![ChronaxieEnum.whole].includes(options.chronaxie)) {
                 const noteBar = msSymbolTemplate({
                     type: MsSymbolTypeEnum.noteBar,
+                    direction: judgeDirection(region),
                 })
                 baseMsSymbol.msSymbolArray.push(noteBar)
 
@@ -142,6 +147,7 @@ export function msSymbolTemplate(options: {
                 const noteTail = msSymbolTemplate({
                     type: MsSymbolTypeEnum.noteTail,
                     chronaxie: options.chronaxie || ChronaxieEnum.quarter,
+                    direction: judgeDirection(region),
                 })
                 baseMsSymbol.msSymbolArray.push(noteTail)
             }
@@ -149,7 +155,7 @@ export function msSymbolTemplate(options: {
                 ...baseMsSymbol,
                 beamId: -1,
                 type: MsSymbolTypeEnum.noteHead,
-                region: options.region || MusicScoreRegionEnum.space_3,
+                region: region,
                 chronaxie: options.chronaxie || ChronaxieEnum.quarter,
             }
         }
@@ -200,7 +206,7 @@ export function msSymbolTemplate(options: {
         case MsSymbolTypeEnum.noteBar: {
             return {
                 ...baseMsSymbol,
-                direction: 'up',
+                direction: options.direction || 'up',
                 type: MsSymbolTypeEnum.noteBar,
             }
         }
@@ -210,7 +216,7 @@ export function msSymbolTemplate(options: {
                 type: MsSymbolTypeEnum.noteTail,
                 chronaxie: options.chronaxie || ChronaxieEnum.quarter,
                 beamType: BeamTypeEnum.left,
-                direction: 'up'
+                direction: options.direction || 'up',
             }
         }
         case MsSymbolTypeEnum.clef_f: {
