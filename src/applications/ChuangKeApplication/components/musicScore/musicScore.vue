@@ -125,7 +125,8 @@ import type {
   MusicScore,
   MusicScoreRef,
   ReserveMsSymbolMapType,
-  SingleStaff, SpanSymbol
+  SingleStaff,
+  SpanSymbol
 } from "./types.d.ts";
 import MeasureContainer from "@/applications/ChuangKeApplication/components/musicScore/components/measureContainer.vue";
 
@@ -151,7 +152,9 @@ import {
   msSymbolMouseDown,
   msSymbolMouseUp,
   multipleStavesMouseDown,
-  singleStaffMouseDown, spanSymbolMouseDown, spanSymbolMouseUp
+  singleStaffMouseDown,
+  spanSymbolMouseDown,
+  spanSymbolMouseUp
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/eventUtil.ts";
 import VirtualSymbolContainer
   from "@/applications/ChuangKeApplication/components/musicScore/components/virtualSymbolContainer.vue";
@@ -206,6 +209,7 @@ const isGroup = computed(() => {
   };
 });
 const mode = ref(MsMode.edit)
+
 // 预备符号
 const reserveMsSymbolMap = ref(new Map()) as Ref<ReserveMsSymbolMapType>;
 // spanSymbol快速索引对象
@@ -215,7 +219,9 @@ const currentSelected = ref<MsType | null>(null)
 
 function initReserveMsSymbolMap() {
   const note = msSymbolTemplate({type: MsSymbolTypeEnum.noteHead, chronaxie: ChronaxieEnum.quarter})
+  const rest = msSymbolTemplate({type: MsSymbolTypeEnum.rest, chronaxie: ChronaxieEnum.quarter})
   reserveMsSymbolMap.value.set(ReserveMsSymbolType.note, note);
+  reserveMsSymbolMap.value.set(ReserveMsSymbolType.rest, rest);
 
 }
 
@@ -230,6 +236,10 @@ function getReserveMsSymbol(key: ReserveMsSymbolType): MsType | null {
   return null
 }
 
+const currentResevedType = ref(ReserveMsSymbolType.rest) // 当前预备符号类型
+function setCurrentResevedType(value: ReserveMsSymbolType) {
+  currentResevedType.value = value;
+}
 
 // 变宽符号容器
 const variableContainerArray = computed(() => {
@@ -343,7 +353,8 @@ onUnmounted(() => {
 provide('msState', {
   mode,
   currentSelected,
-  reserveMsSymbolMap
+  reserveMsSymbolMap,
+  currentResevedType,
 })
 // TODO 这个应该设置为已读，不知道能不能实现
 defineExpose<MusicScoreRef>({
@@ -351,9 +362,11 @@ defineExpose<MusicScoreRef>({
   root: musicScoreRef,
   mode,
   currentSelected,
+  currentResevedType,
   setReserveMsSymbol,
   getReserveMsSymbol,
   reserveMsSymbolMap,
+  setCurrentResevedType,
   cancelSelect
 })
 </script>

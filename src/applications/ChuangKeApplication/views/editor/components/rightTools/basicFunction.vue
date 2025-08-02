@@ -3,7 +3,8 @@
 import {computed, PropType, ref, UnwrapRef} from "vue";
 import {MusicScore, MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
 import {
-  ChronaxieEnum, MsSymbolTypeEnum,
+  ChronaxieEnum,
+  MsSymbolTypeEnum,
   ReserveMsSymbolType
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import {msSymbolTemplate} from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
@@ -19,8 +20,25 @@ const props = defineProps({
     type: Object as PropType<UnwrapRef<MusicScoreRef>>,
     required: true
   },
+  currentResevedType: {
+    type: Object as PropType<ReserveMsSymbolType>,
+    required: true
+  },
 })
+const emits = defineEmits(["changeCurrentReservedType"])
+const noteType = computed({
+  get: () => {
+    return props.currentResevedType === ReserveMsSymbolType.rest
+  },
+  set: (val) => {
+    if (val) {
+      emits("changeCurrentReservedType", ReserveMsSymbolType.rest)
 
+    } else {
+      emits("changeCurrentReservedType", ReserveMsSymbolType.note)
+    }
+  }
+})
 function handleRightToolsBtn(key: String, musicScore: MusicScore) {
   switch (key) {
     case 'selectNote':
@@ -44,7 +62,6 @@ const noteList = ref([{
   text: '十六分音符',
   chronaxie: ChronaxieEnum.sixteenth,
 },])
-const noteType = ref(false)
 
 // 改变预备音符
 function changeReserveNote(chronaxie: ChronaxieEnum) {
@@ -52,14 +69,20 @@ function changeReserveNote(chronaxie: ChronaxieEnum) {
   props.msRef?.reserveMsSymbolMap?.set(ReserveMsSymbolType.note, note)
 }
 
-// 获取musicScore的预备音符时值
-const curReserveNoteChronaxie = computed(() => {
-  const noteHead = props.msRef?.reserveMsSymbolMap?.get(ReserveMsSymbolType.note)
+function changeReserveRest(chronaxie: ChronaxieEnum) {
+  const rest = msSymbolTemplate({type: MsSymbolTypeEnum.rest, chronaxie: chronaxie});
+  props.msRef?.reserveMsSymbolMap?.set(ReserveMsSymbolType.rest, rest)
+}
+
+// 获取musicScore的预备符号时值
+const curReserveChronaxie = computed(() => {
+  const noteHead = props.msRef?.reserveMsSymbolMap?.get(props.currentResevedType)
   if (noteHead && 'chronaxie' in noteHead) {
     return noteHead.chronaxie
   }
   return null
 })
+
 </script>
 
 <template>
@@ -71,10 +94,18 @@ const curReserveNoteChronaxie = computed(() => {
     </el-switch>
     休止符
   </div>
-  <div class="noteBoxContainer">
-    <div :class="{activeBox:curReserveNoteChronaxie === item.chronaxie}"
+  <div class="noteBoxContainer" v-if="currentResevedType === ReserveMsSymbolType.note">
+    <div :class="{activeBox:curReserveChronaxie === item.chronaxie}"
          class="noteBox"
          @click="changeReserveNote(item.chronaxie)"
+         v-for="(item,index) in noteList">
+      {{ item.text }}
+    </div>
+  </div>
+  <div class="noteBoxContainer" v-else-if="currentResevedType === ReserveMsSymbolType.rest">
+    <div :class="{activeBox:curReserveChronaxie === item.chronaxie}"
+         class="noteBox"
+         @click="changeReserveRest(item.chronaxie)"
          v-for="(item,index) in noteList">
       {{ item.text }}
     </div>

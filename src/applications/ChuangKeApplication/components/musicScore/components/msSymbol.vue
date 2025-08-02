@@ -17,6 +17,14 @@ import {
 import noteHeadWholeSvg from "../musicSymbols/noteHeadWhole.svg"
 import noteHeadHalfSvg from "../musicSymbols/noteHeadHalf.svg"
 import noteHeadQuarterSvg from "../musicSymbols/noteHeadQuarter.svg"
+// 休止符
+import restWholeSvg from "../musicSymbols/restWhole.svg"
+import restHalfSvg from "../musicSymbols/restHalf.svg"
+import restQuarterSvg from "../musicSymbols/restQuarter.svg"
+import restEighthSvg from "../musicSymbols/restEighth.svg"
+import restSixteenthSvg from "../musicSymbols/restSixteenth.svg"
+import restThirySecondSvg from "../musicSymbols/restWhole.svg"
+import restSixtyFourthSvg from "../musicSymbols/restWhole.svg"
 // 符杠
 import noteBarSvg from '../musicSymbols/noteBar.svg'
 
@@ -150,6 +158,35 @@ const svgHref = computed(() => {
 
       }
     }
+    case MsSymbolTypeEnum.rest: {
+      switch (props.msSymbol?.chronaxie) {
+        case ChronaxieEnum.whole: {
+          return restWholeSvg
+        }
+        case ChronaxieEnum.half: {
+          return restHalfSvg
+        }
+        case ChronaxieEnum.quarter: {
+          return restQuarterSvg
+        }
+        case ChronaxieEnum.eighth: {
+          return restEighthSvg
+        }
+        case ChronaxieEnum.sixteenth: {
+          return restSixteenthSvg
+        }
+        case ChronaxieEnum.thirtySecond: {
+          return restThirySecondSvg
+        }
+        case ChronaxieEnum.sixtyFourth: {
+          return restSixtyFourthSvg
+        }
+        default: {
+          return restQuarterSvg
+        }
+
+      }
+    }
     case MsSymbolTypeEnum.noteBar: {
       return noteBarSvg
     }
@@ -252,12 +289,7 @@ const height = computed(() => {
 })
 // 符号宽度
 const width = computed(() => {
-  if (props.msSymbol.type === MsSymbolTypeEnum.noteTail && props.nextContainer && props.parentMsSymbol
-      && props.parentMsSymbol.type === MsSymbolTypeEnum.noteHead) {
-    return getNoteTailWidth(props.msSymbol, props.parentMsSymbol, props.msSymbolContainer,
-        props.measure, props.singleStaff, props.musicScore,
-        props.componentWidth)
-  }
+
   return getMsSymbolWidth(props.msSymbol, props.msSymbolContainer, props.measure,
       props.singleStaff, props.musicScore, props.componentWidth)
 })

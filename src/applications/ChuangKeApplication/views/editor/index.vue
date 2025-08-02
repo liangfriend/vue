@@ -11,7 +11,7 @@ import {useRouter} from "vue-router";
 import {
   MsMode,
   MsSymbolTypeEnum,
-  MsTypeNameEnum
+  MsTypeNameEnum, ReserveMsSymbolType
 } from "@/applications/ChuangKeApplication/components/musicScore/musicScoreEnum.ts";
 import RightTools from "@/applications/ChuangKeApplication/views/editor/components/rightTools/rightTools.vue";
 import {MusicScoreRef} from "@/applications/ChuangKeApplication/components/musicScore/types";
@@ -31,6 +31,7 @@ import KeySignatureFunction
 import TimeSignatureFunction
   from "@/applications/ChuangKeApplication/views/editor/components/rightTools/timeSignatureFunction.vue";
 import BarLineFunction from "@/applications/ChuangKeApplication/views/editor/components/rightTools/barLineFunction.vue";
+import RestFunction from "@/applications/ChuangKeApplication/views/editor/components/rightTools/restFunction.vue";
 
 const router = useRouter()
 type addedWb = {
@@ -45,7 +46,16 @@ const curModeText = ref("教学模式")
 const msMode = computed(() => {
   return msRef.value?.mode
 })
+const currentResevedType = computed(() => {
+  return msRef.value.currentResevedType
+})
 
+function changeCurrentReservedType(value: ReserveMsSymbolType) {
+  if (msRef.value) {
+    console.log('chicken', value)
+    msRef.value.setCurrentResevedType(value)
+  }
+}
 function switchMode() {
   if (!msRef.value) return
   if (msMode.value === MsMode.edit) {
@@ -149,6 +159,12 @@ onMounted(() => {
                   :noteHead="currentSelected"
                   :msRef="msRef"
                   :music-score="musicScoreData"></note-head-function>
+              <rest-function
+                  v-if="msRef && currentSelected?.msTypeName === MsTypeNameEnum.MsSymbol
+                                  && currentSelected.type === MsSymbolTypeEnum.rest"
+                  :rest="currentSelected"
+                  :msRef="msRef"
+                  :music-score="musicScoreData"></rest-function>
               <clef-function
                   v-if="msRef && currentSelected?.msTypeName === MsTypeNameEnum.MsSymbol
                                   && (currentSelected.type === MsSymbolTypeEnum.clef || currentSelected.type === MsSymbolTypeEnum.clef_f)"
@@ -174,7 +190,9 @@ onMounted(() => {
                   :msRef="msRef"
                   :music-score="musicScoreData"></bar-line-function>
               <basic-function v-if="msRef && !currentSelected?.msTypeName"
+                              :current-reseved-type="currentResevedType"
                               :msRef="msRef"
+                              @changeCurrentReservedType="changeCurrentReservedType"
                               :music-score="musicScoreData"></basic-function>
               <span-symbol-function v-if="msRef && currentSelected?.msTypeName === MsTypeNameEnum.SpanSymbol"
                                     :msRef="msRef"

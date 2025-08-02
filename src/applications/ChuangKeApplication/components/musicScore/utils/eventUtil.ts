@@ -13,26 +13,31 @@ import {
     MsSymbolContainer,
     MsType,
     MultipleStaves,
-    MusicScore, NoteBar, NoteTail,
-    SingleStaff, SpanSymbol,
+    MusicScore,
+    NoteBar, NoteHead,
+    NoteTail, Rest,
+    SingleStaff,
+    SpanSymbol,
     VirtualSymbolContainerType
 } from "@/applications/ChuangKeApplication/components/musicScore/types";
 
 import {Ref} from 'vue';
 import {
     msSymbolContainerTemplate,
-    msSymbolTemplate, spanSymbolTemplate
+    msSymbolTemplate
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/objectTemplateUtil.ts";
 import {
     getBeamGroup,
     getDataWithIndex,
     getSingleStaffRelatedSpanSymbolList,
-    setMeasureArrayIndex,
     updateSpanSymbolView
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/musicScoreDataUtil.ts";
 import {
     addMsSymbol,
-    addMsSymbolContainer, changeNoteBarDirection, changeNoteTailDirection, updateBeamGroupNote
+    addMsSymbolContainer,
+    changeNoteBarDirection,
+    changeNoteTailDirection,
+    updateBeamGroupNote
 } from "@/applications/ChuangKeApplication/components/musicScore/utils/changeStructureUtil.ts";
 
 
@@ -146,46 +151,94 @@ export function virtualSymbolMouseDown(
     },) {
     if (!params.msState.currentSelected.value) return
     if (params.msState.mode.value !== MsMode.edit || params.msState.currentSelected.value.msTypeName !== MsTypeNameEnum.Measure) return
-    let chronaxie = null
-    const reserveNote = params.msState.reserveMsSymbolMap.value.get(ReserveMsSymbolType.note)
-    if (reserveNote && 'chronaxie' in reserveNote) {
-        chronaxie = reserveNote.chronaxie
-    }
-    const newNoteHead = msSymbolTemplate({
-        type: MsSymbolTypeEnum.noteHead,
-        region: params.msSymbolInformation.region,
-        chronaxie: chronaxie || ChronaxieEnum.quarter
-    }) as Extract<MsSymbol, { type: MsSymbolTypeEnum.noteHead }>
-    const newMsSymbolContainer = msSymbolContainerTemplate({})
-    // 给音符进行计算属性赋值及index赋值
+    const currentReservedType = params.msState.currentResevedType.value
 
-    if (['front'].includes(params.virtualSymbolContainerType)) {
-        newMsSymbolContainer.msSymbolArray.push(newNoteHead)
-        if (params.msData.msSymbolContainer) {
-            addMsSymbolContainer(newMsSymbolContainer,
-                params.msData.msSymbolContainer, params.msData.musicScore, 'before')
-        } else {
-            addMsSymbolContainer(newMsSymbolContainer,
-                params.msData.measure, params.msData.musicScore, 'before')
+    if (currentReservedType === ReserveMsSymbolType.note) {
+        let chronaxie = null
+        const reserveNote = params.msState.reserveMsSymbolMap.value.get(ReserveMsSymbolType.note)
+        if (reserveNote && 'chronaxie' in reserveNote) {
+            chronaxie = reserveNote.chronaxie
         }
+        const newNoteHead: NoteHead = msSymbolTemplate({
+            type: MsSymbolTypeEnum.noteHead,
+            region: params.msSymbolInformation.region,
+            chronaxie: chronaxie || ChronaxieEnum.quarter
+        }) as NoteHead
+        const newMsSymbolContainer = msSymbolContainerTemplate({})
+        // 给音符进行计算属性赋值及index赋值
 
-    } else if (['end', 'middle'].includes(params.virtualSymbolContainerType)) {
-        newMsSymbolContainer.msSymbolArray.push(newNoteHead)
-        if (!params.msData.msSymbolContainer) return console.error("没有作为对照的符号容器，符号容器添加失败")
-        addMsSymbolContainer(newMsSymbolContainer,
-            params.msData.msSymbolContainer, params.msData.musicScore, 'after')
-    } else if (['self'].includes(params.virtualSymbolContainerType)) {
-        if (!params.msData.msSymbolContainer) return console.error("没有作为对照的符号容器，符号添加失败")
-        const sameRegionNoteHead = params.msData.msSymbolContainer.msSymbolArray.find(m => {
-            return m.type === MsSymbolTypeEnum.noteHead && m.region === newNoteHead.region
-        })
-        if (sameRegionNoteHead) {
-            msSymbolMouseDown(e, params.msState.mode, params.msState.currentSelected, sameRegionNoteHead)
-        } else {
-            addMsSymbol(newNoteHead,
+        if (['front'].includes(params.virtualSymbolContainerType)) {
+            newMsSymbolContainer.msSymbolArray.push(newNoteHead)
+            if (params.msData.msSymbolContainer) {
+                addMsSymbolContainer(newMsSymbolContainer,
+                    params.msData.msSymbolContainer, params.msData.musicScore, 'before')
+            } else {
+                addMsSymbolContainer(newMsSymbolContainer,
+                    params.msData.measure, params.msData.musicScore, 'before')
+            }
+
+        } else if (['end', 'middle'].includes(params.virtualSymbolContainerType)) {
+            newMsSymbolContainer.msSymbolArray.push(newNoteHead)
+            if (!params.msData.msSymbolContainer) return console.error("没有作为对照的符号容器，符号容器添加失败")
+            addMsSymbolContainer(newMsSymbolContainer,
                 params.msData.msSymbolContainer, params.msData.musicScore, 'after')
-        }
+        } else if (['self'].includes(params.virtualSymbolContainerType)) {
+            if (!params.msData.msSymbolContainer) return console.error("没有作为对照的符号容器，符号添加失败")
 
+            const sameRegionNoteHead = params.msData.msSymbolContainer.msSymbolArray.find(m => {
+                return m.type === MsSymbolTypeEnum.noteHead && m.region === newNoteHead.region
+            })
+            if (sameRegionNoteHead) {
+                msSymbolMouseDown(e, params.msState.mode, params.msState.currentSelected, sameRegionNoteHead)
+            } else {
+                addMsSymbol(newNoteHead,
+                    params.msData.msSymbolContainer, params.msData.musicScore, 'after')
+            }
+        }
+    } else if (currentReservedType === ReserveMsSymbolType.rest) {
+
+
+        let chronaxie = null
+        const reserveRest = params.msState.reserveMsSymbolMap.value.get(ReserveMsSymbolType.rest)
+        if (reserveRest && 'chronaxie' in reserveRest) {
+            chronaxie = reserveRest.chronaxie
+        }
+        const newRest: Rest = msSymbolTemplate({
+            type: MsSymbolTypeEnum.rest,
+            chronaxie: chronaxie || ChronaxieEnum.quarter
+        }) as Rest
+
+
+        const newMsSymbolContainer = msSymbolContainerTemplate({})
+        // 给音符进行计算属性赋值及index赋值
+
+        if (['front'].includes(params.virtualSymbolContainerType)) {
+            newMsSymbolContainer.msSymbolArray.push(newRest)
+            if (params.msData.msSymbolContainer) {
+                addMsSymbolContainer(newMsSymbolContainer,
+                    params.msData.msSymbolContainer, params.msData.musicScore, 'before')
+            } else {
+                addMsSymbolContainer(newMsSymbolContainer,
+                    params.msData.measure, params.msData.musicScore, 'before')
+            }
+
+        } else if (['end', 'middle'].includes(params.virtualSymbolContainerType)) {
+            newMsSymbolContainer.msSymbolArray.push(newRest)
+            if (!params.msData.msSymbolContainer) return console.error("没有作为对照的符号容器，符号容器添加失败")
+            addMsSymbolContainer(newMsSymbolContainer,
+                params.msData.msSymbolContainer, params.msData.musicScore, 'after')
+        } else if (['self'].includes(params.virtualSymbolContainerType)) {
+            if (!params.msData.msSymbolContainer) return console.error("没有作为对照的符号容器，符号添加失败")
+            const sameRegionNoteHead = params.msData.msSymbolContainer.msSymbolArray.find(m => {
+                return m.type === MsSymbolTypeEnum.rest
+            })
+            if (sameRegionNoteHead) {
+                msSymbolMouseDown(e, params.msState.mode, params.msState.currentSelected, sameRegionNoteHead)
+            } else {
+                addMsSymbol(newRest,
+                    params.msData.msSymbolContainer, params.msData.musicScore, 'after')
+            }
+        }
     }
 
 }

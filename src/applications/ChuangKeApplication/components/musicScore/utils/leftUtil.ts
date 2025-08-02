@@ -136,6 +136,7 @@ export function getMsSymbolLeftToSlot(msSymbol: MsSymbol, msSymbolContainer: MsS
             return -width
         }
     }
+    console.log('chicken',)
     return 0
 }
 
@@ -146,6 +147,9 @@ export function getSlotLeftToContainer(msSymbol: MsSymbol, msSymbolContainer: Ms
     const measureHeight = musicScore.measureHeight
     switch (mainMsSymbol?.type) {
         case MsSymbolTypeEnum.noteHead: { // 音符头居中
+            return containerWidth / 2 - slotWidth / 2
+        }
+        case MsSymbolTypeEnum.rest: { // 休止符居中
             return containerWidth / 2 - slotWidth / 2
         }
     }

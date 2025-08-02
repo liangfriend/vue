@@ -510,10 +510,10 @@ export function changeAccidental(noteHead: NoteHead, accidentalType: AccidentalE
     }
 }
 
-// 更换音符或休止符时值
+// 更换音符时值
 export function changeNoteChronaxie(note: MsSymbol, newChronaxie: ChronaxieEnum, musicScore: MusicScore) {
-    if (note.type !== MsSymbolTypeEnum.noteHead && note.type !== MsSymbolTypeEnum.rest) {
-        return console.error("符号类型有误，时值更改失败。请传入音符或休止符");
+    if (note.type !== MsSymbolTypeEnum.noteHead) {
+        return console.error("符号类型有误，时值更改失败。请传入音符");
     }
     if (note.chronaxie === newChronaxie) {
         return
@@ -556,6 +556,17 @@ export function changeNoteChronaxie(note: MsSymbol, newChronaxie: ChronaxieEnum,
     }
 }
 
+// 更换休止符时值
+export function changeRestChronaxie(rest: MsSymbol, newChronaxie: ChronaxieEnum, musicScore: MusicScore) {
+    if (rest.type !== MsSymbolTypeEnum.rest) {
+        return console.error("符号类型有误，时值更改失败。休止符");
+    }
+    if (rest.chronaxie === newChronaxie) {
+        return
+    }
+    // 更换时值
+    rest.chronaxie = newChronaxie
+}
 export function addBindingStartId(msData: MsSymbol | Measure | SingleStaff, id: number) {
     msData.bindingStartId.push(id)
 }
@@ -581,7 +592,7 @@ export function removeSpanSymbol(spanSymbol: SpanSymbol, musicScore: MusicScore)
     const index = musicScore.spanSymbolArray.indexOf(spanSymbol)
     const bindingStartId = spanSymbol.startTargetId
     const bindingEndId = spanSymbol.endTargetId
-    
+
     musicScore.spanSymbolArray.splice(index, 1)
     // 删除相关联对象中的绑定id
     const id = spanSymbol.id

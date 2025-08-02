@@ -230,6 +230,8 @@ declare interface MusicScoreRef {
     root: Ref<HTMLElement>,
     mode: Ref<MsMode>,
     currentSelected: Ref<MsType | null>,
+    currentResevedType: Ref<ReserveMsSymbolType>,
+    setCurrentResevedType: (value: ReserveMsSymbolType) => void,
     setReserveMsSymbol: (key: ReserveMsSymbolType, msData: MsType) => void,
     getReserveMsSymbol: (key: ReserveMsSymbolType) => MsType | null,
     cancelSelect: () => void,
@@ -250,6 +252,7 @@ declare interface MsState {
     mode: Ref<MsMode>,
     currentSelected: Ref<MsType | null>,
     reserveMsSymbolMap: Ref<ReserveMsSymbolMapType>,
+    currentResevedType: Ref<ReserveMsSymbolType>,
 }
 
 // 虚拟符号容器类型

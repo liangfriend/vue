@@ -79,12 +79,12 @@ export const MsSymbolInformationMap: Record<MsSymbolTypeEnum, MsSymbolInformatio
         widthRatioConstant: 0,
         heightMultiplier: 0.5,
     },
-    [MsSymbolTypeEnum.rest]: {// 休止符：不如音符重要，但需占位
+    [MsSymbolTypeEnum.rest]: {// 休止符： 占位比例等于音符头
         containerType: MsSymbolContainerTypeEnum.variable,
-        aspectRatio: 1,
-        widthRatioConstant: 0,
+        aspectRatio: 0.25,
+        widthRatioConstant: 1,
         category: MsSymbolCategoryEnum.singleMeasure,
-        heightMultiplier: 0.25,
+        heightMultiplier: 1,
     },
     [MsSymbolTypeEnum.slur]: {// 圆滑线：跨音符装饰线，不占宽度
         category: MsSymbolCategoryEnum.multipleMeasure,

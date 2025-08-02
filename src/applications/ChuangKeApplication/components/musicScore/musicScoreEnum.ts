@@ -255,6 +255,8 @@ export enum ChronaxieEnum {
     quarter = 4,
     eighth = 8,
     sixteenth = 16,
+    thirtySecond = 32,
+    sixtyFourth = 64,
 }
 
 // 符号类型
@@ -339,7 +341,8 @@ export enum MsMode {
 
 // 预备符号类型
 export enum ReserveMsSymbolType {
-    note = 1 // 音符头
+    note = 1,// 音符头
+    rest // 休止符
 }
 
 // 连音组类型

@@ -153,6 +153,13 @@ export function msSymbolTemplate(options: {
                 chronaxie: options.chronaxie || ChronaxieEnum.quarter,
             }
         }
+        case MsSymbolTypeEnum.rest: {
+            return {
+                ...baseMsSymbol,
+                type: MsSymbolTypeEnum.rest,
+                chronaxie: options.chronaxie || ChronaxieEnum.quarter,
+            }
+        }
         case MsSymbolTypeEnum.barLine: {
             const barLineType = options.barLineType ?? BarLineTypeEnum.single
             if (BarLineTypeEnum.endRepeatSign === barLineType || BarLineTypeEnum.startRepeatSign === barLineType) {
