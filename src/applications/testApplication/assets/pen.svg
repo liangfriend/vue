@@ -1,0 +1,23 @@
+<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Frame 22486">
+<g id="Group 14">
+<rect id="Rectangle 47" x="21.6285" y="0.00544739" width="8.4" height="7.7" rx="2.25393" transform="rotate(45 21.6285 0.00544739)" fill="#FFCBD2"/>
+<g id="Mask group">
+<rect id="Rectangle 49" x="17.738" y="3.89595" width="8.4" height="20.65" rx="1.4" transform="rotate(45 17.738 3.89595)" fill="white"/>
+</g>
+<g id="Mask group_2">
+<rect id="Rectangle 51" x="18.38" y="2.69691" width="9.18759" height="4.2" rx="0.7" transform="rotate(45 18.38 2.69691)" fill="#FF92A0"/>
+</g>
+<rect id="Rectangle 48" x="4.3042" y="21.7844" width="2.1" height="4.9" rx="1.05" transform="rotate(45 4.3042 21.7844)" fill="white"/>
+<g id="Mask group_3">
+<mask id="mask0_11_22652" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="3" y="16" width="9" height="8">
+<rect id="Rectangle 50" x="6.10608" y="15.528" width="8.4" height="4.2" rx="1.4" transform="rotate(45 6.10608 15.528)" fill="#E9EBFF"/>
+</mask>
+<g mask="url(#mask0_11_22652)">
+<path id="Vector 3" d="M4.37375 24.685L9.74918 23.7643C10.1317 23.3818 9.88146 22.7268 9.34128 22.6969L8.64307 22.6582L8.5719 21.3742C8.54541 20.8961 8.1989 20.4965 7.72943 20.4027L6.05203 20.0672L5.74996 18.5569C5.64145 18.0143 5.13048 17.649 4.58198 17.7219L3.80949 17.8246L2.88883 23.2001L4.37375 24.685Z" fill="#FF8E9C"/>
+</g>
+</g>
+<path id="Vector 4" d="M4.35792 24.6694L2.873 23.1844L3.70536 18.3246L9.29276 23.8242L4.35792 24.6694Z" fill="#FF8E9C"/>
+</g>
+</g>
+</svg>
