@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@jsh/note-player": "^1.0.74",
     "@vitejs/plugin-vue": "^5.2.4",
     "axios": "^1.9.0",
     "deciphony-core": "^0.0.32",

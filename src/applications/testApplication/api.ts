@@ -5,7 +5,7 @@ export async function getPoems() {
                 {
                     name: '静夜思',
                     author: '李白',
-                    lyrics: ['窗前明月光', '疑是地上霜', '举头望明月', '低头思故乡'],
+                    lyrics: ['窗前明月光啊實打實大蘇打', '疑是地上阿斯頓阿dasfasdf爱上对方撒大叔大叔大叔大叔的发生打斯啊大蘇打實打實的頓霜', '举头望啊是大颯颯明月', '低头思故乡', '低头思故乡', '低头思故乡', '低头思故乡', '低头啊實大蘇打實打實打實大蘇打思故乡', '低头思故乡'],
                 },
                 {
                     name: '春晓',
@@ -15,7 +15,7 @@ export async function getPoems() {
                 {
                     name: '登鹳雀楼',
                     author: '王之涣',
-                    lyrics: ['白日依山尽', '黄河入海流', '欲穷千里目', '更上一层楼'],
+                    lyrics: ['白日依山尽', '黄河入海流'],
                 },
                 {
                     name: '咏鹅',
@@ -105,4 +105,32 @@ export async function getPoems() {
             ]
         })
     })
+}
+
+const baseUrl = 'http://192.168.2.100:3000'
+
+// 生成旋律
+export async function generateMelody(payload: {
+    text: string,
+    seedMelody: { chronaxie: number, midi: number },
+    length: number,
+    params: any
+}) {
+    const response = await fetch(baseUrl + '/melody/generate', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload),
+    });
+    const textBody = await response.text();
+    let data = null;
+    try {
+        data = textBody ? JSON.parse(textBody) : null;
+    } catch (err) {
+        data = null;
+    }
+    return data
+    if (!response.ok) {
+        const message = (data && data.error) || response.statusText || 'Request failed';
+        throw new Error(message);
+    }
 }

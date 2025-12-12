@@ -1,0 +1,20 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g id="Group 82512">
+        <g id="Group 82486">
+            <g id="Group 82483">
+                <path id="Ellipse 40"
+                      d="M4.58041 15.7097C4.58041 13.232 5.43955 10.8308 7.01144 8.91548C8.58332 7.00014 10.7707 5.68907 13.2009 5.20568C15.631 4.72229 18.1536 5.09648 20.3388 6.2645C21.5883 6.93233 22.6832 7.83605 23.5691 8.91548C23.9361 9.36268 24.2672 9.84004 24.5586 10.3433"
+                      stroke="#fff" stroke-width="3.4125" stroke-linecap="round"/>
+                <path id="Vector 5" d="M4.5802 7.52771L4.5802 15.7098" stroke="#fff" stroke-width="3.4125"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <g id="Group 82485">
+                <path id="Ellipse 40_2"
+                      d="M26 15.7097C26 18.1874 25.1408 20.5886 23.569 22.5039C21.9971 24.4193 19.8097 25.7303 17.3795 26.2137C14.9494 26.6971 12.4268 26.3229 10.2416 25.1549C8.51686 24.233 7.08655 22.8617 6.09412 21.1991"
+                      stroke="#fff" stroke-width="3.4125" stroke-linecap="round"/>
+                <path id="Vector 5_2" d="M26 23.9583L26.0001 15.7099" stroke="#fff" stroke-width="3.4125"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+        </g>
+    </g>
+</svg>

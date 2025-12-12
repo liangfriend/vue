@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="poem-page">
     <div class="poem-list-wrapper">
       <div class="poem-list">
@@ -70,14 +70,24 @@ export default {
   height: 100%;
   display: flex;
   flex-wrap: wrap;
+  gap: clamp(12px, 2vw, 28px);
+  row-gap: clamp(18px, 2vw, 32px);
+  justify-content: space-between; /* 每行首列靠左，末列靠右，中间平均分布 */
   align-content: flex-start;
-  gap: 16px;
+  padding: 0;
   overflow-y: auto;
+}
+
+/* 占位，避免最后一行被拉伸到两侧过大间距 */
+.poem-list::after {
+  content: '';
+  flex: 0 0 215px;
 }
 
 .poem-item {
   width: 215px;
   flex-shrink: 0;
+  position: relative;
   cursor: pointer;
   display: flex;
   flex-direction: column;
