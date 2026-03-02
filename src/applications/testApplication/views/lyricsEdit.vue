@@ -8,12 +8,14 @@ import {playerManager} from '@jsh/note-player';
 import {InstrumentEnum} from '@jsh/note-player/enum';
 import DropdownSelect from '@/applications/testApplication/components/DropdownSelect.vue';
 import RangeSlider from '@/applications/testApplication/components/RangeSlider.vue';
+import DialogPrompt from '@/applications/testApplication/components/DialogPrompt.vue';
 
 export default {
-  components: {RangeSlider, DropdownSelect, piano, midiBox},
+  components: {DialogPrompt, RangeSlider, DropdownSelect, piano, midiBox},
   data: () => ({
     poemInfo: {},
     curLyrics: '',
+    dialogVisible: false,
     keySignatureOptions: [
       {label: 'C大调', value: 'C'},
       {label: '#C大调', value: '#C'},
@@ -137,18 +139,19 @@ export default {
           lyrics = this.spliceString(lyrics, lyrics.length - diff, diff);
         }
         // 计算时值
-        const res = await generateMelody({
-          text: lyrics, params: {
-            'style': 'classical',
-            'context': 'poem',
-            'mood': 'calm',
-          },
-          minChronaxieInterval: 32,// 最小时值间隔
-          maxMidi: 83,
-          minMidi: 48,
-          seedMelody: seedMelody,
-          totalChronaxie: this.totalChronaxie(this.selectedLyricsBars, this.selectedMeter) - startChronaxie,
-        });
+        const res = null;
+        //     await generateMelody({
+        //   text: lyrics, params: {
+        //     'style': 'classical',
+        //     'context': 'poem',
+        //     'mood': 'calm',
+        //   },
+        //   minChronaxieInterval: 32,// 最小时值间隔
+        //   maxMidi: 83,
+        //   minMidi: 48,
+        //   seedMelody: seedMelody,
+        //   totalChronaxie: this.totalChronaxie(this.selectedLyricsBars, this.selectedMeter) - startChronaxie,
+        // });
         // 对生成的旋律做处理，休止符的时值并入前一个音符时值
         const melody = [];
         res?.melody.forEach((item) => {
@@ -175,6 +178,7 @@ export default {
         } else {// 重置状态
           this.$refs.midiBoxRef.resetState();
         }
+        this.scrollActiveLyricIntoView();
       });
 
     },
@@ -360,6 +364,26 @@ export default {
     circle() {
       this.isCircle = !this.isCircle;
     },
+    scrollActiveLyricIntoView() {
+      const list = this.$refs.lyricsScroll;
+      const items = this.$refs.lyricItem || [];
+      if (!list || !items || !items.length) {
+        return;
+      }
+      const idx = this.poemInfo.lyrics.findIndex(e => e === this.curLyrics);
+      const el = items[idx];
+      if (!el) {
+        return;
+      }
+
+      const elRect = el.getBoundingClientRect();
+      const listRect = list.getBoundingClientRect();
+      const outOfView = elRect.top < listRect.top || elRect.bottom > listRect.bottom;
+      if (outOfView) {
+        const offset = el.offsetTop - list.clientHeight / 2 + el.clientHeight / 2;
+        list.scrollTo({top: offset, behavior: 'smooth'});
+      }
+    },
   },
 };
 </script>
@@ -372,11 +396,15 @@ export default {
           <div class="title font-1">歌词列表<img src="../assets/star-superscript.svg"/></div>
           <div class="lyrics-box">
             <div class="lyrics-bg-box">
-              <div class="lyrics-scroll-box">
+              <div class="lyrics-scroll-box hide-scrollbar" ref="lyricsScroll">
                 <div class="font-1 name">{{ poemInfo.name }}</div>
                 <div class="author" style="font-size:18px;color:#28282c;font-weight:400">{{ poemInfo.author }}</div>
-                <div class="lyrics-item font-3 pointer" @click="selectLyrics(item)" v-for="item in poemInfo.lyrics"
-                     :class="{'lyrics-item-active':curLyrics === item}">
+                <div
+                    ref="lyricItem"
+                    class="lyrics-item font-3 pointer"
+                    @click="selectLyrics(item)"
+                    v-for="item in poemInfo.lyrics"
+                    :class="{'lyrics-item-active':curLyrics === item}">
                   {{ item }}
                 </div>
               </div>
@@ -519,41 +547,14 @@ export default {
               </div>
 
             </div>
-            <div class="center">
-              <div class="btn-circle" v-show="playState === 'stopped'">
-                <div class="icon pointer" @click="play"><img src="../assets/play.svg"/></div>
-                <div class="text">试听</div>
-              </div>
-              <div class="btn-circle" v-show="playState === 'paused'">
-                <div class="icon pointer" @click="play"><img src="../assets/play.svg"/></div>
-                <div class="text">继续播放</div>
-              </div>
-              <div class="btn-circle" v-show="playState === 'playing'">
-                <div class="icon pointer" @click="pause"><img src="../assets/pause.svg"/></div>
-                <div class="text">暂停</div>
-              </div>
-              <div class="btn-circle" v-show="playState !== 'stopped'">
-                <div class="icon pointer" @click="stop"><img src="../assets/stop.svg"/></div>
-                <div class="text">停止</div>
-              </div>
-              <div class="btn-circle">
-                <div class="icon pointer" @click="circle"
-                     :style="{backgroundColor: isCircle?'#fe435b':'rgba(0,0,0,0.04)'}"><img
-                    src="../assets/cycle.svg" v-if="!isCircle">
 
-                  <img
-                      src="../assets/cycle_active.svg" v-else>
-                </div>
-                <div class="text">循环</div>
-              </div>
-
-
-            </div>
             <div class="right">
-              <div class="btn-pink pointer" :class="{'btn-pink-disabled':curLyrics ===  poemInfo.lyrics?.[0]}" @click="prev">
+              <div class="btn-pink pointer" :class="{'btn-pink-disabled':curLyrics ===  poemInfo.lyrics?.[0]}"
+                   @click="prev">
                 上一句
               </div>
-              <div class="btn-pink pointer" v-if="poemInfo.lyrics && curLyrics !==  poemInfo.lyrics.at(-1)" @click="next">
+              <div class="btn-pink pointer" v-if="poemInfo.lyrics && curLyrics !==  poemInfo.lyrics.at(-1)"
+                   @click="next">
                 下一句
               </div>
               <div class="btn-pink pointer" style="background:#FE435B;color:white " v-else @click="finish">完成</div>
@@ -575,9 +576,37 @@ export default {
             </div>
           </div>
         </div>
-        <div class="operation"></div>
+        <div class="operation">
+          <div class="btn-circle" v-show="playState === 'stopped'">
+            <div class="icon pointer" @click="play"><img src="../assets/play.svg"/></div>
+            <div class="text">试听</div>
+          </div>
+          <div class="btn-circle" v-show="playState === 'paused'">
+            <div class="icon pointer" @click="play"><img src="../assets/play.svg"/></div>
+            <div class="text">继续播放</div>
+          </div>
+          <div class="btn-circle" v-show="playState === 'playing'">
+            <div class="icon pointer" @click="pause"><img src="../assets/pause.svg"/></div>
+            <div class="text">暂停</div>
+          </div>
+          <div class="btn-circle" v-show="playState !== 'stopped'">
+            <div class="icon pointer" @click="stop"><img src="../assets/stop.svg"/></div>
+            <div class="text">停止</div>
+          </div>
+          <div class="btn-circle">
+            <div class="icon pointer" @click="circle"
+                 :style="{backgroundColor: isCircle?'#fe435b':'rgba(0,0,0,0.04)'}"><img
+                src="../assets/cycle.svg" v-if="!isCircle">
+
+              <img
+                  src="../assets/cycle_active.svg" v-else>
+            </div>
+            <div class="text">循环</div>
+          </div>
+        </div>
       </div>
     </div>
+    <dialog-prompt :value="dialogVisible" title="共有X句未补充"></dialog-prompt>
   </div>
 </template>
 
@@ -847,39 +876,6 @@ export default {
         width: 345px;
       }
 
-      .center {
-
-        gap: 32px;
-
-        .btn-circle {
-          display: flex;
-          align-items: center;
-          flex-direction: column;
-          flex-shrink: 0;
-
-
-          .icon {
-            width: 52px;
-            height: 52px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(0, 0, 0, 0.04);
-            border-radius: 50%;
-
-            > img {
-              width: 32px;
-              height: 32px;
-            }
-          }
-
-          .text {
-            margin-top: 8px;
-            font-size: 16px;
-            color: #333333;
-          }
-        }
-      }
 
       .right {
         display: flex;
@@ -905,8 +901,42 @@ export default {
   }
 
   .operation {
-    height: 0px;
+    height: 11px;
     flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 32px;
+
+    .btn-circle {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      flex-shrink: 0;
+
+
+      .icon {
+        width: 52px;
+        height: 52px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.04);
+        border-radius: 50%;
+
+        > img {
+          width: 32px;
+          height: 32px;
+        }
+      }
+
+      .text {
+        margin-top: 8px;
+        font-size: 16px;
+        color: #333333;
+      }
+    }
   }
 }
 

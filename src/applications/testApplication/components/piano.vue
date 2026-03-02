@@ -102,10 +102,12 @@ export default {
           wi++;
         }
       }
+      console.log('chicken', arr);
       return arr;
     },
     // 黑键数组
     blackKeys() {
+      console.log('chicken', this.rawKeys.filter((k) => k.black));
       return this.rawKeys.filter((k) => k.black);
     },
     // 整体高度
@@ -172,7 +174,7 @@ export default {
     whiteIndexBeforeMidi(midi) {
       let count = 0;
       const midiRange = this.midi;
-      for (let m = midiRange.min; m < midi; m++) {
+      for (let m = midiRange.max; m > midi; m--) {
         if (!this.isBlackKey(m)) {
           count++;
         }
@@ -188,28 +190,28 @@ export default {
       const beforeWhiteCount = this.whiteIndexBeforeMidi(midi);
       let topNum = beforeWhiteCount * this.whiteKeyWidthNum - this.blackKeyHeightNum / 2;
       // 偏移模式，为了保持黑白键的高度范围尽量一致，对黑键进行偏移
-      switch (midi % 12) {
-      case 1: {
-        topNum -= this.blackKeyHeightNum * 0.1;
-        break;
-      }
-      case 3: {
-        topNum += this.blackKeyHeightNum * 0.25;
-        break;
-      }
-      case 6: {
-        topNum -= this.blackKeyHeightNum * 0.3;
-        break;
-      }
-      case 8: {
-        topNum += this.blackKeyHeightNum * 0.1;
-        break;
-      }
-      case 10: {
-        topNum += this.blackKeyHeightNum * 0.3;
-        break;
-      }
-      }
+      // switch (midi % 12) {
+      // case 1: {
+      //   topNum -= this.blackKeyHeightNum * 0.1;
+      //   break;
+      // }
+      // case 3: {
+      //   topNum += this.blackKeyHeightNum * 0.25;
+      //   break;
+      // }
+      // case 6: {
+      //   topNum -= this.blackKeyHeightNum * 0.3;
+      //   break;
+      // }
+      // case 8: {
+      //   topNum += this.blackKeyHeightNum * 0.1;
+      //   break;
+      // }
+      // case 10: {
+      //   topNum += this.blackKeyHeightNum * 0.3;
+      //   break;
+      // }
+      // }
       return `${topNum}${this.keyUnit}`;
     },
     // 生成白键样式 left 值（竖向时固定为 0）
@@ -305,7 +307,7 @@ export default {
             pitchNotation === 'Scientific'
                 ? noteNameToNoteString(midiToNoteName(wk.midi, '#'))
                 : noteNameToHelmholtz(midiToNoteName(wk.midi, '#'))
-          }}
+          }}{{ wk.midi }}
         </div>
       </div>
       <!-- 黑键（绝对定位） -->
@@ -320,9 +322,10 @@ export default {
           left: leftForBlackByMidi(bk.midi)
         }"
           class="black-key"
+          style="font-size:10px"
           @pointerdown="handlePointerDown($event, bk)"
           @pointerup="handlePointerUp($event, bk)"
-      >
+      >{{ bk.midi }}
         <div v-show="pitchNotation !== 'None' && false" class="noteNameSharp">
           {{ pitchNotation === 'Scientific' ? bk.scientificNoteName[0] : bk.helmholtzNoteName[0] }}
         </div>

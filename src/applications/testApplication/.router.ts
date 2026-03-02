@@ -9,6 +9,9 @@ const routes = {
     }, {
         path: '/test/edit',
         component: () => import('./views/lyricsEdit.vue'),
+    }, {
+        path: '/test/show',
+        component: () => import('./views/show.vue'),
     }]
 };
 

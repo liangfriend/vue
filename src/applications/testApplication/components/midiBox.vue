@@ -30,7 +30,7 @@ export default {
     },
     strokeWidth: { // 线宽
       type: Number,
-      default: 10, // 单位：box
+      default: 8, // 单位：box
     },
     lyricsCharList: {
       type: Array,
@@ -93,7 +93,6 @@ export default {
   },
   watch: {
     mode: function (newVal) {
-      console.log('chicken', newVal);
       if (newVal === 'eraser') {
         this.highLightBoxId = null;
       }
@@ -279,7 +278,7 @@ export default {
         height: 'calc(100% - 2px)',
         position: 'relative',
         background: '#fff',
-        border: '1px solid #e0e0e0',
+
       };
     },
 
@@ -392,6 +391,16 @@ export default {
     generateLyricsBoxsBySplitMelodyLine(splitActiveBoxs) {
       const singleBoxWidth = this.singleBoxWidth();
 
+      // 按照index对splitActiveBoxs进行排序
+      splitActiveBoxs.sort((a, b) => {
+        a.sort((aa, ab) => {
+          return aa.index - ab.index;
+        });
+        b.sort((ba, bb) => {
+          return ba.index - bb.index;
+        });
+        return a?.[0]?.index - b?.[0]?.index;
+      });
       splitActiveBoxs.forEach((activeBoxs) => {
         const sortedEntries = activeBoxs.sort((a, b) => {
           return a.size - b.size; // 升序
@@ -512,8 +521,8 @@ export default {
         return 0;
       }
       const rect = container.getBoundingClientRect();
-      // 浏览器似乎会向下去整到一位小数
-      return Math.floor(rect.width / (this.totalChronaxie / this.singleBoxChronaxie) * 10) / 10;
+      // 浏览器似乎会向下去整两位小数
+      return Math.floor(rect.width / (this.totalChronaxie / this.singleBoxChronaxie) * 100) / 100;
     },
     // 分离数字和单位
     parseAndFormatDimension(dimension) {
@@ -762,7 +771,7 @@ export default {
       const dist = Math.sqrt(dx * dx + dy * dy);
 
       // 采样间隔（可调）
-      const step = 6; // 每 6px 一个点
+      const step = 2; // 每 6px 一个点
 
       const count = Math.max(1, Math.floor(dist / step));
       const res = [];
@@ -808,23 +817,23 @@ export default {
       const ctx = this.ctx;
 
       // 美化参数
-      ctx.strokeStyle = this.strokeColor || 'rgba(0, 136, 255, 0.9)';  //粉紫 rgba(255, 80, 200, 0.5)
-      ctx.lineWidth = this.strokeWidth || 4;
+      ctx.strokeStyle = this.strokeColor || '#fe435b';  //粉紫 rgba(255, 80, 200, 0.5)
+      ctx.lineWidth = this.strokeWidth || 2;
 
       // 圆角连接
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
 
       // 发光阴影
-      ctx.shadowColor = 'rgba(0, 136, 255, 0.6)';
+      // ctx.shadowColor = 'rgba(0, 136, 255, 0.6)';
       // 动态颜色
       // const hue = (performance.now() * 0.05) % 360;
       // ctx.strokeStyle = `hsla(${hue}, 90%, 60%, 0.9)`;
       // ctx.shadowColor = `hsla(${hue}, 90%, 60%, 0.7)`;
 
-      ctx.shadowBlur = 12;        // 阴影模糊
-      ctx.shadowOffsetX = 0;
-      ctx.shadowOffsetY = 0;
+      // ctx.shadowBlur = 12;        // 阴影模糊
+      // ctx.shadowOffsetX = 0;
+      // ctx.shadowOffsetY = 0;
 
       ctx.shadowBlur = 10;
       // 画线
@@ -840,7 +849,6 @@ export default {
     },
 
     async linePointerUp(e) {
-
       try {
         e.target.releasePointerCapture(this.linePointerId);
       } catch (err) {
@@ -890,7 +898,6 @@ export default {
         const keyList = new Map();
         const lyricsPath = this.splitMelodyByLyrics(this.pathPoints, this.lyricsCharList.length);
         const splitActiveBoxs = [];
-
         // 等一帧先把之前的高亮块清除，否则elementFromPoint无法正常工作
         await new Promise((resolve) => {
           setTimeout(resolve);
@@ -920,7 +927,13 @@ export default {
             splitActiveBoxs[i].push({midi, index, size: this.activeBoxs.size});
           }
         });
-        this.generateLyricsBoxsBySplitMelodyLine(splitActiveBoxs);
+        console.log('chicken', splitActiveBoxs);
+        // 过滤调长度为0的项
+        // 先对splitActiveBoxs进行拆分，如果长度大于splitActiveBoxs且splitActiveBoxs还可以拆分，则进行拆分
+        const groupSplitActiveBoxs = this.ensureSegmentsBySplittingLongest(splitActiveBoxs.filter(e => e.length), this.lyricsCharList.length);
+        console.log('chicken', groupSplitActiveBoxs);
+        // 如果小于length,进行分组
+        this.generateLyricsBoxsBySplitMelodyLine(groupSplitActiveBoxs);
       }
 
       this.$refs.canvas.style.pointerEvents = 'auto';
@@ -931,7 +944,66 @@ export default {
       ctx.clearRect(0, 0, 10000, 10000);
 
     },
+    /**
+     * 将二维数组按“拆最长段”的规则补到目标段数（最多补到无法再拆）
+     * @param {Array<Array<any>>} splitActiveBoxs
+     * @param {number} length 目标段数（this.lyricsCharList.length）
+     * @returns {Array<Array<any>>} newSplit
+     */
+    ensureSegmentsBySplittingLongest(splitActiveBoxs, length) {
+      // 复制一份，避免原地修改（如果你希望原地修改可去掉复制）
+      const arr = splitActiveBoxs.map(seg => seg.slice());
 
+      // 找到当前可拆分(>=2)的最长段下标；如有并列，取最靠后的（也可改成最靠前）
+      const findLongestSplittableIndex = () => {
+        let bestIdx = -1;
+        let bestLen = 1; // 只有 >1 才可拆
+        for (let i = 0; i < arr.length; i++) {
+          const len = arr[i]?.length ?? 0;
+          if (len > bestLen) {
+            bestLen = len;
+            bestIdx = i;
+          } else if (len === bestLen && len > 1) {
+            // 并列时取靠后的，符合你示例里“最后一个最长的”优先
+            bestIdx = i;
+          }
+        }
+        return bestIdx;
+      };
+
+      // 拆分一个段为两段：保持原顺序，按点数对半
+      const splitHalf = (seg) => {
+        const n = seg.length;
+        const mid = Math.floor(n / 2); // 3 -> 1|2, 4 -> 2|2, 5 -> 2|3
+        const left = seg.slice(0, mid);
+        const right = seg.slice(mid);
+        return [left, right];
+      };
+
+      while (arr.length < length) {
+        const idx = findLongestSplittableIndex();
+        if (idx === -1) {
+          break;
+        } // 没有可拆分段了（全是长度 0/1）
+
+        const seg = arr[idx];
+        if (!seg || seg.length < 2) {
+          break;
+        }
+
+        const [left, right] = splitHalf(seg);
+
+        // 防御：避免产生空段（理论上不会，因为 seg.length>=2）
+        if (left.length === 0 || right.length === 0) {
+          break;
+        }
+
+        // 用 left、right 替换原段，保持相对顺序
+        arr.splice(idx, 1, left, right);
+      }
+
+      return arr;
+    },
     clear() {
       const canvas = this.$refs.canvas;
       this.ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -967,60 +1039,88 @@ export default {
     // ============================== 拖拽 ==================================
     dragBox(e, item, direction) {
       const target = e.target;
-      target.setPointerCapture(e.pointerId);
+      if (!e.touches) {
+        this.linePointerId = e.pointerId;
+        target.setPointerCapture?.(this.linePointerId);
+      }
       const rect = this.$refs.canvas.getBoundingClientRect();
-      let startX = e.clientX;
+      let startX = e.clientX ?? e.touches[0].clientX;
       const singleBoxWidth = this.singleBoxWidth();
       const minKey = item.midi + '-' + item.minIndex;
       const maxKey = item.midi + '-' + item.maxIndex;
       // 记录拖拽前的状态
-      const prevData = {activeBoxs: new Map(this.activeBoxs), lyricsBoxs: JSON.parse(JSON.stringify(this.lyricsBoxs))};
+      const prevData = {
+        activeBoxs: new Map(this.activeBoxs),
+        lyricsBoxs: JSON.parse(JSON.stringify(this.lyricsBoxs)),
+      };
       const dragBoxMove = (event) => {
-        const offsetX = event.clientX - startX;
-        const d = offsetX / singleBoxWidth;
+        const clientX = event.clientX ?? event.touches[0].clientX;
+        const singleBoxWidth = this.singleBoxWidth();
+
+        // 连续吃掉跨过的格子
+        let delta = (clientX - startX) / singleBoxWidth;
+
         if (direction === 'left') {
-          if (d < -1) {
+          // 向左拖（扩大到左边）：delta <= -1 代表跨过至少 1 格
+          while (delta <= -1) {
+            // 你原来 d < -1 的逻辑放这里（一次只移动 1 格）
             this.activeBoxs.set(item.midi + '-' + (item.minIndex - 1), 1);
             item.left -= singleBoxWidth;
             item.width += singleBoxWidth;
             item.minIndex -= 1;
-            startX = event.clientX;
-          } else if (d > 1) {
+
+            // 每走一格，把起点向左推进一格
+            startX -= singleBoxWidth;
+            delta = (clientX - startX) / singleBoxWidth;
+          }
+
+          // 向右拖（缩小左边）：delta >= 1
+          while (delta >= 1) {
+            // 你原来 d > 1 的逻辑放这里（一次只移动 1 格）
             this.activeBoxs.delete(item.midi + '-' + (item.minIndex), 1);
             item.left += singleBoxWidth;
             item.width -= singleBoxWidth;
             item.minIndex += 1;
-            startX = event.clientX;
-            // 删除该高亮块
+
+            // 删除块的逻辑保持不变（但要注意 break）
             if (item.minIndex > item.maxIndex) {
               this.highLightBoxId = null;
               this.lyricsBoxs = this.lyricsBoxs.filter(e => e !== item);
               // 移除监听器
-              this.$refs.lyricsBoxLayer.removeEventListener('pointermove', dragBoxMove);
-              this.$refs.lyricsBoxLayer.removeEventListener('pointerup', dragBoxUp);
+              document.removeEventListener('pointermove', dragBoxMove);
+              document.removeEventListener('pointerup', dragBoxUp);
+              document.removeEventListener('touchmove', dragBoxMove);
+              document.removeEventListener('touchend', dragBoxUp);
             }
+
+            startX += singleBoxWidth;
+            delta = (clientX - startX) / singleBoxWidth;
           }
-        } else {// right
-          if (d < -1) {
-            // 如果只剩下最后一块了，禁止继续缩小
+        } else {
+          // right 方向同理：把你原来的两段逻辑各自包进 while(delta<=-1) 和 while(delta>=1)
+          while (delta <= -1) {
+            // 你原来 d < -1 的逻辑（缩小右边）
             if (item.minIndex === item.maxIndex) {
               return;
             }
+
             this.activeBoxs.delete(item.midi + '-' + (item.maxIndex), 1);
             item.width -= singleBoxWidth;
             item.maxIndex -= 1;
-            startX = event.clientX;
-            // 删除该高亮块
+
             if (item.minIndex > item.maxIndex) {
               this.highLightBoxId = null;
               this.lyricsBoxs = this.lyricsBoxs.filter(e => e !== item);
               // 移除监听器
-              this.$refs.lyricsBoxLayer.removeEventListener('pointermove', dragBoxMove);
-              this.$refs.lyricsBoxLayer.removeEventListener('pointerup', dragBoxUp);
+              document.removeEventListener('pointermove', dragBoxMove);
+              document.removeEventListener('pointerup', dragBoxUp);
+              document.removeEventListener('touchmove', dragBoxMove);
+              document.removeEventListener('touchend', dragBoxUp);
             }
-            // 后面的前移
+
+            // 后面的前移（你原逻辑保持）
             const indexList = [];
-            this.lyricsBoxs.forEach((box, key) => {
+            this.lyricsBoxs.forEach((box) => {
               if (item.maxIndex < box.minIndex) {
                 indexList.push({minIndex: box.minIndex, maxIndex: box.maxIndex, midi: box.midi});
                 box.minIndex -= 1;
@@ -1032,14 +1132,26 @@ export default {
               this.activeBoxs.set(info.midi + '-' + (info.minIndex - 1), 1);
               this.activeBoxs.delete(info.midi + '-' + (info.maxIndex));
             });
-          } else if (d > 1) {
+
+            startX -= singleBoxWidth;
+            delta = (clientX - startX) / singleBoxWidth;
+          }
+
+          while (delta >= 1) {
+            // 找到activeBoxs的最大值的indx,如果大于总index,不做处理
+            const endIndex = 143;
+            const curMaxIndex = this.lyricsBoxs.at(-1).maxIndex;
+            if (curMaxIndex === endIndex) {
+              return;
+            }
+            // 你原来 d > 1 的逻辑（扩大右边）
             this.activeBoxs.set(item.midi + '-' + (item.maxIndex + 1), 1);
             item.width += singleBoxWidth;
             item.maxIndex += 1;
-            startX = event.clientX;
-            // 后面的后移
+
+            // 后面的后移（你原逻辑保持）
             const indexList = [];
-            this.lyricsBoxs.forEach((box, key) => {
+            this.lyricsBoxs.forEach((box) => {
               if ((item.maxIndex - 1) < box.minIndex) {
                 indexList.push({minIndex: box.minIndex, maxIndex: box.maxIndex, midi: box.midi});
                 box.minIndex += 1;
@@ -1051,12 +1163,24 @@ export default {
               this.activeBoxs.set(info.midi + '-' + (info.maxIndex + 1), 1);
               this.activeBoxs.delete(info.midi + '-' + (info.minIndex));
             });
+
+            startX += singleBoxWidth;
+            delta = (clientX - startX) / singleBoxWidth;
           }
         }
-
       };
+
       const dragBoxUp = (event) => {
-        event.target.releasePointerCapture(e.pointerId);
+        if (!e.touches) {
+          try {
+            e.target.releasePointerCapture?.(this.linePointerId);
+          } catch (err) {
+            // 防止非法 release 报错
+            console.warn('Failed to release pointer capture', err);
+          } finally {
+            this.linePointerId = null; // 重置
+          }
+        }
         // 如果数据变化了，推入历史记录
         const changed = this.lyricsBoxs.some((item, index) => {
           const prevItem = prevData.lyricsBoxs[index];
@@ -1067,12 +1191,16 @@ export default {
           this.$emit('history', prevData.activeBoxs, prevData.lyricsBoxs);
         }
         // 移除监听器
-        this.$refs.lyricsBoxLayer.removeEventListener('pointermove', dragBoxMove);
-        this.$refs.lyricsBoxLayer.removeEventListener('pointerup', dragBoxUp);
+        document.removeEventListener('pointermove', dragBoxMove);
+        document.removeEventListener('pointerup', dragBoxUp);
+        document.removeEventListener('touchmove', dragBoxMove);
+        document.removeEventListener('touchend', dragBoxUp);
       };
-      this.$refs.lyricsBoxLayer.addEventListener('pointermove', dragBoxMove);
-
-      this.$refs.lyricsBoxLayer.addEventListener('pointerup', dragBoxUp);
+      // 添加监听器
+      document.addEventListener('pointermove', dragBoxMove);
+      document.addEventListener('pointerup', dragBoxUp);
+      document.addEventListener('touchmove', dragBoxMove);
+      document.addEventListener('touchend', dragBoxUp);
     },
     dragBoxMove(event) {
 
@@ -1326,10 +1454,94 @@ export default {
         const avgY = seg.reduce((sum, p) => sum + p.y, 0) / (seg.length || 1);
         return seg.map(p => ({x: p.x, y: avgY}));
       });
+      return flattened;
+    },
+    splitLongestSegments(flattened, length) {
+      // 计算每段的 x 跨度（假设每段按 x 递增；如果不保证递增，见下方注释）
+      const spanX = (seg) => (seg.at(-1)?.x ?? 0) - (seg[0]?.x ?? 0);
+
+      // 找到当前可拆分且跨度最大的段下标
+      const findLongestSplittableIndex = () => {
+        let bestIdx = -1;
+        let bestSpan = -Infinity;
+        for (let i = 0; i < flattened.length; i++) {
+          const seg = flattened[i];
+          if (!Array.isArray(seg) || seg.length < 2) {
+            continue;
+          } // 不可拆
+          const s = spanX(seg);
+          if (s > bestSpan) {
+            bestSpan = s;
+            bestIdx = i;
+          }
+        }
+        return bestIdx;
+      };
+
+      // 将某段拆成两段（优先按 x 中点切）
+      const splitOne = (seg) => {
+        if (seg.length < 2) {
+          return [seg, []];
+        }
+
+        // 如果不保证 x 递增，请先按 x 排序：
+        // const sorted = [...seg].sort((a,b)=>a.x-b.x);
+        // 这里假设 seg 已经是按 x 连续递增的点序列
+        const startX = seg[0].x;
+        const endX = seg.at(-1).x;
+        const midX = (startX + endX) / 2;
+
+        // 找到最接近 midX 的切点（切点作为左段结尾，右段开头在其后）
+        let cut = 1; // 默认最小切点，避免左段为空
+        let bestDist = Infinity;
+        for (let i = 1; i < seg.length; i++) { // i=0 会导致左段为空，不考虑
+          const d = Math.abs(seg[i].x - midX);
+          if (d < bestDist) {
+            bestDist = d;
+            cut = i;
+          }
+        }
+
+        // 形成两段
+        let left = seg.slice(0, cut);
+        let right = seg.slice(cut);
+
+        // 如果出现某段为空（极端情况下），退化用点数中点
+        if (left.length === 0 || right.length === 0) {
+          const mid = Math.floor(seg.length / 2);
+          left = seg.slice(0, mid);
+          right = seg.slice(mid);
+        }
+
+        // 仍然无法拆（比如 seg.length=1），直接返回
+        if (left.length === 0 || right.length === 0) {
+          return [seg, []];
+        }
+
+        return [left, right];
+      };
+
+      // 主循环：段数不足则一直拆最长段
+      while (flattened.length < length) {
+        const idx = findLongestSplittableIndex();
+        if (idx === -1) {
+          break;
+        } // 没有任何可拆分的段了，退出防死循环
+
+        const seg = flattened[idx];
+        const [left, right] = splitOne(seg);
+
+        // 如果拆失败（right 为空），也退出防止死循环
+        if (!right || right.length === 0) {
+          break;
+        }
+
+        // 用 left 替换原段，并插入 right（保持相对顺序）
+        flattened.splice(idx, 1, left, right);
+      }
 
       return flattened;
     },
-
   },
   mounted() {
     this.initCanvas();
@@ -1338,8 +1550,8 @@ export default {
 </script>
 
 <template>
-  <div :style="pianoContainerStyle" ref="container" class="ds-piano-container hide-scrollbar stack">
-    <div class="stackItem" style="pointer-events: auto" comment="网格"
+  <div :style="pianoContainerStyle" class="ds-piano-container hide-scrollbar stack">
+    <div class="stackItem" style="pointer-events: auto" comment="网格" ref="container"
     >
       <div
           v-for="midi in Array.from({ length: midi.max - midi.min + 1 }, (_, i) => midi.max - i)"
@@ -1440,7 +1652,7 @@ export default {
 
 .box-drag-right {
   position: absolute;
-  height: 100%;
+  height: 300%;
   right: 0px;
   transform: translateX(50%);
   cursor: grab;
