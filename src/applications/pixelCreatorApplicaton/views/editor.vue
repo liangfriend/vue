@@ -20,7 +20,8 @@
       </div>
       <div class="toolbar-group">
         <el-button type="primary" size="small" @click="exportPng">导出 PNG</el-button>
-        <el-button size="small" @click="exportSvg">导出 SVG</el-button>
+        <el-button size="small" @click="exportSvgFile">导出 SVG 文件</el-button>
+        <el-button size="small" @click="exportSvgDataUrl">导出 SVG data URL</el-button>
       </div>
     </header>
 
@@ -244,12 +245,11 @@ function exportPng() {
   if (exportDataUrl.value) ElMessage.success('已生成 PNG，可复制 data URL')
 }
 
-function exportSvg() {
+function buildSvgString(): string {
   const data = grid.value
   const w = data[0]?.length ?? 0
   const h = data.length
-  if (w === 0 || h === 0) return
-
+  if (w === 0 || h === 0) return ''
   const scale = 1
   let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w * scale}" height="${h * scale}">`
   for (let y = 0; y < h; y++) {
@@ -259,9 +259,28 @@ function exportSvg() {
     }
   }
   svg += '</svg>'
+  return svg
+}
+
+function exportSvgFile() {
+  const svg = buildSvgString()
+  if (!svg) return
+  const blob = new Blob([svg], { type: 'image/svg+xml' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'pixel-art.svg'
+  a.click()
+  URL.revokeObjectURL(url)
+  ElMessage.success('已下载 SVG 文件')
+}
+
+function exportSvgDataUrl() {
+  const svg = buildSvgString()
+  if (!svg) return
   const base64 = btoa(unescape(encodeURIComponent(svg)))
   exportDataUrl.value = `data:image/svg+xml;base64,${base64}`
-  ElMessage.success('已生成 SVG，可复制 data URL')
+  ElMessage.success('已生成 SVG data URL，可复制')
 }
 
 function copyDataUrl() {
