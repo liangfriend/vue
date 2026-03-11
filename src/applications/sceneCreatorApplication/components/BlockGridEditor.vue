@@ -4,43 +4,61 @@ import type { Block } from '@/applications/sceneCreatorApplication/types'
 
 const props = defineProps<{
   modelValue: Block[][]
-  layerType: 'floor' | 'wall'
 }>()
 
 const emit = defineEmits<{
   'update:modelValue': [value: Block[][]]
 }>()
 
-const FLOOR_LAYER_TYPES: Block['type'][] = ['blank', 'floor']
-const WALL_LAYER_TYPES: Block['type'][] = ['blank', 'b-wall', 'f-wall', 'l-wall', 'r-wall']
-
-function createDefaultBlock(type: Block['type']): Block {
-  return { type, texture: '', anchor: false }
+const wallKeys = ['front', 'back', 'left', 'right'] as const
+const wallLabels: Record<(typeof wallKeys)[number], string> = {
+  front: '前',
+  back: '后',
+  left: '左',
+  right: '右'
 }
 
-const typeOptions = computed(() =>
-  props.layerType === 'floor' ? FLOOR_LAYER_TYPES : WALL_LAYER_TYPES
-)
-
-const defaultBlockType = (): Block['type'] =>
-  props.layerType === 'floor' ? 'blank' : 'blank'
+function createDefaultBlock(): Block {
+  return {
+    walls: {
+      front: null,
+      back: null,
+      left: null,
+      right: null
+    }
+  }
+}
 
 const rows = computed(() => props.modelValue.length)
 const cols = computed(() => props.modelValue[0]?.length ?? 0)
 
-function setBlockType(ri: number, ci: number, type: Block['type']) {
-  const grid = props.modelValue.map((row) => row.map((b) => ({ ...b })))
-  const row = grid[ri]
-  if (!row || row[ci] == null) return
-  row[ci] = { ...row[ci], type }
+function updateWallAt(ri: number, ci: number, updater: (w: Block['walls']) => Block['walls']) {
+  const grid = props.modelValue.map((row, r) =>
+    row.map((b, c) =>
+      r === ri && c === ci ? { ...b, walls: updater(b.walls) } : { ...b }
+    )
+  )
   emit('update:modelValue', grid)
+}
+
+function addWall(ri: number, ci: number, side: keyof Block['walls']) {
+  updateWallAt(ri, ci, (w) => ({ ...w, [side]: { texture: '', opacity: 1 } }))
+}
+
+function removeWall(ri: number, ci: number, side: keyof Block['walls']) {
+  updateWallAt(ri, ci, (w) => ({ ...w, [side]: null }))
+}
+
+function setWallTexture(ri: number, ci: number, side: keyof Block['walls'], texture: string) {
+  updateWallAt(ri, ci, (w) => {
+    const cur = w[side]
+    return { ...w, [side]: { texture, opacity: cur?.opacity ?? 1 } }
+  })
 }
 
 function insertRowBefore(ri: number) {
   const grid = props.modelValue.map((row) => row.map((b) => ({ ...b })))
-  const newRow = Array.from({ length: cols.value }, () =>
-    createDefaultBlock(defaultBlockType())
-  )
+  const newRow = Array.from({ length: cols.value }, () => createDefaultBlock())
   grid.splice(ri, 0, newRow)
   emit('update:modelValue', grid)
 }
@@ -50,13 +68,13 @@ function insertRowAfter(ri: number) {
 }
 
 function addFirstRow() {
-  emit('update:modelValue', [[createDefaultBlock(defaultBlockType())]])
+  emit('update:modelValue', [[createDefaultBlock()]])
 }
 
 function insertColBefore(ci: number) {
   const grid = props.modelValue.map((row) => {
     const newRow = [...row.map((b) => ({ ...b }))]
-    newRow.splice(ci, 0, createDefaultBlock(defaultBlockType()))
+    newRow.splice(ci, 0, createDefaultBlock())
     return newRow
   })
   emit('update:modelValue', grid)
@@ -78,55 +96,64 @@ function insertColAfter(ci: number) {
     </template>
     <template v-else>
       <div class="grid-scroll">
-      <template v-for="(row, ri) in modelValue" :key="'r-' + ri">
-      <!-- 行上插入 -->
-      <div class="row-insert row-insert-above">
-        <el-button type="primary" size="small" text @click="insertRowBefore(ri)">
-          + 插入行(上)
-        </el-button>
-      </div>
-      <!-- 数据行：列左/块/列右，固定最小宽度避免横向挤在一起 -->
-      <div class="data-row">
-        <template v-for="(block, ci) in row" :key="'c-' + ci">
-          <div class="col-insert">
-            <el-button
-              type="primary"
-              size="small"
-              text
-              @click="insertColBefore(ci)"
-            >
-              + 列
+        <template v-for="(row, ri) in modelValue" :key="'r-' + ri">
+          <div class="row-insert row-insert-above">
+            <el-button type="primary" size="small" text @click="insertRowBefore(ri)">
+              + 插入行(上)
             </el-button>
           </div>
-          <div class="block-cell">
-            <el-select
-              :model-value="block.type"
-              size="small"
-              @update:model-value="(v: Block['type']) => setBlockType(ri, ci, v)"
-            >
-              <el-option
-                v-for="t in typeOptions"
-                :key="t"
-                :label="t"
-                :value="t"
-              />
-            </el-select>
+          <div class="data-row">
+            <template v-for="(block, ci) in row" :key="'c-' + ci">
+              <div class="col-insert">
+                <el-button type="primary" size="small" text @click="insertColBefore(ci)">
+                  + 列
+                </el-button>
+              </div>
+              <div class="block-cell">
+                <div class="walls-grid">
+                  <div
+                    v-for="side in wallKeys"
+                    :key="side"
+                    class="wall-slot"
+                  >
+                    <template v-if="block.walls[side]">
+                      <el-input
+                        :model-value="block.walls[side]!.texture"
+                        size="small"
+                        :placeholder="wallLabels[side]"
+                        @update:model-value="(v: string) => setWallTexture(ri, ci, side, v ?? '')"
+                      />
+                      <el-button
+                        type="danger"
+                        size="small"
+                        text
+                        title="删除墙"
+                        @click="removeWall(ri, ci, side)"
+                      >
+                        删
+                      </el-button>
+                    </template>
+                    <el-button
+                      v-else
+                      type="primary"
+                      size="small"
+                      text
+                      @click="addWall(ri, ci, side)"
+                    >
+                      + {{ wallLabels[side] }}
+                    </el-button>
+                  </div>
+                </div>
+              </div>
+            </template>
+            <div class="col-insert">
+              <el-button type="primary" size="small" text @click="insertColAfter(cols - 1)">
+                + 列
+              </el-button>
+            </div>
           </div>
         </template>
-        <div class="col-insert">
-          <el-button
-            type="primary"
-            size="small"
-            text
-            @click="insertColAfter(cols - 1)"
-          >
-            + 列
-          </el-button>
-        </div>
       </div>
-      </template>
-      </div>
-      <!-- 最后一行下方插入 -->
       <div class="row-insert row-insert-below">
         <el-button type="primary" size="small" text @click="insertRowAfter(rows - 1)">
           + 插入行(下)
@@ -138,8 +165,8 @@ function insertColAfter(ci: number) {
 
 <style scoped lang="scss">
 .block-grid-editor {
-  --cell-min: 56px; /* 每格最小宽度 */
-  --cell-max: 88px; /* 选择器最大宽度，避免过宽 */
+  --cell-min: 56px;
+  --cell-max: 140px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -159,7 +186,7 @@ function insertColAfter(ci: number) {
 
 .data-row {
   display: flex;
-  flex-wrap: nowrap; /* 强制单行，不换行 */
+  flex-wrap: nowrap;
   gap: 6px;
   align-items: center;
   min-width: min-content;
@@ -176,29 +203,30 @@ function insertColAfter(ci: number) {
   flex: 0 0 auto;
   min-width: var(--cell-min);
   max-width: var(--cell-max);
-  width: var(--cell-max);
   white-space: nowrap;
   overflow: hidden;
 }
 
-.block-cell .el-select {
-  width: 100%;
-  min-width: 0;
-  max-width: var(--cell-max);
+.walls-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
 }
 
-/* 选择器整条链不换行：Element Plus .select-trigger > .el-input > .el-input__wrapper > .el-input__inner */
-.block-cell :deep(.el-select),
-.block-cell :deep(.select-trigger),
-.block-cell :deep(.el-input),
-.block-cell :deep(.el-input__wrapper),
-.block-cell :deep(.el-input__inner) {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.wall-slot {
+  display: flex;
+  align-items: center;
+  gap: 2px;
   min-width: 0;
 }
-.block-cell :deep(.el-input__inner) {
-  text-overflow: ellipsis;
+.wall-slot .el-input {
+  flex: 1;
+  min-width: 0;
+}
+.wall-slot :deep(.el-input__wrapper) {
+  padding: 0 6px;
+}
+.wall-slot :deep(.el-input__inner) {
+  font-size: 11px;
 }
 </style>

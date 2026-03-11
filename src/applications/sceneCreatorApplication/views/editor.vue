@@ -6,21 +6,23 @@ import BlockGridEditor from '@/applications/sceneCreatorApplication/components/B
 
 const unit = 10
 
-function createDefaultBlock(type: Block['type']): Block {
-  return {type, texture: '', anchor: false}
+function createDefaultBlock(): Block {
+  return {
+    walls: {
+      front: null,
+      back: null,
+      left: null,
+      right: null
+    }
+  }
 }
 
 function createDefaultFloor(): Floor {
   return {
     floor: [
-      [createDefaultBlock('blank'), createDefaultBlock('blank'), createDefaultBlock('blank')],
-      [createDefaultBlock('blank'), createDefaultBlock('floor'), createDefaultBlock('floor'), createDefaultBlock('blank'), createDefaultBlock('blank')],
-      [createDefaultBlock('blank'), createDefaultBlock('floor'), createDefaultBlock('blank')]
-    ],
-    wall: [
-      [createDefaultBlock('blank'), createDefaultBlock('b-wall'), createDefaultBlock('blank'), createDefaultBlock('blank'), createDefaultBlock('blank')],
-      [createDefaultBlock('l-wall'), createDefaultBlock('blank'), createDefaultBlock('blank'), createDefaultBlock('r-wall'), createDefaultBlock('blank')],
-      [createDefaultBlock('blank'), createDefaultBlock('f-wall'), createDefaultBlock('blank'), createDefaultBlock('blank'), createDefaultBlock('blank')]
+      [createDefaultBlock(), createDefaultBlock(), createDefaultBlock()],
+      [createDefaultBlock(), createDefaultBlock(), createDefaultBlock(), createDefaultBlock(), createDefaultBlock()],
+      [createDefaultBlock(), createDefaultBlock(), createDefaultBlock()]
     ],
     height: unit
   }
@@ -33,14 +35,12 @@ const scene = ref<Scene>({
 
 const selectedFloorIndex = ref(0)
 
-const currentFloor = computed(() => scene.value.floor[selectedFloorIndex.value] ?? scene.value.floor[0])
+const currentFloor = computed(() =>
+    selectedFloorIndex.value >= 0 ? scene.value.floor[selectedFloorIndex.value] : undefined
+)
 
-const floorRows = computed(() => currentFloor.value?.floor.length ?? 0)
-const floorCols = computed(() => currentFloor.value?.floor[0]?.length ?? 0)
-const wallRows = computed(() => currentFloor.value?.wall.length ?? 0)
-const wallCols = computed(() => currentFloor.value?.wall[0]?.length ?? 0)
-const rows = computed(() => Math.max(floorRows.value, wallRows.value))
-const cols = computed(() => Math.max(floorCols.value, wallCols.value))
+const rows = computed(() => currentFloor.value?.floor.length ?? 0)
+const cols = computed(() => currentFloor.value?.floor[0]?.length ?? 0)
 
 function addFloor() {
   scene.value.floor.push(createDefaultFloor())
@@ -49,83 +49,94 @@ function addFloor() {
 
 function selectFloor(index: number) {
   if (index >= 0 && index < scene.value.floor.length) {
-    selectedFloorIndex.value = index
+    selectedFloorIndex.value = selectedFloorIndex.value === index ? -1 : index
   }
 }
 
-function ensureGridSize(grid: Block[][], rows: number, cols: number, defaultBlock: () => Block): Block[][] {
-  const next: Block[][] = []
-  for (let r = 0; r < rows; r++) {
-    const srcRow = grid[r]
-    const row: Block[] = []
-    for (let c = 0; c < cols; c++) {
-      row.push(srcRow?.[c] ? {...srcRow[c]} : defaultBlock())
-    }
-    next.push(row)
-  }
-  return next
-}
-
-function onBlockGridUpdate(layer: 'floor' | 'wall', newGrid: Block[][]) {
+function onBlockGridUpdate(newGrid: Block[][]) {
+  if (selectedFloorIndex.value < 0) return
   const f = scene.value.floor[selectedFloorIndex.value]
   if (!f) return
-  const newRows = newGrid.length
-  const newCols = newGrid[0]?.length ?? 0
-  if (layer === 'floor') {
-    f.floor = newGrid.map((row) => row.map((b) => ({...b})))
-    f.wall = ensureGridSize(f.wall, newRows, newCols, () => createDefaultBlock('blank'))
-  } else {
-    f.wall = newGrid.map((row) => row.map((b) => ({...b})))
-    f.floor = ensureGridSize(f.floor, newRows, newCols, () => createDefaultBlock('blank'))
-  }
+  f.floor = newGrid.map((row) => row.map((b) => ({...b})))
+}
+
+function resolveColor(texture: string, defaultColor: string): string {
+  if (!texture) return defaultColor
+  if (/^#[0-9a-fA-F]{3,8}$/.test(texture) || texture.startsWith('rgb')) return texture
+  return defaultColor
 }
 
 const blockStyle = computed(() => {
-  return (block: Block, ri: number, ci: number, translateZ = 0): CSSProperties => {
-    if (block.type === 'blank') {
-      return {
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        width: unit + 'px',
-        height: unit + 'px',
-        transform: translateZ ? `translate3d(${ci * unit}px, ${ri * unit}px, ${translateZ}px)` : `translate3d(${ci * unit}px, ${ri * unit}px, 0)`,
-        pointerEvents: 'none',
-        visibility: 'hidden'
-      }
-    }
-    let x = ci * unit
-    let y = ri * unit
-    let transform = `translate3d(${x}px, ${y}px, ${translateZ}px)`
-    let transformOrigin = 'center center'
-
-    if (block.type === 'b-wall') {
-      transformOrigin = 'bottom center'
-      transform += ' rotateX(-90deg)'
-    } else if (block.type === 'f-wall') {
-      transformOrigin = 'top center'
-      transform += ' rotateX(90deg)'
-    } else if (block.type === 'l-wall') {
-      transformOrigin = 'right center'
-      transform += ' rotateY(90deg)'
-    } else if (block.type === 'r-wall') {
-      transformOrigin = 'left center'
-      transform += ' rotateY(-90deg)'
-    }
-
-    return {
-      position: 'absolute',
+  return (block: Block, ri: number, ci: number, translateZ = 0, dimmed = false): CSSProperties[] => {
+    const base = {
+      position: 'absolute' as const,
       left: 0,
       top: 0,
       width: unit + 'px',
       height: unit + 'px',
-      backgroundColor: DefaultColor[block.type as keyof typeof DefaultColor],
+      transformStyle: 'preserve-3d' as const,
+    }
+    const x = ci * unit
+    const y = ri * unit
+    const z = translateZ
+
+    const styles: CSSProperties[] = []
+    const dimmedOpacity = dimmed ? 0.2 : 1
+
+    // 地板面 (水平)
+    styles.push({
+      ...base,
+      transform: `translate3d(${x}px, ${y}px, ${z}px)`,
+      backgroundColor: DefaultColor.floor,
       boxSizing: 'border-box',
       border: '1px solid rgba(0,0,0,0.2)',
-      transform,
-      transformOrigin,
-      transformStyle: 'preserve-3d'
+      transformOrigin: 'center center',
+      opacity: dimmedOpacity
+    })
+    const wallStyle = (wall: NonNullable<Block['walls']['front']>, color: string) => ({
+      opacity: (wall.opacity ?? 1) * dimmedOpacity,
+      backgroundColor: resolveColor(wall.texture, color),
+      boxSizing: 'border-box' as const,
+      border: '1px solid rgba(0,0,0,0.2)'
+    })
+    // front (朝向 +y)
+    if (block.walls.front) {
+      styles.push({
+        ...base,
+        transform: `translate3d(${x}px, ${y}px, ${z}px) rotateX(-90deg)`,
+        transformOrigin: 'bottom center',
+        ...wallStyle(block.walls.front, DefaultColor.front)
+      })
     }
+    // back (朝向 -y)
+    if (block.walls.back) {
+      styles.push({
+        ...base,
+        transform: `translate3d(${x}px, ${y}px, ${z}px) rotateX(90deg)`,
+        transformOrigin: 'top center',
+        ...wallStyle(block.walls.back, DefaultColor.back)
+      })
+    }
+    // left (朝向 -x)
+    if (block.walls.left) {
+      styles.push({
+        ...base,
+        transform: `translate3d(${x}px, ${y}px, ${z}px) rotateY(-90deg)`,
+        transformOrigin: 'left center',
+        ...wallStyle(block.walls.left, DefaultColor.left)
+      })
+    }
+    // right (朝向 +x)
+    if (block.walls.right) {
+      styles.push({
+        ...base,
+        transform: `translate3d(${x}px, ${y}px, ${z}px) rotateY(90deg)`,
+        transformOrigin: 'right center',
+        ...wallStyle(block.walls.right, DefaultColor.right)
+      })
+    }
+
+    return styles
   }
 })
 
@@ -137,23 +148,16 @@ function getFloorZ(floorIndex: number): number {
   return z
 }
 
-function getFloorBlockStyle(block: Block, ri: number, ci: number, floorIndex: number) {
-  const z = getFloorZ(floorIndex)
-  return blockStyle.value(block, ri, ci, z)
-}
-
 const sceneSize = computed(() => {
   let w = 0
   let h = 0
-  let totalZ = 0
   scene.value.floor.forEach((f) => {
-    const c = Math.max(f.floor[0]?.length ?? 0, f.wall[0]?.length ?? 0)
-    const r = Math.max(f.floor.length, f.wall.length)
+    const c = f.floor[0]?.length ?? 0
+    const r = f.floor.length
     if (c > w) w = c
     if (r > h) h = r
-    totalZ += f.height
   })
-  return {w: w * unit, h: h * unit, depth: totalZ}
+  return {w: w * unit, h: h * unit}
 })
 </script>
 
@@ -162,22 +166,11 @@ const sceneSize = computed(() => {
     <div class="left">
       <div class="panel-card block-editor-card">
         <div class="panel-title">选中楼层 · Block 编辑</div>
-        <el-tabs v-if="currentFloor" type="border-card" class="block-tabs">
-          <el-tab-pane label="地板" name="floor">
-            <BlockGridEditor
-                :model-value="currentFloor.floor"
-                layer-type="floor"
-                @update:model-value="(v) => onBlockGridUpdate('floor', v)"
-            />
-          </el-tab-pane>
-          <el-tab-pane label="墙" name="wall">
-            <BlockGridEditor
-                :model-value="currentFloor.wall"
-                layer-type="wall"
-                @update:model-value="(v) => onBlockGridUpdate('wall', v)"
-            />
-          </el-tab-pane>
-        </el-tabs>
+        <BlockGridEditor
+            v-if="currentFloor"
+            :model-value="currentFloor.floor"
+            @update:model-value="onBlockGridUpdate"
+        />
       </div>
       <div class="panel-card">
         <div class="panel-title">楼层</div>
@@ -192,7 +185,16 @@ const sceneSize = computed(() => {
             楼层 {{ i + 1 }}
           </div>
         </div>
-        <el-button type="primary" size="small" @click="addFloor">添加楼层</el-button>
+        <div class="floor-actions">
+          <el-button
+              v-if="selectedFloorIndex >= 0"
+              size="small"
+              @click="selectedFloorIndex = -1"
+          >
+            取消选中
+          </el-button>
+          <el-button type="primary" size="small" @click="addFloor">添加楼层</el-button>
+        </div>
       </div>
     </div>
 
@@ -207,24 +209,16 @@ const sceneSize = computed(() => {
             height: rows * unit + 'px'
           }"
         >
-          <div class="layer layer-floor">
+          <div class="layer">
             <template v-for="(row, ri) in currentFloor.floor" :key="'f-' + ri">
-              <div
-                  v-for="(block, ci) in row"
-                  :key="`f-${ri}-${ci}`"
-                  class="block"
-                  :style="blockStyle(block, ri, ci, 0)"
-              />
-            </template>
-          </div>
-          <div class="layer layer-wall">
-            <template v-for="(row, ri) in currentFloor.wall" :key="'w-' + ri">
-              <div
-                  v-for="(block, ci) in row"
-                  :key="`w-${ri}-${ci}`"
-                  class="block"
-                  :style="blockStyle(block, ri, ci, 0)"
-              />
+              <template v-for="(block, ci) in row" :key="`f-${ri}-${ci}`">
+                <div
+                    v-for="(s, idx) in blockStyle(block, ri, ci, 0)"
+                    :key="`f-${ri}-${ci}-${idx}`"
+                    class="block"
+                    :style="s"
+                />
+              </template>
             </template>
           </div>
         </div>
@@ -240,24 +234,16 @@ const sceneSize = computed(() => {
           }"
         >
           <template v-for="(floorData, fi) in scene.floor" :key="'floor-' + fi">
-            <div class="layer layer-floor">
-              <template v-for="(row, ri) in floorData.floor" :key="`${fi}-f-${ri}`">
-                <div
-                    v-for="(block, ci) in row"
-                    :key="`${fi}-f-${ri}-${ci}`"
-                    class="block"
-                    :style="getFloorBlockStyle(block, ri, ci, fi)"
-                />
-              </template>
-            </div>
-            <div class="layer layer-wall">
-              <template v-for="(row, ri) in floorData.wall" :key="`${fi}-w-${ri}`">
-                <div
-                    v-for="(block, ci) in row"
-                    :key="`${fi}-w-${ri}-${ci}`"
-                    class="block"
-                    :style="getFloorBlockStyle(block, ri, ci, fi)"
-                />
+            <div class="layer layer-floor-wrap">
+              <template v-for="(row, ri) in floorData.floor" :key="`${fi}-${ri}`">
+                <template v-for="(block, ci) in row" :key="`${fi}-${ri}-${ci}`">
+                  <div
+                      v-for="(s, idx) in blockStyle(block, ri, ci, getFloorZ(fi), selectedFloorIndex >= 0 && fi !== selectedFloorIndex)"
+                      :key="`${fi}-${ri}-${ci}-${idx}`"
+                      class="block"
+                      :style="s"
+                  />
+                </template>
               </template>
             </div>
           </template>
@@ -305,6 +291,12 @@ const sceneSize = computed(() => {
   margin-bottom: 12px;
 }
 
+.floor-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .floor-item {
   padding: 8px 12px;
   cursor: pointer;
@@ -324,16 +316,6 @@ const sceneSize = computed(() => {
 
 .block-editor-card {
   margin-top: 0;
-}
-
-.block-tabs {
-  margin-top: 8px;
-}
-
-.block-tabs :deep(.el-tabs__content) {
-  padding: 8px 0;
-  max-height: 280px;
-  overflow-y: auto;
 }
 
 .main-wrap {
@@ -381,14 +363,6 @@ const sceneSize = computed(() => {
 
 .layer .block {
   pointer-events: auto;
-}
-
-.layer-floor {
-  z-index: 0;
-}
-
-.layer-wall {
-  z-index: 1;
 }
 
 .block {

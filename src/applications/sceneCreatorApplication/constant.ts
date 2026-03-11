@@ -1,7 +1,7 @@
 export const DefaultColor = {
-    'r-wall': '#CCFFCC',
-    'l-wall': '#0000FF',
-    'b-wall': '#00FF00',
-    'f-wall': '#FF0000',
-    'floor': '#FFFFFF',
+    floor: '#cccccc',
+    front: '#ff0000',
+    back: '#00ff00',
+    left: '#ccff00',
+    right: '#0000ff'
 }
