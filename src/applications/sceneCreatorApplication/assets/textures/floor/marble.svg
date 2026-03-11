@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <pattern id="marble" patternUnits="userSpaceOnUse" width="64" height="64">
+      <rect width="64" height="64" fill="#F5F0E6"/>
+      <path d="M0 20 Q20 16 40 24 T64 20" stroke="#E0D8CC" stroke-width="2" fill="none" opacity="0.5"/>
+      <path d="M0 44 Q24 40 48 44 T64 44" stroke="#E8E0D4" stroke-width="1.5" fill="none" opacity="0.4"/>
+    </pattern>
+  </defs>
+  <rect width="64" height="64" fill="url(#marble)"/>
+</svg>

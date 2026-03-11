@@ -20,6 +20,8 @@ const wallLabels: Record<(typeof wallKeys)[number], string> = {
 
 function createDefaultBlock(): Block {
   return {
+    texture_in: '',
+    texture_out: '',
     walls: {
       front: null,
       back: null,
@@ -32,27 +34,42 @@ function createDefaultBlock(): Block {
 const rows = computed(() => props.modelValue.length)
 const cols = computed(() => props.modelValue[0]?.length ?? 0)
 
-function updateWallAt(ri: number, ci: number, updater: (w: Block['walls']) => Block['walls']) {
+function updateBlockAt(ri: number, ci: number, updater: (b: Block) => Block) {
   const grid = props.modelValue.map((row, r) =>
-    row.map((b, c) =>
-      r === ri && c === ci ? { ...b, walls: updater(b.walls) } : { ...b }
-    )
+    row.map((b, c) => (r === ri && c === ci ? updater(b) : { ...b }))
   )
   emit('update:modelValue', grid)
 }
 
+function updateWallAt(ri: number, ci: number, updater: (w: Block['walls']) => Block['walls']) {
+  updateBlockAt(ri, ci, (b) => ({ ...b, walls: updater(b.walls) }))
+}
+
+function setBlockTextureIn(ri: number, ci: number, v: string) {
+  updateBlockAt(ri, ci, (b) => ({ ...b, texture_in: v }))
+}
+function setBlockTextureOut(ri: number, ci: number, v: string) {
+  updateBlockAt(ri, ci, (b) => ({ ...b, texture_out: v }))
+}
+
 function addWall(ri: number, ci: number, side: keyof Block['walls']) {
-  updateWallAt(ri, ci, (w) => ({ ...w, [side]: { texture: '', opacity: 1 } }))
+  updateWallAt(ri, ci, (w) => ({ ...w, [side]: { texture_in: '', texture_out: '', opacity: 1 } }))
 }
 
 function removeWall(ri: number, ci: number, side: keyof Block['walls']) {
   updateWallAt(ri, ci, (w) => ({ ...w, [side]: null }))
 }
 
-function setWallTexture(ri: number, ci: number, side: keyof Block['walls'], texture: string) {
+function setWallTextureIn(ri: number, ci: number, side: keyof Block['walls'], v: string) {
   updateWallAt(ri, ci, (w) => {
     const cur = w[side]
-    return { ...w, [side]: { texture, opacity: cur?.opacity ?? 1 } }
+    return { ...w, [side]: cur ? { ...cur, texture_in: v } : { texture_in: v, texture_out: '', opacity: 1 } }
+  })
+}
+function setWallTextureOut(ri: number, ci: number, side: keyof Block['walls'], v: string) {
+  updateWallAt(ri, ci, (w) => {
+    const cur = w[side]
+    return { ...w, [side]: cur ? { ...cur, texture_out: v } : { texture_in: '', texture_out: v, opacity: 1 } }
   })
 }
 
@@ -110,36 +127,18 @@ function insertColAfter(ci: number) {
                 </el-button>
               </div>
               <div class="block-cell">
+                <div class="floor-row">
+                  <el-input size="small" placeholder="地板内" :model-value="block.texture_in" @update:model-value="(v: string) => setBlockTextureIn(ri, ci, v ?? '')" />
+                  <el-input size="small" placeholder="地板外" :model-value="block.texture_out" @update:model-value="(v: string) => setBlockTextureOut(ri, ci, v ?? '')" />
+                </div>
                 <div class="walls-grid">
-                  <div
-                    v-for="side in wallKeys"
-                    :key="side"
-                    class="wall-slot"
-                  >
+                  <div v-for="side in wallKeys" :key="side" class="wall-slot">
                     <template v-if="block.walls[side]">
-                      <el-input
-                        :model-value="block.walls[side]!.texture"
-                        size="small"
-                        :placeholder="wallLabels[side]"
-                        @update:model-value="(v: string) => setWallTexture(ri, ci, side, v ?? '')"
-                      />
-                      <el-button
-                        type="danger"
-                        size="small"
-                        text
-                        title="删除墙"
-                        @click="removeWall(ri, ci, side)"
-                      >
-                        删
-                      </el-button>
+                      <el-input size="small" placeholder="内" :model-value="block.walls[side]!.texture_in" @update:model-value="(v: string) => setWallTextureIn(ri, ci, side, v ?? '')" />
+                      <el-input size="small" placeholder="外" :model-value="block.walls[side]!.texture_out" @update:model-value="(v: string) => setWallTextureOut(ri, ci, side, v ?? '')" />
+                      <el-button type="danger" size="small" text title="删除墙" @click="removeWall(ri, ci, side)">删</el-button>
                     </template>
-                    <el-button
-                      v-else
-                      type="primary"
-                      size="small"
-                      text
-                      @click="addWall(ri, ci, side)"
-                    >
+                    <el-button v-else type="primary" size="small" text @click="addWall(ri, ci, side)">
                       + {{ wallLabels[side] }}
                     </el-button>
                   </div>
@@ -166,7 +165,7 @@ function insertColAfter(ci: number) {
 <style scoped lang="scss">
 .block-grid-editor {
   --cell-min: 56px;
-  --cell-max: 140px;
+  --cell-max: 180px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -205,6 +204,16 @@ function insertColAfter(ci: number) {
   max-width: var(--cell-max);
   white-space: nowrap;
   overflow: hidden;
+}
+
+.floor-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.floor-row .el-input {
+  flex: 1;
+  min-width: 0;
 }
 
 .walls-grid {

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <pattern id="stone" patternUnits="userSpaceOnUse" width="32" height="32">
+      <rect width="32" height="32" fill="#6B6B6B"/>
+      <rect x="2" y="2" width="12" height="12" fill="#7A7A7A"/>
+      <rect x="18" y="2" width="12" height="12" fill="#5C5C5C"/>
+      <rect x="2" y="18" width="12" height="12" fill="#5C5C5C"/>
+      <rect x="18" y="18" width="12" height="12" fill="#7A7A7A"/>
+    </pattern>
+  </defs>
+  <rect width="64" height="64" fill="url(#stone)"/>
+</svg>

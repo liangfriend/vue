@@ -1,13 +1,25 @@
 <script setup lang="ts">
-import {ref, computed, CSSProperties} from 'vue'
+import { ref, computed, CSSProperties, onMounted, onUnmounted } from 'vue'
 import type {Block, Floor, Scene} from '@/applications/sceneCreatorApplication/types'
-import {DefaultColor} from '@/applications/sceneCreatorApplication/constant'
+import { DefaultColor, MaterialList } from '@/applications/sceneCreatorApplication/constant'
+
+const textureModules = import.meta.glob<string>(
+  '@/applications/sceneCreatorApplication/assets/textures/**/*.svg',
+  { query: '?url', import: 'default', eager: true }
+)
+
+function getTextureUrl(relPath: string): string {
+  const key = Object.keys(textureModules).find((k) => k.endsWith(relPath))
+  return key ? (textureModules[key] as string) : ''
+}
 import BlockGridEditor from '@/applications/sceneCreatorApplication/components/BlockGridEditor.vue'
 
 const unit = 10
 
 function createDefaultBlock(): Block {
   return {
+    texture_in: '',
+    texture_out: '',
     walls: {
       front: null,
       back: null,
@@ -34,6 +46,8 @@ const scene = ref<Scene>({
 })
 
 const selectedFloorIndex = ref(0)
+const selectedMaterialId = ref<string>('')
+const painting = ref(false)
 
 const currentFloor = computed(() =>
     selectedFloorIndex.value >= 0 ? scene.value.floor[selectedFloorIndex.value] : undefined
@@ -60,10 +74,54 @@ function onBlockGridUpdate(newGrid: Block[][]) {
   f.floor = newGrid.map((row) => row.map((b) => ({...b})))
 }
 
-function resolveColor(texture: string, defaultColor: string): string {
-  if (!texture) return defaultColor
-  if (/^#[0-9a-fA-F]{3,8}$/.test(texture) || texture.startsWith('rgb')) return texture
-  return defaultColor
+function applyMaterialToBlock(fi: number, ri: number, ci: number) {
+  if (!selectedMaterialId.value) return
+  const f = scene.value.floor[fi]
+  if (!f) return
+  const row = f.floor[ri]
+  if (!row?.[ci]) return
+  const b = row[ci]
+  b.texture_in = selectedMaterialId.value
+  b.texture_out = selectedMaterialId.value
+}
+
+function getBlockFromEvent(e: MouseEvent): { fi: number; ri: number; ci: number } | null {
+  const el = (e.target as Element)?.closest?.('[data-block]')
+  if (!el) return null
+  const d = (el as HTMLElement).dataset
+  const fi = d.fi !== undefined ? Number(d.fi) : selectedFloorIndex.value
+  const ri = Number(d.ri)
+  const ci = Number(d.ci)
+  if (isNaN(ri) || isNaN(ci) || fi < 0) return null
+  return { fi, ri, ci }
+}
+
+function onPaintStart(e: MouseEvent) {
+  if (e.button !== 0 || !selectedMaterialId.value) return
+  const pos = getBlockFromEvent(e)
+  if (pos) {
+    painting.value = true
+    applyMaterialToBlock(pos.fi, pos.ri, pos.ci)
+  }
+}
+
+function onPaintMove(e: MouseEvent) {
+  if (!painting.value || !selectedMaterialId.value) return
+  const pos = getBlockFromEvent(e)
+  if (pos) applyMaterialToBlock(pos.fi, pos.ri, pos.ci)
+}
+
+function onPaintEnd() {
+  painting.value = false
+}
+
+function resolveTextureStyle(texture: string, defaultColor: string): { backgroundColor?: string; backgroundImage?: string } {
+  if (!texture) return { backgroundColor: defaultColor }
+  if (/^#[0-9a-fA-F]{3,8}$/.test(texture) || texture.startsWith('rgb')) return { backgroundColor: texture }
+  const m = MaterialList.find((x) => x.id === texture)
+  const url = m ? getTextureUrl(m.path) : ''
+  if (url) return { backgroundImage: `url(${url})`, backgroundColor: defaultColor }
+  return { backgroundColor: defaultColor }
 }
 
 const blockStyle = computed(() => {
@@ -83,29 +141,36 @@ const blockStyle = computed(() => {
     const styles: CSSProperties[] = []
     const dimmedOpacity = dimmed ? 0.2 : 1
 
-    // 地板面 (水平)
+    // 地板面 (水平) inner=朝上
+    const floorStyle = resolveTextureStyle(block.texture_in ?? '', DefaultColor.floor)
     styles.push({
       ...base,
       transform: `translate3d(${x}px, ${y}px, ${z}px)`,
-      backgroundColor: DefaultColor.floor,
+      ...floorStyle,
+      backgroundSize: 'cover',
       boxSizing: 'border-box',
       border: '1px solid rgba(0,0,0,0.2)',
       transformOrigin: 'center center',
       opacity: dimmedOpacity
     })
-    const wallStyle = (wall: NonNullable<Block['walls']['front']>, color: string) => ({
-      opacity: (wall.opacity ?? 1) * dimmedOpacity,
-      backgroundColor: resolveColor(wall.texture, color),
-      boxSizing: 'border-box' as const,
-      border: '1px solid rgba(0,0,0,0.2)'
-    })
+    const wallStyle = (wall: NonNullable<Block['walls']['front']>, which: 'in' | 'out', color: string) => {
+      const tex = which === 'in' ? wall.texture_in : wall.texture_out
+      const s = resolveTextureStyle(tex ?? '', color)
+      return {
+        opacity: (wall.opacity ?? 1) * dimmedOpacity,
+        ...s,
+        backgroundSize: 'cover',
+        boxSizing: 'border-box' as const,
+        border: '1px solid rgba(0,0,0,0.2)'
+      }
+    }
     // front (朝向 +y)
     if (block.walls.front) {
       styles.push({
         ...base,
         transform: `translate3d(${x}px, ${y}px, ${z}px) rotateX(-90deg)`,
         transformOrigin: 'bottom center',
-        ...wallStyle(block.walls.front, DefaultColor.front)
+        ...wallStyle(block.walls.front, 'out', DefaultColor.front)
       })
     }
     // back (朝向 -y)
@@ -114,7 +179,7 @@ const blockStyle = computed(() => {
         ...base,
         transform: `translate3d(${x}px, ${y}px, ${z}px) rotateX(90deg)`,
         transformOrigin: 'top center',
-        ...wallStyle(block.walls.back, DefaultColor.back)
+        ...wallStyle(block.walls.back, 'out', DefaultColor.back)
       })
     }
     // left (朝向 -x)
@@ -123,7 +188,7 @@ const blockStyle = computed(() => {
         ...base,
         transform: `translate3d(${x}px, ${y}px, ${z}px) rotateY(-90deg)`,
         transformOrigin: 'left center',
-        ...wallStyle(block.walls.left, DefaultColor.left)
+        ...wallStyle(block.walls.left, 'out', DefaultColor.left)
       })
     }
     // right (朝向 +x)
@@ -132,7 +197,7 @@ const blockStyle = computed(() => {
         ...base,
         transform: `translate3d(${x}px, ${y}px, ${z}px) rotateY(90deg)`,
         transformOrigin: 'right center',
-        ...wallStyle(block.walls.right, DefaultColor.right)
+        ...wallStyle(block.walls.right, 'out', DefaultColor.right)
       })
     }
 
@@ -157,7 +222,98 @@ const sceneSize = computed(() => {
     if (c > w) w = c
     if (r > h) h = r
   })
-  return {w: w * unit, h: h * unit}
+  return { w: w * unit, h: h * unit }
+})
+
+// 选中楼层视口：旋转、缩放
+const singleRotX = ref(50)
+const singleRotZ = ref(45)
+const singleScale = ref(1)
+const singleDragging = ref(false)
+const singleLast = ref({ x: 0, y: 0 })
+
+function onSingleWheel(e: WheelEvent) {
+  e.preventDefault()
+  const delta = e.deltaY > 0 ? -0.1 : 0.1
+  singleScale.value = Math.max(0.2, Math.min(5, singleScale.value + delta))
+}
+
+function onSingleMouseDown(e: MouseEvent) {
+  if (e.button === 1) {
+    e.preventDefault()
+    singleDragging.value = true
+    singleLast.value = { x: e.clientX, y: e.clientY }
+  } else if (e.button === 0) {
+    onPaintStart(e)
+  }
+}
+
+function onSingleMouseMove(e: MouseEvent) {
+  if (singleDragging.value) {
+    singleRotZ.value += (e.clientX - singleLast.value.x) * 0.5
+    singleRotX.value = Math.max(-90, Math.min(90, singleRotX.value + (e.clientY - singleLast.value.y) * 0.5))
+    singleLast.value = { x: e.clientX, y: e.clientY }
+  }
+}
+
+function onSingleMouseUp(e: MouseEvent) {
+  if (e.button === 1) singleDragging.value = false
+}
+
+// 场景整体视口：旋转、缩放
+const sceneRotX = ref(50)
+const sceneRotZ = ref(45)
+const sceneScale = ref(1)
+const sceneDragging = ref(false)
+const sceneLast = ref({ x: 0, y: 0 })
+
+function onSceneWheel(e: WheelEvent) {
+  e.preventDefault()
+  const delta = e.deltaY > 0 ? -0.1 : 0.1
+  sceneScale.value = Math.max(0.2, Math.min(5, sceneScale.value + delta))
+}
+
+function onSceneMouseDown(e: MouseEvent) {
+  if (e.button === 1) {
+    e.preventDefault()
+    sceneDragging.value = true
+    sceneLast.value = { x: e.clientX, y: e.clientY }
+  } else if (e.button === 0) {
+    onPaintStart(e)
+  }
+}
+
+function onSceneMouseMove(e: MouseEvent) {
+  if (sceneDragging.value) {
+    sceneRotZ.value += (e.clientX - sceneLast.value.x) * 0.5
+    sceneRotX.value = Math.max(-90, Math.min(90, sceneRotX.value + (e.clientY - sceneLast.value.y) * 0.5))
+    sceneLast.value = { x: e.clientX, y: e.clientY }
+  }
+}
+
+function onSceneMouseUp(e: MouseEvent) {
+  if (e.button === 1) sceneDragging.value = false
+}
+
+// 全局 mouseup/mousemove 以处理在视口外释放
+function onGlobalMouseUp() {
+  singleDragging.value = false
+  sceneDragging.value = false
+  onPaintEnd()
+}
+function onGlobalMouseMove(e: MouseEvent) {
+  onSingleMouseMove(e)
+  onSceneMouseMove(e)
+  onPaintMove(e)
+}
+
+onMounted(() => {
+  window.addEventListener('mouseup', onGlobalMouseUp)
+  window.addEventListener('mousemove', onGlobalMouseMove)
+})
+onUnmounted(() => {
+  window.removeEventListener('mouseup', onGlobalMouseUp)
+  window.removeEventListener('mousemove', onGlobalMouseMove)
 })
 </script>
 
@@ -202,24 +358,38 @@ const sceneSize = computed(() => {
       <div class="main-top">
         <div class="section-title">选中楼层</div>
         <div
-            v-if="currentFloor"
-            class="viewport viewport-single"
-            :style="{
-            width: cols * unit + 'px',
-            height: rows * unit + 'px'
-          }"
+            class="viewport-wrap"
+            @wheel.prevent="onSingleWheel"
+            @mousedown.capture="onSingleMouseDown"
+            @mouseup.capture="onSingleMouseUp"
+            @contextmenu.prevent
         >
-          <div class="layer">
-            <template v-for="(row, ri) in currentFloor.floor" :key="'f-' + ri">
-              <template v-for="(block, ci) in row" :key="`f-${ri}-${ci}`">
-                <div
-                    v-for="(s, idx) in blockStyle(block, ri, ci, 0)"
-                    :key="`f-${ri}-${ci}-${idx}`"
-                    class="block"
-                    :style="s"
-                />
-              </template>
-            </template>
+          <div
+              class="viewport-stage"
+              :style="{
+                width: (currentFloor ? cols * unit : 100) + 'px',
+                height: (currentFloor ? rows * unit : 100) + 'px',
+                transform: `translate(-50%, -50%) scale(${singleScale}) rotateX(${singleRotX}deg) rotateZ(${singleRotZ}deg)`
+              }"
+          >
+            <div v-if="currentFloor" class="viewport viewport-single">
+              <div class="layer">
+                <template v-for="(row, ri) in currentFloor.floor" :key="'f-' + ri">
+                  <template v-for="(block, ci) in row" :key="`f-${ri}-${ci}`">
+                    <div
+                        v-for="(s, idx) in blockStyle(block, ri, ci, 0)"
+                        :key="`f-${ri}-${ci}-${idx}`"
+                        class="block"
+                        data-block
+                        :data-fi="selectedFloorIndex"
+                        :data-ri="ri"
+                        :data-ci="ci"
+                        :style="s"
+                    />
+                  </template>
+                </template>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -227,26 +397,41 @@ const sceneSize = computed(() => {
       <div class="main-bottom">
         <div class="section-title">场景整体</div>
         <div
-            class="viewport viewport-scene"
-            :style="{
-            width: sceneSize.w + 'px',
-            height: sceneSize.h + 'px'
-          }"
+            class="viewport-wrap"
+            @wheel.prevent="onSceneWheel"
+            @mousedown.capture="onSceneMouseDown"
+            @mouseup.capture="onSceneMouseUp"
+            @contextmenu.prevent
         >
-          <template v-for="(floorData, fi) in scene.floor" :key="'floor-' + fi">
-            <div class="layer layer-floor-wrap">
-              <template v-for="(row, ri) in floorData.floor" :key="`${fi}-${ri}`">
-                <template v-for="(block, ci) in row" :key="`${fi}-${ri}-${ci}`">
-                  <div
-                      v-for="(s, idx) in blockStyle(block, ri, ci, getFloorZ(fi), selectedFloorIndex >= 0 && fi !== selectedFloorIndex)"
-                      :key="`${fi}-${ri}-${ci}-${idx}`"
-                      class="block"
-                      :style="s"
-                  />
-                </template>
+          <div
+              class="viewport-stage"
+              :style="{
+                width: sceneSize.w + 'px',
+                height: sceneSize.h + 'px',
+                transform: `translate(-50%, -50%) scale(${sceneScale}) rotateX(${sceneRotX}deg) rotateZ(${sceneRotZ}deg)`
+              }"
+          >
+            <div class="viewport viewport-scene">
+              <template v-for="(floorData, fi) in scene.floor" :key="'floor-' + fi">
+                <div class="layer layer-floor-wrap">
+                  <template v-for="(row, ri) in floorData.floor" :key="`${fi}-${ri}`">
+                    <template v-for="(block, ci) in row" :key="`${fi}-${ri}-${ci}`">
+                      <div
+                          v-for="(s, idx) in blockStyle(block, ri, ci, getFloorZ(fi), selectedFloorIndex >= 0 && fi !== selectedFloorIndex)"
+                          :key="`${fi}-${ri}-${ci}-${idx}`"
+                          class="block"
+                          data-block
+                          :data-fi="fi"
+                          :data-ri="ri"
+                          :data-ci="ci"
+                          :style="s"
+                      />
+                    </template>
+                  </template>
+                </div>
               </template>
             </div>
-          </template>
+          </div>
         </div>
       </div>
     </div>
@@ -254,7 +439,19 @@ const sceneSize = computed(() => {
     <div class="right">
       <div class="panel-card">
         <div class="panel-title">材质选择</div>
-        <div class="placeholder">暂不处理</div>
+        <div class="material-list">
+          <div
+            v-for="m in MaterialList"
+            :key="m.id"
+            class="material-item"
+            :class="{ active: selectedMaterialId === m.id }"
+            @click="selectedMaterialId = m.id"
+          >
+            <div class="material-preview" :style="{ backgroundImage: `url(${getTextureUrl(m.path)})` }" />
+            <span class="material-name">{{ m.name }}</span>
+            <span class="material-id">{{ m.id }}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -264,7 +461,8 @@ const sceneSize = computed(() => {
 .container {
   display: grid;
   grid-template-columns: 400px 1fr 200px;
-  min-height: 100vh;
+  grid-template-rows: 1fr;
+  height: 100vh;
   gap: 0;
 }
 
@@ -309,9 +507,53 @@ const sceneSize = computed(() => {
   }
 }
 
-.placeholder {
+.material-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.material-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: #f5f7fa;
+  }
+
+  &.active {
+    background: #ecf5ff;
+    border: 1px solid #409eff;
+  }
+}
+
+.material-preview {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  border: 1px solid #e0e0e0;
+}
+
+.material-name {
+  font-size: 13px;
+  flex: 1;
+}
+
+.material-id {
+  font-size: 11px;
   color: #909399;
-  font-size: 12px;
 }
 
 .block-editor-card {
@@ -321,13 +563,26 @@ const sceneSize = computed(() => {
 .main-wrap {
   display: flex;
   flex-direction: column;
-  overflow: auto;
+  height: 100%;
+  overflow: hidden;
   padding: 16px;
 }
 
 .main-top,
 .main-bottom {
-  margin-bottom: 24px;
+  flex: 0 0 50%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-top {
+  padding-bottom: 8px;
+  overflow: auto;
+}
+
+.main-bottom {
+  overflow: auto;
 }
 
 .section-title {
@@ -335,21 +590,35 @@ const sceneSize = computed(() => {
   margin-bottom: 8px;
 }
 
+.viewport-wrap {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+  background: #1a1a1a;
+  cursor: grab;
+  user-select: none;
+}
+.viewport-wrap:active {
+  cursor: grabbing;
+}
+
+.viewport-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center center;
+  transform-style: preserve-3d;
+}
+
 .viewport {
   position: relative;
+  width: 100%;
+  height: 100%;
   transform-style: preserve-3d;
-  transform: rotateX(50deg) rotateZ(45deg);
   perspective: 800px;
-  margin: 0 auto;
 }
 
-.viewport-single {
-  margin-bottom: 0;
-}
-
-.viewport-scene {
-  min-height: 120px;
-}
 
 .layer {
   position: absolute;
