@@ -74,26 +74,40 @@ function onBlockGridUpdate(newGrid: Block[][]) {
   f.floor = newGrid.map((row) => row.map((b) => ({...b})))
 }
 
-function applyMaterialToBlock(fi: number, ri: number, ci: number) {
+type FaceType = 'floor_in' | 'floor_out' | `wall_${'front'|'back'|'left'|'right'}_in` | `wall_${'front'|'back'|'left'|'right'}_out`
+
+function applyMaterialToBlock(fi: number, ri: number, ci: number, face: FaceType) {
   if (!selectedMaterialId.value) return
   const f = scene.value.floor[fi]
   if (!f) return
   const row = f.floor[ri]
   if (!row?.[ci]) return
   const b = row[ci]
-  b.texture_in = selectedMaterialId.value
-  b.texture_out = selectedMaterialId.value
+  const mat = selectedMaterialId.value
+
+  if (face === 'floor_in') {
+    b.texture_in = mat
+  } else if (face === 'floor_out') {
+    b.texture_out = mat
+  } else if (face.startsWith('wall_')) {
+    const [, side, which] = face.split('_') as [string, 'front'|'back'|'left'|'right', 'in'|'out']
+    let w = b.walls[side]
+    if (!w) w = b.walls[side] = { texture_in: '', texture_out: '', opacity: 1 }
+    if (which === 'in') w.texture_in = mat
+    else w.texture_out = mat
+  }
 }
 
-function getBlockFromEvent(e: MouseEvent): { fi: number; ri: number; ci: number } | null {
+function getBlockFromEvent(e: MouseEvent): { fi: number; ri: number; ci: number; face: FaceType } | null {
   const el = (e.target as Element)?.closest?.('[data-block]')
   if (!el) return null
   const d = (el as HTMLElement).dataset
   const fi = d.fi !== undefined ? Number(d.fi) : selectedFloorIndex.value
   const ri = Number(d.ri)
   const ci = Number(d.ci)
-  if (isNaN(ri) || isNaN(ci) || fi < 0) return null
-  return { fi, ri, ci }
+  const face = d.face as FaceType | undefined
+  if (isNaN(ri) || isNaN(ci) || fi < 0 || !face) return null
+  return { fi, ri, ci, face }
 }
 
 function onPaintStart(e: MouseEvent) {
@@ -101,14 +115,14 @@ function onPaintStart(e: MouseEvent) {
   const pos = getBlockFromEvent(e)
   if (pos) {
     painting.value = true
-    applyMaterialToBlock(pos.fi, pos.ri, pos.ci)
+    applyMaterialToBlock(pos.fi, pos.ri, pos.ci, pos.face)
   }
 }
 
 function onPaintMove(e: MouseEvent) {
   if (!painting.value || !selectedMaterialId.value) return
   const pos = getBlockFromEvent(e)
-  if (pos) applyMaterialToBlock(pos.fi, pos.ri, pos.ci)
+  if (pos) applyMaterialToBlock(pos.fi, pos.ri, pos.ci, pos.face)
 }
 
 function onPaintEnd() {
@@ -124,8 +138,10 @@ function resolveTextureStyle(texture: string, defaultColor: string): { backgroun
   return { backgroundColor: defaultColor }
 }
 
+type BlockFace = { style: CSSProperties; face: FaceType }
+
 const blockStyle = computed(() => {
-  return (block: Block, ri: number, ci: number, translateZ = 0, dimmed = false): CSSProperties[] => {
+  return (block: Block, ri: number, ci: number, translateZ = 0, dimmed = false): BlockFace[] => {
     const base = {
       position: 'absolute' as const,
       left: 0,
@@ -138,70 +154,69 @@ const blockStyle = computed(() => {
     const y = ri * unit
     const z = translateZ
 
-    const styles: CSSProperties[] = []
+    const result: BlockFace[] = []
     const dimmedOpacity = dimmed ? 0.2 : 1
 
-    // 地板面 (水平) inner=朝上
-    const floorStyle = resolveTextureStyle(block.texture_in ?? '', DefaultColor.floor)
-    styles.push({
-      ...base,
-      transform: `translate3d(${x}px, ${y}px, ${z}px)`,
-      ...floorStyle,
-      backgroundSize: 'cover',
-      boxSizing: 'border-box',
-      border: '1px solid rgba(0,0,0,0.2)',
-      transformOrigin: 'center center',
-      opacity: dimmedOpacity
+    // 地板：正反两个 div 重叠。正面=朝上(texture_in)，反面=朝下(texture_out)
+    const floorBase = { ...base, backgroundSize: 'cover' as const, boxSizing: 'border-box' as const, border: '1px solid rgba(0,0,0,0.2)', opacity: dimmedOpacity }
+    result.push({
+      face: 'floor_in',
+      style: {
+        ...floorBase,
+        transform: `translate3d(${x}px, ${y}px, ${z}px)`,
+        transformOrigin: 'center center',
+        ...resolveTextureStyle(block.texture_in ?? '', DefaultColor.floor)
+      }
     })
-    const wallStyle = (wall: NonNullable<Block['walls']['front']>, which: 'in' | 'out', color: string) => {
+    result.push({
+      face: 'floor_out',
+      style: {
+        ...floorBase,
+        transform: `translate3d(${x}px, ${y}px, ${z}px) rotateX(180deg)`,
+        transformOrigin: 'center center',
+        ...resolveTextureStyle(block.texture_out ?? '', DefaultColor.floor)
+      }
+    })
+
+    const wallFace = (wall: NonNullable<Block['walls']['front']>, which: 'in' | 'out', color: string) => {
       const tex = which === 'in' ? wall.texture_in : wall.texture_out
-      const s = resolveTextureStyle(tex ?? '', color)
       return {
         opacity: (wall.opacity ?? 1) * dimmedOpacity,
-        ...s,
+        ...resolveTextureStyle(tex ?? '', color),
         backgroundSize: 'cover',
         boxSizing: 'border-box' as const,
         border: '1px solid rgba(0,0,0,0.2)'
       }
     }
-    // front (朝向 +y)
-    if (block.walls.front) {
-      styles.push({
-        ...base,
-        transform: `translate3d(${x}px, ${y}px, ${z}px) rotateX(-90deg)`,
-        transformOrigin: 'bottom center',
-        ...wallStyle(block.walls.front, 'out', DefaultColor.front)
-      })
+
+    // 墙壁：每个墙正反两个 div，用贴地边为锚点立起，不混入 rotateZ（否则会绕边旋转导致位置错乱）
+    const eps = 0.02
+    type WallSpec = { rot: string; origin: string }
+    const wallSpecs: Record<'front'|'back'|'left'|'right', WallSpec> = {
+      front:  { rot: 'rotateX(-90deg)',   origin: 'bottom center' },
+      back:   { rot: 'rotateX(90deg)',     origin: 'top center' },
+      left:   { rot: 'rotateY(-90deg)',    origin: 'left center' },
+      right:  { rot: 'rotateY(90deg)',    origin: 'right center' }
     }
-    // back (朝向 -y)
-    if (block.walls.back) {
-      styles.push({
-        ...base,
-        transform: `translate3d(${x}px, ${y}px, ${z}px) rotateX(90deg)`,
-        transformOrigin: 'top center',
-        ...wallStyle(block.walls.back, 'out', DefaultColor.back)
+    const wallPair = (side: 'front'|'back'|'left'|'right', wall: NonNullable<Block['walls']['front']>, color: string) => {
+      const spec = wallSpecs[side]
+      const baseT = `translate3d(${x}px, ${y}px, ${z}px)`
+      result.push({
+        face: `wall_${side}_out`,
+        style: { ...base, transform: `${baseT} ${spec.rot} translateZ(${eps}px)`, transformOrigin: spec.origin, ...wallFace(wall, 'out', color) }
       })
-    }
-    // left (朝向 -x)
-    if (block.walls.left) {
-      styles.push({
-        ...base,
-        transform: `translate3d(${x}px, ${y}px, ${z}px) rotateY(-90deg)`,
-        transformOrigin: 'left center',
-        ...wallStyle(block.walls.left, 'out', DefaultColor.left)
-      })
-    }
-    // right (朝向 +x)
-    if (block.walls.right) {
-      styles.push({
-        ...base,
-        transform: `translate3d(${x}px, ${y}px, ${z}px) rotateY(90deg)`,
-        transformOrigin: 'right center',
-        ...wallStyle(block.walls.right, 'out', DefaultColor.right)
+      result.push({
+        face: `wall_${side}_in`,
+        style: { ...base, transform: `${baseT} ${spec.rot} translateZ(-${eps}px)`, transformOrigin: spec.origin, ...wallFace(wall, 'in', color) }
       })
     }
 
-    return styles
+    if (block.walls.front) wallPair('front', block.walls.front, DefaultColor.front)
+    if (block.walls.back) wallPair('back', block.walls.back, DefaultColor.back)
+    if (block.walls.left) wallPair('left', block.walls.left, DefaultColor.left)
+    if (block.walls.right) wallPair('right', block.walls.right, DefaultColor.right)
+
+    return result
   }
 })
 
@@ -384,7 +399,8 @@ onUnmounted(() => {
                         :data-fi="selectedFloorIndex"
                         :data-ri="ri"
                         :data-ci="ci"
-                        :style="s"
+                        :data-face="s.face"
+                        :style="s.style"
                     />
                   </template>
                 </template>
@@ -424,7 +440,8 @@ onUnmounted(() => {
                           :data-fi="fi"
                           :data-ri="ri"
                           :data-ci="ci"
-                          :style="s"
+                          :data-face="s.face"
+                          :style="s.style"
                       />
                     </template>
                   </template>

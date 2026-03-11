@@ -18,5 +18,8 @@ export const MaterialList: MaterialItem[] = [
   { id: 'floor/tile', name: '瓷砖', category: 'floor', path: 'floor/tile.svg' },
   { id: 'floor/marble', name: '大理石', category: 'floor', path: 'floor/marble.svg' },
   { id: 'wall/brick', name: '砖墙', category: 'wall', path: 'wall/brick.svg' },
-  { id: 'wall/stone', name: '石墙', category: 'wall', path: 'wall/stone.svg' }
+  { id: 'wall/stone', name: '石墙', category: 'wall', path: 'wall/stone.svg' },
+  { id: 'wall/window', name: '带窗墙', category: 'wall', path: 'wall/window.svg' },
+  { id: 'wall/graffiti', name: '涂鸦墙', category: 'wall', path: 'wall/graffiti.svg' },
+  { id: 'wall/poster', name: '招贴墙', category: 'wall', path: 'wall/poster.svg' }
 ]

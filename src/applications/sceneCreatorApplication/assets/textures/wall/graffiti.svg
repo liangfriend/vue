@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+    <defs>
+        <pattern id="wall_graffiti" patternUnits="userSpaceOnUse" width="64" height="64">
+            <rect width="64" height="64" fill="#9CA3A8"/>
+            <rect x="1" y="1" width="62" height="62" fill="#B0B8BC" stroke="#7A8288" stroke-width="0.5"/>
+            <circle cx="48" cy="18" r="4" fill="none" stroke="#2C3E50" stroke-width="2"/>
+            <line x1="48" y1="22" x2="48" y2="32" stroke="#2C3E50" stroke-width="2" stroke-linecap="round"/>
+            <line x1="48" y1="26" x2="42" y2="36" stroke="#2C3E50" stroke-width="2" stroke-linecap="round"/>
+            <line x1="48" y1="26" x2="54" y2="36" stroke="#2C3E50" stroke-width="2" stroke-linecap="round"/>
+            <line x1="48" y1="32" x2="43" y2="44" stroke="#2C3E50" stroke-width="2" stroke-linecap="round"/>
+            <line x1="48" y1="32" x2="53" y2="44" stroke="#2C3E50" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="16" cy="42" r="8" fill="none" stroke="#E74C3C" stroke-width="1.5"/>
+            <circle cx="13" cy="40" r="1.2" fill="#2C3E50"/>
+            <circle cx="19" cy="40" r="1.2" fill="#2C3E50"/>
+            <path d="M12 46 Q16 50 20 46" fill="none" stroke="#2C3E50" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M28 14 L34 20 L28 20 L28 26 L22 20 L28 20 Z" fill="none" stroke="#8E44AD" stroke-width="1.5"/>
+        </pattern>
+    </defs>
+    <rect width="64" height="64" fill="url(#wall_graffiti)"/>
+</svg>

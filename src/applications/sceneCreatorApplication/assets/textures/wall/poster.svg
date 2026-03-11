@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+    <defs>
+        <pattern id="wall_poster" patternUnits="userSpaceOnUse" width="64" height="64">
+            <rect width="64" height="64" fill="#A89888"/>
+            <rect x="2" y="2" width="60" height="60" fill="#B5A090" stroke="#8B7355" stroke-width="0.5"/>
+            <rect x="36" y="32" width="24" height="28" fill="#FFF8DC" stroke="#8B7355" stroke-width="1"/>
+            <rect x="38" y="34" width="20" height="6" fill="#DEB887"/>
+            <line x1="38" y1="42" x2="58" y2="42" stroke="#8B7355" stroke-width="0.5"/>
+            <line x1="38" y1="48" x2="58" y2="48" stroke="#8B7355" stroke-width="0.5"/>
+            <!-- ?& -->
+            <rect x="34" y="30" width="28" height="3" fill="rgba(255,255,255,0.6)" stroke="#ccc" stroke-width="0.3"/>
+            <circle cx="12" cy="20" r="3" fill="none" stroke="#4A4A4A" stroke-width="1"/>
+            <path d="M10 24 L12 28 L14 24" fill="none" stroke="#4A4A4A" stroke-width="1"/>
+        </pattern>
+    </defs>
+    <rect width="64" height="64" fill="url(#wall_poster)"/>
+</svg>

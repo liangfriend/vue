@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+    <defs>
+        <pattern id="wall_window" patternUnits="userSpaceOnUse" width="64" height="64">
+            <rect width="64" height="64" fill="#C4A77D"/>
+            <rect x="2" y="2" width="60" height="60" fill="#8B7355" stroke="#5D4E37" stroke-width="1"/>
+            <rect x="8" y="10" width="22" height="28" fill="#87CEEB" stroke="#4A90A4" stroke-width="1.5"/>
+            <line x1="19" y1="10" x2="19" y2="38" stroke="#4A90A4" stroke-width="1"/>
+            <line x1="8" y1="24" x2="30" y2="24" stroke="#4A90A4" stroke-width="1"/>
+            <rect x="34" y="10" width="24" height="28" fill="#87CEEB" stroke="#4A90A4" stroke-width="1.5"/>
+            <line x1="46" y1="10" x2="46" y2="38" stroke="#4A90A4" stroke-width="1"/>
+            <line x1="34" y1="24" x2="58" y2="24" stroke="#4A90A4" stroke-width="1"/>
+            <rect x="8" y="44" width="12" height="8" fill="#A08060" stroke="#5D4E37" stroke-width="0.3"/>
+            <rect x="44" y="44" width="12" height="8" fill="#A08060" stroke="#5D4E37" stroke-width="0.3"/>
+        </pattern>
+    </defs>
+    <rect width="64" height="64" fill="url(#wall_window)"/>
+</svg>
