@@ -37,7 +37,18 @@ const routes = {
                 component: () => import('./views/widget/liamVideoShow.vue'),
                 meta: {title: '视频播放'}
             }]
-        },]
+        },
+        {
+            name: 'minecraft',
+            path: '/base/minecraft',
+            component: () => import('@/applications/threeApplication/views/minecraftDemo.vue'),
+            meta: {title: 'CSS 3D 我的世界'},
+        }, {
+            name: 'webAr',
+            path: '/base/webAr',
+            component: () => import('./views/webAr/index.vue'),
+            meta: {title: 'webAr'},
+        }]
 };
 
 export default routes;

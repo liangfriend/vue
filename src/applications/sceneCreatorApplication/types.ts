@@ -9,11 +9,14 @@ export type Floor = {
 }
 
 export type Wall = {
-    texture: string,
-    opacity:  number
+    texture_in: string,
+    texture_out: string,
+    opacity: number
 }
 
 export type Block = {
+    texture_in: string,
+    texture_out: string,
     walls: {
         front: Wall | null
         back: Wall | null

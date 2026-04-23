@@ -21,6 +21,12 @@ const routes = {
       component: () => import('./views/look.vue'),
       meta: { title: '展示' },
       children: []
+    },
+    {
+      path: '/three/minecraft',
+      component: () => import('./views/minecraftDemo.vue'),
+      meta: { title: 'CSS 3D 我的世界' },
+      children: []
     }
   ]
 };

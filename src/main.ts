@@ -19,7 +19,7 @@ async function routeSet() {
         {
             path: '/',
             component: appVue,
-            redirect: '/english',
+            redirect: '/base',
             children: []
         }
     ];

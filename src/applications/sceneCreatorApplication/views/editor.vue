@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { ref, computed, CSSProperties, onMounted, onUnmounted } from 'vue'
+import {ref, computed, CSSProperties, onMounted, onUnmounted} from 'vue'
 import type {Block, Floor, Scene} from '@/applications/sceneCreatorApplication/types'
-import { DefaultColor, MaterialList } from '@/applications/sceneCreatorApplication/constant'
+import {DefaultColor, MaterialList} from '@/applications/sceneCreatorApplication/constant'
 
 const textureModules = import.meta.glob<string>(
-  '@/applications/sceneCreatorApplication/assets/textures/**/*.svg',
-  { query: '?url', import: 'default', eager: true }
+    '@/applications/sceneCreatorApplication/assets/textures/**/*.svg',
+    {query: '?url', import: 'default', eager: true}
 )
 
 function getTextureUrl(relPath: string): string {
   const key = Object.keys(textureModules).find((k) => k.endsWith(relPath))
   return key ? (textureModules[key] as string) : ''
 }
+
 import BlockGridEditor from '@/applications/sceneCreatorApplication/components/BlockGridEditor.vue'
 
 const unit = 10
@@ -32,7 +33,16 @@ function createDefaultBlock(): Block {
 function createDefaultFloor(): Floor {
   return {
     floor: [
-      [createDefaultBlock(), createDefaultBlock(), createDefaultBlock()],
+      [{
+        texture_in: '',
+        texture_out: '',
+        walls: {
+          front: null,
+          back: null,
+          left: null,
+          right: null
+        }
+      }, createDefaultBlock(), createDefaultBlock()],
       [createDefaultBlock(), createDefaultBlock(), createDefaultBlock(), createDefaultBlock(), createDefaultBlock()],
       [createDefaultBlock(), createDefaultBlock(), createDefaultBlock()]
     ],
@@ -74,7 +84,11 @@ function onBlockGridUpdate(newGrid: Block[][]) {
   f.floor = newGrid.map((row) => row.map((b) => ({...b})))
 }
 
-type FaceType = 'floor_in' | 'floor_out' | `wall_${'front'|'back'|'left'|'right'}_in` | `wall_${'front'|'back'|'left'|'right'}_out`
+type FaceType =
+    'floor_in'
+    | 'floor_out'
+    | `wall_${'front' | 'back' | 'left' | 'right'}_in`
+    | `wall_${'front' | 'back' | 'left' | 'right'}_out`
 
 function applyMaterialToBlock(fi: number, ri: number, ci: number, face: FaceType) {
   if (!selectedMaterialId.value) return
@@ -90,9 +104,9 @@ function applyMaterialToBlock(fi: number, ri: number, ci: number, face: FaceType
   } else if (face === 'floor_out') {
     b.texture_out = mat
   } else if (face.startsWith('wall_')) {
-    const [, side, which] = face.split('_') as [string, 'front'|'back'|'left'|'right', 'in'|'out']
+    const [, side, which] = face.split('_') as [string, 'front' | 'back' | 'left' | 'right', 'in' | 'out']
     let w = b.walls[side]
-    if (!w) w = b.walls[side] = { texture_in: '', texture_out: '', opacity: 1 }
+    if (!w) w = b.walls[side] = {texture_in: '', texture_out: '', opacity: 1}
     if (which === 'in') w.texture_in = mat
     else w.texture_out = mat
   }
@@ -107,7 +121,7 @@ function getBlockFromEvent(e: MouseEvent): { fi: number; ri: number; ci: number;
   const ci = Number(d.ci)
   const face = d.face as FaceType | undefined
   if (isNaN(ri) || isNaN(ci) || fi < 0 || !face) return null
-  return { fi, ri, ci, face }
+  return {fi, ri, ci, face}
 }
 
 function onPaintStart(e: MouseEvent) {
@@ -129,13 +143,16 @@ function onPaintEnd() {
   painting.value = false
 }
 
-function resolveTextureStyle(texture: string, defaultColor: string): { backgroundColor?: string; backgroundImage?: string } {
-  if (!texture) return { backgroundColor: defaultColor }
-  if (/^#[0-9a-fA-F]{3,8}$/.test(texture) || texture.startsWith('rgb')) return { backgroundColor: texture }
+function resolveTextureStyle(texture: string, defaultColor: string): {
+  backgroundColor?: string;
+  backgroundImage?: string
+} {
+  if (!texture) return {backgroundColor: defaultColor}
+  if (/^#[0-9a-fA-F]{3,8}$/.test(texture) || texture.startsWith('rgb')) return {backgroundColor: texture}
   const m = MaterialList.find((x) => x.id === texture)
   const url = m ? getTextureUrl(m.path) : ''
-  if (url) return { backgroundImage: `url(${url})`, backgroundColor: defaultColor }
-  return { backgroundColor: defaultColor }
+  if (url) return {backgroundImage: `url(${url})`, backgroundColor: defaultColor}
+  return {backgroundColor: defaultColor}
 }
 
 type BlockFace = { style: CSSProperties; face: FaceType }
@@ -158,7 +175,13 @@ const blockStyle = computed(() => {
     const dimmedOpacity = dimmed ? 0.2 : 1
 
     // 地板：正反两个 div 重叠。正面=朝上(texture_in)，反面=朝下(texture_out)
-    const floorBase = { ...base, backgroundSize: 'cover' as const, boxSizing: 'border-box' as const, border: '1px solid rgba(0,0,0,0.2)', opacity: dimmedOpacity }
+    const floorBase = {
+      ...base,
+      backgroundSize: 'cover' as const,
+      boxSizing: 'border-box' as const,
+      border: '1px solid rgba(0,0,0,0.2)',
+      opacity: dimmedOpacity
+    }
     result.push({
       face: 'floor_in',
       style: {
@@ -192,22 +215,30 @@ const blockStyle = computed(() => {
     // 墙壁：每个墙正反两个 div，用贴地边为锚点立起，不混入 rotateZ（否则会绕边旋转导致位置错乱）
     const eps = 0.02
     type WallSpec = { rot: string; origin: string }
-    const wallSpecs: Record<'front'|'back'|'left'|'right', WallSpec> = {
-      front:  { rot: 'rotateX(-90deg)',   origin: 'bottom center' },
-      back:   { rot: 'rotateX(90deg)',     origin: 'top center' },
-      left:   { rot: 'rotateY(-90deg)',    origin: 'left center' },
-      right:  { rot: 'rotateY(90deg)',    origin: 'right center' }
+    const wallSpecs: Record<'front' | 'back' | 'left' | 'right', WallSpec> = {
+      front: {rot: 'rotateX(-90deg)', origin: 'bottom center'},
+      back: {rot: 'rotateX(90deg)', origin: 'top center'},
+      left: {rot: 'rotateY(-90deg)', origin: 'left center'},
+      right: {rot: 'rotateY(90deg)', origin: 'right center'}
     }
-    const wallPair = (side: 'front'|'back'|'left'|'right', wall: NonNullable<Block['walls']['front']>, color: string) => {
+    const wallPair = (side: 'front' | 'back' | 'left' | 'right', wall: NonNullable<Block['walls']['front']>, color: string) => {
       const spec = wallSpecs[side]
       const baseT = `translate3d(${x}px, ${y}px, ${z}px)`
       result.push({
         face: `wall_${side}_out`,
-        style: { ...base, transform: `${baseT} ${spec.rot} translateZ(${eps}px)`, transformOrigin: spec.origin, ...wallFace(wall, 'out', color) }
+        style: {
+          ...base,
+          transform: `${baseT} ${spec.rot} translateZ(${eps}px)`,
+          transformOrigin: spec.origin, ...wallFace(wall, 'out', color)
+        }
       })
       result.push({
         face: `wall_${side}_in`,
-        style: { ...base, transform: `${baseT} ${spec.rot} translateZ(-${eps}px)`, transformOrigin: spec.origin, ...wallFace(wall, 'in', color) }
+        style: {
+          ...base,
+          transform: `${baseT} ${spec.rot} translateZ(-${eps}px)`,
+          transformOrigin: spec.origin, ...wallFace(wall, 'in', color)
+        }
       })
     }
 
@@ -237,7 +268,7 @@ const sceneSize = computed(() => {
     if (c > w) w = c
     if (r > h) h = r
   })
-  return { w: w * unit, h: h * unit }
+  return {w: w * unit, h: h * unit}
 })
 
 // 选中楼层视口：旋转、缩放
@@ -245,7 +276,7 @@ const singleRotX = ref(50)
 const singleRotZ = ref(45)
 const singleScale = ref(1)
 const singleDragging = ref(false)
-const singleLast = ref({ x: 0, y: 0 })
+const singleLast = ref({x: 0, y: 0})
 
 function onSingleWheel(e: WheelEvent) {
   e.preventDefault()
@@ -257,7 +288,7 @@ function onSingleMouseDown(e: MouseEvent) {
   if (e.button === 1) {
     e.preventDefault()
     singleDragging.value = true
-    singleLast.value = { x: e.clientX, y: e.clientY }
+    singleLast.value = {x: e.clientX, y: e.clientY}
   } else if (e.button === 0) {
     onPaintStart(e)
   }
@@ -267,7 +298,7 @@ function onSingleMouseMove(e: MouseEvent) {
   if (singleDragging.value) {
     singleRotZ.value += (e.clientX - singleLast.value.x) * 0.5
     singleRotX.value = Math.max(-90, Math.min(90, singleRotX.value + (e.clientY - singleLast.value.y) * 0.5))
-    singleLast.value = { x: e.clientX, y: e.clientY }
+    singleLast.value = {x: e.clientX, y: e.clientY}
   }
 }
 
@@ -280,7 +311,7 @@ const sceneRotX = ref(50)
 const sceneRotZ = ref(45)
 const sceneScale = ref(1)
 const sceneDragging = ref(false)
-const sceneLast = ref({ x: 0, y: 0 })
+const sceneLast = ref({x: 0, y: 0})
 
 function onSceneWheel(e: WheelEvent) {
   e.preventDefault()
@@ -292,7 +323,7 @@ function onSceneMouseDown(e: MouseEvent) {
   if (e.button === 1) {
     e.preventDefault()
     sceneDragging.value = true
-    sceneLast.value = { x: e.clientX, y: e.clientY }
+    sceneLast.value = {x: e.clientX, y: e.clientY}
   } else if (e.button === 0) {
     onPaintStart(e)
   }
@@ -302,7 +333,7 @@ function onSceneMouseMove(e: MouseEvent) {
   if (sceneDragging.value) {
     sceneRotZ.value += (e.clientX - sceneLast.value.x) * 0.5
     sceneRotX.value = Math.max(-90, Math.min(90, sceneRotX.value + (e.clientY - sceneLast.value.y) * 0.5))
-    sceneLast.value = { x: e.clientX, y: e.clientY }
+    sceneLast.value = {x: e.clientX, y: e.clientY}
   }
 }
 
@@ -316,6 +347,7 @@ function onGlobalMouseUp() {
   sceneDragging.value = false
   onPaintEnd()
 }
+
 function onGlobalMouseMove(e: MouseEvent) {
   onSingleMouseMove(e)
   onSceneMouseMove(e)
@@ -458,13 +490,13 @@ onUnmounted(() => {
         <div class="panel-title">材质选择</div>
         <div class="material-list">
           <div
-            v-for="m in MaterialList"
-            :key="m.id"
-            class="material-item"
-            :class="{ active: selectedMaterialId === m.id }"
-            @click="selectedMaterialId = m.id"
+              v-for="m in MaterialList"
+              :key="m.id"
+              class="material-item"
+              :class="{ active: selectedMaterialId === m.id }"
+              @click="selectedMaterialId = m.id"
           >
-            <div class="material-preview" :style="{ backgroundImage: `url(${getTextureUrl(m.path)})` }" />
+            <div class="material-preview" :style="{ backgroundImage: `url(${getTextureUrl(m.path)})` }"/>
             <span class="material-name">{{ m.name }}</span>
             <span class="material-id">{{ m.id }}</span>
           </div>
@@ -616,6 +648,7 @@ onUnmounted(() => {
   cursor: grab;
   user-select: none;
 }
+
 .viewport-wrap:active {
   cursor: grabbing;
 }
