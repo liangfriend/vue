@@ -1,21 +1,20 @@
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
-import * as fs from "node:fs";
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
         vue({
             template: {
                 compilerOptions: {
-                    isCustomElement: (tag) => tag.startsWith('a-'),
+                    isCustomElement: function (tag) { return tag.startsWith('a-'); },
                 },
             },
         }),
     ],
     server: {
-        port: 9999, // 指定开发服务器端口
-        host: '0.0.0.0', // 可选，允许局域网访问
+        port: 9999,
+        host: '0.0.0.0',
         open: true, // 可选，启动后自动打开浏览器
         // https: {
         //     key: fs.readFileSync(path.resolve(__dirname, './key.pem')),
@@ -27,7 +26,7 @@ export default defineConfig({
             '@': path.resolve(__dirname, 'src')
         }
     },
-    assetsInclude: ['**/*.gltf', '**/*.fset3'], //确保vite能正确处理.gltf文件
+    assetsInclude: ['**/*.gltf', '**/*.fset3'],
     build: {
         assetsInlineLimit: 0 // 确保资源不会被内联
     }

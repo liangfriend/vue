@@ -48,6 +48,11 @@ const routes = {
             path: '/base/webAr',
             component: () => import('./views/webAr/index.vue'),
             meta: {title: 'webAr'},
+        }, {
+            name: 'vue响应式性能测试',
+            path: '/base/draft/vueTest.vue',
+            component: () => import('./views/draft/vueTest.vue'),
+            meta: {title: 'vue响应式性能测试'},
         }]
 };
 
