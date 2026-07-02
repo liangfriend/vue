@@ -26,6 +26,17 @@ const routes = {
             meta: {title: '全连接网络'},
         }],
     }, {
+        name: 'rnn',
+        path: '/model/rnn',
+        redirect: '/model/rnn/demo',
+        meta: {title: 'RNN'},
+        children: [{
+            name: 'rnn-demo',
+            path: '/model/rnn/demo',
+            component: () => import('./views/rnn/demo.vue'),
+            meta: {title: '循环神经网络'},
+        }],
+    }, {
         name: 'attention',
         path: '/model/attention',
         redirect: '/model/attention/demo',

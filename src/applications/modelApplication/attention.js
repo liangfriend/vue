@@ -52,6 +52,7 @@ function vecMat(x, W) {
   );
 }
 
+// 求a,b点积
 function matMul(A, B) {
   const out = Array.from({length: A.length,}, () => Array(B[0].length).fill(0));
   for (let i = 0; i < A.length; i++) {
@@ -64,6 +65,7 @@ function matMul(A, B) {
   return out;
 }
 
+// 颠倒数组
 function transpose(A) {
   return A[0].map((_, j) => A.map((row) => row[j]));
 }
@@ -207,9 +209,13 @@ class AttentionFocusTrainer {
   forward(tokenIds) {
     // 从字典拿取输入信息的词信息，查询，键，值信息
     const X = tokenEmbedding(tokenIds, this.embedTable);
+    // 查询信息  当前词「想找什么信息」  你在图书馆的检索词
     const Q = X.map((x) => vecMat(x, this.Wq));
+    // 键信息  每个词「能被怎样匹配」  每本书的索引/标签
     const K = X.map((x) => vecMat(x, this.Wk));
+    // 值信息  每个词「实际要传递的内容」 书的正文内容
     const V = X.map((x) => vecMat(x, this.Wv));
+    // 求Q和K的点积，点积越大说明两个向量方向越接近， sqrt压低分数
     const scores = matMul(Q, transpose(K)).map((row) =>
       row.map((v) => v / Math.sqrt(this.dModel))
     );
@@ -229,6 +235,7 @@ class AttentionFocusTrainer {
     dWeights[queryPos][targetPos] = -1 / w;
 
     const dScores = weights.map((row, i) => softmaxBackward(dWeights[i], row));
+
     const dScoresScaled = dScores.map((row) => row.map((v) => v / Math.sqrt(this.dModel)));
 
     const dQ = matMul(dScoresScaled, K);
