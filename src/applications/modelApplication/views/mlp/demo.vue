@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import { MLPTrainer, QUADRANT_NAMES } from '../mlp.js';
+import { MLPTrainer, QUADRANT_NAMES } from '../../mlp.js';
 
 export default {
   name: 'MLPDemo',

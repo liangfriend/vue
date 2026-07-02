@@ -113,7 +113,7 @@
 </template>
 
 <script>
-import { runCNN, createSampleImage, CNNTrainer } from '../cnn.js';
+import { runCNN, createSampleImage, CNNTrainer } from '../../cnn.js';
 
 function createEmptyGrid() {
   return Array(5)
